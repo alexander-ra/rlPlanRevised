@@ -1,0 +1,626 @@
+# Step 8 — Safe Exploitation — Theory, Algorithms, and Real-Time Search
+
+**Duration:** 21 days (Tier 1)  
+**Dependencies:** Step 6 (End-to-End Game AI Architectures), Step 7 (Opponent Modeling)  
+**Phase:** D — Opponent Modeling + Exploitation  
+**Freshness Note:**  
+- ArXiv search: "safe opponent exploitation imperfect information" sorted by date (Mar 2026) — 3 results  
+- ArXiv search: "restricted nash response opponent exploitation" sorted by date (Mar 2026) — 2 results  
+- ArXiv search: "safe exploitation subgame solving poker" sorted by date (Mar 2026) — 1 result  
+- Cross-reference with `oldSources/safeOpponentExploitation.md` survey — all 4 papers confirmed and available  
+- **Newly discovered papers (not in original plan):**  
+  - Milec, Kovařík & Lisý (Jan 2025) "Adapting Beyond the Depth Limit: Counter Strategies in Large Imperfect Information Games" (arXiv:2501.10464) — proposes ABD algorithm using strategy-portfolio approach + matrix-valued states for depth-limited exploitation. **Critical addition — the first method to fully utilize opponent model information beyond the depth limit. The freshest exploitation paper available.**  
+  - Zhou et al. (Jan 2022, revised May 2024) "DecisionHoldem: Safe Depth-Limited Solving With Diverse Opponents" (arXiv:2201.11580) — practical depth-limited solver with diverse opponent handling. **Secondary reference.**  
+  - Farina & Sandholm (Mar 2021, AAAI 2021) "Model-Free Online Learning in Unknown Sequential Decision Making Problems and Games" (arXiv:2103.04539) — model-free regret minimization approach that doesn't require opponent model. **Supplementary — contrasts with model-based exploitation approach.**  
+- **Core references confirmed and enriched from SOE survey:**  
+  - Ganzfried & Sandholm (2015) "Safe Opponent Exploitation" — ACM TEAC. Foundational paper. Available via Ganzfried's website.  
+  - Liu et al. (2022) "Safe Opponent-Exploitation Subgame Refinement" — NeurIPS 2022. SES algorithm.  
+  - Jeary & Turrini (2023) "Safe Opponent Exploitation For Epsilon Equilibrium Strategies" — arXiv:2307.12338. Prime-safe SOE.  
+  - Ge et al. (2024) "Safe and Robust Subgame Exploitation in Imperfect Information Games" — ICML 2024. OX-Search with Adaptation Safety.  
+- **Older foundational references added:**  
+  - Johanson et al. (2007) "Computing Robust Counter-Strategies" — original Restricted Nash Response (RNR) paper  
+  - Milec, Kovařík & Lisý (2021/2024) "Continual Depth-limited Responses" (arXiv:2112.12594) — precursor to ABD  
+- No superseded content for Step 8 scope
+
+---
+
+## Phase 1: Intuition (2 days)
+
+The goal: understand WHY safe exploitation is the hardest problem in game AI (the tradeoff between exploiting weak opponents and protecting yourself from being exploited), what "safety" means mathematically (your expected value never drops below your Nash baseline), and how REAL-TIME SEARCH changes the picture (instead of recomputing the entire game, fix the strategy at a specific decision point). End of days: you should be able to explain to a non-expert: "If I know you always fold to big bets, I want to bluff you every time. But what if you're PRETENDING to be weak to trap me? Safe exploitation means I exploit your pattern only to the degree I can afford to be wrong — if you suddenly play perfectly, I still can't lose more than if I'd played Nash the whole time."
+
+### Day 1: The Exploitation-Safety Tradeoff
+
+- **Sam Ganzfried — "Game Theory and AI: Safe Opponent Exploitation" (talk)**  
+  https://www.youtube.com/watch?v=b7bStIQovcY  
+  Duration: ~55m | Speaker: Sam Ganzfried  
+  *Second viewing — NOW focus on the exploitation section (25:00–55:00). Ganzfried walks through the mathematical intuition of the safety constraint: your deviation from Nash is bounded so that the worst-case payoff never drops below the Nash value. Key example: "I can bluff 30% more than Nash against a calling station, because even if they switch to perfect play, the extra bluffs only cost me 0.02bb/hand."*
+
+- **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
+  https://www.youtube.com/watch?v=2dX0lwaQRX0  
+  Duration: ~25m | Speaker: Noam Brown  
+  *Fifth revisit — NOW focus on real-time search (~12:00–20:00). Brown explains how Pluribus and Libratus do depth-limited solving: they compute a "continuation value" at the depth limit and solve the subgame above it. The key connection: safe exploitation is subgame solving WHERE THE GOAL IS EXPLOITATION instead of equilibrium.*
+
+- **Doug Polk & Fedor Holz — "GTO vs Exploitative Poker" (any poker strategy interview)**  
+  Search YouTube for "GTO vs exploitative play poker professional"  
+  Duration: varies | Speakers: professional poker players  
+  *The human side of the problem. Top poker players intuitively solve the safe exploitation problem: they deviate from GTO when they detect a pattern, but never so far that they become exploitable themselves. Listen for how they describe the "risk tolerance" of exploitation.*
+
+### Day 2: Real-Time Search & Modern Approaches
+
+- **Tuomas Sandholm — "AI for Strategic Reasoning" (invited talk)**  
+  https://www.youtube.com/watch?v=ZIkr9JFJ2Ks  
+  Duration: ~50m | Speaker: Tuomas Sandholm (CMU / Strategy Robot)  
+  *Third revisit — NOW focus on subgame solving + exploitation (~30:00–45:00). Sandholm explains the Libratus architecture where the blueprint provides the "safety net" and real-time solving provides the "exploitation opportunity." This is the architecture that Step 8 formalizes.*
+
+- **Read your own SOE survey:** `oldSources/safeOpponentExploitation.md`  
+  *You wrote this. Reread it now with the knowledge from Steps 3–7. The four papers it summarizes (Ganzfried 2015, Liu 2022, Jeary 2023, Ge 2024) form the exact progression this step covers. Note how each paper addresses a limitation of the previous one.*
+
+### Blog Posts / Accessible Reads
+
+- **Noam Brown's research page**  
+  https://noambrown.github.io/  
+  *Check for any new blog posts or summaries of subgame solving and exploitation work.*
+
+- **Strategy Robot (Sandholm's company)**  
+  https://www.strategicrobot.com/  
+  *The commercial application of safe exploitation. Browse the research section — Sandholm's team commercializes exactly this technology for defense and strategic planning.*
+
+---
+
+## Phase 2: Exploration (2 days)
+
+### Day 1: The Exploitation Spectrum in Practice
+
+1. **Build the exploitation-safety playground in your Kuhn engine:**
+   ```python
+   # Starting point: Nash strategy from Step 2/3
+   # Opponent: TightPassive (from Step 7's type library)
+   
+   # Compute three strategies:
+   # 1. Nash — zero exploitation, perfect safety
+   # 2. Full best response — maximum exploitation, zero safety
+   # 3. "50% blend" — 0.5*Nash + 0.5*BestResponse — middle ground
+   
+   # Measure for each:
+   # - EV against TightPassive (exploitation metric)
+   # - Exploitability when OPPONENT plays Nash (safety metric)
+   # - Exploitability when OPPONENT plays best response to our strategy (worst-case metric)
+   ```
+
+2. **Plot the exploitation-safety Pareto curve:**
+   - Sweep blend parameter from 0 (pure Nash) to 1 (pure best response) in 0.1 increments
+   - For each blend: compute EV against TightPassive AND exploitability against Nash/BR opponent
+   - Plot: X = exploitation profit, Y = worst-case loss
+   - *Key insight: this Pareto curve IS safe exploitation. The optimal point on the curve is where you maximize profit subject to a safety constraint (worst-case loss ≤ threshold).*
+
+3. **Observe the danger of naive exploitation:**
+   - Compute full best response to TightPassive
+   - Now compute YOUR exploitability (how much can an adversary exploit YOU when you play this BR)
+   - *Expected result: the full BR against TightPassive is HIGHLY exploitable — it never bluffs with certain hands because TightPassive never calls, but a Nash opponent would call, catching you.*
+
+### Day 2: Restricted Nash Response & Subgame Solving
+
+1. **Implement a simple Restricted Nash Response (RNR):**
+   ```python
+   # The original Johanson approach:
+   # At each info set, the player can choose between:
+   # (a) Nash action probabilities (safe)
+   # (b) Best-response action probabilities (exploitative)
+   # The constraint: at most p% of info sets can use option (b)
+   
+   # Sweep p from 0% (pure Nash) to 100% (pure BR)
+   # For each p: find the set of info sets where switching to BR gains the most EV
+   # Compute overall EV against TightPassive and exploitability against Nash
+   ```
+   - *This gives you a BUDGET for exploitation: you can deviate from Nash at a few key decision points without becoming globally exploitable.*
+
+2. **Experiment with subgame solving as exploitation:**
+   - Using your Step 6 knowledge (Pluribus/ReBeL architecture):
+   - At a specific Leduc decision point (e.g., after seeing a King on the flop):
+     - Blueprint: play Nash
+     - Subgame solve: assume opponent plays TightPassive for the remainder of this subgame
+     - Compare: blueprint action vs. subgame-solved exploitative action
+   - *Observe: the subgame solution is MORE exploitative than the blueprint but ONLY at this decision point. The rest of the tree remains Nash.*
+
+3. **Questions to answer by end of Day 2:**
+   - What does "safety" mean formally? (Your expected value ≥ Nash value against ANY opponent)
+   - Why can't you just blend Nash and BR? (The blend isn't necessarily a valid strategy in the sequence form)
+   - What's the Restricted Nash Response and why is it the conceptual ancestor of all safe exploitation?
+   - How does subgame solving enable exploitation without recomputing the entire strategy?
+
+---
+
+## Phase 3: Targeted Reading (4 days)
+
+### Paper 1: Johanson et al. — "Data-Biased Robust Counter-Strategies" (2007, AAMAS 2009)
+
+**Link:** https://poker.cs.ualberta.ca/publications/AAMAS09-johanson.pdf  
+**Alt link (earlier version):** https://poker.cs.ualberta.ca/publications/Johanson07.pdf
+
+```
+├── READ:  Section 3 (Restricted Nash Response — the original safe exploitation 
+│          framework: choose parameter p ∈ [0,1] controlling how much you deviate
+│          from Nash toward the best response. At p=0 you play Nash, at p=1 you
+│          play full BR. RNR explicitly bounds exploitability as a function of p),
+│          Section 4 (Experiments on Kuhn and Leduc — how RNR performance varies
+│          with p, and the optimal p for different opponent types)
+├── SKIM:  Abstract, Section 1–2 (Background — repeated game setting, exploitation 
+│          motivation),
+│          Section 5 (Conclusion)
+├── SKIP:  None — paper is concise
+├── MATH:  → "The RNR optimization (Eq. 3-4) — Read and understand. RNR formulates 
+│             exploitation as a LINEAR PROGRAM: maximize EV against opponent model, 
+│             subject to exploitability ≤ bound. This LP structure is what makes 
+│             the approach tractable. Know the formulation — it reappears in every 
+│             subsequent paper."
+└── KEY INSIGHT: "RNR is the FIRST principled safe exploitation algorithm. It 
+    establishes the template: exploitation = constrained optimization where the
+    constraint is a safety bound. Every paper in this step refines this template.
+    Ganzfried (2015) proves the theoretical guarantee. Liu (2022) applies it to
+    subgames. Ge (2024) relaxes the constraint to 'adaptation safety.'"
+```
+
+### Paper 2: Ganzfried & Sandholm — "Safe Opponent Exploitation" (ACM TEAC, 2015)
+
+**Link:** https://www.sganzfried.com/safe-exploitation.pdf  
+**Alt link:** https://dl.acm.org/doi/10.1145/2716315
+
+```
+├── READ:  Section 3 (Safety theorem — if you have a PERFECT Nash equilibrium, 
+│          you can deviate toward exploiting the opponent model WITHOUT risking
+│          your Nash baseline value. The deviation is bounded by the "safety margin"
+│          — how far the opponent model differs from Nash),
+│          Section 4 (Algorithm — computing the safe exploitation strategy as a
+│          constrained optimization: maximize EV against model, subject to 
+│          EV ≥ Nash_value against ANY opponent),
+│          Section 5 (Experiments — poker results showing exploitation profit 
+│          with safety guarantee)
+├── SKIM:  Abstract, Section 1–2 (Introduction, background),
+│          Section 6 (Related work), Section 7 (Conclusion)
+├── SKIP:  Full proof of Theorem 1 (read statement + proof sketch only)
+├── MATH:  → "Theorem 1 (Safety guarantee) — MUST work through this theorem.
+│             This is THE foundational result of safe exploitation. It says:
+│             if σ* is a Nash equilibrium and σ_opp is the opponent model,
+│             then the safe exploitation strategy σ_SE satisfies:
+│             v(σ_SE, σ') ≥ v(σ*, σ') for ALL σ' (any opponent strategy).
+│             The proof uses the minimax theorem."
+│          → "WHY this can't be substituted by algorithmic understanding: THIS 
+│             THEOREM IS YOUR THESIS FOUNDATION. Contribution #1 extends this
+│             guarantee. If you can't reproduce the proof sketch and identify
+│             WHERE it breaks (imperfect Nash, multiplayer), you can't extend it.
+│             The limitation that σ* must be PERFECT is what Paper 3 (Jeary 2023)
+│             addresses. The limitation to 2-player zero-sum is what your thesis
+│             must address for Contribution #2."
+└── KEY INSIGHT: "Safe exploitation IS a solved problem — but only under strong
+    assumptions: perfect Nash baseline, 2-player zero-sum, full-game computation.
+    Every subsequent paper relaxes one assumption while preserving the guarantee.
+    The trajectory: perfect Nash (Ganzfried 2015) → imperfect/epsilon Nash 
+    (Jeary 2023) → real-time subgame (Liu 2022) → adaptation safety (Ge 2024)
+    → depth-limited (Milec 2025). Your thesis target: multiplayer."
+```
+
+### Paper 3: Liu et al. — "Safe Opponent-Exploitation Subgame Refinement" (NeurIPS 2022)
+
+**Link:** Search NeurIPS 2022 proceedings for "Safe Opponent-Exploitation Subgame Refinement" by Liu, Wang, Guo, Xing.  
+**Alt link:** Check OpenReview or the authors' pages for the PDF.
+
+```
+├── READ:  Section 3 (Safe Exploitation Search — SES algorithm: at a subgame 
+│          root, interpolate between Nash blueprint and exploitation strategy
+│          using a "gadget" game that ensures safety. The gadget constrains
+│          the exploitative subgame solution to never lose more than Nash),
+│          Section 4 (Theoretical guarantees — SES provably outperforms Nash
+│          against weak opponents while bounding exploitability),
+│          Section 5 (Experiments — poker results comparing SES vs Nash vs 
+│          unsafe exploitation)
+├── SKIM:  Abstract, Section 1–2 (Introduction, background),
+│          Section 6 (Related work), Section 7 (Conclusion)
+├── SKIP:  Supplementary proofs (read theorem statements only)
+├── MATH:  → "The SES gadget construction (Section 3.2) — Must understand how the
+│             gadget transforms the exploitation problem into a subgame that can
+│             be solved with standard CFR/LP methods while PRESERVING safety.
+│             The gadget adds 'ghost' actions representing the Nash fallback."
+│          → "WHY this can't be substituted: the gadget is the key engineering
+│             innovation. It converts 'safe exploitation' from a global constraint
+│             (Ganzfried 2015: ensure safety across the ENTIRE game tree) into a
+│             LOCAL constraint (ensure safety within THIS subgame). This is what
+│             makes real-time safe exploitation computationally feasible."
+└── KEY INSIGHT: "SES bridges theory (Paper 2) and practice (real-time play).
+    Instead of computing safe exploitation for the entire game (impossible in
+    NLHE), you compute it for one subgame at a time during play. The gadget
+    ensures that the local exploit doesn't violate global safety. BUT: it still
+    relies on the opponent model being accurate within the subgame."
+```
+
+### Paper 4: Jeary & Turrini — "Safe Opponent Exploitation For Epsilon Equilibrium Strategies" (2023)
+
+**Link:** https://arxiv.org/abs/2307.12338
+
+```
+├── READ:  Section 3 (The flaw in Ganzfried 2015 — when your baseline is an 
+│          ε-equilibrium (not perfect Nash), the safety guarantee BREAKS.
+│          The safe exploitation strategy can actually LOSE value because the
+│          baseline itself is exploitable),
+│          Section 4 (Prime-Safe Opponent Exploitation — redefine "safety" to
+│          mean: your exploitation strategy is at least as good as your 
+│          ε-equilibrium baseline against the WORST case. The "prime" refers
+│          to the adjusted value accounting for baseline exploitability),
+│          Section 5 (Experiments)
+├── SKIM:  Abstract, Section 1–2 (Introduction, background),
+│          Section 6 (Conclusion)
+├── SKIP:  Full proof derivations (read key theorem statements)
+├── MATH:  → "Definition 1 (ε-safe exploitation) — Read carefully. This redefines
+│             safety for imperfect baselines: instead of 'never lose more than
+│             Nash value,' it becomes 'never lose more than the worst-case value
+│             of the ε-equilibrium.' This is the realistic safety notion because
+│             NO practical poker bot has a perfect Nash — they all use abstractions."
+│          → "WHY this can't be substituted: EVERY real implementation uses an
+│             approximate (epsilon) equilibrium due to abstraction (Step 4). If
+│             you apply Ganzfried 2015's safety constraint with an ε-equilibrium
+│             as baseline, the guarantee is VOID. This paper fixes that. Your
+│             thesis must use prime-safe guarantees, not the original."
+└── KEY INSIGHT: "The gap between theory and practice in safe exploitation is the
+    baseline quality. Academic papers assume perfect Nash; real implementations 
+    have ε-error from abstraction. This paper closes that gap. The 'prime-safe'
+    framework is what your thesis should build on — it's the realistic version."
+```
+
+### Paper 5: Ge et al. — "Safe and Robust Subgame Exploitation in Imperfect Information Games" (ICML 2024)
+
+**Link:** Search ICML 2024 proceedings for the paper by Ge, Zhu, et al. Check also: https://proceedings.mlr.press/ (ICML 2024 volume)  
+*If not available on ArXiv, check the authors' Google Scholar pages for a preprint.*
+
+```
+├── READ:  Section 3 (Adaptation Safety — the key conceptual contribution:
+│          an exploiting strategy is "safe" if it is NO MORE EXPLOITABLE than
+│          the blueprint was to begin with. This relaxes Ganzfried's strict
+│          "never lose vs Nash" to "never lose more than you were already
+│          losing due to abstraction"),
+│          Section 4 (OX-Search algorithm — bounds worst-case profit loss at 
+│          every information set in real time. Neutralizes the "teaching attack"
+│          where an adversary intentionally plays badly to manipulate your model),
+│          Section 5 (Experiments — comparison against SES and standard subgame
+│          solving on poker domains)
+├── SKIM:  Abstract, Section 1–2 (Introduction, background — connects to all 
+│          prior papers in this step),
+│          Section 6 (Related work), Section 7 (Conclusion)
+├── SKIP:  Appendix proofs (read theorem statements only)
+├── MATH:  → "Definition 2 (Adaptation Safety) — MUST understand formally. This
+│             definition is the conceptual leap: instead of demanding 'safe vs
+│             perfect play,' demand 'no worse than the blueprint.' Since the
+│             blueprint is already ε-exploitable due to abstraction, this is a
+│             strictly weaker (and more achievable) condition."
+│          → "Theorem 1 (OX-Search guarantees) — Read statement. OX-Search 
+│             provides per-information-set bounds on exploitation safety. This
+│             is finer-grained than SES (which gives a global bound)."
+│          → "WHY this can't be substituted: Adaptation Safety is the modern
+│             definition that makes safe exploitation PRACTICAL. It answers the
+│             question: 'If my blueprint already loses 0.5bb/hand due to 
+│             abstraction, is it safe to exploit if my exploitative strategy 
+│             also loses at most 0.5bb/hand?' Answer: YES. This is common-sense
+│             safety, formalized. Your thesis likely adopts this definition."
+└── KEY INSIGHT: "OX-Search represents the state of the art (ICML 2024). It
+    unifies safe exploitation with subgame solving and provides the strongest
+    practical guarantees. BUT: it works only in 2-player zero-sum. The transition
+    to N-player (your thesis Contribution #2) is the explicit open problem they
+    identify — 'the mathematical guarantees break in 3+ player games.'"
+```
+
+### Paper 6: Milec, Kovařík & Lisý — "Adapting Beyond the Depth Limit" (2025)
+
+**Link:** https://arxiv.org/abs/2501.10464
+
+```
+├── READ:  Section 3 (ABD algorithm — uses strategy-portfolio approach with
+│          matrix-valued states for depth-limited search. Instead of assuming
+│          rational play beyond the depth limit, ABD maintains a portfolio of
+│          strategies that can be mixed based on the opponent model),
+│          Section 4 (Experiments on poker and battleship — >2x utility increase
+│          when opponents make mistakes beyond the depth limit)
+├── SKIM:  Abstract, Section 1–2 (Background and motivation),
+│          Section 5 (Conclusion)
+├── SKIP:  Proofs (read theorem statements only)
+├── MATH:  → "Matrix-valued states (Section 3.2) — Understand the concept. Instead
+│             of a single scalar value at the depth limit, ABD uses a MATRIX
+│             that captures how utility depends on the opponent's strategy beyond
+│             the depth. This is why it's the first method to fully utilize
+│             opponent model information beyond the depth limit."
+└── KEY INSIGHT: "All prior safe exploitation methods assume they can evaluate 
+    the entire subgame they're solving. In practice, games are too large and
+    search must be depth-limited. ABD is the first to show that opponent model 
+    information can improve play EVEN BEYOND the depth limit. This is critical
+    for real-world applications (full NLHE has too many levels for full search)."
+```
+
+### Book Chapters (Supplementary)
+
+**Book:** Shoham, Y. & Leyton-Brown, K. — *Multiagent Systems* (2008)  
+**Link:** http://www.masfoundations.org/download.html  
+**Assigned sections:** Section 3.4 (Computing Nash Equilibria), Section 4.6 (Computing Best Responses)  
+**Context:** You've read Chapter 7 in Step 7. Now revisit the equilibrium computation sections with exploitation in mind — best response IS the exploitation algorithm, and Nash IS the safety baseline. The machinery you learned in Steps 2–4 powers the safety constraint.
+
+### Math Flags
+
+🔢 **Safety Theorem (Ganzfried & Sandholm 2015, Theorem 1)** — Must work through the proof sketch with pen and paper.  
+**WHY this can't be substituted:** This is THE theorem your thesis extends. The proof uses the minimax theorem to show that deviating toward the BR against the opponent model preserves the Nash value as a lower bound. You must be able to (a) reproduce it, (b) identify where it assumes perfect Nash (the extension point for Jeary 2023), and (c) identify where it assumes 2-player zero-sum (the extension point for your thesis Contribution #2).
+
+🔢 **Adaptation Safety Definition (Ge et al. 2024, Definition 2)** — Must understand formally and compare with Ganzfried's safety.  
+**WHY:** This is the modern safety notion. Know EXACTLY how it differs from Ganzfried's: Ganzfried says "never lose vs any opponent" → Ge says "never lose MORE than the blueprint." The difference is ε (the blueprint's exploitability). This ε is what makes the problem tractable for imperfect baselines.
+
+🔢 **RNR LP formulation (Johanson et al. 2007, Eq. 3-4)** — Must understand the linear program structure.  
+**WHY:** This LP is the computational backbone. Safe exploitation = solve an LP. The constraint (exploitability ≤ bound) and objective (maximize EV against model) form a clean formulation that you'll implement. Understanding the LP lets you swap in different constraints (Ganzfried's, Jeary's, Ge's) while keeping the same solver.
+
+---
+
+## Phase 4: Implementation (10 days)
+
+### Project: Safe Exploitation Engine for Kuhn & Leduc — From Scratch
+
+**Language + Framework:** Python 3.10+ / NumPy (core algorithm), SciPy for LP/optimization
+
+Starting point: Your opponent models from Step 7, Nash strategies from Steps 2–3, Leduc engine from Step 3, and game tree infrastructure from Step 6.
+
+| Component | AI Tag | Justification |
+|-----------|--------|---------------|
+| Restricted Nash Response (RNR) solver | 🔴 HAND-CODE | The foundational safe exploitation algorithm. Must understand the LP formulation, the safety parameter trade-off, the solution structure. First algorithm to hand-code. |
+| Safe Exploitation solver (Ganzfried 2015 approach) | 🔴 HAND-CODE | The core theoretical algorithm. Implements the safety theorem directly: maximize exploitation subject to Nash value guarantee. THIS is the thesis foundation — must own every line. |
+| Exploitability computation (for measuring safety) | 🔴 HAND-CODE | You need to compute how exploitable your exploitation strategy is. This is the safety diagnostic. You've built exploitability before (Steps 2–3), but now it's used to verify safety constraints, not just measure convergence. |
+| SES-style subgame exploitation solver | 🔴 HAND-CODE | The real-time exploitation variant. Construct the gadget game for a subgame, solve it with CFR/LP, extract the exploitation strategy. Critical for understanding how theory translates to practice. |
+| Adaptation Safety checker (Ge 2024 notion) | 🔴 HAND-CODE | Implement the modern safety metric: is the exploitation strategy no more exploitable than the blueprint? Compute both exploitabilities, compare. Simple but conceptually important. |
+| Exploitation-safety Pareto frontier generator | 🟡 AI-ASSISTED | Sweep safety parameters, compute both metrics, generate the Pareto curve. AI drafts the sweep logic, you verify the metrics. |
+| Integration with Step 7 opponent models | 🟡 AI-ASSISTED | Plug the type-based/continuous/consistent models into the exploitation engine. AI drafts the adapter layer, you verify the interface is correct. |
+| Tournament framework (exploit various opponents, measure safety + profit) | 🟢 AI-GENERATED | Run experiments: N opponents × M safety levels, log all results. |
+| Plotting + analysis (Pareto curves, exploitation curves, safety verification) | 🟢 AI-GENERATED | Matplotlib visualizations. |
+
+### Sub-phase Breakdown (10 days):
+
+**Days 1–2 — Architecture + Scaffolding:**
+
+*Day 1 — Safety Infrastructure:*
+- 🔴 HAND-CODE: Create `safety_checker.py`:
+  - Given a strategy σ and a game, compute worst-case exploitability: `max_{σ'} -v(σ, σ')`
+  - This reuses your best-response code from Step 2 but wraps it as a safety metric
+  - Interface: `is_safe(strategy, baseline_value, tolerance) → bool`
+  - `safety_margin(strategy, baseline_value) → float` (how much safety budget remains)
+- 🔴 HAND-CODE: Create `exploitation_metrics.py`:
+  - Given a strategy σ and an opponent model σ_opp: `exploitation_value(σ, σ_opp) → float`
+  - Given a strategy σ: `safety_violation(σ, nash_value) → float` (how much worse than Nash baseline)
+  - These two functions define the X and Y axes of the Pareto curve
+
+*Day 2 — LP Solver Setup + Basic Exploitation:*
+- 🟡 AI-ASSISTED: Set up SciPy linear programming interface:
+  ```python
+  from scipy.optimize import linprog
+  # Formulate: max c^T x subject to Ax ≤ b, x ≥ 0
+  # where x = strategy variables, c = exploitation objective, 
+  # A/b = safety + game-structure constraints
+  ```
+- 🔴 HAND-CODE: Create `exploitation_solver.py` skeleton:
+  - Input: game, Nash strategy, opponent model
+  - Output: exploitation strategy, exploitation value, safety margin
+  - Interface designed to accept different safety constraints (RNR, Ganzfried, Ge)
+
+**Days 3–8 — Core Algorithm Implementation:**
+
+*Day 3 — Restricted Nash Response (RNR):*
+- 🔴 HAND-CODE: `rnr_solver.py`:
+  - Parameter p ∈ [0, 1]: at each info set, play `(1-p)*Nash + p*BestResponse`
+  - But this naive blend isn't the actual RNR — the real RNR chooses WHICH info sets to deviate at
+  - Formulate as LP:
+    - Variables: action probabilities at each info set
+    - Objective: maximize EV against opponent model
+    - Constraint 1: valid strategy (probabilities sum to 1, sequence form)
+    - Constraint 2: strategy must be within distance p of Nash at each info set
+  - Solve on Kuhn and Leduc for p = {0, 0.1, 0.2, ..., 0.9, 1.0}
+  - Plot: exploitation profit vs p, exploitability vs p
+
+*Day 4 — Ganzfried Safe Exploitation:*
+- 🔴 HAND-CODE: `ganzfried_solver.py`:
+  - Formulate the constrained optimization:
+    - Variables: action probabilities at each info set
+    - Objective: maximize EV against opponent model
+    - Constraint: EV against WORST-CASE opponent ≥ Nash value
+    - The worst-case constraint requires solving an inner minimax: `min_{σ'} v(σ_SE, σ')` ≥ Nash_value
+  - Implementation approach: iterate between computing exploitation strategy and verifying safety
+    - Step A: Solve LP for exploitation
+    - Step B: Compute best response AGAINST the exploitation strategy (worst-case opponent)
+    - Step C: If worst-case EV < Nash_value, tighten the constraint and re-solve
+  - Test on Kuhn: compare with RNR output — safe exploitation should dominate RNR (same safety, more profit)
+  - Verify safety: `safety_checker.is_safe(safe_exploit_strategy, nash_value, tolerance=0.001)` must return True
+
+*Day 5 — Exploitability of Exploitation Strategies:*
+- 🔴 Compare safety guarantees:
+  - Compute your exploitability for each strategy:
+    | Strategy | EV vs TightPassive | EV vs Nash | EV vs Best-Response-to-ME |
+    |----------|-------------------|------------|--------------------------|
+    | Nash | 0 | 0 | 0 |
+    | Full BR to TightPassive | ? | ? | ? (this should be VERY negative) |
+    | RNR (p=0.3) | ? | ? | ? |
+    | RNR (p=0.7) | ? | ? | ? |
+    | Ganzfried Safe Exploit | ? | ? | ≥ 0 (safety guarantee) |
+  - *The key insight: Full BR is maximally exploitative but catastrophically unsafe. Nash is maximally safe but leaves profit on the table. Ganzfried Safe Exploit achieves the best of both worlds ON KUHN — but only because Kuhn is small enough to compute a perfect Nash baseline.*
+
+*Day 6 — Prime-Safe Extension (Jeary 2023):*
+- 🔴 HAND-CODE: Modify `ganzfried_solver.py` to handle ε-equilibrium baselines:
+  - Instead of Nash_value as the safety floor, use `Nash_value - ε` (the worst-case value of the ε-equilibrium)
+  - Compute ε from your baseline strategy: `ε = exploitability(baseline_strategy, game)`
+  - Re-solve the safe exploitation LP with the adjusted safety constraint
+  - Test: use your Step 4 abstracted Leduc strategy (which IS an ε-equilibrium due to abstraction)
+    - Compute ε of the abstract strategy
+    - Apply prime-safe exploitation against a fixed opponent
+    - Verify: the exploitation strategy's worst-case is ≥ `Nash_value - ε`
+  - *This is the realistic version: in practice, your baseline is always approximate.*
+
+*Day 7 — SES-Style Subgame Exploitation:*
+- 🔴 HAND-CODE: `subgame_exploit_solver.py`:
+  - Given a specific subgame root (e.g., post-flop in Leduc after a specific card):
+    - Construct the subgame tree from the root to terminal nodes
+    - Create the "gadget" at the root: add a virtual action "fall back to Nash" with known value
+    - Solve the augmented subgame: maximize exploitation profit, where the Nash fallback ensures safety
+    - Extract the exploitative actions for this subgame
+  - Test on Leduc: pick 3 different subgame roots, solve each, verify:
+    (a) The subgame solution exploits the TightPassive more than the blueprint
+    (b) The subgame solution doesn't violate safety (gadget enforces it)
+  - *This is the key practical algorithm: in real-time, you don't re-solve the whole game — you solve the current subgame with a safety gadget.*
+
+*Day 8 — Adaptation Safety (Ge 2024 notion):*
+- 🔴 HAND-CODE: `adaptation_safety.py`:
+  - Implement the alternative safety check:
+    - `is_adaptation_safe(exploit_strategy, blueprint_strategy, game) → bool`
+    - Check: `exploitability(exploit_strategy) ≤ exploitability(blueprint_strategy)`
+    - If yes: the exploitation strategy is "adaptation safe" — it's no worse than what you started with
+  - Modify the exploitation solver to use adaptation safety as the constraint:
+    - Replace Ganzfried's hard constraint with Ge's softer one
+    - Re-solve: does this allow MORE exploitation? (It should — the constraint is weaker)
+  - Head-to-head comparison:
+    | Safety Notion | Exploitation Profit | Worst-Case Loss | Is Safe? |
+    |---------------|--------------------|-----------------|---------| 
+    | Ganzfried (perfect Nash) | ? | ≥ Nash value | Yes (by theorem) |
+    | Jeary (ε-Nash) | ? | ≥ Nash - ε | Yes (by theorem) |
+    | Ge (adaptation) | ? | ≤ blueprint exploit | Yes (by definition) |
+    | No safety | max | unbounded loss | No |
+
+**Days 9–10 — Validation + Benchmarking:**
+
+*Day 9 — Full Pipeline Integration:*
+- 🟡 AI-ASSISTED: Integrate Step 7 opponent models with Step 8 exploitation:
+  - Pipeline: observe opponent → Step 7 model updates → Step 8 exploitation solver runs → play exploitative action → repeat
+  - Run against all 5 opponent types from Step 7 for 10000 hands each
+  - Measure: cumulative profit AND safety violations
+  - Compare exploitation methods:
+    | Method | vs TightPassive Profit | vs LooseAggressive Profit | Safety Violations | Avg Response Time |
+    |--------|----------------------|-------------------------|-------------------|-------------------|
+    | Nash (baseline) | 0 | 0 | 0 | instant |
+    | Full BR (unsafe) | max | max | many | instant |
+    | RNR (p=0.5) | ? | ? | 0 | ? |
+    | Ganzfried SE | ? | ? | 0 | ? |
+    | SES (subgame) | ? | ? | 0 | ? |
+    | Adaptation Safe | ? | ? | 0 | ? |
+
+- Test the "teaching attack": create a deceptive opponent that plays TightPassive for 2000 hands, then switches to pure Nash
+  - Does the exploitation engine detect the switch?
+  - Does the safety constraint prevent catastrophic loss during the transition?
+  - *Expected: safe methods lose at most ε during the switch. Unsafe methods lose significantly.*
+
+*Day 10 — Cross-Validation + Documentation:*
+- Cross-validate against OpenSpiel:
+  - Use OpenSpiel's exploitability module to verify your safety computations
+  - Use OpenSpiel's best-response module to verify your exploitation values
+  - The Pareto curves should be consistent: no strategy should dominate a "safe" strategy on both exploitation AND safety  
+- Run the "teaching attack" stress test on Leduc (larger game, more realistic)
+- Document:
+  - Which exploitation method is best for which scenario?
+  - What's the computational cost of each method?
+  - What's the critical open problem? (Answer: extending to N-player → your thesis)
+- Clean code, write README
+
+### Deliverables:
+- [ ] Safety checker module (exploitability computation + safety verification)
+- [ ] Exploitation metrics module (exploitation value + safety violation)
+- [ ] Restricted Nash Response solver working on Kuhn and Leduc
+- [ ] Ganzfried safe exploitation solver with safety guarantee verified
+- [ ] Prime-safe exploitation for ε-equilibrium baselines (Jeary extension)
+- [ ] SES-style subgame exploitation solver with gadget construction
+- [ ] Adaptation safety checker (Ge notion)
+- [ ] Exploitation-safety Pareto frontier plot for each method
+- [ ] Full pipeline integration (Step 7 models → Step 8 exploitation)
+- [ ] Head-to-head comparison table: all methods × all opponent types
+- [ ] Teaching attack stress test results
+- [ ] Cross-validation against OpenSpiel
+
+### Validation:
+- **RNR on Kuhn:** At p=0, exploitability should match Nash (≈0). At p=1, exploitation value should match full BR value. Pareto curve should be monotonically increasing in both exploitation and exploitability.
+- **Ganzfried on Kuhn:** Exploitation strategy must satisfy: worst-case EV ≥ Nash value (within 0.001 tolerance). Exploitation profit should exceed Nash (0) against any non-Nash opponent.
+- **Prime-safe on Leduc (abstracted):** Safety floor properly adjusted by ε. Verify ε = exploitability of abstract strategy.
+- **Subgame exploitation:** Subgame solution should (a) differ from blueprint, (b) achieve higher EV against target opponent in the subgame, (c) not violate gadget safety constraint.
+- **Adaptation safety:** For every exploitation strategy flagged "adaptation safe," verify `exploitability(exploit) ≤ exploitability(blueprint)`.
+- **Cross-validation:** All exploitability values must match OpenSpiel's computation to within 0.001 on Kuhn, 0.01 on Leduc.
+
+---
+
+## Phase 5: Consolidation (3 days)
+
+### Day 1 — Reference Skim + Gap Fill
+
+- **Reference skim (paper):** Milec, Kovařík & Lisý (2021/2024) "Continual Depth-limited Responses for Computing Counter-strategies" — read abstract + Section 3. This is the precursor to ABD (Paper 6). Note how depth-limited search creates a fundamental tradeoff between exploitation accuracy and computational cost.
+  *Link:* https://arxiv.org/abs/2112.12594
+
+- **Reference skim (paper):** Farina & Sandholm (2021) "Model-Free Online Learning in Unknown Sequential Decision Making Problems and Games" — read abstract only. Note the CONTRAST: this approach doesn't need an opponent model at all — it uses regret minimization to adapt. Pros: no model misspecification risk. Cons: slower adaptation, no exploitation guarantee.
+  *Link:* https://arxiv.org/abs/2103.04539
+
+- **Reference skim (survey):** Your own `safeOpponentExploitation.md` — reread the "Areas to Explore" section with fresh eyes. Does your implementation confirm or modify the open problems listed?
+
+- **Forward preview:** Skim the abstract of a MARL paper covering multi-agent equilibrium concepts (preparation for Step 9). Note how the 2-player zero-sum assumption — central to ALL safe exploitation papers — breaks in multi-agent settings. *This is the bridge to your thesis Contribution #2.*
+
+- **Review:** Any LP formulations that felt unstable or had numerical issues? Any safety constraints that were binding vs. slack? These details matter for scaling.
+
+### Day 2 — Thesis Connection Deep Dive
+
+- **Map the entire safe exploitation trajectory against your thesis:**
+  1. **Ganzfried 2015:** Safe exploit with perfect Nash. YOUR thesis assumption: you won't have perfect Nash (it's computationally infeasible in large games). → You need Jeary's ε-extension.
+  2. **Liu 2022 (SES):** Real-time subgame exploitation. YOUR thesis application: the agent must exploit in real-time during play, not pre-compute. → SES is the mechanism.
+  3. **Jeary 2023:** ε-safe for approximate baselines. YOUR thesis reality: the baseline will always be approximate. → Prime-safe is the correct guarantee.
+  4. **Ge 2024 (OX-Search):** Adaptation safety is the practical safety notion. YOUR thesis should adopt this definition. → Adaptation safety is achievable where strict safety is not.
+  5. **Milec 2025 (ABD):** Depth-limited exploitation. YOUR thesis needs this for scalability. → The matrix-valued state idea may extend to multi-agent settings.
+  6. **YOUR CONTRIBUTION (Contribution #2):** Extend safe exploitation to N-player. Currently, ALL guarantees require 2-player zero-sum. The minimax theorem doesn't hold for N>2. What safety notion is achievable in multiplayer? This is the open problem. Log specific ideas.
+
+- **Identify the precise failure point for N-player:**
+  - Ganzfried 2015 safety theorem proof: find the step that uses "σ* is a Nash equilibrium in a 2-player zero-sum game, so v(σ*, σ') = Nash_value for ALL σ'." This equality fails in N-player: Nash doesn't guarantee a fixed value against arbitrary opponents.
+  - *This is your thesis attack vector: what's the N-player analogue of the Nash value guarantee?*
+
+### Day 3 — One-Pager + Learning Log
+
+- **Write the mandatory one-pager** (Section 4.7 format). Commit to repo.
+- **Update the Learning Log** (`learningLog.md`):
+  - **Connections:**
+    - [Step 2] Nash equilibrium = the safety baseline → [Step 8] Safe exploitation = deviation FROM Nash with a safety BOUND. The Nash strategy from Step 2 is the anchor. Everything in Step 8 is "how far can I deviate without losing the anchor?"
+    - [Step 4] Abstraction introduces ε-error → [Step 8] Jeary 2023 handles ε-baselines. The abstraction quality from Step 4 DIRECTLY determines the safety budget in Step 8: worse abstraction → larger ε → less room for safe exploitation.
+    - [Step 4] Subgame solving (Brown & Sandholm 2017) → [Step 8] SES/OX-Search. Subgame solving from Step 4 was about correcting ABSTRACTION errors. In Step 8, the same mechanism corrects toward EXPLOITATION — same computational tool, different objective function.
+    - [Step 6] Blueprint strategy from Pluribus/ReBeL → [Step 8] The blueprint is the "adaptation safety" baseline. OX-Search asks: "is the exploitation strategy no worse than the blueprint?" The quality of the Step 6 blueprint directly determines the exploitation ceiling.
+    - [Step 7] Opponent model → [Step 8] Exploitation engine. Step 7 is the sensor, Step 8 is the actuator. The model quality determines exploitation quality. Bad model → bad exploitation → safety constraint saves you.
+  - **Confusions:**
+    - [Step 8] The Ganzfried safety theorem requires computing the WORST-CASE opponent's best response during the LP solve. In large games, this inner maximization is itself expensive. How do SES/OX-Search handle this? → PARTIALLY ADDRESSED (they localize to subgames, reducing the inner maximization size) → Verify that computational cost is tractable for Leduc
+    - [Step 8] Adaptation safety (Ge 2024) says "no worse than blueprint." But what if the blueprint is TERRIBLE (very high exploitability)? Then adaptation safety is trivially satisfied by almost any strategy. → OPEN: is there a minimum quality requirement for the baseline?
+    - [Step 8] In the teaching attack test: safe methods should protect against deception. But the detection of the switch depends on Step 7's model update speed. If the model is slow to detect non-stationarity (Step 7's open question), does the safety constraint still hold? → OPEN: investigate interaction between model latency and safety guarantee
+    - [Step 7→8] Confirmed: the opponent model from Step 7 plugs directly into the exploitation LP from Step 8. The interface is clean: model outputs a strategy, exploitation solver takes it as input. The model quality → exploitation quality → safety margin chain is exactly as predicted.
+
+### PhD Connection
+
+This step is the SECOND HALF of Contribution #1 (Behavioral Adaptation Framework) and lays the foundation for Contribution #2 (Multi-Agent Safe Exploitation). Together with Step 7, you now have a complete pipeline: observe → model → exploit safely. The pipeline works on 2-player zero-sum games (Kuhn, Leduc).
+
+**What this step provides for the thesis:**
+- Complete implementation of the safe exploitation spectrum (RNR → Ganzfried → JearyPrimeSafe → SES → OX-Search)
+- Understanding of exactly WHERE the 2-player zero-sum assumption enters the safety proofs (the thesis attack point)
+- The "adaptation safety" notion as the practical safety definition the thesis should adopt
+- A clear open problem: extending these guarantees to N-player games (Contribution #2)
+- The "teaching attack" stress test as a prototype evaluation methodology (Contribution #3)
+
+**The thesis contribution gap this step reveals:**
+- ALL current safe exploitation algorithms assume 2-player zero-sum
+- The minimax theorem proof step that enables the safety guarantee FAILS for N>2 players
+- Your Contribution #2 must find either (a) a weaker safety notion that DOES hold for N-player, or (b) a structural assumption about the N-player game that restores the guarantee
+- Step 11 (Coalition Formation) will explore one structural assumption: coalition structure reduces N-player to a series of 2-player interactions
+
+---
+
+## Exit Checklist
+
+- [ ] All five exploitation methods implemented and working on both Kuhn and Leduc
+- [ ] RNR Pareto curve generated (exploitation vs exploitability)
+- [ ] Ganzfried safety theorem verified: exploitation strategies meet Nash value guarantee
+- [ ] Prime-safe extension working with ε-equilibrium baselines
+- [ ] SES subgame exploitation with gadget construction working
+- [ ] Adaptation safety correctly computed and compared with Ganzfried safety
+- [ ] Can explain the safe exploitation progression from memory: RNR → Ganzfried → Jeary → SES → OX-Search → ABD
+- [ ] Can explain WHERE the 2-player zero-sum assumption enters the safety proofs (the thesis extension point)
+- [ ] Can explain the difference between Ganzfried safety and adaptation safety
+- [ ] Full pipeline integration: Step 7 model → Step 8 exploitation → measured safety + profit
+- [ ] Teaching attack stress test completed with results documented
+- [ ] Exploitation-safety Pareto frontier for all methods
+- [ ] Cross-validated against OpenSpiel
+- [ ] All 🔴 components hand-coded (RNR, Ganzfried solver, exploitability checker, SES solver, adaptation safety)
+- [ ] One-pager written and committed
+- [ ] Learning Log updated (connections from Steps 2–7 + confusions + resolved confusions)
+- [ ] PhD connection documented (Contribution #1 complete; Contribution #2 gap identified)
+- [ ] Open questions logged: N-player extension, baseline quality requirements, model latency + safety interaction
+- [ ] Step notes committed to repo

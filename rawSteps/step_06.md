@@ -38,8 +38,8 @@ End of phase: you should be able to draw the architecture diagram of each system
   *Fourth and final time watching this talk. NOW you have the full context (CFR, MCCFR, abstraction, Deep CFR) to understand every component Brown describes. Follow the full pipeline: blueprint → depth-limited solving → real-time search.*
 
 - **Matej Moravcik — "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker"**  
-  https://www.youtube.com/watch?v=qndXrHcV1sM  
-  Duration: ~20m | Speaker: Matej Moravcik (DeepMind/UAlberta)  
+  Search YouTube for "DeepStack Expert Level AI Poker Moravcik" or check the DeepStackAI channel  
+  Duration: ~20m | Speaker: Matej Moravcik (UAlberta)  
   *DeepStack's creator explains: continual re-solving + deep counterfactual value networks. Key difference from Libratus: DeepStack uses neural value estimation AT EVERY decision point, not just at the blueprint level.*
 
 - **Tuomas Sandholm — "Superhuman AI for Strategic Reasoning: Libratus"**  
