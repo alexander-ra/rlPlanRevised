@@ -159,96 +159,292 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 
 ---
 
-## 4. Step Structure Template
+## 4. Learning Methodology & Step Blueprint
 
-### Per-Step Structure (each step ≈ 2 weeks)
+This chapter defines HOW each step is learned. It codifies the learning style, resource standards, coding rules, and exit criteria that every generated step must follow. These rules are based on feedback from completing Steps 1–2.
+
+### 4.1 The 5-Phase Learning Cycle
+
+Every step follows the same 5-phase cycle. The phases are sequential — each builds on the cognitive state created by the previous one. The same structure applies to all three tiers; only the number of days per phase changes.
+
+| Phase | Purpose | Mode | Core question |
+|-------|---------|------|---------------|
+| **1. Intuition** | What is this? Why does it matter? | Passive absorption — videos, talks, blogs | Could I explain this problem to a non-expert? |
+| **2. Exploration** | How does it behave? | Active play — sandboxes, existing code, demos | Have I seen the algorithm succeed AND fail? |
+| **3. Targeted Reading** | How does it work? | Surgical paper reading — algorithm-first, skip filler | Can I trace the algorithm step-by-step on paper? |
+| **4. Implementation** | Can I build it? | Code — from-scratch core + AI-assisted scaffolding | Does my implementation match known results? |
+| **5. Consolidation** | What did I miss? How does this connect? | Gap-fill — skim books, write one-pager, update logs | Am I ready for the exit checklist? |
+
+**Design rationale:** This cycle front-loads intuition and hands-on play BEFORE formalism. Feedback from Steps 1–2 showed that reading papers cold leads to focus loss on redundant intros and boilerplate sections. Seeing the algorithm behave first makes the paper reading 2-3x more efficient because you already know what to look for.
+
+### 4.2 Day Allocation by Tier
+
+Same 5 phases, scaled proportionally. Implementation stays at ~45% for all tiers.
+
+| Phase | Tier 1 (21 days) | Tier 2 (14 days) | Tier 3 (10 days) |
+|-------|----------------:|----------------:|----------------:|
+| 1. Intuition | 2 days | 1 day | 1 day |
+| 2. Exploration | 2 days | 2 days | 1 day |
+| 3. Targeted Reading | 4 days | 3 days | 2 days |
+| 4. Implementation | 10 days | 6 days | 4 days |
+| 5. Consolidation | 3 days | 2 days | 2 days |
+
+**Why Exploration gets 2 days in Tier 2:** Sandbox time was the biggest learning accelerator in Steps 1-2. Tier 3 drops to 1 day because those steps are survey-dominant (less to "play with").
+
+**Tier 1 implementation note:** The 10-day implementation phase for Tier 1 steps should be sub-structured as: 2 days architecture + scaffolding → 6 days core algorithm → 2 days validation + benchmarking.
+
+### 4.3 Phase Details
+
+#### Phase 1: Intuition
+No papers. No math. No code. Only:
+- 2–3 video lectures or conference talks (YouTube links, with duration and speaker)
+- 1 podcast episode or long-form interview if available
+- Blog posts or accessible explainers
+- **Goal:** Be able to explain the problem to a non-expert by end of phase
+
+#### Phase 2: Exploration
+No reading yet. Only:
+- Run existing implementations (OpenSpiel, PettingZoo, published GitHub repos)
+- Interactive web tools, sandboxes, Colab notebooks
+- Modify parameters, break things, observe behavior
+- **Goal:** See the algorithm work (and fail) before knowing the formal "why"
+
+#### Phase 3: Targeted Reading
+This is the anti-filler phase. Papers are NOT read front-to-back. Each step prescribes a **surgical reading protocol** per paper:
 
 ```
-## Step N — [Title]
+Paper: [Full Title] ([Author], [Year])
+Link: [arXiv / DOI URL]
+├── READ:  Sections X, Y (the algorithm description, the experiments/results)
+├── SKIM:  Abstract, Intro (for framing only), Related Work (for bibliography mining)
+├── SKIP:  [Specific sections that repeat content already covered in prior steps]
+├── MATH:  [One of the following:]
+│          → "Theorem N matters — work through the proof. WHY: [explanation of why
+│             this cannot be substituted by algorithmic understanding alone, e.g.,
+│             'the bound in Theorem 2 is what makes safe exploitation SAFE — without
+│             understanding the proof, you can't know when the guarantee breaks']"
+│          → "Section X math formalizes what you already understand algorithmically
+│             from Phase 2 exploration — skim for notation familiarity only"
+└── KEY INSIGHT: [The one sentence/figure that captures why this paper matters]
+```
 
-**Duration:** ~2 weeks (14 days)
+**Book chapters rule:** When a step assigns specific chapters (e.g., Chapters 5-7 out of 15), the step must include:
+- A 2–3 sentence summary of what Chapters 1-4 covered (so you're not lost at the start)
+- A 1–2 sentence note on what Chapters 8+ cover (so you know what's coming / what you're skipping and why)
+- This prevents the "dropped into the middle" disorientation without requiring you to read the preceding chapters
+
+**Reading priority:** Always prefer the algorithmic/logical explanation. Math is mandatory only when explicitly flagged with a WHY justification. When flagged, the step will explain exactly why the algorithmic understanding alone is insufficient (e.g., "the convergence bound proof is what tells you how many iterations you actually need" or "the safety guarantee derivation is what your thesis extends — you must be able to modify it").
+
+#### Phase 4: Implementation
+The core of each step (~45% of total time). Sub-structured as:
+
+| Sub-phase | Tier 1 | Tier 2 | Tier 3 | Purpose |
+|-----------|--------|--------|--------|---------|
+| Architecture + scaffolding | 2 days | 1 day | 1 day | Design code structure, set up environment, data loading |
+| Core algorithm | 6 days | 4 days | 2 days | The novel algorithmic implementation |
+| Validation + benchmarking | 2 days | 1 day | 1 day | Compare against known results, generate plots |
+
+Each step must specify:
+- **Practical project:** Clear, specific coding task
+- **Language + framework:** (default: Python + PyTorch, unless step requires otherwise)
+- **Deliverables:** Concrete outputs (working solver, trained agent, comparison plot, etc.)
+- **Validation method:** How to verify correctness (compare with OpenSpiel, check against analytical solution, measure exploitability, etc.)
+
+**AI assistance rules** are specified per-step in Section 4.4 below. Each step's implementation section will explicitly state which components are hand-code vs. AI-assisted.
+
+#### Phase 5: Consolidation
+The gap-filler + PhD connector:
+- Skim the "big reference" for this topic (textbook, long survey) — targeted to gaps found during implementation
+- Write the **mandatory one-pager** (see Section 4.7)
+- Update the **Learning Log** (see Section 4.8)
+- Explicitly connect to PhD contributions: which thesis contribution does this step feed? What open question emerged?
+
+### 4.4 Code Ownership Rules
+
+Every step must explicitly tag each implementation component with one of the following labels:
+
+| Label | Rule | Litmus test |
+|-------|------|-------------|
+| **🔴 HAND-CODE** | Write from scratch, line by line. No AI generation. AI may be used to explain a concept if stuck, but not to produce the code. | "Would I need to re-derive/re-implement this on a whiteboard during a PhD viva?" → If yes, hand-code. |
+| **🟡 AI-ASSISTED** | AI generates a first draft. You review every line, understand it, modify it, and own it. The AI output is a starting point, not a deliverable. | "Do I need to deeply understand this, but line-by-line struggle won't add insight beyond what review gives me?" → AI-assist. |
+| **🟢 AI-GENERATED** | AI generates, you review for correctness and integration. Acceptable for boilerplate that must work but isn't intellectually novel. | "Is this plumbing/glue code where my time is better spent on the algorithm itself?" → AI-generate. |
+
+**Typical tagging pattern (will vary per step):**
+
+| Component | Typical tag | Why |
+|-----------|-------------|-----|
+| Core algorithm loop | 🔴 HAND-CODE | It's in the thesis. You must own every line. Understanding comes from struggling with indexing, edge cases, convergence. |
+| Algorithm variant (2nd+ implementation of same family) | 🟡 AI-ASSISTED | Once you've built MCCFR from scratch, outcome-sampling MCCFR can be AI-drafted and reviewed — the insight transfers. |
+| Data pipeline / environment wrappers | 🟢 AI-GENERATED | Loading data, plotting, gym wrappers. Must work, but line-by-line struggle adds no insight. |
+| Test harness / tournament framework | 🟡 AI-ASSISTED | Structure can be AI-generated, but evaluation metrics (e.g., exploitability computation) you must understand deeply. |
+| Debugging | 🟢 AI-GENERATED | Using AI to diagnose convergence issues is pragmatic, not lazy. |
+
+**Per-step override:** When generating each step's content, every deliverable will be explicitly tagged 🔴/🟡/🟢 with a one-line justification. This removes ambiguity at execution time.
+
+### 4.5 Resource Quality Standards
+
+Every resource referenced in a generated step must meet these standards. No vague references. No "read the X paper" without a link.
+
+| Resource type | Required format |
+|---------------|----------------|
+| Video lecture / talk | Direct YouTube or platform URL + duration + speaker name |
+| Blog post / article | Direct URL + author |
+| Book (freely available) | Direct PDF/HTML link (e.g., Sutton & Barto on incompleteideas.net) |
+| Book (paid only) | Purchase link (Amazon/publisher) + library/alternative if known |
+| Paper | arXiv link preferred (always free). DOI link as fallback. Never paywalled-only without a free alternative |
+| Playground / demo | Direct URL or GitHub repo link + setup command (`pip install X` / `git clone Y`) |
+| Framework / library | pip/conda install command + quickstart page URL |
+| Dataset | Download URL or API command + license note |
+
+**Example of UNACCEPTABLE:** "Read the Zinkevich 2007 paper on CFR."
+**Example of ACCEPTABLE:** "Read [Regret Minimization in Games with Incomplete Information](https://arxiv.org/abs/0709.2092) (Zinkevich et al., 2007)."
+
+### 4.6 Freshness Scan Protocol
+
+Before generating each step's content, the following scan must be executed to ensure no important recent work is missed:
+
+1. **ArXiv search** — Search each subtopic keyword, sort by date, check 2024–2026 papers
+2. **Semantic Scholar** — Sort by citation count for the foundational layer (identify top 5 most-cited works)
+3. **Conference proceedings** — Check NeurIPS 2025, ICML 2025, ICLR 2025/2026, AAAI 2026 for accepted papers on the step's subtopic
+4. **GitHub trending / Papers With Code** — Check if new frameworks or reference implementations have emerged since the plan was written
+5. **Cross-reference against prior steps** — Avoid assigning the same paper to multiple steps unless it genuinely spans both topics
+
+Each generated step must include a **"Freshness Note"** at the top documenting:
+- What searches were run and when
+- Any newly discovered papers that weren't in the original plan
+- Any papers that were planned but have been superseded by newer work
+
+### 4.7 Mandatory One-Pager
+
+At the end of every step, write a **one-page summary** (literally one page, ~400-500 words). This is not a report — it's a distillation exercise. Structure:
+
+```
+# Step N — [Title]: One-Pager
+
+**Problem:** What problem does this step's field address? (2-3 sentences)
+**Core Algorithm(s):** The main algorithm(s) studied, in plain language. (3-5 sentences)
+**Key Result:** What did the foundational papers achieve? What's the state of the art? (2-3 sentences)
+**My Implementation:** What I built, what it validates. (2-3 sentences)
+**Open Question:** The most interesting unsolved problem I encountered. (1-2 sentences)
+**PhD Connection:** How this feeds into my thesis. (1-2 sentences)
+```
+
+**Why mandatory:** By Step 15, you have 13 one-pagers. Assembled sequentially, they form a first draft of Chapter 1's literature review structure. Each one-pager becomes a subsection seed.
+
+### 4.8 Learning Log
+
+A single running markdown file (`learningLog.md`) maintained throughout all steps. Contains two sections:
+
+**Connections:** Tracks cross-step links as they emerge.
+```
+- [Step 3] MCCFR's sampling strategy → directly affects [Step 5] Deep CFR's training stability
+- [Step 7] Bayesian opponent model → extends to [Step 11] coalition detection (agents as "opponents")
+```
+
+**Confusions:** Tracks things that didn't click. Often, Step 7's confusion gets answered in Step 10. Having it written down means you actually revisit it.
+```
+- [Step 3] Why does external sampling converge faster in practice but has worse theoretical guarantees?
+  → RESOLVED in [Step 5]: Deep CFR essentially learns to approximate the value of external sampling
+- [Step 5] How does DREAM handle the variance from opponent sampling?
+  → OPEN: revisit in Step 8 (safe exploitation may provide the framework to think about this)
+```
+
+**Maintenance rule:** Update at the end of each step during Phase 5 (Consolidation). Review all OPEN entries from prior steps — mark resolved ones with the step that resolved them.
+
+### 4.9 Hard Gate Exit Criteria
+
+**Each step has a hard gate.** You do NOT proceed to the next step until all items are checked. If a deliverable doesn't validate, you fix it — you don't move on and "revisit later." Dedication is everything.
+
+```
+## Step N — Exit Checklist
+
+- [ ] All deliverables working and validated against known results
+- [ ] Can explain the main algorithm(s) from memory (whiteboard test)
+- [ ] AI-assistance rules were followed (all 🔴 components hand-coded)
+- [ ] One-pager written and committed to repo
+- [ ] Learning Log updated (new connections + new confusions + resolved confusions)
+- [ ] Key insight documented in 1-2 sentences
+- [ ] Open questions logged in Learning Log
+- [ ] PhD connection noted (which thesis contribution does this feed?)
+- [ ] Candidate papers for Chapter 1 literature review identified
+- [ ] Step notes committed to repo
+```
+
+**If the gate blocks:** It's a signal that the step needs more time, not that the gate is too strict. Use buffer days from the schedule, or borrow from the October buffer. Never borrow from the NEXT step — that creates cascading debt.
+
+### 4.10 Step Content Template
+
+When generating the actual content for each step, use this structure:
+
+```
+# Step N — [Title]
+
+**Duration:** [X days] (Tier [1/2/3])
 **Dependencies:** Steps [X, Y, Z]
-**Phase:** [A/B/C/D/E/F/G]
+**Phase:** [B/C/D/E/F/G]
+**Freshness Note:** [Searches run, date, any updates to planned content]
 
 ---
 
-### Phase 1: Orientation (Days 1–3)
-Build intuition BEFORE formalism. No papers yet.
+## Phase 1: Intuition ([X days])
+- [Specific videos with YouTube URLs, duration, speaker]
+- [Podcasts / interviews if available]
+- [Blog posts with direct URLs]
 
-**Day 1 — General Audience Content**
-- [2-3 specific video lectures, conference talks, or blog posts]
-- [1 podcast episode or interview if available]
-- Goal: Understand WHAT the problem is and WHY it matters. No math yet.
+## Phase 2: Exploration ([X days])
+- [Specific sandboxes with URLs / GitHub links / setup commands]
+- [Existing implementations to run, with exact commands]
+- [What to observe / what parameters to tweak]
 
-**Day 2 — Interactive Exploration**
-- [Specific sandboxes, demos, or existing tools to play with]
-- [Run existing implementations from OpenSpiel / PettingZoo / etc.]
-- Goal: Get hands dirty. See the algorithms behave before reading about them.
+## Phase 3: Targeted Reading ([X days])
+### Paper 1: [Title] ([Author], [Year])
+[Surgical reading protocol — READ/SKIM/SKIP/MATH/KEY INSIGHT]
 
-**Day 3 — Landscape Survey**
-- [Skim 2-3 survey papers or textbook chapters for the big picture]
-- [Search arxiv/Semantic Scholar for 2025-2026 papers on this topic]
-- [Identify the 2-3 KEY papers you'll deep-read in Phase 2]
-- Goal: Know where you are in the field. Build a mental map.
+### Paper 2: [Title] ([Author], [Year])
+[Surgical reading protocol]
 
----
+### Book Chapters (if applicable):
+**Book:** [Title] ([Author])  
+**Link:** [Free link or purchase link]  
+**Assigned chapters:** [N–M]  
+**Context — what comes before (Ch 1–N-1):** [2-3 sentence summary so you're not lost]  
+**Context — what comes after (Ch M+1–end):** [1-2 sentence note on what you're skipping and why]  
+**Reading focus:** [What to pay attention to, what to skim]
 
-### Phase 2: Core Reading (Days 4–7)
-Focused deep reading. Algorithmic/logical emphasis over pure notation.
+### Math Flags (if any):
+🔢 **[Theorem/Proof name]** — Must work through with pen and paper.  
+**WHY this can't be substituted by algorithmic understanding:** [Specific explanation]
 
-**Primary Papers (2-3, rank-ordered by importance):**
-| # | Paper | Year | Focus While Reading |
-|---|-------|------|---------------------|
-| 1 | [Most important paper] | [Year] | [What to focus on, what to skim] |
-| 2 | [Second paper] | [Year] | [What to focus on, what to skim] |
-| 3 | [Third paper — optional/cutting-edge 2024-2026] | [Year] | [What to focus on, what to skim] |
+## Phase 4: Implementation ([X days])
+### Project: [Clear description]
 
-**Algorithmic Focus:**
-- [Specific algorithm(s) to understand step-by-step, pseudocode-level]
-- [Key insight or "aha moment" to look for]
+| Component | AI Tag | Justification |
+|-----------|--------|---------------|
+| [Component 1] | 🔴 HAND-CODE | [Why] |
+| [Component 2] | 🟡 AI-ASSISTED | [Why] |
+| [Component 3] | 🟢 AI-GENERATED | [Why] |
 
-**Math Deep-Dive (only if essential):**
-- [Specific theorem/proof that's actually needed, if any]
-- [Otherwise: "The math in Section X formalizes what you already understand
-   algorithmically — skim for notation familiarity only"]
+### Deliverables:
+- [ ] [Deliverable 1]
+- [ ] [Deliverable 2]
+- [ ] [Deliverable 3]
 
----
+### Validation:
+- [How to verify correctness]
 
-### Phase 3: Implementation (Days 8–12)
-The core of each step. ~40% of total time.
+## Phase 5: Consolidation ([X days])
+- **Reference skim:** [Book/survey to skim for gaps]
+- **One-pager:** Write and commit
+- **Learning Log:** Update connections + confusions
+- **PhD Connection:** [Which contribution this feeds]
 
-**Practical Project:**
-- [Clear, specific coding task]
-- [Implementation language and framework]
-- [What to build from scratch vs. what to use from libraries]
-
-**Deliverables:**
-- [ ] [Specific output 1 — e.g., working solver, trained agent, plot]
-- [ ] [Specific output 2 — e.g., comparison with baseline, validation against known result]
-- [ ] [Specific output 3 — e.g., documented state representation, reusable module]
-
-**Validation:**
-- [How to verify correctness — e.g., compare with OpenSpiel,
-   check against analytical solution, measure exploitability]
-
----
-
-### Phase 4: Gap-Filling + Consolidation (Days 13–14)
-Skim reference material. Connect to the PhD.
-
-**Reference Skim:**
-- [Book chapters or long papers to skim for completeness]
-- [Focus on: gaps in your understanding, alternative perspectives, historical context]
-
-**PhD Connection:**
-- [How this step feeds into the thesis — which contribution does it support?]
-- [What open question from this step becomes a research opportunity?]
-
-**Step Notes (to document):**
-- [ ] Key algorithms understood (list with 1-line summary each)
-- [ ] Open questions / things that confused me
-- [ ] Connections to other steps discovered
-- [ ] Candidate papers for Chapter 1 literature review
+## Exit Checklist
+- [ ] All deliverables working and validated
+- [ ] Whiteboard test passed
+- [ ] AI-assistance rules followed
+- [ ] One-pager committed
+- [ ] Learning Log updated
+- [ ] Step notes committed
 ```
 
 ---
