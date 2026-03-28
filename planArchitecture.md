@@ -1,6 +1,23 @@
-# Plan: 15-Step PhD Preparation Roadmap + Career Alignment
+# PhD Preparation Roadmap
+### Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments
 
-**TL;DR:** A 15-step learning progression (2 done + 13 new, April–mid October 2026) that builds from your completed CFR/RL foundations to cutting-edge multi-agent adaptive strategy. Uses a 3-tier duration system: Tier 1 (3 weeks) for thesis-critical steps, Tier 2 (2 weeks) for standard steps, Tier 3 (10 days) for survey-dominant steps. Generalized beyond poker per professor feedback. Anchored to a career-maximizing PhD goal. Includes an honest career review, step structure template, and wildcard analysis.
+> **Author:** Alexander Andreev  
+> **University:** Ruse University "Angel Kanchev" — PhD in Informatics (4.6)  
+> **Supervisors:** Prof. Dr. Tsvetomir Vasilev, Assoc. Prof. Dr. Rumen Rusev  
+> **Enrolled:** 18.02.2026 | **Phase 1 Deadline:** 11.2026 | **Defense:** 04.2029
+
+A 15-step learning progression (2 completed + 13 new) spanning April–mid October 2026, building from completed CFR/RL foundations to cutting-edge multi-agent adaptive strategy. Uses a 3-tier duration system: Tier 1 (3 weeks) for thesis-critical steps, Tier 2 (2 weeks) for standard steps, Tier 3 (10 days) for survey-dominant steps. 28 weeks total + 2.5-week buffer before the November deadline.
+
+---
+
+### Table of Contents
+
+1. [Career Plan Review](#1-career-plan-review)  
+2. [PhD Goal Alignment](#2-phd-goal-alignment)  
+3. [The 15-Step Plan — Titles, Dependencies & Calendar](#3-the-15-step-plan-titles--dependencies)  
+4. [Learning Methodology & Step Blueprint](#4-learning-methodology--step-blueprint)  
+5. [Job Market Validation](#5-job-market-validation)  
+[Appendix: Source Files](#appendix-source-files)
 
 ---
 
@@ -110,10 +127,10 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 **Phase E: Multi-Agent Dynamics (mid July → August)** `[6 weeks]`
 - **Step 9** — Multi-Agent RL — Coordination, Competition, and Communication *(2 weeks, Tier 2)* — depends on: Steps 1, 6
 - **Step 10** — Population-Based Training + Evolutionary Game Theory *(2 weeks, Tier 2)* — depends on: Steps 7, 8, 9
-- **Step 11** — Dynamic Coalition Formation in Competitive FFA Games *(2 weeks, Tier 2)* — depends on: Steps 7, 9, 10 **[NEW — WILDCARD B]**
+- **Step 11** — Dynamic Coalition Formation in Competitive FFA Games *(2 weeks, Tier 2)* — depends on: Steps 7, 9, 10
 
 **Phase F: Data-Driven Approaches (late August → September)** `[3.5 weeks]`
-- **Step 12** — Sequence Models + LLM Agents in Strategic Settings *(10 days, Tier 3)* — depends on: Steps 5, 7 **[TITLE UPDATED — WILDCARD A FOLDED IN]**
+- **Step 12** — Sequence Models + LLM Agents in Strategic Settings *(10 days, Tier 3)* — depends on: Steps 5, 7
 - **Step 13** — Behavioral Analysis Pipelines + Real-World Data *(2 weeks, Tier 2)* — depends on: Steps 7, 12
 
 **Phase G: Integration (late September → mid October)** `[3.5 weeks]`
@@ -132,7 +149,7 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 | Jun 24–Jul 14 | Step 8: Safe Exploitation | **T1** | **3 weeks** |
 | Jul 15–28 | Step 9: MARL — Coordination, Competition, Comms | T2 | 2 weeks |
 | Jul 29–Aug 11 | Step 10: PBT + Evolutionary Game Theory | T2 | 2 weeks |
-| Aug 12–25 | **Step 11: Coalition Formation in FFA Games [NEW]** | T2 | 2 weeks |
+| Aug 12–25 | Step 11: Coalition Formation in FFA Games | T2 | 2 weeks |
 | Aug 26–Sep 5 | Step 12: Sequence Models + LLM Agents | T3 | 10 days |
 | Sep 6–19 | Step 13: Behavioral Analysis Pipelines | T2 | 2 weeks |
 | Sep 20–Oct 3 | Step 14: Evaluation Frameworks + Exploitability | T2 | 2 weeks |
@@ -145,7 +162,7 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 ### Why this ordering:
 - **Months 1–2 (Steps 3–6, Apr–early Jun):** Complete the algorithmic toolbox. You can't model opponents or evaluate agents without first knowing how equilibria are computed, scaled, and approximated neurally. Student of Games (Step 6) gets 3 weeks (Tier 1) — it unifies perfect and imperfect information into one framework, which is the generalization proof your professors want.
 - **Month 3 (Steps 7–8, Jun–mid Jul):** The exploitation core. This is the thesis heartbeat. 3 weeks each (Tier 1) because these two steps ARE the PhD. Step 7 builds the "sensor" (opponent modeling), Step 8 builds the "actuator" (safe exploitation). Together they're Contribution #1.
-- **Month 4 (Steps 9–11, mid Jul–Aug):** The multi-agent extension. MARL foundations → population training → then coalition dynamics in FFA games. Step 11 is the new frontier step — nearly unstudied in competitive settings (only "So Long Sucker" benchmark exists, 2411.11057), direct PhD differentiator. Together = Contribution #2.
+- **Month 4 (Steps 9–11, mid Jul–Aug):** The multi-agent extension. MARL foundations → population training → then coalition dynamics in FFA games. Step 11 covers a frontier topic — nearly unstudied in competitive settings (only the "So Long Sucker" benchmark exists, arXiv 2411.11057), a direct PhD differentiator. Together = Contribution #2.
 - **Month 5 (Steps 12–13, late Aug–Sep):** The data bridge. Sequence models + LLM survey (10 days, Tier 3 — the field is too young for more) → Playtech data pipeline. Connects theory to Contribution #3.
 - **Month 6 (Steps 14–15, late Sep–mid Oct):** Integration. Evaluation framework (Contribution #3) → research frontier map → exit ready for the research phase.
 - **November:** Write Chapter 1 + first publication draft. (Meets the 11.2026 deadline.)
@@ -447,43 +464,35 @@ When generating the actual content for each step, use this structure:
 - [ ] Step notes committed
 ```
 
----
+### 4.11 Dual Output Format
 
-## 5. Wildcard Evaluation
+Each step is generated in two versions, stored in separate directories:
 
-### Wildcard A: LLM Agents in Strategic Settings → Folded into Step 12
+**`rawSteps/`** — The full learning version. Contains everything needed to actually execute the step:
+- All 5 phases with complete detail
+- YouTube links, podcast episodes, blog posts
+- Sandbox URLs, GitHub repos, setup commands
+- Surgical reading protocols with READ/SKIM/SKIP directives
+- AI assistance tags (🔴/🟡/🟢) per component with justifications
+- Informal tips, warnings, and learning guidance
 
-| Factor | Assessment |
-|--------|------------|
-| Academic relevance | Hot (32 arXiv papers in 2025, ICLR 2025 "Do LLM Agents Have Regret?"), but mostly benchmarking, not algorithmic |
-| PhD contribution fit | Weak. None of the 3 thesis contributions require LLM expertise. An LLM baseline in experiments is a 2-day task, not a 2-week step |
-| Career value | High. Both career paths (MARL architect, fraud/risk) intersect with LLMs. Understanding their strategic limitations is career insurance |
-| Implementation depth | Shallow. Running TextArena or prompting GPT-4 to play poker doesn't build transferable algorithmic skill |
-| Frontier density | Crowded. Everyone is writing LLM+game theory papers right now. Low differentiation for a PhD |
+**`cleanSteps/`** — The academic presentation version. Professionally structured for sharing with supervisors and committee members:
+- Formal problem statement and objectives per step
+- Literature references: books and peer-reviewed papers only (no YouTube, podcasts, or blog posts)
+- Methodology description and implementation plan
+- Deliverables and validation criteria
+- PhD contribution alignment
+- No AI assistance tags or informal guidance
 
-**Decision:** Fold into Step 12 title ("Sequence Models + LLM Agents in Strategic Settings"). Cover TextArena + 1–2 key papers in the orientation phase. Don't make it a full step.
+**Naming convention:** `rawSteps/step_03.md`, `cleanSteps/step_03.md`, etc.
 
-**Key references:** "Game Theory Meets LLM and Agentic AI" (Zhu, 2507.10621), "Do LLM Agents Have Regret?" (ICLR 2025), TextArena benchmark.
-
-### Wildcard B: Dynamic Coalition Formation in Competitive FFA Games → New Step 11
-
-| Factor | Assessment |
-|--------|------------|
-| Academic relevance | Frontier. "So Long Sucker" (2411.11057) is essentially the only competitive FFA MARL benchmark. AAMAS 2025 coalition detection paper (2502.16339) confirms the area is just opening up |
-| PhD contribution fit | Strong. Maps directly to Contribution #2 (N-player safe exploitation). Coalition dynamics are the mechanism by which N-player safety guarantees collapse — when agents form temporary alliances, 2-player assumptions break |
-| Career value | Medium. Multi-agent reasoning transfers to fraud ring detection (collusive actors) |
-| Implementation depth | High. Implementing a coalition-forming agent in an FFA game is a genuine coding challenge |
-| Frontier density | Sparse. Almost no competition. Google Scholar returned only cooperative coalition formation results (UAVs, resource allocation) — the competitive FFA angle is nearly unstudied. Could become a thesis chapter |
-
-**Decision:** Add as standalone Step 11. PhD differentiator. The sparse frontier means high novelty potential.
-
-**Key references:** "So Long Sucker" MARL benchmark (2411.11057), "Dynamic Coalition Structure Detection" (Kulkarni+, AAMAS 2025, 2502.16339).
+**Generation rule:** Always generate the rawSteps version first (it contains the complete information), then derive the cleanSteps version by filtering and restructuring.
 
 ---
 
-## 6. Job Market Stress Test
+## 5. Job Market Validation
 
-The 15-step plan was validated against 10 real job postings from Glassdoor (March 2026) spanning both career paths.
+The plan was validated against 10 real job postings from Glassdoor (March 2026) spanning both target career paths.
 
 ### Path 1.1 — MARL / AI Architect roles
 | Role | Salary | Steps that hit |
@@ -503,39 +512,19 @@ The 15-step plan was validated against 10 real job postings from Glassdoor (Marc
 | Home Depot — Staff Engineer, Fraud | $140–220k | 7, 8, 13 |
 | Intuit — Staff AI Engineer, Fraud | $202–278k | 7, 8, 13, 14 |
 
-### Coverage verdict
+### Coverage Analysis
 - **Steps 7–8** (Opponent Modeling + Safe Exploitation) are the highest-value steps, hitting 9/10 job scenarios
 - **Steps 5, 6, 9** cover the MARL architect path well
 - **Steps 12–13** (Sequence Models + Behavioral Pipelines) cover the fraud path's data requirements
-- **Gap noted:** Production/MLOps skills (5/10 jobs mention deployment) — out of scope for learning phase, but flagged for future
-- **LLM awareness** (3/10 jobs mention LLM) — covered via Step 12 title update
+- **Gaps identified:**
+  - Production/MLOps skills (5/10 jobs mention deployment) — out of scope for the learning phase, flagged for post-PhD skill development
+  - LLM fluency (3/10 jobs mention LLM) — addressed in Step 12
 
 ---
 
-## 7. Summary of Changes from Original 14-Step Plan
-
-| Change | Details |
-|--------|---------|
-| **+1 step** | New Step 11: "Dynamic Coalition Formation in Competitive FFA Games" — PhD frontier differentiator |
-| **LLM folded in** | Step 12 title: "Sequence Models + LLM Agents in Strategic Settings" — career insurance without overinvesting |
-| **Renumbered** | Old Steps 11→12, 12→13, 13→14, 14→15 |
-| **Variable durations** | Steps 6, 7, 8 → 3 weeks (Tier 1). Steps 12, 15 → 10 days (Tier 3). Rest → 2 weeks (Tier 2) |
-| **Timeline** | April 1 → October 14, with ~2.5 weeks buffer before November deadline |
-| **Total effort** | 28 weeks (was 24 in the flat 12×2 plan) — more realistic for the material |
-
----
-
-## Further Considerations
-1. **Cutting-edge paper discovery:** Each step's "Day 3 — Landscape Survey" should include a search for 2025-2026 papers on that step's topic. ArXiv, Semantic Scholar, and conference proceedings (NeurIPS 2025, ICML 2025, AAAI 2026) should be checked.
-2. **Toy game progression:** Steps 3–8 use Kuhn/Leduc. Step 11 uses So Long Sucker. Steps 12–13 use TextArena + Playtech data. Steps 14–15 test on 2+ game types for generalization evidence.
-3. **Playtech data:** Partial access is available. Step 13 should design the data pipeline with both synthetic and real data paths, so research isn't blocked if data access changes.
-4. **Tier 1 implementation emphasis:** The extra week in Tier 1 steps should go primarily to the implementation phase (Phase 3 in the template), extending it from 5 days to 8 days.
-
----
-
-## Source Files
-- `oldSources/docPlan_EN.md` — Original 8-step plan (Steps 1-2 completed)
+## Appendix: Source Files
+- `oldSources/docPlan_EN.md` — Original preparation plan (Steps 1–2 completed)
 - `oldSources/ind_plan_A_Andreev_EN.md` — University individual plan (Phase 1 deadline: 11.2026)
-- `oldSources/safeOpponentExploitation.md` — SOE literature review (feeds into Steps 7-8)
+- `oldSources/safeOpponentExploitation.md` — Safe Opponent Exploitation literature review (feeds Steps 7–8)
 - `oldSources/singleFuturePlan.md` — Bulgaria career plan (reviewed in Section 1)
 - `oldSources/coopFuturePlan.md` — Partnership career plan (reviewed in Section 1)
