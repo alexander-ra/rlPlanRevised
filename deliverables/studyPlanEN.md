@@ -109,7 +109,50 @@ This phase occupies the first position in the study plan because all subsequent 
 
 ---
 
-<!-- Phases B through G will be added in subsequent iterations. -->
+## 3. Phase B — Scaling the Toolbox (Steps 3–4) · beginning of April – mid-April 2026
+
+### 3.1 Phase Overview
+
+Phase A established a working CFR<sup>15</sup> solver on the minimal Kuhn Poker<sup>19</sup> benchmark. However, vanilla CFR requires a full traversal of the game tree on every iteration — an approach that becomes computationally infeasible as the game grows. This phase introduces two complementary scaling mechanisms: Monte Carlo sampling methods that reduce per-iteration cost by traversing only portions of the tree, and game abstraction techniques that reduce the tree itself by merging strategically equivalent or similar states. Together, these tools bridge the gap between toy benchmarks and the medium-scale games (Leduc Hold'em<sup>20</sup>, Extended Leduc) on which the thesis contributions will be developed and validated in subsequent phases.
+
+### 3.2 Step 3 — CFR Variants and Monte Carlo Methods
+
+**Contribution Alignment.** Monte Carlo CFR (MCCFR) provides the computationally tractable baseline equilibrium computation that underlies the behavioral adaptation framework (Contribution 1) — the blueprint Nash strategy against which opponent deviations are detected and exploited. The convergence acceleration offered by CFR+ enables equilibrium computation for the medium-scale games used in the empirical validation of multi-agent safe exploitation heuristics (Contribution 2). The variance characteristics of different sampling schemes directly inform the design of scalable opponent modeling architectures in Phase D.
+
+**Literature.**
+
+1. Lanctot, M., Waugh, K., Zinkevich, M. and Bowling, M. (2009). "Monte Carlo Sampling for Regret Minimization in Extensive Games." *Advances in Neural Information Processing Systems 22 (NeurIPS).*
+2. Tammelin, O., Burch, N., Johanson, M. and Bowling, M. (2015). "Solving Heads-Up Limit Texas Hold'em." *Proceedings of the 24th International Joint Conference on Artificial Intelligence (IJCAI).*
+3. Chen, B. and Ankenman, J. (2006). *The Mathematics of Poker.* ConJelCo. Chapters 1–8.
+
+**Practical Tasks.**
+
+- Construct a Leduc Hold'em<sup>20</sup> game engine (six-card deck, two rounds, one community card, ~936 information sets<sup>6</sup>).
+- Implement external-sampling MCCFR on both Kuhn and Leduc; verify convergence to the same Nash equilibrium as vanilla CFR with lower wall-clock time.
+- Implement CFR+ with regret flooring, alternating updates, and linear averaging; demonstrate approximately ten-fold convergence speedup over vanilla CFR on Kuhn Poker.
+- Compare convergence profiles of all variants: exploitability<sup>3</sup> versus iterations and versus wall time.
+
+### 3.3 Step 4 — Game Abstraction and Scaling Imperfect-Information Games
+
+**Contribution Alignment.** Lossless abstraction<sup>21</sup> provides the guarantee that an equilibrium computed in the reduced game remains exact in the original — this is the baseline abstraction strategy against which lossy approaches are measured in the evaluation framework (Contribution 3). Lossy card bucketing determines the granularity of game representations used in opponent modeling (Contribution 1, Phase D): coarser abstractions improve computational tractability but may obscure behaviorally distinct opponent types. Action translation — the mechanism for mapping unobserved opponent actions to known abstract categories — directly parallels the opponent classification problem central to Contribution 1. Subgame solving<sup>22</sup> introduces the safety guarantee that a refined strategy cannot become more exploitable than the original blueprint, a principle that extends directly to the safe exploitation algorithms of Phase D.
+
+**Literature.**
+
+1. Gilpin, A. and Sandholm, T. (2007). "Lossless Abstraction of Imperfect Information Games." *Journal of the ACM*, 54(5).
+2. Johanson, N., Burch, N., Valenzano, R. and Bowling, M. (2013). "Evaluating State-Space Abstractions in Extensive-Form Games." *Proceedings of the 12th International Conference on Autonomous Agents and Multi-Agent Systems (AAMAS).*
+3. Kroer, C. and Sandholm, T. (2016). "Imperfect-Recall Abstractions with Bounds in Games." Preprint.
+4. Brown, N. and Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." Preprint.
+
+**Practical Tasks.**
+
+- Implement lossless abstraction via suit isomorphism detection on Leduc Hold'em; verify that the resulting Nash equilibrium<sup>7</sup> is identical to the unabstracted solution.
+- Implement lossy card bucketing with configurable granularity; measure exploitability degradation as the number of buckets decreases.
+- Construct an Extended Leduc variant (four ranks, two suits, multiple bet sizes, ~5000+ information sets) as a scaling testbed.
+- Build a combined abstraction pipeline composing card bucketing, action abstraction, and suit isomorphism; evaluate on a Pareto frontier of abstraction size versus exploitability gap.
+
+---
+
+<!-- Phases C through G will be added in subsequent iterations. -->
 
 ---
 
@@ -182,3 +225,15 @@ A simplified poker variant with a three-card deck (Jack, Queen, King), two playe
 
 **[20] Leduc Hold'em.**
 A two-round poker variant with a six-card deck (three ranks, two suits) and one community card, producing approximately 936 information sets. Used as an intermediate benchmark between Kuhn Poker and full-scale poker games.
+
+**[21] Game abstraction (lossless / lossy).**
+A technique for reducing the size of a game by merging states that are strategically equivalent (lossless) or approximately similar (lossy). Lossless abstractions preserve the exact equilibrium of the original game; lossy abstractions trade solution quality for computational tractability, quantified by the exploitability gap between the abstracted and original solutions.
+
+**[22] Subgame solving.**
+A real-time refinement technique that re-solves a portion of the game tree at a finer granularity than the pre-computed blueprint strategy. Safe subgame solving guarantees that the refined strategy is no more exploitable than the original blueprint.
+
+**[23] Monte Carlo CFR (MCCFR).**
+A family of CFR variants that sample portions of the game tree rather than traversing it in full on each iteration. Reduces per-iteration cost at the expense of introducing sampling variance. Common instantiations include external sampling (samples opponent and chance actions) and outcome sampling (samples a single trajectory).
+
+**[24] CFR+.**
+An accelerated variant of CFR that applies three modifications: flooring negative regrets to zero, alternating which player's strategy is updated, and weighting later iterations more heavily. Empirically achieves $O(1/T)$ convergence — substantially faster than the $O(1/\sqrt{T})$ rate of vanilla CFR.
