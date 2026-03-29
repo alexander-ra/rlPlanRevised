@@ -55,6 +55,12 @@ The present study plan is organized as a progressive program of fifteen study st
 - **Phase F — Data-Driven Approaches** (Steps 12–13): Sequence models and behavioral analysis pipelines connecting theory to real-world data.
 - **Phase G — Integration** (Steps 14–15): Evaluation framework construction and research frontier mapping.
 
+Throughout the study plan, Kuhn Poker<sup>19</sup> and Leduc Hold'em<sup>20</sup> serve as the primary implementation testbeds. These games are chosen deliberately as pedagogical vehicles: their small state spaces (12 and approximately 936 information sets, respectively) and known analytical equilibria permit exact verification of every algorithm, while their imperfect-information structure retains the strategic complexity that the thesis demands. By working within well-understood domains, each step concentrates on algorithmic concepts rather than domain-specific engineering, maximizing the volume of theoretical material covered within the allotted timeframe. In later phases, the study plan validates generality beyond poker by applying the developed methods to matrix games, Goofspiel, So Long Sucker<sup>45</sup>, and anonymized real-world behavioral data.
+
+The thesis contributions themselves are formulated in domain-agnostic terms — no contribution is specific to poker or to any other single game. The Behavioral Adaptation Framework (Contribution 1) addresses arbitrary imperfect-information games; the Multi-Agent Safe Exploitation heuristics (Contribution 2) are defined over general N-player extensive-form structures; and the Evaluation Methodology (Contribution 3) is designed for cross-domain applicability.
+
+The study plan is aligned with the milestones of the university individual plan. Upon completion of each thematic phase, the corresponding material will be incorporated into Chapter I of the dissertation — covering the state-of-the-art analysis and the formulation of relevance, objectives, tasks, and thesis statements — which is due in November 2026. In this way, the literature review and foundational exposition accumulate incrementally rather than being composed retrospectively. Step 15 produces a detailed Chapter I outline and publication pipeline as its final deliverable.
+
 ### 1.2 Research Objective and Expected Contributions
 
 The primary objective of this doctoral research is to develop methods for adaptive strategy learning in multi-agent environments with imperfect information. The research program is structured around three planned contributions:
@@ -92,7 +98,7 @@ This phase occupies the first position in the study plan because all subsequent 
 
 ### 2.3 Step 2 — Game Theory and Counterfactual Regret Minimization
 
-**Contribution Alignment.** The extensive-form game<sup>4</sup> representation introduced in this step constitutes the formal language employed throughout the thesis. Counterfactual Regret Minimization<sup>15</sup> (CFR) provides the baseline equilibrium<sup>7</sup> computation from which the safe exploitation framework (Contribution 1) measures and bounds deviations. Exploitability<sup>3</sup>, defined and implemented here, serves as the primary quantitative metric in the evaluation methodology (Contribution 3). Supplementary study of sequence-form linear programming introduces an alternative equilibrium computation approach relevant to the scaled exploitation algorithms developed in Phase D.
+**Contribution Alignment.** The extensive-form game<sup>4</sup> representation introduced in this step constitutes the formal language employed throughout the thesis. Counterfactual Regret Minimization<sup>15</sup> (CFR) provides the baseline equilibrium<sup>7</sup> computation from which the behavioral adaptation framework (Contribution 1) detects opponent deviations and the safe exploitation methods (Contribution 2) bound exploitation risk. Exploitability<sup>3</sup>, defined and implemented here, serves as the primary quantitative metric in the evaluation methodology (Contribution 3). Supplementary study of sequence-form linear programming introduces an alternative equilibrium computation approach relevant to the scaled exploitation algorithms developed in Phase D.
 
 **Literature.**
 
@@ -254,10 +260,6 @@ This phase constitutes the thesis-critical core of the study plan. The preceding
 
 ---
 
-<!-- Phases E through G will be added in subsequent iterations. -->
-
----
-
 ## 6. Phase E — Multi-Agent Dynamics (Steps 9–11) · beginning of July – mid-August 2026
 
 ### 6.1 Phase Overview
@@ -379,10 +381,6 @@ The preceding phases developed game-solving algorithms and multi-agent training 
 - Apply k-means clustering (four classic archetypes: tight-aggressive, loose-aggressive, tight-passive, loose-passive) and DBSCAN on the embedding space; validate against manual VPIP×PFR classification and test temporal stability.
 - Implement a collusion detection<sup>50</sup> module with three signals — co-occurrence anomaly, chip dumping score, and soft play score — combined via weighted composite scoring; validate by injecting synthetic collusion patterns and measuring detection recall (target >90%) and false positive rate (target <5%).
 - Apply the Decision Transformer<sup>46</sup> from Step 12 to Playtech data; compare return-conditioned versus EV-conditioned training per the Paster et al. stochasticity warning.
-
----
-
-<!-- Phase G will be added in the next iteration. -->
 
 ---
 
