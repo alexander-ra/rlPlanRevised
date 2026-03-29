@@ -152,7 +152,51 @@ Phase A established a working CFR<sup>15</sup> solver on the minimal Kuhn Poker<
 
 ---
 
-<!-- Phases C through G will be added in subsequent iterations. -->
+## 4. Phase C — Neural Methods for Games (Steps 5–6) · mid-April – end of May 2026
+
+### 4.1 Phase Overview
+
+Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set<sup>6</sup> — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree enumeration. Step 5 introduces the core approximation methods (Deep CFR<sup>25</sup>, NFSP<sup>27</sup>), while Step 6 studies the complete game-solving architectures (DeepStack, Libratus, Pluribus, ReBeL<sup>28</sup>, Student of Games) that integrate these components into competition-grade systems. Together, these steps complete the algorithmic toolbox from which the thesis contributions are developed: Contribution 1 builds on the public belief state<sup>29</sup> framework of ReBeL, Contribution 2 addresses the theoretical gap exposed by Pluribus's multiplayer success without formal safety guarantees, and Contribution 3 draws on the exploitability metrics applied uniformly across all five architectures.
+
+### 4.2 Step 5 — Neural Equilibrium Approximation (Deep CFR, DREAM)
+
+**Contribution Alignment.** Deep CFR<sup>25</sup> provides the mechanism for computing baseline Nash strategies in games too large for tabular solvers — a prerequisite for the behavioral adaptation framework (Contribution 1), which detects and exploits deviations from such baselines. The information state tensor encoding developed in this step becomes the standard input representation for the opponent modeling networks of Phase D. Neural Fictitious Self-Play (NFSP<sup>27</sup>) introduces the anticipatory parameter $\eta$, which continuously interpolates between equilibrium play and best-response exploitation — a mechanism that foreshadows the exploitation–safety tradeoff at the heart of Contribution 1.
+
+**Literature.**
+
+1. Brown, N., Lerer, A., Gross, S. and Sandholm, T. (2019). "Deep Counterfactual Regret Minimization." *Proceedings of the 36th International Conference on Machine Learning (ICML).*
+2. Steinberger, E. (2019). "Single Deep Counterfactual Regret Minimization." *Proceedings of the 34th AAAI Conference on Artificial Intelligence (2020).*
+3. Heinrich, J. and Silver, D. (2016). "Deep Reinforcement Learning from Self-Play in Imperfect-Information Games." Preprint.
+
+**Practical Tasks.**
+
+- Develop a reusable information state tensor encoding for Leduc Hold'em<sup>20</sup>, designed for compatibility with all subsequent neural implementations.
+- Implement Deep CFR with advantage networks, reservoir sampling, and strategy network distillation; verify that predicted counterfactual values<sup>2</sup> match tabular baselines on Kuhn Poker<sup>19</sup>.
+- Implement NFSP as a comparative baseline; evaluate the effect of the anticipatory parameter on the Nash–exploitation tradeoff.
+- Compare convergence behavior (exploitability<sup>3</sup> versus wall time) of Deep CFR, tabular MCCFR<sup>23</sup>, and NFSP on Leduc Hold'em.
+
+### 4.3 Step 6 — End-to-End Game AI Architectures
+
+**Contribution Alignment.** This step surveys the five landmark game-solving systems that define the state of the art in imperfect-information game AI. ReBeL's public belief state<sup>29</sup> (PBS) framework serves as the architectural starting point for the belief-based opponent modeling developed in Contribution 1, extended from beliefs about game states to beliefs about opponent strategy types. Pluribus demonstrates empirical success in six-player poker without formal multiplayer safety guarantees — exposing the precise theoretical gap that Contribution 2 addresses through tractable exploitation heuristics. The depth-limited solving bounds established by Brown and Sandholm (2018) provide the mathematical foundation for bounding exploitation risk in the safe exploitation algorithms of Phase D. The exploitability<sup>3</sup> metric applied uniformly across all five architectures serves as the model for the domain-agnostic evaluation framework of Contribution 3.
+
+**Literature.**
+
+1. Moravcik, M., Schmid, M., Burch, N., Lisý, V., Morrill, D., Bard, N., Davis, T., Waugh, K., Johanson, M. and Bowling, M. (2017). "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker." *Science*, 356(6337), pp. 508–513.
+2. Brown, N. and Sandholm, T. (2018). "Superhuman AI for Heads-Up No-Limit Poker: Libratus Beats Top Professionals." *Science*, 359(6374), pp. 418–424.
+3. Brown, N. and Sandholm, T. (2019). "Superhuman AI for Multiplayer Poker." *Science*, 365(6456), pp. 885–890.
+4. Brown, N., Bakhtin, A., Lerer, A. and Hu, Q. (2020). "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games." *Advances in Neural Information Processing Systems (NeurIPS).*
+5. Schmid, M., Moravcik, M., Burch, N. et al. (2023). "Student of Games: A Unified Learning Algorithm for Both Perfect and Imperfect Information Games." *Science Advances*, 9(46).
+6. Brown, N. and Sandholm, T. (2018). "Depth-Limited Solving for Imperfect-Information Games." *Advances in Neural Information Processing Systems (NeurIPS).*
+
+**Practical Tasks.**
+
+- Implement a simplified ReBeL system ("ReBeL-Lite") for Leduc Hold'em: public belief state representation with Bayesian updates, local PBS-CFR solver, and a value network trained via self-play.
+- Verify that training iterations produce monotonically decreasing exploitability on Leduc.
+- Construct a comparative analysis of all five architectures (DeepStack, Libratus, Pluribus, ReBeL, Student of Games), mapping shared components (MCCFR<sup>23</sup>, subgame solving<sup>22</sup>, neural value estimation, depth-limited search) and identifying the evolutionary path from single-player to multiplayer to unified systems.
+
+---
+
+<!-- Phases D through G will be added in subsequent iterations. -->
 
 ---
 
@@ -237,3 +281,18 @@ A family of CFR variants that sample portions of the game tree rather than trave
 
 **[24] CFR+.**
 An accelerated variant of CFR that applies three modifications: flooring negative regrets to zero, alternating which player's strategy is updated, and weighting later iterations more heavily. Empirically achieves $O(1/T)$ convergence — substantially faster than the $O(1/\sqrt{T})$ rate of vanilla CFR.
+
+**[25] Deep CFR.**
+A neural variant of CFR that replaces tabular regret and strategy storage with deep neural networks (advantage networks and a strategy network). Training data is generated via external-sampling MCCFR traversals and maintained using reservoir sampling, enabling equilibrium approximation in games too large for tabular methods.
+
+**[26] DREAM (Deep Regret minimization with Advantage baselines and Model-free learning).**
+An outcome-sampling variant of Deep CFR that uses baseline subtraction to reduce sampling variance. Achieves comparable solution quality with a single-network architecture.
+
+**[27] Neural Fictitious Self-Play (NFSP).**
+An equilibrium-finding algorithm that combines a deep Q-network for best-response computation with a supervised-learning network for average strategy approximation. An anticipatory parameter $\eta$ interpolates between Nash equilibrium play and exploitative best-response play.
+
+**[28] ReBeL (Recursive Belief-based Learning).**
+A game-solving framework that combines self-play reinforcement learning with search over public belief states. Enables AlphaZero-style learning and planning for imperfect-information games without requiring pre-computed blueprint strategies or explicit game abstraction.
+
+**[29] Public belief state (PBS).**
+A probability distribution over all possible private information assignments, maintained and updated via Bayes' rule as public actions are observed. The PBS serves as a sufficient statistic for decision-making in imperfect-information games and is the central representation in the ReBeL architecture.
