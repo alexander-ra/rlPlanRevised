@@ -611,3 +611,18 @@ This step is the THESIS FRONTIER. Everything from Steps 2–10 was building exis
 - [ ] Learning Log updated (connections from Steps 2–10 + new confusions + thesis gap crystallization)
 - [ ] PhD connection documented (N-player safety gap = Contribution #2 core, coalition detector = Contribution #1 extension, EGTA on SLS = Contribution #3 prototype)
 - [ ] Step notes committed to repo
+
+> **[P2] Fallback Benchmarks:** If So Long Sucker proves too complex or brittle, documented alternatives:
+> - (a) 3-player Leduc with side agreements
+> - (b) Goofspiel (already referenced in Step 9)
+> - (c) Simplified custom 4-player game
+
+> **[P3] Contribution #2 scope narrowing (echo from Step 8):** Contribution #2 is **tractable heuristics + empirical validation on small N-player games**, not a general N-player safety theorem. Adjust PhD Connection accordingly.
+
+---
+
+**Short Title:** Step 11 — Coalition Formation (FFA)
+
+---
+
+**Short Title:** Step 11 — Coalition Formation (FFA)

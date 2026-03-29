@@ -150,6 +150,12 @@ Consolidation of theoretical and practical knowledge:
 | Non-stationarity challenge | Key open problem for the thesis — how to maintain model quality when opponents adapt in response to exploitation |
 | Adaptive exploitation pipeline | End-to-end prototype for Contribution #1, validated on toy games in this step and scaled in Steps 8–11 |
 
+> **[P5] Level-k / Cognitive Hierarchy merge:** Add one paper on Level-k/cognitive hierarchy models (e.g., Wright & Leyton-Brown 2014 or Camerer, Ho & Chong 2004) to Phase 3 reading. Add a Level-k opponent type to the opponent type library in Phase 4. Models human suboptimality — critical for Playtech data validation in Step 13. ~1.5d absorbed within 21d allocation.
+
+> **[P8] Bayesian Online Changepoint Detection merge:** Add Adams & MacKay (2007) changepoint detection to the non-stationarity experiment in Phase 4. Instead of ad-hoc “observe what happens when opponent switches type,” detect the switch point statistically, then trigger re-modeling. ~0.5d absorbed within 21d allocation.
+
+> **[P11*] Meta-Learning Baseline (optional):** If Step 7 completes ahead of schedule, run one off-the-shelf meta-learning method (e.g., MAML or contextual bandit) as a comparison baseline against the Bayesian opponent model. No tuning. Preempts reviewer question “why not just meta-learn?”
+
 ---
 
 ## Exit Criteria
@@ -167,3 +173,11 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 2–6 and forward to Steps 8–11 identified and documented
 - [ ] Open questions documented: non-stationarity handling, computational scaling, multiplayer extension
+
+---
+
+**Short Title:** Step 7 — Opponent Modeling
+
+---
+
+**Short Title:** Step 7 — Opponent Modeling

@@ -1,8 +1,11 @@
 # Step 4 — Game Abstraction + Scaling Imperfect-Information Games
 
-**Duration:** 14 days (Tier 2)  
+**Duration:** 10 days (Tier 2 — compressed)  
 **Dependencies:** Step 2 (Game Theory + CFR Basics), Step 3 (CFR Variants + MC Methods)  
-**Phase:** B — Scaling the Toolbox  
+**Phase:** B — Scaling the Toolbox
+
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one working abstraction example (card bucketing on Extended Leduc). Defer full abstraction pipeline (action abstraction, information abstraction comparison) to implementation phase post-November. All reading and intuition phases unchanged.
+> Phase allocation: Intuition 1d | Exploration 1d | Reading 3d | Implementation **3d** | Consolidation 2d  
 **Freshness Note:**  
 - ArXiv search: "game abstraction imperfect information" sorted by date (Mar 2026) — 7 results  
 - ArXiv search: "action abstraction poker" sorted by date (Mar 2026) — 1 result (Rebstock 2019 on Skat)  
@@ -367,3 +370,11 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)**: the abstr
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–3 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 4 — Game Abstraction + Scaling
+
+---
+
+**Short Title:** Step 4 — Game Abstraction + Scaling

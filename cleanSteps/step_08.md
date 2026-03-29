@@ -159,6 +159,10 @@ Consolidation of theoretical and practical knowledge:
 | Teaching attack resilience | Prototype evaluation methodology for Contribution #3 (Evaluation Framework) — adversarial robustness testing |
 | Full exploitation pipeline | End-to-end prototype for Contribution #1: observe → model (Step 7) → exploit safely (Step 8), validated on 2-player games and ready for $N$-player extension |
 
+> **[P3] Contribution #2 scope narrowing:** Reframe “PhD Contribution Alignment”: Contribution #2 is **tractable heuristics + empirical validation on small N-player games**, not a general N-player safety theorem. Targets: piKL-regularized exploitation, equal share baseline (payoff ≥ C/n), adaptation safety extended to 3-player Kuhn/Leduc. Explicitly state the non-claim: general N-player minimax analog.
+
+> **[P6] Sequence-form LP understanding:** Ensure LP formulations (RNR, Ganzfried constrained response) are understood as **sequence-form programs**, not black-box solvers. Connect to the sequence-form representation from Shoham & Leyton-Brown Ch. 4 (referenced in Step 2 note).
+
 ---
 
 ## Exit Criteria
@@ -179,3 +183,11 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 2–7 and forward to Steps 9–11 identified and documented
 - [ ] Thesis contribution gap documented: $N$-player extension as Contribution #2 target
+
+---
+
+**Short Title:** Step 8 — Safe Exploitation
+
+---
+
+**Short Title:** Step 8 — Safe Exploitation

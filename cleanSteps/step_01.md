@@ -126,3 +126,11 @@ This step provides the foundational RL vocabulary, agent architecture patterns, 
 - [ ] Understanding of key design choices: target networks (DQN), clipped objective (PPO)
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to subsequent steps (2–6) identified and documented
+
+---
+
+**Short Title:** Step 1 — RL Basics
+
+---
+
+**Short Title:** Step 1 — RL Basics

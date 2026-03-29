@@ -98,6 +98,13 @@ Following the 5-phase learning cycle (Tier 2, 14-day allocation):
 
 **Bridge to Step 14:** The N-player EGTA evaluation framework prototyped here extends into the formal evaluation methodology of Step 14, addressing the challenge of evaluating agents in non-stationary, multi-player environments.
 
+> **[P2] Fallback Benchmarks:** If So Long Sucker proves too complex or brittle, documented alternatives:
+> - (a) 3-player Leduc with side agreements
+> - (b) Goofspiel (already referenced in Step 9)
+> - (c) Simplified custom 4-player game
+
+> **[P3] Contribution #2 scope narrowing (echo from Step 8):** Contribution #2 is **tractable heuristics + empirical validation on small N-player games**, not a general N-player safety theorem. Adjust PhD Alignment accordingly.
+
 ---
 
 ## Expected Outputs
@@ -112,3 +119,11 @@ Following the 5-phase learning cycle (Tier 2, 14-day allocation):
 8. Coalition dynamics visualizations (formation/dissolution timelines, Shapley attribution plots)
 9. One-page summary document
 10. Updated learning log with cross-step connections, thesis gap crystallization, and open research questions
+
+---
+
+**Short Title:** Step 11 — Coalition Formation (FFA)
+
+---
+
+**Short Title:** Step 11 — Coalition Formation (FFA)

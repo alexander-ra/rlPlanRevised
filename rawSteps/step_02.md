@@ -363,6 +363,8 @@ This step feeds **all three thesis contributions** at the foundational level:
 - **Contribution #2 (Multi-Agent Safe Exploitation):** Safe exploitation (Step 8) is defined as deviation from Nash equilibrium — you must first understand Nash computation via CFR to understand what you're deviating FROM.
 - **Contribution #3 (Evaluation Methodology):** Exploitability (computed via best response) is the primary evaluation metric for your thesis. You implemented it from scratch in this step.
 
+> **[P6] Sequence-form reading pointer:** When reviewing Step 2 material during Step 8, revisit Shoham & Leyton-Brown Chapter 4 on sequence-form representation. The sequence-form is the mathematical backbone of all LP-based equilibrium and exploitation computation used in Step 8.
+
 ---
 
 ## Exit Checklist
@@ -379,3 +381,11 @@ This step feeds **all three thesis contributions** at the foundational level:
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Step 1 + new confusions)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 2 — Game Theory + CFR
+
+---
+
+**Short Title:** Step 2 — Game Theory + CFR

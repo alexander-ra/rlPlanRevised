@@ -113,3 +113,13 @@ Design and implement a unified three-layer evaluation framework for game-playing
 - **Contribution 1 (Behavioral Adaptation):** The framework measures whether behavioral adaptation (Steps 7–8) works: does the adapting agent's exploitability decrease? Does its population ranking improve? With what confidence?
 - **Contribution 2 (Multi-Agent Safe Exploitation):** The N-player extension tests whether 2-player safe exploitation generalizes. Marginal exploitability and coalition-aware metrics detect gaps between theory and multi-agent reality.
 - **Publication integration:** Combined with Step 13's Playtech data, the evaluation framework strengthens the first publication: methodology (three-layer evaluation) + application (poker behavioral data) + validation (cross-game generality).
+
+> **[P4*] Prove Evaluation Failure Modes (cautious):** Add explicit “evaluation failure mode” experiments to objectives: identify specific scenarios where Elo mis-ranks adaptive agents in non-transitive populations, or where single-metric evaluation misses safety violations. Frame as: “existing evaluation is broken in these N-player/adaptive settings, here’s what fixes it.” The spinning top decomposition (Step 10) already provides the diagnostic — reframe as a *finding*. Proceed cautiously — don’t over-engineer.
+
+---
+
+**Short Title:** Step 14 — Evaluation Frameworks
+
+---
+
+**Short Title:** Step 14 — Evaluation Frameworks

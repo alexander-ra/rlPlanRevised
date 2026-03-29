@@ -1,8 +1,11 @@
 # Step 3 — CFR Variants + Monte Carlo Methods
 
-**Duration:** 14 days (Tier 2)  
+**Duration:** 10 days (Tier 2 — compressed)  
 **Dependencies:** Step 2 (Game Theory + CFR Basics)  
-**Phase:** B — Scaling the Toolbox  
+**Phase:** B — Scaling the Toolbox
+
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one MC-CFR variant (External Sampling) to working correctness on Kuhn and Leduc. Defer polished multi-variant comparison (Outcome Sampling, Robust Sampling) to implementation phase post-November. All reading and intuition phases unchanged.
+> Phase allocation: Intuition 1d | Exploration 1d | Reading 3d | Implementation **3d** | Consolidation 2d  
 **Freshness Note:**  
 - ArXiv search: "counterfactual regret minimization" sorted by date (Mar 2026) — 99 results total  
 - ArXiv search: "monte carlo sampling regret extensive games" (Mar 2026)  
@@ -325,3 +328,11 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–2 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 3 — CFR Variants + MC Methods
+
+---
+
+**Short Title:** Step 3 — CFR Variants + MC Methods

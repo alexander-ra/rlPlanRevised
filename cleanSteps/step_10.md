@@ -107,3 +107,11 @@ Following the 5-phase learning cycle (Tier 2, 14-day allocation):
 7. Comparative analysis: league vs PSRO vs self-play vs Nash (MCCFR) on Leduc
 8. One-page summary document
 9. Updated learning log with cross-step connections and open research questions
+
+---
+
+**Short Title:** Step 10 — Population Training + Evolutionary GT
+
+---
+
+**Short Title:** Step 10 — Population Training + Evolutionary GT

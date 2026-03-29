@@ -716,9 +716,21 @@ Summarize your readiness across the three contribution areas:
 - [ ] Final assessment table completed (knowledge state / code state / open research per contribution)
 - [ ] Step notes committed to repo
 
+> **[P3] Contribution #2 scope (final framing):** Ensure contribution design explicitly scopes Contribution #2 to tractable heuristics + empirical validation on small N-player games. State the non-claim (general N-player safety theorem) in the contribution summary.
+
+> **[P4*] Contribution #3 failure-mode framing:** Contribution #3 description must reference failure-mode evidence from Step 14. The contribution is “existing evaluation breaks in these settings + our framework catches what it misses,” not “we assembled a toolkit.”
+
 ### Ready-for-Research Gates
 - [ ] Can answer: "What is your first experiment?" (→ Experiment 2.1: piKL exploitation on 3-player Kuhn)
 - [ ] Can answer: "What is your first publication?" (→ Evaluation framework workshop paper, NeurIPS/AAAI 2026 workshop)
 - [ ] Can answer: "What is the riskiest part of your thesis?" (→ Formal safety guarantees for Contribution #2)
 - [ ] Can answer: "What is your fallback if the formal proofs don't work?" (→ Empirical validation with piKL; Contributions #1 and #3 are lower-risk)
 - [ ] Can answer: "Why should the committee approve this PhD?" (→ Three validated gaps, working code infrastructure, realistic publication pipeline, direct career applicability)
+
+---
+
+**Short Title:** Step 15 — Research Frontier Mapping
+
+---
+
+**Short Title:** Step 15 — Research Frontier Mapping

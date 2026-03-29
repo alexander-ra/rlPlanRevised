@@ -66,7 +66,7 @@ A 15-step learning progression (2 completed + 13 new) spanning April–mid Octob
 
 ### Expected Thesis Contributions (draft):
 1. **Behavioral Adaptation Framework** — A general method for inferring and adapting to opponent strategies from observed action sequences in real-time, applicable to any imperfect-information game
-2. **Multi-Agent Safe Exploitation** — Extending safe exploitation guarantees from 2-player zero-sum to N-player settings (the open problem flagged in OX-Search)
+2. **Multi-Agent Safe Exploitation** — Tractable heuristics (piKL-regularized exploitation, equal share baseline) + empirical validation on small N-player games (3-player Kuhn/Leduc), extending safe exploitation from 2-player zero-sum settings. *Explicitly scoped: not a general N-player safety theorem.*
 3. **Evaluation Methodology** — A general framework for measuring agent adaptability and robustness across different game environments and opponent populations
 
 ### Why this beats a poker-only PhD:
@@ -141,23 +141,23 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 
 | Dates | Step | Tier | Duration |
 |-------|------|------|----------|
-| Apr 1–14 | Step 3: CFR Variants + MC Methods | T2 | 2 weeks |
-| Apr 15–28 | Step 4: Game Abstraction + Scaling | T2 | 2 weeks |
-| Apr 29–May 12 | Step 5: Neural Equilibrium (Deep CFR, DREAM) | T2 | 2 weeks |
-| May 13–Jun 2 | Step 6: End-to-End Game AI (Pluribus→ReBeL→SoG) | **T1** | **3 weeks** |
-| Jun 3–23 | Step 7: Opponent Modeling | **T1** | **3 weeks** |
-| Jun 24–Jul 14 | Step 8: Safe Exploitation | **T1** | **3 weeks** |
-| Jul 15–28 | Step 9: MARL — Coordination, Competition, Comms | T2 | 2 weeks |
-| Jul 29–Aug 11 | Step 10: PBT + Evolutionary Game Theory | T2 | 2 weeks |
-| Aug 12–25 | Step 11: Coalition Formation in FFA Games | T2 | 2 weeks |
-| Aug 26–Sep 5 | Step 12: Sequence Models + LLM Agents | T3 | 10 days |
-| Sep 6–19 | Step 13: Behavioral Analysis Pipelines | T2 | 2 weeks |
-| Sep 20–Oct 3 | Step 14: Evaluation Frameworks + Exploitability | T2 | 2 weeks |
-| Oct 4–14 | Step 15: Research Frontier Mapping | T3 | 10 days |
-| Oct 15–31 | **Buffer** | — | **~2.5 weeks** |
+| Apr 1–10 | Step 3: CFR Variants + MC Methods | T2 | 10 days |
+| Apr 11–20 | Step 4: Game Abstraction + Scaling | T2 | 10 days |
+| Apr 21–May 1 | Step 5: Neural Equilibrium (Deep CFR, DREAM) | T2 | 11 days |
+| May 2–22 | Step 6: End-to-End Game AI (Pluribus→ReBeL→SoG) | **T1** | **3 weeks** |
+| May 23–Jun 12 | Step 7: Opponent Modeling | **T1** | **3 weeks** |
+| Jun 13–Jul 3 | Step 8: Safe Exploitation | **T1** | **3 weeks** |
+| Jul 4–17 | Step 9: MARL — Coordination, Competition, Comms | T2 | 2 weeks |
+| Jul 18–31 | Step 10: PBT + Evolutionary Game Theory | T2 | 2 weeks |
+| Aug 1–14 | Step 11: Coalition Formation in FFA Games | T2 | 2 weeks |
+| Aug 15–24 | Step 12: Sequence Models + LLM Agents | T3 | 10 days |
+| Aug 25–Sep 7 | Step 13: Behavioral Analysis Pipelines | T2 | 2 weeks |
+| Sep 8–21 | Step 14: Evaluation Frameworks + Exploitability | T2 | 2 weeks |
+| Sep 22–Oct 1 | Step 15: Research Frontier Mapping | T3 | 10 days |
+| Oct 2–31 | **Buffer** | — | **~4.3 weeks** |
 | November | Chapter 1 + first publication draft | — | — |
 
-**Time budget:** 9 weeks (Tier 1) + 16 weeks (Tier 2) + 3 weeks (Tier 3) = **28 weeks** (Apr 1 → Oct 14). Buffer: ~2.5 weeks before November deadline.
+**Time budget:** 9 weeks (Tier 1) + 14.4 weeks (Tier 2, compressed) + 3 weeks (Tier 3) = **~26.4 weeks** (Apr 1 → Oct 1). Buffer: ~4.3 weeks before November deadline.
 
 ### Why this ordering:
 - **Months 1–2 (Steps 3–6, Apr–early Jun):** Complete the algorithmic toolbox. You can't model opponents or evaluate agents without first knowing how equilibria are computed, scaled, and approximated neurally. Student of Games (Step 6) gets 3 weeks (Tier 1) — it unifies perfect and imperfect information into one framework, which is the generalization proof your professors want.

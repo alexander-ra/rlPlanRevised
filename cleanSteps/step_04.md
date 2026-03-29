@@ -1,8 +1,10 @@
 # Step 4 — Game Abstraction + Scaling Imperfect-Information Games
 
-**Duration:** 14 days (Tier 2)  
+**Duration:** 10 days (Tier 2 — compressed)  
 **Dependencies:** Step 2 (Game Theory + CFR Basics), Step 3 (CFR Variants + Monte Carlo Methods)  
 **Phase:** B — Scaling the Toolbox
+
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one working abstraction example (card bucketing on Extended Leduc). Defer full abstraction pipeline comparison to implementation phase post-November. All reading and intuition phases unchanged.
 
 ---
 
@@ -137,3 +139,11 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Understanding of action translation problem and its practical solutions
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 1–3 and forward to Steps 5–6 identified and documented
+
+---
+
+**Short Title:** Step 4 — Game Abstraction + Scaling
+
+---
+
+**Short Title:** Step 4 — Game Abstraction + Scaling

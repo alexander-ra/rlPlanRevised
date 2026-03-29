@@ -514,3 +514,11 @@ This step bridges the thesis's FORMAL tools (Steps 2–8: CFR, equilibrium, expl
 - [ ] Learning Log updated (connections from Steps 2–11 + new confusions + PhD bridge notes)
 - [ ] PhD connection documented (state encoding → Step 13, ARDT → Contribution #2 offline path, comparison table → Contribution #3 prototype)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 12 — Sequence Models + LLM Agents
+
+---
+
+**Short Title:** Step 12 — Sequence Models + LLM Agents

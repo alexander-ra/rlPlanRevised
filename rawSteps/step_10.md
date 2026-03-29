@@ -527,3 +527,11 @@ This step provides the EVOLUTIONARY MACHINERY for the thesis. The connection to 
 - [ ] Learning Log updated (connections from Steps 2–9 + new confusions + resolved confusions)
 - [ ] PhD connection documented (PBT as automated opponent modeling, population safety gap, EGTA as evaluation framework)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 10 — Population Training + Evolutionary GT
+
+---
+
+**Short Title:** Step 10 — Population Training + Evolutionary GT

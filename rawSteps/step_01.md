@@ -283,3 +283,11 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** indirectly
 - [ ] One-pager written and committed
 - [ ] Learning Log initialized (connections + confusions)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 1 — RL Basics
+
+---
+
+**Short Title:** Step 1 — RL Basics

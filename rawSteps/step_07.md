@@ -526,4 +526,20 @@ This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework)
 - [ ] Learning Log updated (connections from Steps 2–6 + new confusions + resolved confusions)
 - [ ] PhD connection documented (Contribution #1: sensor component)
 - [ ] Open questions logged: non-stationarity handling, computational cost of consistent model, scaling to large games
+- [ ] Level-k opponent type implemented and tested (P5)
+- [ ] Bayesian online changepoint detection integrated into non-stationarity experiment (P8)
 - [ ] Step notes committed to repo
+
+> **[P5] Level-k / Cognitive Hierarchy merge:** Add one paper on Level-k/cognitive hierarchy models (e.g., Wright & Leyton-Brown 2014 or Camerer, Ho & Chong 2004) to Phase 3 reading. Add a Level-k opponent type to the opponent type library in Phase 4. Models human suboptimality — critical for Playtech data validation in Step 13. ~1.5d absorbed within 21d allocation.
+
+> **[P8] Bayesian Online Changepoint Detection merge:** Add Adams & MacKay (2007) changepoint detection to the non-stationarity experiment in Phase 4. Instead of ad-hoc “observe what happens when opponent switches type,” detect the switch point statistically, then trigger re-modeling. ~0.5d absorbed within 21d allocation.
+
+> **[P11*] Meta-Learning Baseline (optional):** If Step 7 completes ahead of schedule, run one off-the-shelf meta-learning method (e.g., MAML or contextual bandit) as a comparison baseline against the Bayesian opponent model. No tuning. Preempts reviewer question “why not just meta-learn?”
+
+---
+
+**Short Title:** Step 7 — Opponent Modeling
+
+---
+
+**Short Title:** Step 7 — Opponent Modeling

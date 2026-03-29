@@ -1,8 +1,10 @@
 # Step 3 — CFR Variants + Monte Carlo Methods
 
-**Duration:** 14 days (Tier 2)  
+**Duration:** 10 days (Tier 2 — compressed)  
 **Dependencies:** Step 2 (Game Theory + CFR Basics)  
 **Phase:** B — Scaling the Toolbox
+
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one MC-CFR variant (External Sampling) to working correctness. Defer multi-variant polished comparison to implementation phase post-November. All reading and intuition phases unchanged.
 
 ---
 
@@ -122,3 +124,11 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Understanding of convergence-variance tradeoff across sampling strategies
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 1–2 and forward to Steps 5–6 identified and documented
+
+---
+
+**Short Title:** Step 3 — CFR Variants + MC Methods
+
+---
+
+**Short Title:** Step 3 — CFR Variants + MC Methods

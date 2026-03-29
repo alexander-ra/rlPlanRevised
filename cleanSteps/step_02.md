@@ -116,6 +116,8 @@ This step provides the game-theoretic framework upon which all three thesis cont
 | Exploitability as evaluation metric | Primary metric in the evaluation methodology (Contribution #3, Step 14) |
 | Best response computation | Core subroutine for measuring agent quality throughout the research program |
 
+> **[P6] Sequence-form reading pointer:** When reviewing Step 2 material during Step 8, revisit Shoham & Leyton-Brown Chapter 4 on sequence-form representation. The sequence-form is the mathematical backbone of all LP-based equilibrium and exploitation computation used in Step 8.
+
 ---
 
 ## Exit Criteria
@@ -128,3 +130,11 @@ This step provides the game-theoretic framework upon which all three thesis cont
 - [ ] Understanding of CFR's convergence guarantees and their limitation to 2-player zero-sum games
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 1, 3–8 identified and documented
+
+---
+
+**Short Title:** Step 2 — Game Theory + CFR
+
+---
+
+**Short Title:** Step 2 — Game Theory + CFR

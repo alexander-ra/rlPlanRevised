@@ -807,3 +807,15 @@ This step is the PRACTICAL CORE of the thesis — it connects all theoretical wo
 - [ ] Learning Log updated (connections from Steps 2–12 + collusion-specific confusions + pub candidate noted)
 - [ ] PhD connection documented (pipeline = Contribution #1, exploitation gap = Contribution #2, collusion = Contribution #3, publication candidate identified)
 - [ ] Step notes committed to repo
+
+> **[P8] Change-Point Detection for collusion:** Add Bayesian online changepoint detection (Adams & MacKay 2007) as a signal in the collusion detection composite score. Same algorithm from Step 7 applied to detect collusion onset / bot behavior changes in player timelines. ~0.5d absorbed within 14d allocation.
+
+> **[P10] GAIL/IRL Fallback:** If behavioral cloning accuracy < 55% on action prediction, explore **IQ-Learn** (Garg et al., 2021) as an inverse RL alternative. IQ-Learn is already in supplementary references — this promotes it to documented Plan B.
+
+---
+
+**Short Title:** Step 13 — Behavioral Analysis Pipelines
+
+---
+
+**Short Title:** Step 13 — Behavioral Analysis Pipelines

@@ -110,3 +110,13 @@ Develop a complete pipeline for analyzing real-world poker behavioral data: pars
 - **Contribution 2 (Multi-Agent Safe Exploitation):** Real player data provides the empirical base for exploitation analysis. The behavioral deviation from Nash/GTO play (measured here) quantifies the exploitation opportunity that safe exploitation theory (Step 8) addresses.
 - **Contribution 3 (Evaluation Methodology):** The collusion detection module is a direct methodological contribution. Few published solutions exist for poker collusion detection; this pipeline combines player embeddings, statistical signals, and coalition detection principles into a novel approach.
 - **Publication candidate:** Pipeline + Playtech case study suitable for IEEE Transactions on Games, AAAI Workshop, or similar venue. Title direction: "Behavioral Analysis and Collusion Detection in Online Poker via Transformer-Based Player Embeddings."
+> **[P8] Change-Point Detection for collusion:** Add Bayesian online changepoint detection (Adams & MacKay 2007) as a signal in the collusion detection composite score. Same algorithm from Step 7 applied to detect collusion onset / bot behavior changes in player timelines. ~0.5d absorbed within 14d allocation.
+
+> **[P10] GAIL/IRL Fallback:** If behavioral cloning accuracy < 55% on action prediction, explore **IQ-Learn** (Garg et al., 2021) as an inverse RL alternative. IQ-Learn is already in supplementary references — this promotes it to documented Plan B.
+---
+
+**Short Title:** Step 13 — Behavioral Analysis Pipelines
+
+---
+
+**Short Title:** Step 13 — Behavioral Analysis Pipelines

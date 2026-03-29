@@ -199,3 +199,15 @@ The three contributions are designed to align with both the university requireme
 - [ ] One-pager written and committed
 - [ ] Learning Log updated with final cross-step connections and PhD research questions
 - [ ] Step notes committed to repository
+
+> **[P3] Contribution #2 scope (final framing):** Ensure contribution design explicitly scopes Contribution #2 to tractable heuristics + empirical validation on small N-player games. State the non-claim (general N-player safety theorem) in the contribution summary.
+
+> **[P4*] Contribution #3 failure-mode framing:** Contribution #3 description must reference failure-mode evidence from Step 14. The contribution is “existing evaluation breaks in these settings + our framework catches what it misses,” not “we assembled a toolkit.”
+
+---
+
+**Short Title:** Step 15 — Research Frontier Mapping
+
+---
+
+**Short Title:** Step 15 — Research Frontier Mapping

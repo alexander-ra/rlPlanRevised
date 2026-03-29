@@ -1,8 +1,11 @@
 # Step 5 — Neural Equilibrium Approximation (Deep CFR, DREAM)
 
-**Duration:** 14 days (Tier 2)  
+**Duration:** 11 days (Tier 2 — compressed)  
 **Dependencies:** Step 1 (RL Basics), Step 3 (CFR Variants + MC Methods), Step 4 (Game Abstraction + Scaling)  
-**Phase:** C — Neural Methods for Games  
+**Phase:** C — Neural Methods for Games
+
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Get Deep CFR running on Leduc with correct exploitability convergence. Understand DREAM conceptually (reading + exploration). Defer full DREAM implementation and head-to-head Deep CFR vs. DREAM benchmark to implementation phase post-November. All reading and intuition phases unchanged.
+> Phase allocation: Intuition 1d | Exploration 2d | Reading 3d | Implementation **3d** | Consolidation 2d  
 **Freshness Note:**  
 - ArXiv search: "deep counterfactual regret minimization" sorted by date (Mar 2026) — 19 results total  
 - ArXiv search: "neural fictitious self play imperfect information" (Mar 2026) — 4 results total  
@@ -384,3 +387,11 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–4 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
+
+---
+
+**Short Title:** Step 5 — Neural Equilibrium (Deep CFR, DREAM)
+
+---
+
+**Short Title:** Step 5 — Neural Equilibrium (Deep CFR, DREAM)

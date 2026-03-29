@@ -624,3 +624,15 @@ This step is the SECOND HALF of Contribution #1 (Behavioral Adaptation Framework
 - [ ] PhD connection documented (Contribution #1 complete; Contribution #2 gap identified)
 - [ ] Open questions logged: N-player extension, baseline quality requirements, model latency + safety interaction
 - [ ] Step notes committed to repo
+
+> **[P3] Contribution #2 scope narrowing:** Reframe PhD contribution alignment: Contribution #2 is **tractable heuristics + empirical validation on small N-player games**, not a general N-player safety theorem. Targets: piKL-regularized exploitation, equal share baseline (payoff ≥ C/n), adaptation safety extended to 3-player Kuhn/Leduc. Explicitly state the non-claim: general N-player minimax analog.
+
+> **[P6] Sequence-form LP understanding:** Ensure LP formulations (RNR, Ganzfried constrained response) are understood as **sequence-form programs**, not black-box solvers. Connect to the sequence-form representation from Shoham & Leyton-Brown Ch. 4 (referenced in Step 2 note).
+
+---
+
+**Short Title:** Step 8 — Safe Exploitation
+
+---
+
+**Short Title:** Step 8 — Safe Exploitation
