@@ -1,12 +1,12 @@
-# Step 6 — End-to-End Game AI Architectures (Pluribus → ReBeL → Student of Games)
+# Step 6 — End-to-End Game AI Architectures
 
-**Duration:** 21 days (Tier 1)  
-**Dependencies:** Step 3 (CFR Variants + MC Methods), Step 4 (Game Abstraction + Scaling), Step 5 (Neural Equilibrium Approximation)  
+**Duration:** 21 days  
+**Prerequisites:** Step 3 (CFR Variants & Monte Carlo Methods), Step 4 (Game Abstraction & Scaling), Step 5 (Neural Equilibrium Approximation)  
 **Phase:** C — Neural Methods for Games
 
 ---
 
-## Objectives
+## Formal Objectives
 
 1. Study the architectural evolution of superhuman game-playing AI systems, from modular pipeline designs (DeepStack, Libratus) through multi-player extensions (Pluribus) to unified learning-and-search frameworks (ReBeL, Student of Games).
 2. Understand Public Belief States (PBS) as the foundational state representation enabling search in imperfect-information games, including their formal definition, Bayesian update mechanics, and role in convergence guarantees.
@@ -89,15 +89,13 @@ Update learning log with cross-step connections and newly identified research qu
 
 ---
 
-## Deliverables
+## Expected Outputs
 
-1. **Working ReBeL-Lite implementation** for Leduc Hold'em demonstrating decreasing exploitability across training iterations
-2. **PBS representation module** with verified Bayesian update logic
-3. **PBS-CFR local solver** operating on arbitrary belief states for Kuhn and Leduc
-4. **PBS value network** trained on Leduc with predictions correlating with CFR solutions
-5. **Architecture comparison table** and evolutionary analysis covering all five systems
-6. **Component reuse analysis** mapping Steps 3–5 building blocks across all five architectures
-7. **Step summary** connecting game AI architectures to the broader algorithmic progression and thesis contributions
+- Working ReBeL-Lite implementation for Leduc Hold'em demonstrating decreasing exploitability across training iterations
+- PBS representation module with verified Bayesian update logic
+- Architecture comparison table and evolutionary analysis covering all five systems
+- One-page summary document (per Section 4.7 of the plan architecture)
+- Updated learning log with connections to Steps 1–5 and thesis contribution mapping
 
 ---
 
@@ -108,19 +106,3 @@ This step establishes the architectural foundation for the entire thesis. The fi
 - **Contribution 1** extends ReBeL's PBS framework to incorporate strategic beliefs about opponent types — creating a richer state representation for adaptive play.
 - **Contribution 2** addresses Pluribus's demonstrated gap: Nash-based approaches work empirically for N-player games but lack formal safety guarantees. The depth-limited solving bounds from Brown & Sandholm (2018) and the opponent adaptation analysis from Milec et al. (2025) provide the theoretical starting point.
 - **Contribution 3** builds on the exploitability metric used universally across all five architectures, extending it into a comprehensive evaluation methodology for adaptive agents in multi-player settings.
-
----
-
-## Exit Criteria
-
-- [ ] Can draw architecture diagrams for all 5 systems from memory (DeepStack, Libratus, Pluribus, ReBeL, Student of Games)
-- [ ] Can explain the evolution: why each system exists and what problem it addresses that previous systems didn't
-- [ ] PBS representation module working with correct Bayesian updates on Kuhn and Leduc
-- [ ] PBS-CFR local solver reproducing Nash equilibrium when starting from uniform PBS
-- [ ] PBS value network trained and correlating with CFR solutions ($R^2 > 0.9$)
-- [ ] ReBeL-Lite training loop converging on Leduc (exploitability decreasing across iterations)
-- [ ] Architecture comparison table completed with written analysis
-- [ ] Ability to explain Public Belief States and depth-limited solving from memory
-- [ ] Step summary completed and committed to repository
-- [ ] Connections to Steps 1–5 and forward to Steps 7–8 identified and documented
-- [ ] Thesis contribution mapping documented (Contributions #1, #2, #3)
