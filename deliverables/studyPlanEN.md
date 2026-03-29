@@ -196,7 +196,65 @@ Phases A and B established tabular equilibrium solvers and abstraction technique
 
 ---
 
-<!-- Phases D through G will be added in subsequent iterations. -->
+## 5. Phase D — Opponent Modeling and Exploitation (Steps 7–8) · end of May – beginning of July 2026
+
+### 5.1 Phase Overview
+
+This phase constitutes the thesis-critical core of the study plan. The preceding phases established the algorithmic toolbox — equilibrium solvers, abstraction techniques, and neural approximation methods — upon which the thesis contributions are built, but did not yet address the central research question of how an agent should adapt its play to a specific opponent. Phase D closes this gap by introducing, first, the inference mechanisms that convert observed action sequences into beliefs about opponent behavior (Step 7), and then the exploitation algorithms that translate those beliefs into profitable yet provably safe strategy adjustments (Step 8). Together these two steps produce the end-to-end pipeline — observe, model, exploit safely — that constitutes the prototype for Contribution 1 (Behavioral Adaptation Framework) and exposes the precise theoretical obstacles that Contribution 2 (Multi-Agent Safe Exploitation) seeks to address.
+
+### 5.2 Step 7 — Opponent Modeling — Inference from Behavioral Traces
+
+**Contribution Alignment.** Bayesian opponent modeling<sup>31</sup> provides the "sensor" component of the Behavioral Adaptation Framework (Contribution 1): the mechanism that infers opponent behavioral patterns from partial observations accumulated during play. Three modeling paradigms are studied — type-based models with Dirichlet-multinomial priors, continuous parametric models estimating per-information-set action distributions, and consistent convergent estimators based on the sequence-form projected gradient descent of Ganzfried (2025) — each offering a different tradeoff between structural assumptions, convergence speed, and robustness to unknown opponent types. The multiplayer extension of opponent modeling, which requires maintaining joint beliefs over all opponents simultaneously, lays the groundwork for Contribution 2 by exposing the computational challenges of scaling inference beyond the two-player case. Non-stationarity handling — detecting and responding to opponents who change strategies mid-game — addresses a key open problem for Contribution 3 (Evaluation Methodology), where standard metrics may understate exploitability when opponents are adaptive.
+
+**Literature.**
+
+1. Southey, F., Bowling, M., Larson, B., Piccione, C., Burch, N., Billings, D. and Rayner, C. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *Proceedings of the 21st Conference on Uncertainty in Artificial Intelligence (UAI).*
+2. Bard, N., Johanson, M., Burch, N. and Bowling, M. (2013). "Online Implicit Agent Modelling." *Proceedings of the 12th International Conference on Autonomous Agents and Multi-Agent Systems (AAMAS).*
+3. Ganzfried, S. and Sun, Q. (2016). "Bayesian Opponent Exploitation in Imperfect-Information Games." Preprint.
+4. Ganzfried, S., Wang, K.A. and Chiswick, M. (2022). "Opponent Modeling in Multiplayer Imperfect-Information Games." Preprint.
+5. Ganzfried, S. (2025). "Consistent Opponent Modeling in Imperfect-Information Games." Preprint.
+6. Shoham, Y. and Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press. Chapter 7: Learning and Teaching.
+
+**Practical Tasks.**
+
+- Construct an opponent type library with five or more distinct strategies (tight-aggressive, loose-passive, Nash equilibrium, exploitative, random) for both Kuhn Poker<sup>19</sup> and Leduc Hold'em<sup>20</sup>.
+- Implement an observation buffer handling partial observability (showdown versus non-showdown information extraction).
+- Implement a type-based Bayesian opponent model<sup>31</sup> with Dirichlet-multinomial posterior inference and a continuous Bayesian model with per-information-set action distribution estimation.
+- Implement a consistent opponent modeler following the Ganzfried (2025) sequence-form projected gradient descent approach.
+- Build an adaptive exploitation pipeline integrating opponent modeling and best-response<sup>1</sup> computation.
+- Conduct a head-to-head model comparison measuring convergence speed, final exploitation rate, and robustness to unknown opponent types.
+- Execute non-stationarity tests demonstrating model behavior under opponent type switching.
+
+### 5.3 Step 8 — Safe Exploitation — Theory, Algorithms, and Real-Time Search
+
+**Contribution Alignment.** The exploitation–safety tradeoff<sup>33</sup> studied in this step constitutes the theoretical core of the thesis. The Restricted Nash Response (RNR<sup>32</sup>) provides the initial algorithmic tool for blending equilibrium play with exploitative best-response play, parameterized by a continuous safety coefficient. The Safety Theorem of Ganzfried and Sandholm (2015) establishes the formal guarantee that exploitation strategies anchored to a Nash equilibrium<sup>7</sup> baseline cannot lose more than the baseline itself — a two-player zero-sum result whose dependence on the minimax theorem exposes the precise failure point for N-player extension (Contribution 2). Prime-safe exploitation (Jeary and Turrini, 2023) extends safety guarantees to $\varepsilon$-equilibrium baselines, connecting Step 4 abstraction quality to Step 8 exploitation budgets. Subgame exploitation methods (SES, OX-Search) enable real-time safe exploitation during play without full-game recomputation — the scalability mechanism required for practical deployment of Contribution 1. Teaching attack<sup>34</sup> resilience testing, in which a deceptive opponent deliberately plays suboptimally to manipulate the modeler before switching to an exploitative strategy, provides the prototype adversarial evaluation methodology for Contribution 3. The adaptation safety<sup>35</sup> notion of Ge et al. (2024) — requiring that the exploitation strategy be no more exploitable than the blueprint baseline — offers the practical safety definition adopted by the thesis for settings where strict Nash safety is not achievable.
+
+**Literature.**
+
+1. Johanson, M., Bowling, M. and Zinkevich, M. (2007). "Computing Robust Counter-Strategies." *Advances in Neural Information Processing Systems (NeurIPS).*
+2. Ganzfried, S. and Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Transactions on Economics and Computation*, 3(2).
+3. Liu, W., Wang, H., Guo, T. and Xing, J. (2022). "Safe Opponent-Exploitation Subgame Refinement." *Advances in Neural Information Processing Systems (NeurIPS).*
+4. Jeary, J. and Turrini, P. (2023). "Safe Opponent Exploitation For Epsilon Equilibrium Strategies." Preprint.
+5. Ge, C., Zhu, Y. et al. (2024). "Safe and Robust Subgame Exploitation in Imperfect Information Games." *Proceedings of the 41st International Conference on Machine Learning (ICML).*
+6. Milec, D., Kovařík, V. and Lisý, V. (2025). "Adapting Beyond the Depth Limit: Counter Strategies in Large Imperfect Information Games." Preprint.
+7. Shoham, Y. and Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations.* Cambridge University Press. Sections 3.4 and 4.6.
+
+**Practical Tasks.**
+
+- Implement a safety checker module computing worst-case exploitability<sup>3</sup> and verifying safety constraints against the blueprint strategy.
+- Implement an exploitation metrics module measuring exploitation value and safety violations.
+- Build a Restricted Nash Response (RNR<sup>32</sup>) solver with configurable safety parameter $p \in [0,1]$.
+- Implement the Ganzfried safe exploitation solver enforcing the Safety Theorem guarantee.
+- Implement a prime-safe exploitation extension handling $\varepsilon$-equilibrium baselines (connecting abstraction quality from Step 4).
+- Build an SES-style subgame exploitation solver with gadget construction for real-time safe exploitation.
+- Implement an adaptation safety<sup>35</sup> checker following the Ge et al. (2024) safety notion.
+- Generate exploitation–safety Pareto frontier plots for all methods across multiple opponent types.
+- Integrate the full pipeline: Step 7 opponent models<sup>30</sup> feeding Step 8 exploitation engine, evaluated end-to-end.
+- Conduct a teaching attack<sup>34</sup> stress test with deceptive opponent switching behavior mid-game and robustness analysis.
+
+---
+
+<!-- Phases E through G will be added in subsequent iterations. -->
 
 ---
 
@@ -296,3 +354,23 @@ A game-solving framework that combines self-play reinforcement learning with sea
 
 **[29] Public belief state (PBS).**
 A probability distribution over all possible private information assignments, maintained and updated via Bayes' rule as public actions are observed. The PBS serves as a sufficient statistic for decision-making in imperfect-information games and is the central representation in the ReBeL architecture.
+
+### Opponent Modeling and Exploitation
+
+**[30] Opponent modeling.**
+The process of inferring an opponent's strategy, intentions, or type from observed behavioral traces during play. Opponent models may be explicit (maintaining a belief distribution over opponent strategies) or implicit (adapting one's own strategy directly from observations without constructing an explicit belief).
+
+**[31] Bayesian opponent modeling.**
+An opponent modeling approach that maintains a prior distribution over possible opponent types or action frequencies and updates it via Bayes' rule as new observations are collected. Type-based variants use Dirichlet-multinomial conjugacy for closed-form posterior updates; continuous variants estimate per-information-set action distributions.
+
+**[32] Restricted Nash Response (RNR).**
+A safe exploitation algorithm that constructs a strategy blending Nash equilibrium play with best-response exploitation. A safety parameter $p \in [0,1]$ controls the tradeoff: at $p = 0$ the strategy is a pure best response, and at $p = 1$ it is the Nash equilibrium itself. Formulated as a linear program.
+
+**[33] Safe exploitation.**
+The problem of adapting one's strategy to exploit a modeled opponent's weaknesses while maintaining provable guarantees against worst-case loss. In two-player zero-sum games, the Safety Theorem (Ganzfried and Sandholm, 2015) ensures that an exploitation strategy anchored to a Nash equilibrium baseline cannot lose more than the baseline against any opponent.
+
+**[34] Teaching attack.**
+An adversarial strategy in which an opponent deliberately plays suboptimally to manipulate an adaptive agent's opponent model, then switches to an exploitative strategy once the agent has been misled. Resilience to teaching attacks is a key robustness criterion for opponent modeling systems.
+
+**[35] Adaptation safety.**
+A safety notion (Ge et al., 2024) requiring that an exploitation strategy be no more exploitable than the blueprint baseline strategy from which it was derived. A weaker but more practically achievable guarantee than strict Nash safety, applicable to settings where the baseline is an approximate rather than exact equilibrium.

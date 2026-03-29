@@ -67,6 +67,15 @@
 | Free-for-all (FFA) | Свободна конкуренция / Всеки срещу всеки | Use the descriptive phrase |
 | Opponent modeling | Моделиране на противника | |
 | Behavioral trace | Поведенчески проследявания | Or „наблюдавана последователност от действия" |
+| Bayesian opponent modeling | Байесово моделиране на противника | |
+| Type-based model | Типово базиран модел | |
+| Consistent opponent modeling | Консистентно моделиране на противника | |
+| Restricted Nash Response (RNR) | Ограничен Наш отговор | Keep „RNR" abbreviation in Latin |
+| Teaching attack | Обучаваща атака | Adversarial manipulation of opponent model |
+| Adaptation safety | Безопасност на адаптацията | Ge et al. (2024) safety notion |
+| Exploitation–safety tradeoff | Компромис между експлоатация и безопасност | |
+| Safety theorem | Теорема за безопасността | Ganzfried & Sandholm (2015) |
+| Pareto frontier | Парето граница | |
 | Subgame solving | Решаване на подигри | |
 | Action abstraction | Абстракция на действията | |
 | Card bucketing | Групиране на карти | „Групиране" avoids anglicism |
@@ -119,6 +128,10 @@
 | DREAM | Deep Regret minimization with Advantage baselines and Model-free learning | — |
 | ReBeL | Recursive Belief-based Learning | Рекурсивно обучение на основата на убеждения |
 | piKL | Policy-regularized KL | — (keep as notation) |
+| RNR | Restricted Nash Response | Ограничен Наш отговор |
+| SES | Safe Exploitation Subgame | Безопасна експлоатация на подигри |
+| OX-Search | Opponent Exploitation Search | — (keep as algorithm name) |
+| ABD | Adapting Beyond the Depth limit | — (keep as algorithm name) |
 
 ---
 
