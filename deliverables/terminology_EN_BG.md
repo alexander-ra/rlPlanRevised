@@ -83,6 +83,17 @@
 | So Long Sucker (SLS) | — | Keep game name in English; „SLS" in Latin |
 | Non-stationarity (multi-agent) | Нестационарност | |
 | piKL regularization | piKL регуларизация | Keep notation in Latin |
+| Decision Transformer | Трансформатор за решения | Or keep „Decision Transformer" with gloss on first use |
+| Adversarially Robust Decision Transformer (ARDT) | Устойчив на противник трансформатор за решения | Keep „ARDT" in Latin |
+| Behavioral cloning | Поведенческо клониране | |
+| Player embedding (player2vec) | Вграждане на играч | Keep „player2vec" in Latin |
+| Collusion detection | Разпознаване на тайно съглашение | |
+| Chip dumping | Прехвърляне на чипове | Collusion signal |
+| Soft play | Пасивна игра срещу съучастник | Collusion signal |
+| VPIP | Voluntarily Put In Pot | Keep abbreviation in Latin |
+| PFR | Pre-Flop Raise | Keep abbreviation in Latin |
+| State tensor encoding | Тензорно кодиране на състоянието | |
+| Hand history | История на ръце | Poker record format |
 | Subgame solving | Решаване на подигри | |
 | Action abstraction | Абстракция на действията | |
 | Card bucketing | Групиране на карти | „Групиране" avoids anglicism |
@@ -147,6 +158,9 @@
 | LOLA | Learning with Opponent-Learning Awareness | Обучение с осъзнаване на обучението на противника |
 | CommNet | Communication Neural Network | Комуникационна невронна мрежа |
 | EGTA | Empirical Game-Theoretic Analysis | Емпиричен теоретико-игрови анализ |
+| DT | Decision Transformer | Трансформатор за решения |
+| ARDT | Adversarially Robust Decision Transformer | Устойчив на противник трансформатор за решения |
+| CQL | Conservative Q-Learning | Консервативно Q-обучение |
 
 ---
 
