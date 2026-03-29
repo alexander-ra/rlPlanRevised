@@ -94,6 +94,17 @@
 | PFR | Pre-Flop Raise | Keep abbreviation in Latin |
 | State tensor encoding | Тензорно кодиране на състоянието | |
 | Hand history | История на ръце | Poker record format |
+| Approximate exploitability | Приблизителна експлоатируемост | RL-based best response estimation |
+| Marginal exploitability | Маргинална експлоатируемост | N-player extension |
+| α-Rank | α-Rank | Keep in Latin; „еволюционно класиране" as gloss |
+| VasE | VasE | Keep in Latin; „оценяване чрез теория на социалния избор" as gloss |
+| AIVAT | AIVAT | Keep in Latin; „редукция на дисперсията чрез контролни варианти" as gloss |
+| Maximal lottery | Максимална лотария | Social choice theory concept |
+| Intransitive cycle | Нетранзитивен цикъл | |
+| Bot zoo | Зоопарк от агенти | Reference agent collection for evaluation |
+| Research frontier | Изследователска граница | |
+| Publication pipeline | Публикационен план | |
+| Dissertation chapter | Глава на дисертацията | |
 | Subgame solving | Решаване на подигри | |
 | Action abstraction | Абстракция на действията | |
 | Card bucketing | Групиране на карти | „Групиране" avoids anglicism |
@@ -161,6 +172,9 @@
 | DT | Decision Transformer | Трансформатор за решения |
 | ARDT | Adversarially Robust Decision Transformer | Устойчив на противник трансформатор за решения |
 | CQL | Conservative Q-Learning | Консервативно Q-обучение |
+| α-Rank | Alpha-Rank | Еволюционно класиране на агенти |
+| VasE | Voting as Stochastic Estimation | Оценяване чрез теория на социалния избор |
+| AIVAT | AIVAT | Редукция на дисперсията чрез контролни варианти |
 
 ---
 

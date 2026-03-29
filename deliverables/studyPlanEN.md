@@ -330,10 +330,6 @@ The preceding phases developed techniques for two-player imperfect-information g
 
 ---
 
-<!-- Phases F and G will be added in subsequent iterations. -->
-
----
-
 ## 7. Phase F — Data-Driven Approaches (Steps 12–13) · mid-August – beginning of September 2026
 
 ### 7.1 Phase Overview
@@ -387,6 +383,58 @@ The preceding phases developed game-solving algorithms and multi-agent training 
 ---
 
 <!-- Phase G will be added in the next iteration. -->
+
+---
+
+## 8. Phase G — Integration (Steps 14–15) · beginning of September – beginning of October 2026
+
+### 8.1 Phase Overview
+
+The preceding six phases progressively developed the theoretical foundations, algorithmic toolbox, and data pipelines required by the thesis. Phase G synthesizes this body of work into two integrative deliverables. Step 14 constructs a unified, three-layer evaluation framework — combining exploitability<sup>3</sup> computation, population-level ranking, and statistical confidence quantification — that is validated across all game types encountered in the study plan (two-player, N-player, and real-world data). This framework constitutes the core of Contribution 3 (Evaluation Methodology). Step 15 maps the research frontier across all three contribution areas, designs the experimental programme for the subsequent research phase, produces a detailed outline for the first dissertation chapter (due November 2026), and establishes the publication pipeline through to defense. Together, these steps complete the transition from the learning phase (Steps 1–14) to the research phase of the doctoral programme.
+
+### 8.2 Step 14 — Evaluation Frameworks and Exploitability Metrics
+
+**Contribution Alignment.** This step constitutes Contribution 3 (Evaluation Methodology) directly. The three-layer evaluation framework integrates: (1) an exploitability layer providing exact computation for small games and approximate computation via RL-based best response<sup>51</sup> for large games, supplemented by the adaptation safety<sup>35</sup> metric of Ge et al. (2024); (2) a population ranking layer comparing Elo, $\alpha$-Rank<sup>52</sup> (evolutionary dynamics via Markov-Conley chains), VasE<sup>53</sup> (social choice theory via maximal lotteries), and meta-Nash equilibrium from EGTA<sup>43</sup>, with the spinning top decomposition<sup>42</sup> as a diagnostic for intransitive competitive structure; and (3) a statistical confidence layer applying AIVAT<sup>54</sup> variance reduction for imperfect-information game evaluation and bootstrapped confidence intervals with sample complexity bounds. The framework is validated across Kuhn Poker<sup>19</sup>, Leduc Hold'em<sup>20</sup>, So Long Sucker<sup>45</sup>, and Playtech real-world data. For Contribution 1, the framework measures whether behavioral adaptation produces measurable improvements in exploitability and population ranking. For Contribution 2, marginal exploitability<sup>55</sup> — the N-player extension of standard exploitability — tests whether two-player safe exploitation guarantees generalize to multi-agent settings.
+
+**Literature.**
+
+1. Timbers, F., Bard, N., Lockhart, E., Lanctot, M., Schmid, M., Burch, N., Schrittwieser, J., Hubert, T. and Bowling, M. (2022). "Approximate Exploitability: Learning a Best Response in Large Games." Preprint.
+2. Lanctot, M., Larson, K., Bachrach, Y., Marris, L., Li, Z., Bhoopchand, A., Anthony, T., Tanner, B. and Koop, A. (2025). "Evaluating Agents using Social Choice Theory." Preprint.
+3. Rowland, M., Omidshafiei, S., Tuyls, K., Perolat, J., Valko, M., Piliouras, G. and Munos, R. (2019). "Multiagent Evaluation under Incomplete Information." Preprint.
+4. Burch, N., Johanson, M. and Bowling, M. (2019). "AIVAT: A New Variance Reduction Technique for Agent Evaluation in Imperfect Information Games." *Proceedings of the 33rd AAAI Conference on Artificial Intelligence.*
+5. Omidshafiei, S., Papadimitriou, C., Piliouras, G., Tuyls, K. et al. (2019). "$\alpha$-Rank: Multi-Agent Evaluation by Evolution." *Nature Scientific Reports.*
+
+**Practical Tasks.**
+
+- Audit and unify all evaluation code from prior steps (exploitability from Steps 3 and 8, EGTA<sup>43</sup> and spinning top decomposition<sup>42</sup> from Step 10, SLS metrics from Step 11, behavioral metrics from Step 13) into a three-layer evaluation API.
+- Construct a bot zoo of reference agents for Kuhn and Leduc covering four tiers: trivial (random, always-call, always-fold), heuristic (tight-aggressive, loose-aggressive, tight-passive), computed (Nash/CFR, DQN), and advanced (PSRO<sup>38</sup>, Decision Transformer<sup>46</sup>).
+- Implement $\alpha$-Rank<sup>52</sup> with Fermi selection function; compute stationary distributions via eigenvalue decomposition and analyze sensitivity to the selection pressure parameter.
+- Implement VasE<sup>53</sup> with tournament matrix construction from pairwise comparisons across games; compute maximal lotteries via linear programming and intransitive cycle detection.
+- Implement AIVAT<sup>54</sup> variance reduction using a CFR-derived control variate with counterfactual adjustment per chance node; verify variance reduction of at least five-fold on Kuhn and ten-fold on Leduc relative to raw evaluation.
+- Conduct cross-game validation: full three-layer evaluation on Kuhn, Leduc, So Long Sucker<sup>45</sup> (marginal exploitability<sup>55</sup>), and Playtech data (AIVAT-adjusted confidence intervals for style classification and collusion detection<sup>50</sup>).
+- Produce a disagreement analysis comparing Elo, $\alpha$-Rank, and VasE rankings, with the spinning top decomposition explaining cases of divergence between transitive and cyclic competitive structures.
+
+### 8.3 Step 15 — Research Frontier Mapping and Contribution Design
+
+**Contribution Alignment.** This step completes the learning phase and designs the research phase. The deliverables directly become the structural components of the doctoral work: the research frontier map identifies the specific gaps addressed by each contribution against the most recent literature; the contribution design documents formalize the three research proposals (Behavioral Adaptation Framework, Multi-Agent Safe Exploitation, Evaluation Methodology) with precise problem statements, proposed methods, experimental protocols, and risk assessments; the experiment specifications define four controlled studies validating the contributions across Kuhn Poker, Leduc Hold'em, three-player Kuhn, and So Long Sucker; the Chapter I outline structures the first dissertation chapter (25–30 pages, due November 2026) covering foundations, opponent modeling, safe exploitation, and evaluation; and the publication pipeline maps six target publications across four dissertation chapters through to defense in April 2029.
+
+**Literature.**
+
+1. Southey, F., Bowling, M., Larson, B., Piccione, C., Burch, N., Billings, D. and Rayner, C. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *Proceedings of the 21st Conference on Uncertainty in Artificial Intelligence (UAI).*
+2. Ganzfried, S. and Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Transactions on Economics and Computation*, 3(2).
+3. Ge, C., Zhu, Y. et al. (2024). "Safe and Robust Subgame Exploitation in Imperfect Information Games." *Proceedings of the 41st International Conference on Machine Learning (ICML).*
+4. Ge, C., Wang, Y., Li, W. and Jin, C. (2024). "Securing Equal Share: A Principled Approach for Learning Multiplayer Symmetric Games." Preprint.
+5. Milec, D., Kovařík, V. and Lisý, V. (2025). "Adapting Beyond the Depth Limit: Counter Strategies in Large Imperfect Information Games." Preprint.
+6. Omidshafiei, S., Papadimitriou, C., Piliouras, G., Tuyls, K. et al. (2019). "$\alpha$-Rank: Multi-Agent Evaluation by Evolution." *Nature Scientific Reports.*
+
+**Practical Tasks.**
+
+- Produce a research frontier map documenting, for each of the three contributions, the current state of the art, the identified gap, supporting evidence from the study plan, and a feasibility assessment.
+- Validate each identified gap against recent publications (2024–2026), conference proceedings, and existing dissertations; record findings in a gap validation log.
+- Write contribution design documents (three documents, two to three pages each) specifying the problem statement, prior art, gap, proposed method, experimental protocol, target publications, timeline, and risk analysis.
+- Specify four experiments: (1) behavioral adaptation on Kuhn Poker (player embedding<sup>48</sup> classification accuracy within 50 hands), (2) N-player safe exploitation on three-player Kuhn (piKL-regularized exploitation versus equal-share baseline), (3) coalition-aware safe exploitation on So Long Sucker<sup>45</sup>, and (4) cross-game evaluation framework validation across Kuhn, Leduc, and SLS.
+- Produce a Chapter I outline (seven sections, 25–30 pages) covering introduction, foundations, opponent modeling and behavioral adaptation, safe exploitation, evaluation of multi-agent game AI, proposed contributions, and research plan — aligned with the November 2026 deadline.
+- Establish the publication pipeline: six target publications mapped to four dissertation chapters with venue selections and submission deadlines through April 2029.
 
 ---
 
@@ -555,3 +603,20 @@ A standard poker behavioral statistic measuring the percentage of hands in which
 
 **[50] Collusion detection.**
 The problem of identifying coordinated play among ostensibly independent players in multiplayer games. Detection signals include co-occurrence anomaly (pairs appearing together more often than expected), chip dumping (directional monetary transfer between colluding players), and soft play (reduced aggression against specific opponents). Extends the coalition detection methodology of Step 11 to a practical fraud detection application.
+
+### Evaluation and Integration
+
+**[51] Approximate exploitability.**
+A method for estimating exploitability in games too large for exact best-response computation, by training an RL-based best-response agent against the strategy under evaluation. The trained agent's payoff provides a lower bound on the true exploitability.
+
+**[52] $\alpha$-Rank.**
+A multi-agent evaluation method based on evolutionary dynamics. Constructs a Markov chain over the strategy population using a Fermi selection function; the stationary distribution assigns each strategy a ranking that captures both transitive dominance and cyclic competitive structure. Unlike Elo, $\alpha$-Rank is sensitive to intransitive (rock-paper-scissors) relationships.
+
+**[53] VasE (Voting as Stochastic Estimation).**
+An evaluation method grounded in social choice theory. Constructs a tournament matrix from pairwise agent comparisons across games and computes maximal lotteries via linear programming. Detects intransitive cycles that Elo-based rankings cannot capture and provides a principled aggregation of performance across heterogeneous evaluation domains.
+
+**[54] AIVAT.**
+A variance reduction technique for evaluating agents in imperfect-information games (Burch, Johanson, and Bowling, 2019). Uses a control variate derived from the CFR value function to make counterfactual adjustments at each chance node, reducing evaluation variance by an order of magnitude while maintaining an unbiased estimator.
+
+**[55] Marginal exploitability.**
+An extension of standard exploitability to N-player settings. Measures each player's incentive to deviate unilaterally from the current strategy profile, accounting for the fact that in multiplayer games the concept of a unique best response is complicated by coalition structures and non-unique equilibria.
