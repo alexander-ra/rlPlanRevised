@@ -113,10 +113,3 @@ Develop a complete pipeline for analyzing real-world poker behavioral data: pars
 > **[P8] Change-Point Detection for collusion:** Add Bayesian online changepoint detection (Adams & MacKay 2007) as a signal in the collusion detection composite score. Same algorithm from Step 7 applied to detect collusion onset / bot behavior changes in player timelines. ~0.5d absorbed within 14d allocation.
 
 > **[P10] GAIL/IRL Fallback:** If behavioral cloning accuracy < 55% on action prediction, explore **IQ-Learn** (Garg et al., 2021) as an inverse RL alternative. IQ-Learn is already in supplementary references — this promotes it to documented Plan B.
----
-
-**Short Title:** Step 13 — Behavioral Analysis Pipelines
-
----
-
-**Short Title:** Step 13 — Behavioral Analysis Pipelines

@@ -536,10 +536,3 @@ This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework)
 
 > **[P11*] Meta-Learning Baseline (optional):** If Step 7 completes ahead of schedule, run one off-the-shelf meta-learning method (e.g., MAML or contextual bandit) as a comparison baseline against the Bayesian opponent model. No tuning. Preempts reviewer question “why not just meta-learn?”
 
----
-
-**Short Title:** Step 7 — Opponent Modeling
-
----
-
-**Short Title:** Step 7 — Opponent Modeling

@@ -619,10 +619,3 @@ This step is the THESIS FRONTIER. Everything from Steps 2–10 was building exis
 
 > **[P3] Contribution #2 scope narrowing (echo from Step 8):** Contribution #2 is **tractable heuristics + empirical validation on small N-player games**, not a general N-player safety theorem. Adjust PhD Connection accordingly.
 
----
-
-**Short Title:** Step 11 — Coalition Formation (FFA)
-
----
-
-**Short Title:** Step 11 — Coalition Formation (FFA)

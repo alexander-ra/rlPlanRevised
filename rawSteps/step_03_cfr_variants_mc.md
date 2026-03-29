@@ -329,10 +329,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 - [ ] Learning Log updated (connections from Steps 1–2 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
 
----
-
-**Short Title:** Step 3 — CFR Variants + MC Methods
-
----
-
-**Short Title:** Step 3 — CFR Variants + MC Methods

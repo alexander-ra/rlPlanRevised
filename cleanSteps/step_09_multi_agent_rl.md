@@ -107,10 +107,3 @@ This step transitions the thesis from two-player zero-sum settings (Steps 2–8)
 
 > **[P9] Markov-Games Bridge:** Add a short formal bridge on Markov games (stochastic games) to Phase 1 (Orientation), before jumping into CTDE/PSRO/LOLA. ~Half-page of notation connecting EFG-style reasoning (game trees, information sets, counterfactual values) to MARL-style reasoning (joint policies, centralized critics, decentralized execution). Explains what is preserved (sequential decisions, partial observability) and what is lost (exact game tree structure, regret-based convergence guarantees). ~0.5d absorbed within 14d allocation.
 
----
-
-**Short Title:** Step 9 — Multi-Agent RL
-
----
-
-**Short Title:** Step 9 — Multi-Agent RL

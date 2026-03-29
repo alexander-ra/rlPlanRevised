@@ -812,10 +812,3 @@ This step is the PRACTICAL CORE of the thesis — it connects all theoretical wo
 
 > **[P10] GAIL/IRL Fallback:** If behavioral cloning accuracy < 55% on action prediction, explore **IQ-Learn** (Garg et al., 2021) as an inverse RL alternative. IQ-Learn is already in supplementary references — this promotes it to documented Plan B.
 
----
-
-**Short Title:** Step 13 — Behavioral Analysis Pipelines
-
----
-
-**Short Title:** Step 13 — Behavioral Analysis Pipelines

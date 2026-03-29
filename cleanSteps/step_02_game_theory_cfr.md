@@ -131,10 +131,3 @@ This step provides the game-theoretic framework upon which all three thesis cont
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 1, 3–8 identified and documented
 
----
-
-**Short Title:** Step 2 — Game Theory + CFR
-
----
-
-**Short Title:** Step 2 — Game Theory + CFR

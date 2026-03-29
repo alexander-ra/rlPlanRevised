@@ -120,10 +120,3 @@ Following the 5-phase learning cycle (Tier 3, 10-day allocation):
 9. One-page summary document
 10. Updated learning log with cross-step connections and open research questions
 
----
-
-**Short Title:** Step 12 — Sequence Models + LLM Agents
-
----
-
-**Short Title:** Step 12 — Sequence Models + LLM Agents

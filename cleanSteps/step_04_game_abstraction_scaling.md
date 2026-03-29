@@ -140,10 +140,3 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 1–3 and forward to Steps 5–6 identified and documented
 
----
-
-**Short Title:** Step 4 — Game Abstraction + Scaling
-
----
-
-**Short Title:** Step 4 — Game Abstraction + Scaling

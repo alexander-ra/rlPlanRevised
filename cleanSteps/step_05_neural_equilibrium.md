@@ -132,10 +132,3 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to Steps 1–4 and forward to Steps 6–8 identified and documented
 
----
-
-**Short Title:** Step 5 — Neural Equilibrium (Deep CFR, DREAM)
-
----
-
-**Short Title:** Step 5 — Neural Equilibrium (Deep CFR, DREAM)

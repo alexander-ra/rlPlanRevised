@@ -727,10 +727,3 @@ Summarize your readiness across the three contribution areas:
 - [ ] Can answer: "What is your fallback if the formal proofs don't work?" (→ Empirical validation with piKL; Contributions #1 and #3 are lower-risk)
 - [ ] Can answer: "Why should the committee approve this PhD?" (→ Three validated gaps, working code infrastructure, realistic publication pipeline, direct career applicability)
 
----
-
-**Short Title:** Step 15 — Research Frontier Mapping
-
----
-
-**Short Title:** Step 15 — Research Frontier Mapping

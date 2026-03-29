@@ -174,10 +174,3 @@ Consolidation of theoretical and practical knowledge:
 - [ ] Connections to Steps 2–6 and forward to Steps 8–11 identified and documented
 - [ ] Open questions documented: non-stationarity handling, computational scaling, multiplayer extension
 
----
-
-**Short Title:** Step 7 — Opponent Modeling
-
----
-
-**Short Title:** Step 7 — Opponent Modeling

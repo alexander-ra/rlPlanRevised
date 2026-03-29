@@ -120,10 +120,3 @@ Following the 5-phase learning cycle (Tier 2, 14-day allocation):
 9. One-page summary document
 10. Updated learning log with cross-step connections, thesis gap crystallization, and open research questions
 
----
-
-**Short Title:** Step 11 — Coalition Formation (FFA)
-
----
-
-**Short Title:** Step 11 — Coalition Formation (FFA)

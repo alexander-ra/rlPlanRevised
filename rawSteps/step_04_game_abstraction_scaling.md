@@ -371,10 +371,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)**: the abstr
 - [ ] Learning Log updated (connections from Steps 1–3 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
 
----
-
-**Short Title:** Step 4 — Game Abstraction + Scaling
-
----
-
-**Short Title:** Step 4 — Game Abstraction + Scaling

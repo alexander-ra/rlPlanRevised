@@ -127,10 +127,3 @@ This step provides the foundational RL vocabulary, agent architecture patterns, 
 - [ ] Step summary completed and committed to repository
 - [ ] Connections to subsequent steps (2–6) identified and documented
 
----
-
-**Short Title:** Step 1 — RL Basics
-
----
-
-**Short Title:** Step 1 — RL Basics

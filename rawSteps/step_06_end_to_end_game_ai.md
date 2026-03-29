@@ -585,10 +585,3 @@ This step is the **architectural foundation** for the entire thesis. Every subse
 - [ ] Learning Log updated (connections from Steps 1–5 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
 
----
-
-**Short Title:** Step 6 — End-to-End Game AI
-
----
-
-**Short Title:** Step 6 — End-to-End Game AI

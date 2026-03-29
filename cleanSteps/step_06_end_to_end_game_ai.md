@@ -107,10 +107,3 @@ This step establishes the architectural foundation for the entire thesis. The fi
 - **Contribution 2** addresses Pluribus's demonstrated gap: Nash-based approaches work empirically for N-player games but lack formal safety guarantees. The depth-limited solving bounds from Brown & Sandholm (2018) and the opponent adaptation analysis from Milec et al. (2025) provide the theoretical starting point.
 - **Contribution 3** builds on the exploitability metric used universally across all five architectures, extending it into a comprehensive evaluation methodology for adaptive agents in multi-player settings.
 
----
-
-**Short Title:** Step 6 — End-to-End Game AI
-
----
-
-**Short Title:** Step 6 — End-to-End Game AI

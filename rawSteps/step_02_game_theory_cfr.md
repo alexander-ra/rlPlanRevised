@@ -382,10 +382,3 @@ This step feeds **all three thesis contributions** at the foundational level:
 - [ ] Learning Log updated (connections from Step 1 + new confusions)
 - [ ] Step notes committed to repo
 
----
-
-**Short Title:** Step 2 — Game Theory + CFR
-
----
-
-**Short Title:** Step 2 — Game Theory + CFR

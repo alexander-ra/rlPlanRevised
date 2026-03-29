@@ -204,10 +204,3 @@ The three contributions are designed to align with both the university requireme
 
 > **[P4*] Contribution #3 failure-mode framing:** Contribution #3 description must reference failure-mode evidence from Step 14. The contribution is “existing evaluation breaks in these settings + our framework catches what it misses,” not “we assembled a toolkit.”
 
----
-
-**Short Title:** Step 15 — Research Frontier Mapping
-
----
-
-**Short Title:** Step 15 — Research Frontier Mapping

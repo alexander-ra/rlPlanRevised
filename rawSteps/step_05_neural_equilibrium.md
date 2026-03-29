@@ -388,10 +388,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 - [ ] Learning Log updated (connections from Steps 1–4 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
 
----
-
-**Short Title:** Step 5 — Neural Equilibrium (Deep CFR, DREAM)
-
----
-
-**Short Title:** Step 5 — Neural Equilibrium (Deep CFR, DREAM)
