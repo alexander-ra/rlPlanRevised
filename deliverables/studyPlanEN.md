@@ -10,27 +10,6 @@ lang: en
 
 ## Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments
 
-|                          |                                                                 |
-|--------------------------|-----------------------------------------------------------------|
-| **Doctoral Student**     | Alexander Andreev                                               |
-| **University**           | University of Ruse "Angel Kanchev"                              |
-| **Scientific Area**      | 4.6 Informatics                                                 |
-| **Scientific Supervisor**| Prof. Dr. Tsvetomir Vasilev                                     |
-| **Scientific Consultant**| Assoc. Prof. Dr. Rumen Rusev                                    |
-| **Date of Enrollment**   | 18 February 2026                                                |
-| **Phase 1 Deadline**     | November 2026                                                   |
-| **Planned Defense**      | April 2029                                                      |
-
-&nbsp;
-
-**Approved by:**
-
-Scientific Supervisor: &emsp; \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &emsp; (Prof. Dr. Ts. Vasilev)
-
-Scientific Consultant: &emsp; \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &emsp; (Assoc. Prof. Dr. R. Rusev)
-
-Date: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
-
 ---
 
 > *Superscript numerals (e.g. ¹⁵) refer to entries in the Glossary at the end of this document.*
