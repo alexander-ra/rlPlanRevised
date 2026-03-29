@@ -258,6 +258,82 @@ This phase constitutes the thesis-critical core of the study plan. The preceding
 
 ---
 
+## 6. Phase E — Multi-Agent Dynamics (Steps 9–11) · beginning of July – mid-August 2026
+
+### 6.1 Phase Overview
+
+The preceding phases developed techniques for two-player imperfect-information games — equilibrium computation, neural approximation, opponent modeling, and safe exploitation. Phase E transitions the thesis from two-player settings to the multi-agent world, where fundamental new challenges arise: non-stationarity<sup>36</sup> induced by simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions<sup>41</sup> that no two-player framework can capture. Three steps address these challenges in sequence. Step 9 introduces the core algorithmic paradigms for multi-agent reinforcement learning — centralized training with decentralized execution (CTDE<sup>37</sup>) and Policy Space Response Oracles (PSRO<sup>38</sup>). Step 10 scales these methods to population-based training<sup>39</sup> systems and connects population dynamics to evolutionary game theory. Step 11 applies the resulting toolkit to dynamic coalition formation in free-for-all games, crystallizing the central theoretical gap of Contribution 2 and prototyping the multi-agent evaluation methodology of Contribution 3.
+
+### 6.2 Step 9 — Multi-Agent RL — Coordination, Competition, and Communication
+
+**Contribution Alignment.** This step provides the algorithmic vocabulary for extending the thesis from two-player to multi-agent settings. The CTDE<sup>37</sup> paradigm (MADDPG, QMIX, MAPPO) introduces the architectural pattern — centralized information during training, decentralized execution at deployment — that is adopted throughout the remainder of the thesis. PSRO<sup>38</sup> unifies fictitious play, self-play, and the double oracle method within a single population-based meta-Nash framework, providing the starting point for defining safety in multi-agent populations (Contribution 2). Learning with Opponent-Learning Awareness (LOLA<sup>40</sup>) contributes the insight that modeling an opponent's learning dynamics — rather than their current strategy alone — enables superior adaptation; this principle extends the Bayesian opponent modeling<sup>31</sup> of Step 7 from static inference to dynamic anticipation within the Behavioral Adaptation Framework (Contribution 1). The meta-Nash analysis produced by PSRO generalizes two-player exploitability<sup>3</sup> to the population setting, providing an evaluation tool for Contribution 3.
+
+**Literature.**
+
+1. Lowe, R., Wu, Y., Tamar, A., Harb, J., Abbeel, P. and Mordatch, I. (2017). "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments." *Advances in Neural Information Processing Systems (NeurIPS).*
+2. Rashid, T., Samvelyan, M., de Witt, C.S., Farquhar, G., Foerster, J. and Whiteson, S. (2018). "QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning." *Proceedings of the International Conference on Machine Learning (ICML).*
+3. Yu, C., Velu, A., Vinitsky, E., Gao, J., Wang, Y., Baez, A. and Fishi, S. (2022). "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games." *Advances in Neural Information Processing Systems (NeurIPS).*
+4. Foerster, J., Chen, R.Y., Al-Shedivat, M., Whiteson, S., Abbeel, P. and Mordatch, I. (2018). "Learning with Opponent-Learning Awareness." *Proceedings of the International Conference on Autonomous Agents and Multiagent Systems (AAMAS).*
+5. Lanctot, M., Zambaldi, V., Gruslys, A., Lazaridou, A., Tuyls, K., Pérolat, J., Silver, D. and Graepel, T. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *Advances in Neural Information Processing Systems (NeurIPS).*
+6. Sukhbaatar, S., Szlam, A. and Fergus, R. (2016). "Learning Multiagent Communication with Backpropagation." *Advances in Neural Information Processing Systems (NeurIPS).*
+
+**Practical Tasks.**
+
+- Construct a matrix game testbed (Prisoner's Dilemma, Matching Pennies, Stag Hunt, Battle of the Sexes) with verified Nash equilibria.
+- Implement independent PPO learners as a baseline demonstrating non-stationarity<sup>36</sup> failures in multi-agent settings.
+- Implement MADDPG (centralized critic, decentralized actors) and MAPPO (PPO with centralized value function) as CTDE<sup>37</sup> representatives.
+- Implement PSRO<sup>38</sup> with population-based meta-Nash computation and RL best-response oracle; verify convergence to Nash equilibrium on Kuhn Poker<sup>19</sup> and Leduc Hold'em<sup>20</sup>.
+- Integrate a CommNet differentiable communication channel with MADDPG; evaluate the benefit of emergent communication on cooperative tasks.
+- Produce a comparative evaluation table: independent learning versus CTDE versus PSRO across all test environments and Goofspiel.
+
+### 6.3 Step 10 — Population-Based Training and Evolutionary Game Theory
+
+**Contribution Alignment.** Population-Based Training<sup>39</sup> (PBT) provides a meta-optimization framework in which a population of agents co-evolves weights and hyperparameters simultaneously, replacing sequential hyperparameter search with population-level selection. The AlphaStar league architecture — with its three-role design of main agents, main exploiters, and league exploiters — constitutes automated opponent modeling at population scale, complementing the explicit Bayesian modeling<sup>31</sup> of Step 7 with implicit population-level adaptation (Contribution 1). For Contribution 2, the AlphaStar league provides heuristic safety through exploiter pressure but lacks formal guarantees; formalizing what "safe exploitation in a population" means mathematically is a key thesis objective. The spinning top decomposition<sup>42</sup> (Balduzzi et al., 2019) separates any payoff matrix into a transitive (genuine skill ranking) and a cyclic (non-transitive, rock-paper-scissors) component, providing a diagnostic that distinguishes real improvement from illusory cycling — a tool adopted directly into the evaluation methodology of Contribution 3. Empirical Game-Theoretic Analysis<sup>43</sup> (EGTA) generalizes exploitability to the population setting via meta-Nash computation over sampled strategy sets.
+
+**Literature.**
+
+1. Jaderberg, M., Dalibard, V., Osindero, S., Czarnecki, W.M. et al. (2017). "Population Based Training of Neural Networks." Preprint.
+2. Jaderberg, M., Czarnecki, W.M., Dunning, I. et al. (2019). "Human-Level Performance in First-Person Multiplayer Games with Population-Based Deep Reinforcement Learning." *Science*, 364(6443), pp. 859–865.
+3. Vinyals, O., Babuschkin, I., Czarnecki, W.M. et al. (2019). "Grandmaster Level in StarCraft II Using Multi-Agent Reinforcement Learning." *Nature*, 575(7782), pp. 350–354.
+4. Balduzzi, D., Garnelo, M., Bachrach, Y., Czarnecki, W.M., Pérolat, J., Jaderberg, M. and Graepel, T. (2019). "Open-Ended Learning in Symmetric Zero-Sum Games." *Proceedings of the International Conference on Learning Representations (ICLR).*
+5. Tuyls, K., Pérolat, J., Lanctot, M. et al. (2018). "A Generalised Method for Empirical Game Theoretic Analysis." *Proceedings of the International Conference on Autonomous Agents and Multiagent Systems (AAMAS).*
+6. Hofbauer, J. and Sigmund, K. (2003). "Evolutionary Game Dynamics." *Bulletin of the American Mathematical Society*, 40(4), pp. 479–519.
+
+**Practical Tasks.**
+
+- Implement a replicator dynamics simulator on matrix games; verify convergence to Nash equilibrium and evolutionary stable strategies on Prisoner's Dilemma, Hawk-Dove, and Stag Hunt, and verify cycling on Rock-Paper-Scissors. Generate phase portraits.
+- Implement the spinning top decomposition<sup>42</sup> (Balduzzi et al., 2019); apply to PSRO<sup>38</sup> meta-game payoff matrices from Step 9 and to the league meta-game from this step. Compute the transitive ratio as a diagnostic metric.
+- Build a PBT league for Leduc Hold'em<sup>20</sup> with three agent roles (main agents, main exploiters, league exploiters), prioritized matchmaking, periodic agent freezing, and PBT explore-exploit population updates.
+- Conduct EGTA<sup>43</sup> analysis: construct the empirical normal-form game over the league population and compute meta-Nash equilibrium; verify that the meta-Nash mixture exploitability does not exceed that of the best individual agent.
+- Produce a comparative evaluation: league versus PSRO (Step 9) versus single self-play agent versus MCCFR<sup>23</sup> Nash strategy (Step 3), measuring exploitability, Elo rating, effective population diversity, and strategy clustering.
+
+### 6.4 Step 11 — Dynamic Coalition Formation in Competitive Free-For-All Games
+
+**Contribution Alignment.** This step crystallizes the central theoretical gap of the thesis. In two-player games, safe exploitation<sup>33</sup> employs Nash equilibrium as the safety baseline (Step 8). In N-player free-for-all games, Nash equilibrium is both computationally intractable and strategically insufficient — it ignores the coalition structures that dominate actual play. The piKL regularization approach of Bakhtin et al. (2022) suggests replacing equilibrium-based safety with behavioral-prior-based safety, a shift that Contribution 2 seeks to formalize for competitive settings. The coalition detection module developed here extends the opponent modeling methodology of Step 7 from inferring individual player types to inferring multi-agent social structure — the multi-agent generalization of behavioral adaptation (Contribution 1). Shapley-value<sup>44</sup> credit decomposition, combined with EGTA<sup>43</sup> meta-game analysis over agent populations, provides an alternative evaluation framework for N-player settings where standard exploitability<sup>3</sup> is undefined; this becomes the prototype for the domain-agnostic evaluation methodology of Contribution 3. The So Long Sucker<sup>45</sup> (SLS) game — a four-player coalition formation benchmark designed by Nash, Shapley, Shubik, and Hausner — serves as the primary experimental testbed.
+
+**Literature.**
+
+1. Sharan, M. and Adak, C. (2024). "Reinforcing Competitive Multi-Agents for Playing 'So Long Sucker'." Preprint.
+2. De Carufel, J.-L. and Jerade, M.R. (2024). "So Long Sucker: Endgame Analysis." Preprint.
+3. Bakhtin, A., Wu, D.J., Lerer, A., Gray, J., Jacob, A.P., Farina, G., Miller, A.H. and Brown, N. (2022). "Mastering the Game of No-Press Diplomacy via Human-Regularized Reinforcement Learning and Planning." Preprint.
+4. Chalkiadakis, G., Elkind, E. and Wooldridge, M. (2011). *Computational Aspects of Cooperative Game Theory.* Morgan and Claypool.
+5. Wang, J., Zhang, Y., Kim, T.-K. and Gu, Y. (2020). "Shapley Q-value: A Local Reward Approach to Solve Global Reward Games." *Proceedings of the 34th AAAI Conference on Artificial Intelligence.*
+
+**Practical Tasks.**
+
+- Build a verified So Long Sucker<sup>45</sup> environment with coalition tracking, rich state representation, and correctness validation against the endgame analysis of De Carufel and Jerade (2024).
+- Implement a coalition detection module that infers implicit alliances from observed chip-placement behavior using help/harm matrices, extending the opponent modeling methodology of Step 7 to multi-agent alliance inference.
+- Adapt Shapley Q-value<sup>44</sup> decomposition to the competitive free-for-all setting, distributing each action's credit among all players according to marginal coalition contributions.
+- Train four-player MAPPO agents with Shapley-decomposed rewards via self-play; compare against a sparse-reward baseline replicating Sharan and Adak (2024).
+- Apply EGTA<sup>43</sup> (Step 10) to construct the four-player payoff tensor and compute meta-Nash over the agent population; apply the spinning top decomposition<sup>42</sup> to quantify the non-transitive structure of coalition dynamics.
+- Produce a comparative evaluation: coalition-aware agents versus sparse-reward agents versus random baselines, measuring win rate, coalition formation frequency, Shapley variation, and game length.
+
+---
+
+<!-- Phases F and G will be added in subsequent iterations. -->
+
+---
+
 ## Glossary
 
 ### Game Theory
@@ -374,3 +450,35 @@ An adversarial strategy in which an opponent deliberately plays suboptimally to 
 
 **[35] Adaptation safety.**
 A safety notion (Ge et al., 2024) requiring that an exploitation strategy be no more exploitable than the blueprint baseline strategy from which it was derived. A weaker but more practically achievable guarantee than strict Nash safety, applicable to settings where the baseline is an approximate rather than exact equilibrium.
+
+### Multi-Agent Dynamics
+
+**[36] Non-stationarity (multi-agent).**
+The fundamental challenge that arises when multiple agents learn simultaneously: each agent's environment — which includes the other agents — changes as those agents update their policies, violating the stationarity assumption of single-agent reinforcement learning.
+
+**[37] Centralized Training with Decentralized Execution (CTDE).**
+A multi-agent reinforcement learning paradigm in which agents have access to global information (other agents' observations and actions) during training but execute using only local observations at deployment. Representative algorithms include MADDPG (centralized critic, decentralized actors), QMIX (monotonic value decomposition), and MAPPO (PPO with centralized value function).
+
+**[38] Policy Space Response Oracles (PSRO).**
+A population-based framework that maintains a growing set of policies and iteratively computes meta-Nash equilibria over the current population, then trains new best-response policies via reinforcement learning. Unifies fictitious play, self-play, and the double oracle method as special cases.
+
+**[39] Population-Based Training (PBT).**
+A meta-optimization framework in which a population of agents trains in parallel, periodically copying weights from high-performing agents (exploit) and mutating hyperparameters (explore). The AlphaStar league is the landmark application, with three agent roles — main agents, main exploiters, and league exploiters — maintaining population diversity and robustness.
+
+**[40] Learning with Opponent-Learning Awareness (LOLA).**
+A multi-agent learning algorithm in which each agent differentiates through the anticipated parameter update of its opponent, enabling anticipatory adaptation rather than reactive best-response. Achieves cooperation in settings where naive independent learners converge to suboptimal outcomes.
+
+**[41] Coalition.**
+A subset of players in an N-player game who coordinate their strategies for mutual benefit. In free-for-all settings, coalitions may form and dissolve dynamically during play, creating a social structure that cannot be captured by two-player game-theoretic frameworks.
+
+**[42] Spinning top decomposition.**
+A decomposition (Balduzzi et al., 2019) of any antisymmetric payoff matrix into a transitive component (representing genuine skill ranking) and a cyclic component (representing non-transitive, rock-paper-scissors structure). The transitive ratio serves as a diagnostic distinguishing real improvement from illusory cycling in population-based training.
+
+**[43] Empirical Game-Theoretic Analysis (EGTA).**
+A framework for analyzing multi-agent systems by constructing finite empirical games over sampled strategy sets and computing Nash equilibria of the resulting meta-game. Generalizes two-player exploitability to the population setting and provides approximation bounds for empirical Nash convergence.
+
+**[44] Shapley value.**
+A solution concept from cooperative game theory that assigns each player a payoff equal to their average marginal contribution across all possible coalition orderings. Applied in multi-agent reinforcement learning as a credit assignment mechanism (Shapley Q-value) that decomposes joint rewards into per-agent attributions.
+
+**[45] So Long Sucker (SLS).**
+A four-player coalition formation game designed by Nash, Shapley, Shubik, and Hausner (1950) in which players must form temporary alliances to eliminate opponents but only one player can win. Serves as a benchmark for studying dynamic coalition formation, betrayal, and negotiation in competitive multi-agent settings.

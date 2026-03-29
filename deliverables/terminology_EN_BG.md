@@ -76,6 +76,13 @@
 | Exploitation–safety tradeoff | Компромис между експлоатация и безопасност | |
 | Safety theorem | Теорема за безопасността | Ganzfried & Sandholm (2015) |
 | Pareto frontier | Парето граница | |
+| Spinning top decomposition | Декомпозиция „пумпал" | Transitive-cyclic decomposition (Balduzzi et al., 2019) |
+| Empirical Game-Theoretic Analysis (EGTA) | Емпиричен теоретико-игрови анализ | Keep „EGTA" in Latin |
+| Shapley value | Стойност на Шапли | |
+| Shapley Q-value | Q-стойност на Шапли | Credit assignment in MARL |
+| So Long Sucker (SLS) | — | Keep game name in English; „SLS" in Latin |
+| Non-stationarity (multi-agent) | Нестационарност | |
+| piKL regularization | piKL регуларизация | Keep notation in Latin |
 | Subgame solving | Решаване на подигри | |
 | Action abstraction | Абстракция на действията | |
 | Card bucketing | Групиране на карти | „Групиране" avoids anglicism |
@@ -132,6 +139,14 @@
 | SES | Safe Exploitation Subgame | Безопасна експлоатация на подигри |
 | OX-Search | Opponent Exploitation Search | — (keep as algorithm name) |
 | ABD | Adapting Beyond the Depth limit | — (keep as algorithm name) |
+| MADDPG | Multi-Agent Deep Deterministic Policy Gradient | Многоагентен дълбок детерминистичен градиент на стратегията |
+| QMIX | QMIX | Монотонна факторизация на стойностната функция |
+| MAPPO | Multi-Agent PPO | Многоагентна PPO |
+| PSRO | Policy Space Response Oracles | Оракули за отговор в пространството на стратегиите |
+| PBT | Population-Based Training | Обучение на базата на популации |
+| LOLA | Learning with Opponent-Learning Awareness | Обучение с осъзнаване на обучението на противника |
+| CommNet | Communication Neural Network | Комуникационна невронна мрежа |
+| EGTA | Empirical Game-Theoretic Analysis | Емпиричен теоретико-игрови анализ |
 
 ---
 
