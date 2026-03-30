@@ -66,7 +66,7 @@ A 15-step learning progression (2 completed + 13 new) spanning April–mid Octob
 
 ### Expected Thesis Contributions (draft):
 1. **Behavioral Adaptation Framework** — A general method for inferring and adapting to opponent strategies from observed action sequences in real-time, applicable to any imperfect-information game
-2. **Multi-Agent Safe Exploitation** — Tractable heuristics (piKL-regularized exploitation, equal share baseline) + empirical validation on small N-player games (3-player Kuhn/Leduc), extending safe exploitation from 2-player zero-sum settings. *Explicitly scoped: not a general N-player safety theorem.*
+2. **Multi-Agent Safe Exploitation** — Tractable heuristics (piKL-regularized exploitation (KL-divergence penalty keeping the policy close to a safe baseline), equal share baseline) + empirical validation on small N-player games (3-player Kuhn/Leduc), extending safe exploitation from 2-player zero-sum settings. *Explicitly scoped: not a general N-player safety theorem.*
 3. **Evaluation Methodology** — A general framework for measuring agent adaptability and robustness across different game environments and opponent populations
 
 ### Why this beats a poker-only PhD:
@@ -528,3 +528,59 @@ The plan was validated against 10 real job postings from Glassdoor (March 2026) 
 - `oldSources/safeOpponentExploitation.md` — Safe Opponent Exploitation literature review (feeds Steps 7–8)
 - `oldSources/singleFuturePlan.md` — Bulgaria career plan (reviewed in Section 1)
 - `oldSources/coopFuturePlan.md` — Partnership career plan (reviewed in Section 1)
+
+---
+
+## Appendix: PDF Export
+
+**Toolchain:** [Pandoc](https://pandoc.org) + a LaTeX engine (e.g. `texlive-xetex` or `texlive-pdflatex`).
+
+**Install (once):**
+```bash
+# Already installed in conda base environment:
+conda install -c conda-forge pandoc tectonic -y
+```
+
+**Export commands (run from project root):**
+```bash
+# English (multi-file build)
+pandoc deliverables/studyPlan/en/00_metadata.yaml \
+  deliverables/studyPlan/en/[0-9]*.md \
+  --toc --toc-depth=2 \
+  --pdf-engine=tectonic \
+  -V geometry:margin=2cm \
+  -V fontsize=11pt \
+  -o exports/studyPlanEN.pdf
+
+# Bulgarian (multi-file build)
+pandoc deliverables/studyPlan/bg/00_metadata.yaml \
+  deliverables/studyPlan/bg/[0-9]*.md \
+  --toc --toc-depth=2 \
+  --pdf-engine=tectonic \
+  -V geometry:margin=2cm \
+  -V fontsize=11pt \
+  -o exports/studyPlanBG.pdf
+```
+
+**File structure:**
+```
+deliverables/studyPlan/
+├── en/
+│   ├── 00_metadata.yaml
+│   ├── 01_introduction.md
+│   ├── 02_phase_a.md  ...  08_phase_g.md
+│   └── 09_glossary.md
+└── bg/
+    ├── 00_metadata.yaml
+    ├── 01_introduction.md
+    └── 02_phase_a.md  ...  08_phase_g.md
+```
+
+**Flags explained:**
+- `--toc` — auto-generates a table of contents from headings
+- `--toc-depth=2` — includes `##` headings in TOC (phases), omits `###`
+- `--pdf-engine=tectonic` — lightweight LaTeX engine (auto-downloads packages on first run)
+- `-V geometry:margin=2cm` — tighter margins for denser layout
+- `-V fontsize=11pt` — slightly smaller base font to save space
+
+> The `\small` / `\normalsize` raw LaTeX blocks in the Glossary are passed through automatically by pandoc and will reduce the glossary font size in the PDF.
