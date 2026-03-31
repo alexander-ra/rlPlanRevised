@@ -21,6 +21,9 @@
 
 ---
 
+> **Contribution Alignment:** Population-based training and the AlphaStar league architecture will be studied as examples of implicit opponent modeling at population scale, complementing the explicit Bayesian modeling of Step 7. The spinning top decomposition — distinguishing genuine skill improvement from non-transitive cycling — will be adopted into the evaluation methodology (Contribution 3).
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY population-based training exists (self-play against ONE opponent is brittle — you need a POPULATION for robustness) and HOW evolutionary game theory provides the mathematical lens to analyze populations of strategies competing and evolving. Key insight: in Steps 2–8, you computed a SINGLE strategy (Nash equilibrium). In Steps 9–10, you maintain a POPULATION of strategies that evolve over time. Evolutionary game theory tells you what happens to these populations in the long run.

@@ -24,6 +24,9 @@
 
 ---
 
+> **Contribution Alignment:** This step crystallizes the central theoretical gap of the thesis. In two-player games, safe exploitation uses Nash equilibrium as the safety baseline (Step 8). In N-player free-for-all games, Nash equilibrium is both computationally intractable and strategically insufficient — it ignores coalition structures.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY coalition formation is hard (and interesting). Key insight: in all previous steps, you've worked with 2-player games. The moment you add a third player, something fundamentally changes: **players can form temporary alliances.** In a 2-player game, there's nothing to negotiate — you either cooperate or not. In a 3+ player game, you can say "Let's gang up on Player C" — and then betray your ally later. This dynamic — form coalitions, exploit them, dissolve them, form new ones — is the heart of FFA games and is essentially unstudied in the RL/game AI literature.

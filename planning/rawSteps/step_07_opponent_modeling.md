@@ -21,6 +21,11 @@
 
 ---
 
+> **Phase Overview:** This phase addresses the central research question: how should an agent adapt its play to a specific opponent? The preceding phases built the algorithmic toolbox — equilibrium solvers, abstraction, and neural approximation — but did not yet tackle opponent-aware play. Step 7 will introduce inference mechanisms that convert observed action sequences into beliefs about opponent behavior. Step 8 will cover algorithms that translate those beliefs into profitable yet safe strategy adjustments.
+>
+> **Contribution Alignment:** Bayesian opponent modeling will serve as the inference component of the planned Behavioral Adaptation Framework (Contribution 1). Three modeling paradigms will be studied — type-based models, continuous parametric models, and consistent convergent estimators — each offering different tradeoffs between assumptions, convergence speed, and robustness.
+
+
 ## Phase 1: Intuition (2 days)
 
 The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opponent weaknesses), what KIND of information you can extract from behavioral traces (action frequencies, timing patterns, deviations from equilibrium), and WHEN it's worth deviating from Nash to exploit a weak opponent. End of days: you should be able to explain to a non-expert: "If your opponent always folds to big bets, a Nash equilibrium strategy doesn't know that — it plays the same regardless. An opponent model DETECTS that pattern and lets you bluff more against that specific player. The hard part is doing this without becoming exploitable yourself."

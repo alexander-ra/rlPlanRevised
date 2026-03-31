@@ -19,6 +19,9 @@
 
 ---
 
+> **Contribution Alignment:** This step will survey five landmark game-solving systems that define the current state of the art. ReBeL's public belief state framework is of particular relevance to the planned belief-based opponent modeling (Contribution 1). Pluribus demonstrates empirical success in multiplayer poker without formal safety guarantees — highlighting the theoretical gap that Contribution 2 will seek to address.
+
+
 ## Phase 1: Intuition (2 days)
 
 The goal: understand the EVOLUTION of game-solving architectures and WHY each system exists. This isn't about memorizing papers — it's about understanding a 7-year design progression:

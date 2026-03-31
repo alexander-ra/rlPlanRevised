@@ -16,6 +16,11 @@
 
 ---
 
+> **Phase Overview:** Phase A established a working CFR solver on the minimal Kuhn Poker benchmark, but vanilla CFR requires a full traversal of the game tree on every iteration — an approach that becomes infeasible as games grow. This phase will introduce two complementary scaling mechanisms: Monte Carlo sampling methods that reduce per-iteration cost, and game abstraction techniques that reduce the game tree itself. These tools are needed to bridge the gap between toy benchmarks and the medium-scale games on which later thesis work will be developed.
+>
+> **Contribution Alignment:** Monte Carlo CFR variants will provide the computationally tractable equilibrium computation needed for medium-scale games, which will underpin the empirical work in later contributions. CFR+ accelerates convergence, enabling equilibrium computation for games beyond the reach of vanilla CFR.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY vanilla CFR is too slow for large games, what Monte Carlo sampling does about it, and how CFR+ improved convergence. End of day: you should be able to explain to a non-expert: "Instead of walking every branch of the game tree every iteration, we sample a few branches — it's noisier, but we only need to update the sampled branches, which makes each iteration 1000x cheaper."

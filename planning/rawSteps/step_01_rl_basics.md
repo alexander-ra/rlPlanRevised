@@ -12,6 +12,11 @@
 
 ---
 
+> **Phase Overview:** This phase covers the foundational material required for all subsequent work: reinforcement learning basics (value estimation, policy optimization, experience replay) and game-theoretic fundamentals (extensive-form games, Nash equilibrium computation, and exploitability measurement). A solid command of both domains is essential before proceeding to the more specialized topics of later phases.
+>
+> **Contribution Alignment:** The reinforcement learning methods studied in this step — value estimation, policy gradients, and experience replay — will recur throughout the thesis, particularly in the opponent modeling and adaptive exploitation components of the planned contributions.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal is to build a mental model of what RL is and why it matters — NO math, NO code, NO papers yet. By end of day, you should be able to explain to a non-expert: "An agent takes actions in an environment, gets rewards, and learns a policy to maximize cumulative reward."

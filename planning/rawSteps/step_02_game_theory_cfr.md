@@ -14,6 +14,9 @@
 
 ---
 
+> **Contribution Alignment:** The extensive-form game representation and CFR algorithm introduced here will provide the formal framework and baseline equilibrium computation used throughout the thesis. Exploitability, defined and implemented in this step, will serve as the primary quantitative metric across all three contributions.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand what game theory IS, why Nash equilibrium matters, what an extensive-form game looks like, and why CFR was invented. NO math, NO code — just build the mental model.

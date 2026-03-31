@@ -22,6 +22,11 @@
 
 ---
 
+> **Phase Overview:** The preceding phases focused on two-player imperfect-information games. Phase E will transition the study to multi-agent settings, where new challenges arise: non-stationarity from simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions. Step 9 introduces multi-agent RL paradigms (CTDE, PSRO), Step 10 scales to population-based training and evolutionary game theory, and Step 11 applies these tools to coalition formation in free-for-all games.
+>
+> **Contribution Alignment:** This step will provide the algorithmic vocabulary for extending the thesis from two-player to multi-agent settings. The CTDE paradigm introduces the architectural pattern — centralized training, decentralized execution — used throughout the remainder of the thesis. PSRO provides a population-based framework relevant to defining safety in multi-agent populations.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY multi-agent RL is fundamentally different from single-agent RL and from the game-theoretic approach you've used so far. In Steps 2–8 you computed or approximated Nash equilibria — strategies against a RATIONAL opponent. In MARL, agents LEARN simultaneously in a SHARED environment, so the environment is NON-STATIONARY from each agent's perspective (the other agents are also changing). This creates two new challenges: (1) coordination — how do cooperating agents learn to work together without explicit programming? (2) credit assignment — when the team wins, which agent's actions were responsible?

@@ -32,6 +32,9 @@
 
 ---
 
+> **Contribution Alignment:** This step will complete the learning phase and design the research phase. The deliverables will include a research frontier map for each contribution, formal contribution design documents, experimental specifications, a Chapter I outline (25–30 pages), and a publication pipeline through to defense.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand what "research frontier mapping" MEANS as a practical activity (not just "read more papers"), WHY contribution design must happen BEFORE experiments (the contribution shapes the experiment, not the reverse), and HOW the 14 prior steps converge into three specific thesis contributions that are defensible, publishable, and career-relevant.

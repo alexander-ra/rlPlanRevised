@@ -27,6 +27,9 @@
 
 ---
 
+> **Contribution Alignment:** This step will apply the behavioral adaptation methodology from Steps 7, 8, and 12 to anonymized industry data, providing practical validation for Contribution 1. The behavioral deviation from equilibrium play measured on real player data will quantify exploitation opportunities relevant to Contribution 2.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY real-world behavioral data is different from simulated data (and harder), WHAT you can extract from poker hand histories (player styles, anomalies, collusion signals), and HOW this connects everything from Steps 7–12 into a practical pipeline. The key mental shift: in Steps 2–11, you've been building game solvers and opponent models. Now you flip the perspective — instead of computing WHAT the optimal strategy is, you analyze WHAT actual humans DO, and use the gap between their behavior and theory to classify, model, and detect anomalies.

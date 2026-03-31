@@ -27,6 +27,11 @@
 
 ---
 
+> **Phase Overview:** The preceding phases developed methods entirely within synthetic, self-play environments. Phase F will bridge the gap between theoretical methods and real-world behavioral data. Step 12 introduces sequence models (Decision Transformers) and assesses large language model agents in strategic settings. Step 13 applies the resulting pipeline to anonymized real-world poker hand histories, constructing player embeddings, behavioral classification systems, and a collusion detection module.
+>
+> **Contribution Alignment:** This step will study the Decision Transformer architecture and its adversarially robust variant (ARDT), which recovers near-Nash strategies from offline data — a potential alternative path for Contribution 2 that bypasses intractable equilibrium computation in N-player settings.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand TWO distinct but converging paradigms:

@@ -20,6 +20,9 @@
 
 ---
 
+> **Contribution Alignment:** This step will study how game abstraction — both lossless and lossy — affects the quality of computed equilibria, and how subgame solving can refine strategies during play. These techniques are directly relevant to later work on safe exploitation and opponent modeling.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY abstraction is needed (games are too large to represent in memory), what the two types of abstraction ARE (information abstraction = grouping similar game states; action abstraction = reducing the set of available moves), and what the danger IS (bad abstraction → bad strategies). End of day: you should be able to explain to a non-expert: "Texas Hold'em has 10^161 game states. We can't store them all, so we group similar ones together — like calling a king-high flush the same whether it's spades or hearts. The trick is choosing groups that don't throw away strategic differences."

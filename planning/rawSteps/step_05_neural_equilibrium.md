@@ -19,6 +19,11 @@
 
 ---
 
+> **Phase Overview:** Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree enumeration.
+>
+> **Contribution Alignment:** Deep CFR and NFSP will be studied as methods for computing equilibrium strategies in games too large for tabular solvers — a capability needed for the planned behavioral adaptation work. NFSP's anticipatory parameter, which interpolates between equilibrium and exploitative play, foreshadows the exploitation–safety tradeoff central to the thesis.
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY we need neural networks in CFR (tabular CFR can't handle full-scale games even WITH abstraction), what Deep CFR does differently (replaces the regret table with neural networks that generalize across similar states), and where NFSP fits (a completely different approach — RL-based instead of CFR-based). End of day: you should be able to explain to a non-expert: "Instead of memorizing the best strategy for every possible poker situation — which would take more memory than exists on Earth — we train a neural network to PREDICT what the best response would be. It's like learning a general rule instead of memorizing every answer."

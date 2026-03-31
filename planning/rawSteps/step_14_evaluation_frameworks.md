@@ -33,6 +33,11 @@
 
 ---
 
+> **Phase Overview:** Phase G will synthesize the preceding work into two integrative deliverables. Step 14 constructs a unified evaluation framework validated across all game types encountered in the study plan — constituting the core of Contribution 3 (Evaluation Methodology). Step 15 maps the research frontier, designs the experimental program, produces a Chapter I outline for the dissertation, and establishes the publication pipeline.
+>
+> **Contribution Alignment:** This step will constitute the core of Contribution 3 directly. The planned three-layer evaluation framework will integrate exploitability computation, population-level ranking (Elo, α-Rank, VasE), and statistical confidence quantification (AIVAT variance reduction).
+
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY evaluation in games is fundamentally harder than evaluation in single-agent settings (intransitivity: A beats B, B beats C, C beats A → who is "best"?), WHAT metrics exist (exploitability, Elo, α-Rank, Nash averaging, VasE), and WHY a unified framework matters for the thesis (Contribution #3 requires evaluation that works across 2-player, N-player, cooperative, and competitive games — no single existing metric does this).
