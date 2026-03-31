@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
-"""Build script for Interactive Study Viewer.
-
-Reads source files from src/ and rawSteps markdown content,
-produces a single standalone dist/index.html.
-
-Usage: python3 build.py
-"""
+# ---------------------------------------------------------------------------
+# scripts/build.py
+#
+# PURPOSE: Build the standalone Interactive Study Viewer HTML file.
+#   Reads interactiveStudy/src/{shell.html, styles.css, app.js} and all 15
+#   rawSteps markdown files, inlines everything into a single self-contained
+#   interactiveStudy/dist/interactiveStudy.html.
+#
+# USAGE (run from repo root):
+#   python3 scripts/build.py
+# ---------------------------------------------------------------------------
 
 import json
 import sys
 from pathlib import Path
 
-# Paths
-SCRIPT_DIR    = Path(__file__).parent.resolve()
-SRC_DIR       = SCRIPT_DIR / "src"
-DIST_DIR      = SCRIPT_DIR / "dist"
-RAW_STEPS_DIR = SCRIPT_DIR.parent / "planning" / "rawSteps"
+# Paths — all resolved relative to repo root regardless of cwd
+REPO_ROOT     = Path(__file__).parent.parent.resolve()
+SRC_DIR       = REPO_ROOT / "interactiveStudy" / "src"
+DIST_DIR      = REPO_ROOT / "interactiveStudy" / "dist"
+RAW_STEPS_DIR = REPO_ROOT / "planning" / "rawSteps"
 
 # Step file list (order matters)
 STEP_FILES = [
@@ -66,7 +70,7 @@ def generate_content_script(steps: dict[str, str]) -> str:
 
 
 def build():
-    """Main build: inline CSS, JS, and content into shell.html → dist/index.html."""
+    """Main build: inline CSS, JS, and content into shell.html → dist/interactiveStudy.html."""
     # Read source files
     shell_html = (SRC_DIR / "shell.html").read_text(encoding="utf-8")
     styles_css = (SRC_DIR / "styles.css").read_text(encoding="utf-8")
@@ -91,7 +95,7 @@ def build():
     out_path.write_text(output, encoding="utf-8")
 
     size_kb = out_path.stat().st_size / 1024
-    print(f"Built {out_path.relative_to(SCRIPT_DIR)} ({size_kb:.0f} KB)")
+    print(f"Built {out_path} ({size_kb:.0f} KB)")
     print(f"Embedded {len(steps)} steps")
 
 

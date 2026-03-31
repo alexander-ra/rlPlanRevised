@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
-"""One-shot script: inject phase overview + contribution alignment from the
-EN study plan into each rawSteps file, right after the first '---' separator.
-
-Idempotent: if the marker '> **Phase Overview' already exists, the file is skipped.
-"""
+# ---------------------------------------------------------------------------
+# scripts/inject_intros.py
+#
+# PURPOSE: Inject phase overview and contribution alignment callouts into the
+#   rawSteps markdown files (planning/rawSteps/step_*.md).
+#   Each callout is inserted as a blockquote immediately after the first
+#   YAML-style '---' separator in the file.
+#
+#   - Phase overview: shown only on the first step of each phase (A–G).
+#   - Contribution alignment: shown on every step.
+#
+# IDEMPOTENT: files that already contain the injected markers are skipped.
+#
+# USAGE (run from repo root):
+#   python3 scripts/inject_intros.py
+# ---------------------------------------------------------------------------
 
 from pathlib import Path
 
