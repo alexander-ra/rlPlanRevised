@@ -21,6 +21,31 @@
 > **Contribution Alignment:** Monte Carlo CFR variants will provide the computationally tractable equilibrium computation needed for medium-scale games, which will underpin the empirical work in later contributions. CFR+ accelerates convergence, enabling equilibrium computation for games beyond the reach of vanilla CFR.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts](#blog-posts)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: MCCFR in OpenSpiel — Different Sampling Schemes](#day-1-mccfr-in-openspiel-different-sampling-schemes)
+  - [Day 2: CFR+ and Convergence Comparison](#day-2-cfr-and-convergence-comparison)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Lanctot et al. — "Monte Carlo Sampling for Regret Minimization in Extensive Games" (2009)](#paper-1-lanctot-et-al-monte-carlo-sampling-for-regret-minimization-in-extensive-games-2009)
+  - [Paper 2: Tammelin et al. — "Solving Heads-Up Limit Texas Hold'em" (2015)](#paper-2-tammelin-et-al-solving-heads-up-limit-texas-holdem-2015)
+  - [Paper 3: Zinkevich et al. (2007) — Revisit Section 5](#paper-3-zinkevich-et-al-2007-revisit-section-5)
+  - [Book: Chen & Ankenman — "The Mathematics of Poker" (2006)](#book-chen-ankenman-the-mathematics-of-poker-2006)
+  - [Optional Supplementary](#optional-supplementary)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: MCCFR for Leduc Hold'em + CFR+ for Kuhn/Leduc — From Scratch](#project-mccfr-for-leduc-holdem-cfr-for-kuhnleduc-from-scratch)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
+  - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY vanilla CFR is too slow for large games, what Monte Carlo sampling does about it, and how CFR+ improved convergence. End of day: you should be able to explain to a non-expert: "Instead of walking every branch of the game tree every iteration, we sample a few branches — it's noisier, but we only need to update the sampled branches, which makes each iteration 1000x cheaper."
@@ -51,6 +76,10 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Slumbot (CFR Poker AI)](https://www.slumbot.com/)** — Play Heads-Up Texas Hold'em against a top CFR-based bot to see its behavior and baseline performance.
+
 
 ### Day 1: MCCFR in OpenSpiel — Different Sampling Schemes
 

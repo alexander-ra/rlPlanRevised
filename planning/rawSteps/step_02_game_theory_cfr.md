@@ -17,6 +17,29 @@
 > **Contribution Alignment:** The extensive-form game representation and CFR algorithm introduced here will provide the formal framework and baseline equilibrium computation used throughout the thesis. Exploitability, defined and implemented in this step, will serve as the primary quantitative metric across all three contributions.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts](#blog-posts)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Play Games + Understand Game Trees](#day-1-play-games-understand-game-trees)
+  - [Day 2: CFR Convergence + Regret Matching](#day-2-cfr-convergence-regret-matching)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Core Reading: Neller & Lanctot — "An Introduction to Counterfactual Regret Minimization" (2013)](#core-reading-neller-lanctot-an-introduction-to-counterfactual-regret-minimization-2013)
+  - [Book Chapters: Shoham & Leyton-Brown — "Multiagent Systems" (2008)](#book-chapters-shoham-leyton-brown-multiagent-systems-2008)
+  - [Paper 1: Zinkevich et al. — "Regret Minimization in Games with Incomplete Information" (2007)](#paper-1-zinkevich-et-al-regret-minimization-in-games-with-incomplete-information-2007)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Vanilla CFR for Kuhn Poker — From Scratch](#project-vanilla-cfr-for-kuhn-poker-from-scratch)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
+  - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand what game theory IS, why Nash equilibrium matters, what an extensive-form game looks like, and why CFR was invented. NO math, NO code — just build the mental model.
@@ -56,6 +79,11 @@ The goal: understand what game theory IS, why Nash equilibrium matters, what an 
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[The Evolution of Trust](https://ncase.me/trust/)** — An interactive guide to the game theory of trust, iterated prisoner's dilemmas, and equilibria.
+- **[Game Theory Explorer](http://gametheoryexplorer.org/)** — Build normal-form and extensive-form games and computationally solve for their Nash Equilibria in your browser.
+
 
 No reading yet. Run existing CFR solvers, play games, see convergence happen.
 

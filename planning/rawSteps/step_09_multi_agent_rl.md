@@ -27,6 +27,32 @@
 > **Contribution Alignment:** This step will provide the algorithmic vocabulary for extending the thesis from two-player to multi-agent settings. The CTDE paradigm introduces the architectural pattern — centralized training, decentralized execution — used throughout the remainder of the thesis. PSRO provides a population-based framework relevant to defining safety in multi-agent populations.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: PettingZoo + Simple Multi-Agent Environments](#day-1-pettingzoo-simple-multi-agent-environments)
+  - [Day 2: CTDE in Practice + Self-Play](#day-2-ctde-in-practice-self-play)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Lowe et al. — "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments" (MADDPG, 2017)](#paper-1-lowe-et-al-multi-agent-actor-critic-for-mixed-cooperative-competitive-environments-maddpg-2017)
+  - [Paper 2: Rashid et al. — "QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning" (2018)](#paper-2-rashid-et-al-qmix-monotonic-value-function-factorisation-for-deep-multi-agent-reinforcement-learning-2018)
+  - [Paper 3: Yu et al. — "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games" (MAPPO, 2022)](#paper-3-yu-et-al-the-surprising-effectiveness-of-ppo-in-cooperative-multi-agent-games-mappo-2022)
+  - [Paper 4: Foerster et al. — "Learning with Opponent-Learning Awareness" (LOLA, 2018)](#paper-4-foerster-et-al-learning-with-opponent-learning-awareness-lola-2018)
+  - [Paper 5: Lanctot et al. — "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning" (PSRO, 2017)](#paper-5-lanctot-et-al-a-unified-game-theoretic-approach-to-multiagent-reinforcement-learning-psro-2017)
+  - [Paper 6: Sukhbaatar et al. — "Learning Multiagent Communication with Backpropagation" (CommNet, 2016)](#paper-6-sukhbaatar-et-al-learning-multiagent-communication-with-backpropagation-commnet-2016)
+  - [Supplementary References](#supplementary-references)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Multi-Agent Learning Benchmark on Matrix Games + Goofspiel](#project-multi-agent-learning-benchmark-on-matrix-games-goofspiel)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Survey Skim + Supplementary Papers](#day-1-survey-skim-supplementary-papers)
+  - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY multi-agent RL is fundamentally different from single-agent RL and from the game-theoretic approach you've used so far. In Steps 2–8 you computed or approximated Nash equilibria — strategies against a RATIONAL opponent. In MARL, agents LEARN simultaneously in a SHARED environment, so the environment is NON-STATIONARY from each agent's perspective (the other agents are also changing). This creates two new challenges: (1) coordination — how do cooperating agents learn to work together without explicit programming? (2) credit assignment — when the team wins, which agent's actions were responsible?
@@ -65,6 +91,10 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Parable of the Polygons](https://ncase.me/polygons/)** — An interactive showing how local individual multi-agent rules lead to massive macro structural changes.
+
 
 ### Day 1: PettingZoo + Simple Multi-Agent Environments
 

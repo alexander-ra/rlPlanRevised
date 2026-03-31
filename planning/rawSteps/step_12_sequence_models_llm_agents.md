@@ -32,6 +32,31 @@
 > **Contribution Alignment:** This step will study the Decision Transformer architecture and its adversarially robust variant (ARDT), which recovers near-Nash strategies from offline data — a potential alternative path for Contribution 2 that bypasses intractable equilibrium computation in N-player settings.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (1 day)](#phase-2-exploration-1-day)
+  - [Morning: Decision Transformer on a Game Task](#morning-decision-transformer-on-a-game-task)
+  - [Afternoon: LLM Agent on TextArena](#afternoon-llm-agent-on-textarena)
+- [Phase 3: Targeted Reading (2 days)](#phase-3-targeted-reading-2-days)
+  - [Paper 1: Chen, Lu, Rajeswaran, Lee, Grover, Laskin, Abbeel, Srinivas & Mordatch — "Decision Transformer: Reinforcement Learning via Sequence Modeling" (2021)](#paper-1-chen-lu-rajeswaran-lee-grover-laskin-abbeel-srinivas-mordatch-decision-transformer-reinforcement-learning-via-sequence-modeling-2021)
+  - [Paper 2: Paster, McIlraith & Ba — "You Can't Count on Luck" (2022)](#paper-2-paster-mcilraith-ba-you-cant-count-on-luck-2022)
+  - [Paper 3: Tang, Marques, Kamalaruban & Bogunovic — "Adversarially Robust Decision Transformer" (2024, NeurIPS 2024)](#paper-3-tang-marques-kamalaruban-bogunovic-adversarially-robust-decision-transformer-2024-neurips-2024)
+  - [Paper 4: Guertler, Cheng, Yu, Liu, Choshen & Tan — "TextArena" (2025)](#paper-4-guertler-cheng-yu-liu-choshen-tan-textarena-2025)
+  - [Paper 5: Janner, Li & Levine — "Offline Reinforcement Learning as One Big Sequence Modeling Problem" (2021)](#paper-5-janner-li-levine-offline-reinforcement-learning-as-one-big-sequence-modeling-problem-2021)
+  - [Supplementary Reading (skim as time permits):](#supplementary-reading-skim-as-time-permits)
+  - [Math Flags:](#math-flags)
+- [Phase 4: Implementation (4 days)](#phase-4-implementation-4-days)
+  - [Project: Decision Transformer for Kuhn/Leduc Poker + LLM Agent Evaluation on TextArena](#project-decision-transformer-for-kuhnleduc-poker-llm-agent-evaluation-on-textarena)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
+  - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand TWO distinct but converging paradigms:
@@ -77,6 +102,10 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
 ---
 
 ## Phase 2: Exploration (1 day)
+
+### 🎮 Interactive Exploration
+- **[LLM 3D Visualization](https://bbycroft.net/llm)** — In-depth interactive 3D visualization of the Transformer architecture, showing how attention blocks filter information.
+
 
 ### Morning: Decision Transformer on a Game Task
 

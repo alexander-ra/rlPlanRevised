@@ -26,6 +26,34 @@
 > **Contribution Alignment:** Bayesian opponent modeling will serve as the inference component of the planned Behavioral Adaptation Framework (Contribution 1). Three modeling paradigms will be studied — type-based models, continuous parametric models, and consistent convergent estimators — each offering different tradeoffs between assumptions, convergence speed, and robustness.
 
 
+## Table of Contents
+- [Phase 1: Intuition (2 days)](#phase-1-intuition-2-days)
+  - [Day 1: The Problem & Classical Approaches](#day-1-the-problem-classical-approaches)
+  - [Day 2: Modern Approaches & the Exploitation Tradeoff](#day-2-modern-approaches-the-exploitation-tradeoff)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Observing Opponent Types in OpenSpiel](#day-1-observing-opponent-types-in-openspiel)
+  - [Day 2: Bayesian Type Inference — Hands-On](#day-2-bayesian-type-inference-hands-on)
+- [Phase 3: Targeted Reading (4 days)](#phase-3-targeted-reading-4-days)
+  - [Paper 1: Southey et al. — "Bayes' Bluff: Opponent Modelling in Poker" (2005)](#paper-1-southey-et-al-bayes-bluff-opponent-modelling-in-poker-2005)
+  - [Paper 2: Bard et al. — "Online Implicit Agent Modelling" (2013)](#paper-2-bard-et-al-online-implicit-agent-modelling-2013)
+  - [Paper 3: Ganzfried & Sun — "Bayesian Opponent Exploitation in Imperfect-Information Games" (2016/2018)](#paper-3-ganzfried-sun-bayesian-opponent-exploitation-in-imperfect-information-games-20162018)
+  - [Paper 4: Ganzfried, Wang & Chiswick — "Opponent Modeling in Multiplayer Imperfect-Information Games" (2022/2024)](#paper-4-ganzfried-wang-chiswick-opponent-modeling-in-multiplayer-imperfect-information-games-20222024)
+  - [Paper 5: Ganzfried — "Consistent Opponent Modeling in Imperfect-Information Games" (2025/2026)](#paper-5-ganzfried-consistent-opponent-modeling-in-imperfect-information-games-20252026)
+  - [Book Chapters (Supplementary)](#book-chapters-supplementary)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (10 days)](#phase-4-implementation-10-days)
+  - [Project: Bayesian Opponent Modeler + Adaptive Exploiter for Kuhn & Leduc — From Scratch](#project-bayesian-opponent-modeler-adaptive-exploiter-for-kuhn-leduc-from-scratch)
+  - [Sub-phase Breakdown (10 days):](#sub-phase-breakdown-10-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (3 days)](#phase-5-consolidation-3-days)
+  - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
+  - [Day 2 — Deep Comparison + Thesis Connection](#day-2-deep-comparison-thesis-connection)
+  - [Day 3 — One-Pager + Learning Log](#day-3-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (2 days)
 
 The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opponent weaknesses), what KIND of information you can extract from behavioral traces (action frequencies, timing patterns, deviations from equilibrium), and WHEN it's worth deviating from Nash to exploit a weak opponent. End of days: you should be able to explain to a non-expert: "If your opponent always folds to big bets, a Nash equilibrium strategy doesn't know that — it plays the same regardless. An opponent model DETECTS that pattern and lets you bluff more against that specific player. The hard part is doing this without becoming exploitable yourself."
@@ -72,6 +100,10 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Rock Paper Scissors Pattern Modeler](https://www.afiniti.com/corporate/rock-paper-scissors)** — Play against an AI that actively models your behavioral tendencies using Markov Chains. Try to be unpredictable!
+
 
 ### Day 1: Observing Opponent Types in OpenSpiel
 

@@ -27,6 +27,31 @@
 > **Contribution Alignment:** This step crystallizes the central theoretical gap of the thesis. In two-player games, safe exploitation uses Nash equilibrium as the safety baseline (Step 8). In N-player free-for-all games, Nash equilibrium is both computationally intractable and strategically insufficient — it ignores coalition structures.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Play So Long Sucker + Understand Coalition Dynamics](#day-1-play-so-long-sucker-understand-coalition-dynamics)
+  - [Day 2: Cooperative Game Theory on Simple Games](#day-2-cooperative-game-theory-on-simple-games)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Sharan & Adak — "Reinforcing Competitive Multi-Agents for Playing 'So Long Sucker'" (2024)](#paper-1-sharan-adak-reinforcing-competitive-multi-agents-for-playing-so-long-sucker-2024)
+  - [Paper 2: De Carufel & Jerade — "So Long Sucker: Endgame Analysis" (2024)](#paper-2-de-carufel-jerade-so-long-sucker-endgame-analysis-2024)
+  - [Paper 3: Bakhtin et al. — "Mastering the Game of No-Press Diplomacy" (2022)](#paper-3-bakhtin-et-al-mastering-the-game-of-no-press-diplomacy-2022)
+  - [Paper 4: Chalkiadakis, Elkind & Wooldridge — "Computational Aspects of Cooperative Game Theory" (2011)](#paper-4-chalkiadakis-elkind-wooldridge-computational-aspects-of-cooperative-game-theory-2011)
+  - [Paper 5: Wang, Zhang, Kim & Gu — "Shapley Q-value: A Local Reward Approach to Solve Global Reward Games" (AAAI 2020)](#paper-5-wang-zhang-kim-gu-shapley-q-value-a-local-reward-approach-to-solve-global-reward-games-aaai-2020)
+  - [Supplementary References](#supplementary-references)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Coalition-Aware Multi-Agent Training for So Long Sucker](#project-coalition-aware-multi-agent-training-for-so-long-sucker)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
+  - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY coalition formation is hard (and interesting). Key insight: in all previous steps, you've worked with 2-player games. The moment you add a third player, something fundamentally changes: **players can form temporary alliances.** In a 2-player game, there's nothing to negotiate — you either cooperate or not. In a 3+ player game, you can say "Let's gang up on Player C" — and then betray your ally later. This dynamic — form coalitions, exploit them, dissolve them, form new ones — is the heart of FFA games and is essentially unstudied in the RL/game AI literature.
@@ -67,6 +92,10 @@ End of day: you should be able to explain to a non-expert: "In a poker game with
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Evolution of Trust (Multi-Agent)](https://ncase.me/trust/)** — How do coalitions and alliances form? Re-play the trust interactive through the lens of team generation.
+
 
 ### Day 1: Play So Long Sucker + Understand Coalition Dynamics
 

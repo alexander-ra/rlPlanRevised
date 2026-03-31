@@ -35,6 +35,36 @@
 > **Contribution Alignment:** This step will complete the learning phase and design the research phase. The deliverables will include a research frontier map for each contribution, formal contribution design documents, experimental specifications, a Chapter I outline (25–30 pages), and a publication pipeline through to defense.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Talks and Overviews](#talks-and-overviews)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (1 day)](#phase-2-exploration-1-day)
+  - [Activity 1: Build the Frontier Map (half day)](#activity-1-build-the-frontier-map-half-day)
+  - [Activity 2: Gap Validation (half day)](#activity-2-gap-validation-half-day)
+- [Phase 3: Targeted Reading (2 days)](#phase-3-targeted-reading-2-days)
+  - [Day 1: Contribution #2 Anchoring (the thesis centerpiece)](#day-1-contribution-2-anchoring-the-thesis-centerpiece)
+  - [Paper 1: "Securing Equal Share: A Principled Approach for Learning Multiplayer Symmetric Games" (Ge, Wang, Li & Jin, 2024)](#paper-1-securing-equal-share-a-principled-approach-for-learning-multiplayer-symmetric-games-ge-wang-li-jin-2024)
+  - [Paper 2: "Safe and Robust Subgame Exploitation in Imperfect Information Games" (Ge, Kovařík & Lisý, 2024 — OX-Search)](#paper-2-safe-and-robust-subgame-exploitation-in-imperfect-information-games-ge-kovařík-lisý-2024-ox-search)
+  - [Paper 3: "Synchronous vs. Asynchronous Coalitions in Multiplayer Games" (Babyak et al., 2024)](#paper-3-synchronous-vs-asynchronous-coalitions-in-multiplayer-games-babyak-et-al-2024)
+  - [Day 2: Contribution Design Integration + Publication Targeting](#day-2-contribution-design-integration-publication-targeting)
+  - [Paper 4: "Human-Level Performance in No-Press Diplomacy" (Bakhtin et al., 2022 — CICERO precursor / piKL regularization)](#paper-4-human-level-performance-in-no-press-diplomacy-bakhtin-et-al-2022-cicero-precursor-pikl-regularization)
+  - [Paper 5: "Evaluating Agents using Social Choice Theory" (Lanctot et al., 2023/2025 — VasE)](#paper-5-evaluating-agents-using-social-choice-theory-lanctot-et-al-20232025-vase)
+  - [Reading: Recent PhD Dissertations (for structure and scope calibration)](#reading-recent-phd-dissertations-for-structure-and-scope-calibration)
+- [Phase 4: Implementation (4 days)](#phase-4-implementation-4-days)
+  - [Day 1: Contribution Design Documents](#day-1-contribution-design-documents)
+  - [Day 2: Publication Pipeline Design](#day-2-publication-pipeline-design)
+  - [Day 3: Experiment Design Specification](#day-3-experiment-design-specification)
+  - [Day 4: November Deliverables Specification](#day-4-november-deliverables-specification)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1: The Complete Research Frontier Map](#day-1-the-complete-research-frontier-map)
+  - [Day 2: Final Consolidation](#day-2-final-consolidation)
+- [Exit Checklist](#exit-checklist)
+  - [Knowledge Gates](#knowledge-gates)
+  - [Deliverables Gates](#deliverables-gates)
+  - [Process Gates](#process-gates)
+  - [Ready-for-Research Gates](#ready-for-research-gates)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand what "research frontier mapping" MEANS as a practical activity (not just "read more papers"), WHY contribution design must happen BEFORE experiments (the contribution shapes the experiment, not the reverse), and HOW the 14 prior steps converge into three specific thesis contributions that are defensible, publishable, and career-relevant.
@@ -70,6 +100,10 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
 ---
 
 ## Phase 2: Exploration (1 day)
+
+### 🎮 Interactive Exploration
+- **[OpenAI Gym / Farama Gymnasium](https://gymnasium.farama.org/)** — Browse the frontier of standardized RL environments where current models are being pushed to their limits.
+
 
 No new implementations. Instead, this exploration phase is about MAPPING — visually organizing everything you know into a structured research landscape.
 

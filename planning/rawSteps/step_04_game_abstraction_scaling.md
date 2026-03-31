@@ -23,6 +23,31 @@
 > **Contribution Alignment:** This step will study how game abstraction — both lossless and lossy — affects the quality of computed equilibria, and how subgame solving can refine strategies during play. These techniques are directly relevant to later work on safe exploitation and opponent modeling.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Information Abstraction — Card Bucketing in OpenSpiel](#day-1-information-abstraction-card-bucketing-in-openspiel)
+  - [Day 2: Action Abstraction — Restricting Bet Sizes](#day-2-action-abstraction-restricting-bet-sizes)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Gilpin & Sandholm — "Lossless Abstraction of Imperfect Information Games" (2007)](#paper-1-gilpin-sandholm-lossless-abstraction-of-imperfect-information-games-2007)
+  - [Paper 2: Johanson, Burch, Valenzano & Bowling — "Evaluating State-Space Abstractions in Extensive-Form Games" (2013)](#paper-2-johanson-burch-valenzano-bowling-evaluating-state-space-abstractions-in-extensive-form-games-2013)
+  - [Paper 3: Kroer & Sandholm — "Imperfect-Recall Abstractions with Bounds in Games" (2016)](#paper-3-kroer-sandholm-imperfect-recall-abstractions-with-bounds-in-games-2016)
+  - [Paper 4: Brown & Sandholm — "Safe and Nested Subgame Solving for Imperfect-Information Games" (2017)](#paper-4-brown-sandholm-safe-and-nested-subgame-solving-for-imperfect-information-games-2017)
+  - [Supplementary References](#supplementary-references)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Abstraction Pipeline for Leduc & Extended Leduc — From Scratch](#project-abstraction-pipeline-for-leduc-extended-leduc-from-scratch)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Reference Skim + Architecture Preview](#day-1-reference-skim-architecture-preview)
+  - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY abstraction is needed (games are too large to represent in memory), what the two types of abstraction ARE (information abstraction = grouping similar game states; action abstraction = reducing the set of available moves), and what the danger IS (bad abstraction → bad strategies). End of day: you should be able to explain to a non-expert: "Texas Hold'em has 10^161 game states. We can't store them all, so we group similar ones together — like calling a king-high flush the same whether it's spades or hearts. The trick is choosing groups that don't throw away strategic differences."
@@ -57,6 +82,10 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Visualizing K-Means Clustering](https://www.naftaliharris.com/blog/visualizing-k-means-clustering/)** — Abstraction connects deeply with clustering. Play with this K-Means interactive to build intuition on grouping similar game states.
+
 
 ### Day 1: Information Abstraction — Card Bucketing in OpenSpiel
 

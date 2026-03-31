@@ -24,6 +24,30 @@
 > **Contribution Alignment:** Deep CFR and NFSP will be studied as methods for computing equilibrium strategies in games too large for tabular solvers — a capability needed for the planned behavioral adaptation work. NFSP's anticipatory parameter, which interpolates between equilibrium and exploitative play, foreshadows the exploitation–safety tradeoff central to the thesis.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts](#blog-posts)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Deep CFR in OpenSpiel](#day-1-deep-cfr-in-openspiel)
+  - [Day 2: NFSP in OpenSpiel + Advantage Network Internals](#day-2-nfsp-in-openspiel-advantage-network-internals)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Brown, Lerer, Gross & Sandholm — "Deep Counterfactual Regret Minimization" (2019)](#paper-1-brown-lerer-gross-sandholm-deep-counterfactual-regret-minimization-2019)
+  - [Paper 2: Steinberger — "Single Deep Counterfactual Regret Minimization" (2019)](#paper-2-steinberger-single-deep-counterfactual-regret-minimization-2019)
+  - [Paper 3: Heinrich & Silver — "Deep Reinforcement Learning from Self-Play in Imperfect-Information Games" (2016)](#paper-3-heinrich-silver-deep-reinforcement-learning-from-self-play-in-imperfect-information-games-2016)
+  - [Supplementary References](#supplementary-references)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Deep CFR for Leduc Hold'em — From Scratch in PyTorch](#project-deep-cfr-for-leduc-holdem-from-scratch-in-pytorch)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
+  - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY we need neural networks in CFR (tabular CFR can't handle full-scale games even WITH abstraction), what Deep CFR does differently (replaces the regret table with neural networks that generalize across similar states), and where NFSP fits (a completely different approach — RL-based instead of CFR-based). End of day: you should be able to explain to a non-expert: "Instead of memorizing the best strategy for every possible poker situation — which would take more memory than exists on Earth — we train a neural network to PREDICT what the best response would be. It's like learning a general rule instead of memorizing every answer."
@@ -58,6 +82,10 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[TensorFlow Playground](https://playground.tensorflow.org/)** — Tinker with a Neural Network architecture right in your browser to build intuition for continuous approximations.
+
 
 ### Day 1: Deep CFR in OpenSpiel
 

@@ -22,6 +22,35 @@
 > **Contribution Alignment:** This step will survey five landmark game-solving systems that define the current state of the art. ReBeL's public belief state framework is of particular relevance to the planned belief-based opponent modeling (Contribution 1). Pluribus demonstrates empirical success in multiplayer poker without formal safety guarantees — highlighting the theoretical gap that Contribution 2 will seek to address.
 
 
+## Table of Contents
+- [Phase 1: Intuition (2 days)](#phase-1-intuition-2-days)
+  - [Day 1: The Poker AI Progression (DeepStack → Libratus → Pluribus)](#day-1-the-poker-ai-progression-deepstack-libratus-pluribus)
+  - [Day 2: The Unification Progression (ReBeL → Student of Games)](#day-2-the-unification-progression-rebel-student-of-games)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Architecture Mapping — Draw Before You Code](#day-1-architecture-mapping-draw-before-you-code)
+  - [Day 2: Run Existing Implementations](#day-2-run-existing-implementations)
+- [Phase 3: Targeted Reading (4 days)](#phase-3-targeted-reading-4-days)
+  - [Paper 1: Moravcik et al. — "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker" (2017)](#paper-1-moravcik-et-al-deepstack-expert-level-artificial-intelligence-in-heads-up-no-limit-poker-2017)
+  - [Paper 2: Brown & Sandholm — "Superhuman AI for Heads-Up No-Limit Poker: Libratus Beats Top Professionals" (2018)](#paper-2-brown-sandholm-superhuman-ai-for-heads-up-no-limit-poker-libratus-beats-top-professionals-2018)
+  - [Paper 3: Brown & Sandholm — "Superhuman AI for Multiplayer Poker" (Pluribus, 2019)](#paper-3-brown-sandholm-superhuman-ai-for-multiplayer-poker-pluribus-2019)
+  - [Paper 4: Brown, Bakhtin, Lerer & Hu — "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games" (ReBeL, 2020)](#paper-4-brown-bakhtin-lerer-hu-combining-deep-reinforcement-learning-and-search-for-imperfect-information-games-rebel-2020)
+  - [Paper 5: Schmid et al. — "Student of Games: A Unified Learning Algorithm for Both Perfect and Imperfect Information Games" (2023)](#paper-5-schmid-et-al-student-of-games-a-unified-learning-algorithm-for-both-perfect-and-imperfect-information-games-2023)
+  - [Paper 6: Brown & Sandholm — "Depth-Limited Solving for Imperfect-Information Games" (2018)](#paper-6-brown-sandholm-depth-limited-solving-for-imperfect-information-games-2018)
+  - [Supplementary References](#supplementary-references)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (10 days)](#phase-4-implementation-10-days)
+  - [Project: ReBeL-Lite for Leduc Hold'em + Architecture Comparison Framework](#project-rebel-lite-for-leduc-holdem-architecture-comparison-framework)
+  - [Sub-phase Breakdown (10 days):](#sub-phase-breakdown-10-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (3 days)](#phase-5-consolidation-3-days)
+  - [Day 1 — Book Chapter Skim + Supplementary Papers](#day-1-book-chapter-skim-supplementary-papers)
+  - [Day 2 — Architecture Synthesis + PhD Mapping](#day-2-architecture-synthesis-phd-mapping)
+  - [Day 3 — One-Pager + Learning Log](#day-3-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (2 days)
 
 The goal: understand the EVOLUTION of game-solving architectures and WHY each system exists. This isn't about memorizing papers — it's about understanding a 7-year design progression:
@@ -84,6 +113,10 @@ End of phase: you should be able to draw the architecture diagram of each system
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Emergent Behavior Interactive](https://ncase.me/crowds/)** — Understand complex system behavior that occurs when AI mechanisms (like solvers and neural nets) are combined and run end-to-end.
+
 
 ### Day 1: Architecture Mapping — Draw Before You Code
 

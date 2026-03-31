@@ -24,6 +24,31 @@
 > **Contribution Alignment:** Population-based training and the AlphaStar league architecture will be studied as examples of implicit opponent modeling at population scale, complementing the explicit Bayesian modeling of Step 7. The spinning top decomposition — distinguishing genuine skill improvement from non-transitive cycling — will be adopted into the evaluation methodology (Contribution 3).
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: PSRO as Population-Based Training](#day-1-psro-as-population-based-training)
+  - [Day 2: Evolutionary Dynamics on Matrix Games](#day-2-evolutionary-dynamics-on-matrix-games)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Jaderberg et al. — "Population Based Training of Neural Networks" (2017)](#paper-1-jaderberg-et-al-population-based-training-of-neural-networks-2017)
+  - [Paper 2: Jaderberg et al. — "Human-Level Performance in First-Person Multiplayer Games with Population-Based DRL" (FTW, 2019)](#paper-2-jaderberg-et-al-human-level-performance-in-first-person-multiplayer-games-with-population-based-drl-ftw-2019)
+  - [Paper 3: Vinyals et al. — "Grandmaster Level in StarCraft II Using Multi-Agent Reinforcement Learning" (AlphaStar, 2019)](#paper-3-vinyals-et-al-grandmaster-level-in-starcraft-ii-using-multi-agent-reinforcement-learning-alphastar-2019)
+  - [Paper 4: Balduzzi et al. — "Open-Ended Learning in Symmetric Zero-Sum Games" (2019)](#paper-4-balduzzi-et-al-open-ended-learning-in-symmetric-zero-sum-games-2019)
+  - [Paper 5: Tuyls, Pérolat, Lanctot et al. — "A Generalised Method for Empirical Game Theoretic Analysis" (2018)](#paper-5-tuyls-pérolat-lanctot-et-al-a-generalised-method-for-empirical-game-theoretic-analysis-2018)
+  - [Supplementary References](#supplementary-references)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: PBT League for Leduc + Evolutionary Analysis](#project-pbt-league-for-leduc-evolutionary-analysis)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Survey Skim + Supplementary Papers](#day-1-survey-skim-supplementary-papers)
+  - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY population-based training exists (self-play against ONE opponent is brittle — you need a POPULATION for robustness) and HOW evolutionary game theory provides the mathematical lens to analyze populations of strategies competing and evolving. Key insight: in Steps 2–8, you computed a SINGLE strategy (Nash equilibrium). In Steps 9–10, you maintain a POPULATION of strategies that evolve over time. Evolutionary game theory tells you what happens to these populations in the long run.
@@ -62,6 +87,10 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Simulating the World](https://ncase.me/simulating/)** — Play with evolutionary and population dynamics models in the browser.
+
 
 ### Day 1: PSRO as Population-Based Training
 

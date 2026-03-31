@@ -17,6 +17,30 @@
 > **Contribution Alignment:** The reinforcement learning methods studied in this step — value estimation, policy gradients, and experience replay — will recur throughout the thesis, particularly in the opponent modeling and adaptive exploitation components of the planned contributions.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts](#blog-posts)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Gymnasium Basics + DQN Demo](#day-1-gymnasium-basics-dqn-demo)
+  - [Day 2: PPO on LunarLander + Hyperparameter Exploration](#day-2-ppo-on-lunarlander-hyperparameter-exploration)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Book Chapters: Sutton & Barto — Reinforcement Learning: An Introduction (2nd ed.)](#book-chapters-sutton-barto-reinforcement-learning-an-introduction-2nd-ed)
+  - [Paper 1: Playing Atari with Deep Reinforcement Learning (Mnih et al., 2013/2015)](#paper-1-playing-atari-with-deep-reinforcement-learning-mnih-et-al-20132015)
+  - [Paper 2: Proximal Policy Optimization Algorithms (Schulman et al., 2017)](#paper-2-proximal-policy-optimization-algorithms-schulman-et-al-2017)
+  - [Optional Supplementary Reading](#optional-supplementary-reading)
+  - [Math Flags](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: DQN + PPO from Scratch on Classic Control Environments](#project-dqn-ppo-from-scratch-on-classic-control-environments)
+  - [Sub-phase Breakdown (6 days):](#sub-phase-breakdown-6-days)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
+  - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal is to build a mental model of what RL is and why it matters — NO math, NO code, NO papers yet. By end of day, you should be able to explain to a non-expert: "An agent takes actions in an environment, gets rewards, and learns a policy to maximize cumulative reward."
@@ -51,6 +75,10 @@ The goal is to build a mental model of what RL is and why it matters — NO math
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[ReinforceJS Gridworld (Andrej Karpathy)](https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_dp.html)** — Play with Gridworld to understand Dynamic Programming and RL value functions interactively.
+
 
 See the algorithms work (and fail) before reading the theory. No papers yet — just install libraries, run demos, break things.
 

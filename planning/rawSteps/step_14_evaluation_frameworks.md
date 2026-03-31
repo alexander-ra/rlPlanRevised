@@ -38,6 +38,31 @@
 > **Contribution Alignment:** This step will constitute the core of Contribution 3 directly. The planned three-layer evaluation framework will integrate exploitability computation, population-level ranking (Elo, α-Rank, VasE), and statistical confidence quantification (AIVAT variance reduction).
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Audit Existing Evaluation Code from Prior Steps](#day-1-audit-existing-evaluation-code-from-prior-steps)
+  - [Day 2: Build the Bot Zoo](#day-2-build-the-bot-zoo)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Timbers, Bard, Lockhart, Lanctot, Schmid, Burch, Schrittwieser, Hubert & Bowling — "Approximate Exploitability: Learning a Best Response in Large Games" (2022)](#paper-1-timbers-bard-lockhart-lanctot-schmid-burch-schrittwieser-hubert-bowling-approximate-exploitability-learning-a-best-response-in-large-games-2022)
+  - [Paper 2: Lanctot, Larson, Bachrach, Marris, Li, Bhoopchand, Anthony, Tanner & Koop — "Evaluating Agents using Social Choice Theory" (2023/2025)](#paper-2-lanctot-larson-bachrach-marris-li-bhoopchand-anthony-tanner-koop-evaluating-agents-using-social-choice-theory-20232025)
+  - [Paper 3: Rowland, Omidshafiei, Tuyls, Perolat, Valko, Piliouras & Munos — "Multiagent Evaluation under Incomplete Information" (2019)](#paper-3-rowland-omidshafiei-tuyls-perolat-valko-piliouras-munos-multiagent-evaluation-under-incomplete-information-2019)
+  - [Paper 4: Burch, Johanson & Bowling — "AIVAT: A New Variance Reduction Technique for Agent Evaluation in Imperfect Information Games" (2019, AAAI)](#paper-4-burch-johanson-bowling-aivat-a-new-variance-reduction-technique-for-agent-evaluation-in-imperfect-information-games-2019-aaai)
+  - [Paper 5: Omidshafiei, Papadimitriou, Piliouras, Tuyls et al. — "α-Rank: Multi-Agent Evaluation by Evolution" (2019, Nature Scientific Reports)](#paper-5-omidshafiei-papadimitriou-piliouras-tuyls-et-al-α-rank-multi-agent-evaluation-by-evolution-2019-nature-scientific-reports)
+  - [Supplementary Reading (skim as time permits):](#supplementary-reading-skim-as-time-permits)
+  - [Math Flags:](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Unified Evaluation Framework — From Single-Agent Exploitability to Multi-Agent Population Rankings with Variance Reduction](#project-unified-evaluation-framework-from-single-agent-exploitability-to-multi-agent-population-rankings-with-variance-reduction)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
+  - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY evaluation in games is fundamentally harder than evaluation in single-agent settings (intransitivity: A beats B, B beats C, C beats A → who is "best"?), WHAT metrics exist (exploitability, Elo, α-Rank, Nash averaging, VasE), and WHY a unified framework matters for the thesis (Contribution #3 requires evaluation that works across 2-player, N-player, cooperative, and competitive games — no single existing metric does this).
@@ -78,6 +103,10 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[OpenAI Hide and Seek](https://openai.com/research/multi-agent-hide-and-seek)** — Not fully playable, but watch the massive evaluations and emergent tool use discovered via multi-agent auto-curricula.
+
 
 ### Day 1: Audit Existing Evaluation Code from Prior Steps
 

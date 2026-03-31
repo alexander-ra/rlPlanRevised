@@ -30,6 +30,31 @@
 > **Contribution Alignment:** This step will apply the behavioral adaptation methodology from Steps 7, 8, and 12 to anonymized industry data, providing practical validation for Contribution 1. The behavioral deviation from equilibrium play measured on real player data will quantify exploitation opportunities relevant to Contribution 2.
 
 
+## Table of Contents
+- [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Videos](#videos)
+  - [Blog Posts / Accessible Reads](#blog-posts-accessible-reads)
+- [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
+  - [Day 1: Playtech Data Familiarization + Parsing](#day-1-playtech-data-familiarization-parsing)
+  - [Day 2: Feature Engineering + Initial Statistics](#day-2-feature-engineering-initial-statistics)
+- [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Paper 1: Wang, Honari-Jahromi, Katsarou, Mikheeva, Panagiotakopoulos, Asadi & Smirnov — "player2vec: A Language Modeling Approach to Understand Player Behavior in Games" (2024)](#paper-1-wang-honari-jahromi-katsarou-mikheeva-panagiotakopoulos-asadi-smirnov-player2vec-a-language-modeling-approach-to-understand-player-behavior-in-games-2024)
+  - [Paper 2: Kumar, Hong, Singh & Levine — "When Should We Prefer Offline Reinforcement Learning Over Behavioral Cloning?" (2022, ICLR)](#paper-2-kumar-hong-singh-levine-when-should-we-prefer-offline-reinforcement-learning-over-behavioral-cloning-2022-iclr)
+  - [Paper 3: DeLong & Bhatt — "Towards Collusion Detection in Poker" (2020)](#paper-3-delong-bhatt-towards-collusion-detection-in-poker-2020)
+  - [Paper 4: Yan & Browne — "Collusion Detection in Online Poker" (2016)](#paper-4-yan-browne-collusion-detection-in-online-poker-2016)
+  - [Paper 5: Southey, Bowling, Larson, Piccione, Burch, Billings & Rayner — "Bayes' Bluff: Opponent Modelling in Poker" (2005)](#paper-5-southey-bowling-larson-piccione-burch-billings-rayner-bayes-bluff-opponent-modelling-in-poker-2005)
+  - [Supplementary Reading (skim as time permits):](#supplementary-reading-skim-as-time-permits)
+  - [Math Flags:](#math-flags)
+- [Phase 4: Implementation (6 days)](#phase-4-implementation-6-days)
+  - [Project: Playtech Behavioral Analysis Pipeline — From Hand Histories to Player Profiles, Style Classification, and Collusion Detection](#project-playtech-behavioral-analysis-pipeline-from-hand-histories-to-player-profiles-style-classification-and-collusion-detection)
+  - [Deliverables:](#deliverables)
+  - [Validation:](#validation)
+- [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
+  - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
+  - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
+  - [PhD Connection](#phd-connection)
+- [Exit Checklist](#exit-checklist)
+
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY real-world behavioral data is different from simulated data (and harder), WHAT you can extract from poker hand histories (player styles, anomalies, collusion signals), and HOW this connects everything from Steps 7–12 into a practical pipeline. The key mental shift: in Steps 2–11, you've been building game solvers and opponent models. Now you flip the perspective — instead of computing WHAT the optimal strategy is, you analyze WHAT actual humans DO, and use the gap between their behavior and theory to classify, model, and detect anomalies.
@@ -73,6 +98,10 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 ---
 
 ## Phase 2: Exploration (2 days)
+
+### 🎮 Interactive Exploration
+- **[Understanding UMAP](https://pair-code.github.io/understanding-umap/)** — Interactive visualization tool for UMAP to build intuition on how behavioral sequences get clustered into 2D spaces.
+
 
 ### Day 1: Playtech Data Familiarization + Parsing
 
