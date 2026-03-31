@@ -44,17 +44,17 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
 ### Talks and Overviews
 
 - **Noam Brown — "Superhuman AI for Strategic Games" (various talks, 2019–2024)**  
-  Search YouTube: "Noam Brown superhuman AI strategic games" or "Noam Brown AI poker Diplomacy"  
+  https://www.youtube.com/watch?v=b7bStIQovcY  
   Duration: ~30-60m (multiple versions exist)  
   *Brown is the architect of Libratus, Pluribus, and CICERO. He provides the broadest view of where game AI is heading. Watch for: what he identifies as OPEN problems (especially N-player, opponent modeling, real-time adaptation). His CICERO talk is especially relevant because it addresses multi-agent communication and trust — directly adjacent to Contribution #2.*
 
 - **Tuomas Sandholm — "AI for Strategic Reasoning" (Carnegie Mellon talks)**  
-  Search YouTube: "Tuomas Sandholm AI strategic reasoning CMU"  
+  https://www.youtube.com/watch?v=kRGJIn8mh5Q  
   Duration: ~45-60m  
   *Sandholm leads the group that produced Libratus and influenced all safe exploitation work including OX-Search. Watch for: his framing of the exploitation-safety tradeoff, and any comments on N-player extensions. His perspective on "what makes a good research contribution in game AI" is directly relevant to contribution design.*
 
 - **Marc Lanctot — "Game Theory & Multi-Agent Systems" (DeepMind / OpenSpiel talks)**  
-  Search YouTube: "Marc Lanctot game theory multi-agent systems"  
+  https://www.youtube.com/watch?v=HZGCoVF3YvM  
   Duration: ~30-45m  
   *Lanctot's perspective bridges game theory and evaluation. He co-authored α-Rank, VasE, and OpenSpiel. Watch for: his view on evaluation as a research contribution (this validates Contribution #3) and his comments on what evaluation challenges remain unsolved.*
 
@@ -154,7 +154,7 @@ This reading phase is DIFFERENT from all prior steps. You are not learning a new
 Contribution #2 (Multi-Agent Safe Exploitation) is the strongest thesis differentiator — it addresses an explicitly stated open problem with no prior attempts. Day 1 focuses on solidifying the reading base.
 
 ### Paper 1: "Securing Equal Share: A Principled Approach for Learning Multiplayer Symmetric Games" (Ge, Wang, Li & Jin, 2024)
-Link: [arXiv:2406.04201](https://arxiv.org/abs/2406.04201)
+Link: [arXiv:2406.04201](https://arxiv.org/abs/2406.04201https://arxiv.org/abs/2104.03113)
 ```
 ├── READ:  Sections 1 (Introduction), 3 (Main Results), 4 (Algorithms), 5 (Experiments)
 │          The algorithms section is critical: understand what "equal share" means formally 
@@ -176,7 +176,7 @@ Link: [arXiv:2406.04201](https://arxiv.org/abs/2406.04201)
 **PhD Connection:** This paper provides the FORMAL OBJECTIVE for Contribution #2. Where OX-Search defined "adaptation safety" for 2 players, Ge et al. define "equal share" for N players. Your thesis contribution is the BRIDGE: safe opponent exploitation that guarantees at least equal share while exploiting sub-optimal opponents.
 
 ### Paper 2: "Safe and Robust Subgame Exploitation in Imperfect Information Games" (Ge, Kovařík & Lisý, 2024 — OX-Search)
-Link: [arXiv:2405.XXXXX](https://arxiv.org/abs/2405.15999) *(re-read from Step 8)*
+Link: [arXiv:2405.XXXXX](https://arxiv.org/abs/2405.15999https://arxiv.org/abs/2012.00849) *(re-read from Step 8)*
 ```
 ├── RE-READ:  Section 6 (Discussion/Limitations) — with fresh eyes from equal share
 │             Look specifically for: what prevents extension to N-player?
@@ -192,7 +192,7 @@ Link: [arXiv:2405.XXXXX](https://arxiv.org/abs/2405.15999) *(re-read from Step 8
 ```
 
 ### Paper 3: "Synchronous vs. Asynchronous Coalitions in Multiplayer Games" (Babyak et al., 2024)
-Link: [arXiv:2412.19855](https://arxiv.org/abs/2412.19855)
+Link: [arXiv:2412.19855](https://arxiv.org/abs/2412.19855https://arxiv.org/abs/1911.08265)
 ```
 ├── READ:  Introduction + Section 2 (the three values: Nash / async optimal / sync optimal)
 │          Key result: asynchronous coalition optimization is NONCONVEX.

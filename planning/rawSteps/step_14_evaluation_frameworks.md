@@ -47,17 +47,17 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 ### Videos
 
 - **Marc Lanctot — "OpenSpiel: A Framework for RL in Games" (2019/2020 talk)**  
-  Search YouTube: "Marc Lanctot OpenSpiel" or "OpenSpiel reinforcement learning games"  
+  https://www.youtube.com/watch?v=TFBSzfGBvZA  
   Duration: ~30-40m  
   *Lanctot is co-author of both OpenSpiel and the VasE paper. Watch for: how the research community evaluates agents in practice, the problems with Elo in game AI, and why game-theoretic evaluation is needed.*
 
 - **Karl Tuyls / DeepMind — "α-Rank: Multi-Agent Evaluation by Evolution" (talk)**  
-  Search YouTube: "alpha-rank multi agent evaluation DeepMind"  
+  https://www.youtube.com/watch?v=7L2sUGcOgh0  
   Duration: ~30m  
   *The original α-Rank presentation. Key idea: instead of solving for Nash equilibrium of the meta-game (computationally expensive), use Markov-Conley chains from evolutionary dynamics (polynomial time). The ranking is the stationary distribution of a random walk on the strategy space. Watch for: how α-Rank differs from Elo, why it handles intransitivity, and its computational complexity.*
 
 - **David Balduzzi — "Re-evaluating Evaluation" (NeurIPS 2019 talk or similar)**  
-  Search YouTube: "Balduzzi re-evaluating evaluation spinning top"  
+  https://www.youtube.com/watch?v=2dX0lwaQRX0  
   Duration: ~20m  
   *Already watched in Step 10 — REWATCH with evaluation framework lens. The spinning top decomposition tells you WHAT FRACTION of the competitive structure is "real skill" (transitive) vs "rock-paper-scissors" (cyclic). This diagnostic should be part of any evaluation report for the thesis.*
 
@@ -231,7 +231,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 ## Phase 3: Targeted Reading (3 days)
 
 ### Paper 1: Timbers, Bard, Lockhart, Lanctot, Schmid, Burch, Schrittwieser, Hubert & Bowling — "Approximate Exploitability: Learning a Best Response in Large Games" (2022)
-**Link:** https://arxiv.org/abs/2004.09677
+https://arxiv.org/abs/2004.09677https://arxiv.org/abs/1912.06680
 
 - **READ:** Sections 1–4 (Introduction, Background, ISMCTS-BR Algorithm, Experiments)
   - KEY INSIGHT: Exploitability = value of best response - Nash value. In small games (Kuhn, Leduc), compute exactly. In large games (Go, StarCraft), you can't enumerate the game tree → train a NEURAL NETWORK to approximate the best response → use its value as an upper bound on exploitability. ISMCTS-BR combines Monte Carlo Tree Search with deep RL to learn this approximate best response.
@@ -241,7 +241,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 - **PhD Connection:** This is the BRIDGE from your exact exploitability computation (Steps 3, 8 on Kuhn/Leduc) to evaluation on larger games (Hold'em, Playtech data). When the game is too large for exact computation, ISMCTS-BR provides the approximate metric. You won't implement ISMCTS-BR from scratch (it requires significant infrastructure), but you should understand the approach to design your evaluation framework's "approximate" mode.
 
 ### Paper 2: Lanctot, Larson, Bachrach, Marris, Li, Bhoopchand, Anthony, Tanner & Koop — "Evaluating Agents using Social Choice Theory" (2023/2025)
-**Link:** https://arxiv.org/abs/2312.03121
+https://arxiv.org/abs/2312.03121https://arxiv.org/abs/2006.04635
 
 - **READ:** Entire paper carefully — this is the FRESHEST significant work in multi-agent evaluation
   - KEY INSIGHT: Frame evaluation as a VOTING problem. Each task/game is a voter, each agent is a candidate. Use social choice axioms (anonymity, monotonicity, Condorcet consistency) to select the "best" evaluation function. The paper identifies "maximal lotteries" as the method satisfying the most desirable axioms.
@@ -250,7 +250,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 - **PhD Connection:** VasE could be the evaluation backbone for Contribution #3. Its axiomatic foundations provide JUSTIFICATION for the evaluation choices in the thesis. If your framework uses VasE, you can cite specific axioms to explain WHY the ranking is meaningful — much stronger than just "we used Elo."
 
 ### Paper 3: Rowland, Omidshafiei, Tuyls, Perolat, Valko, Piliouras & Munos — "Multiagent Evaluation under Incomplete Information" (2019)
-**Link:** https://arxiv.org/abs/1909.09849
+https://arxiv.org/abs/1909.09849https://arxiv.org/abs/2206.15378
 
 - **READ:** Sections 1–4 (Introduction, Background, Sample Complexity, Adaptive Algorithms)
   - KEY INSIGHT: Real evaluation data is NOISY — game outcomes have variance (especially in poker). α-Rank's stationary distribution depends on the payoff matrix, so noisy estimates of payoffs propagate to noisy rankings. This paper derives HOW MANY GAMES you need to play before the ranking is confident. It also provides adaptive evaluation algorithms that focus matches on "close" agents to resolve their relative ranking efficiently.
@@ -769,15 +769,15 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 ### Day 1 — Survey Skim + Cross-References
 
 - **Reference skim:** Martin & Sandholm (2023/2024) — "ApproxED: Approximate Exploitability Descent"  
-  https://arxiv.org/abs/2301.08830  
+  https://arxiv.org/abs/2301.08830https://arxiv.org/abs/2305.10601  
   *Skim for: the learned best-response training procedure. Compare with your approximate exploitability module: they learn a best-response FUNCTION (generalizes across strategy profiles), you learn a best-response POLICY (specific to one strategy). Their approach is more general but more expensive.*
 
 - **Reference skim:** Cipolina-Kun et al. (2025) — "Game Reasoning Arena"  
-  https://arxiv.org/abs/2508.03368  
+  https://arxiv.org/abs/2508.03368https://arxiv.org/abs/1711.00832  
   *Skim for: benchmark design for evaluating reasoning via game play. Connection to Step 12's LLM agent evaluation: could your framework evaluate LLM agents using the same games?*
 
 - **Supplementary skim:** Yan et al. (2020) — "Policy Evaluation and Seeking for MARL via Best Response"  
-  https://arxiv.org/abs/2006.09585  
+  https://arxiv.org/abs/2006.09585https://arxiv.org/abs/1812.05944  
   *Skim for: cycle-based and memory-based evaluation metrics grounded on sink equilibrium. Alternative to α-Rank for evaluating cycling dynamics.*
 
 - **Forward scan:** Search for any recent papers on "evaluation in imperfect information games" or "multi-agent benchmark 2025." Note any developments since the Lanctot VasE paper.

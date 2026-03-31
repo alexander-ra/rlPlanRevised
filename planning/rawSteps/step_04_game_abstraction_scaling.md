@@ -30,17 +30,17 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 ### Videos
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
+  https://www.youtube.com/watch?v=jIAZGz7wN3I  
   Duration: ~25m | Speaker: Noam Brown  
   *Third time watching — NOW focus on the section about abstraction (~8:00–14:00). Brown explains how Libratus used card bucketing and action translation. Pay attention to the concept of "blueprint strategy" vs "real-time solving" — abstraction produces the blueprint, real-time solving fixes its errors.*
 
 - **Tuomas Sandholm — "AI for Strategic Reasoning" (invited talk)**  
-  https://www.youtube.com/watch?v=ZIkr9JFJ2Ks  
+  https://www.youtube.com/watch?v=YJO3-bMKvnI  
   Duration: ~50m | Speaker: Tuomas Sandholm (CMU / Strategy Robot)  
   *Sandholm is THE person behind game abstraction in poker AI (advisor on Libratus/Pluribus). This talk covers abstraction theory at a high level — card isomorphisms, action mapping, the "solve the abstract game then translate back" pipeline. Watch 15:00–35:00 for abstraction overview.*
 
 - **Sam Ganzfried — "Computing Optimal Strategies in Imperfect Information Games"**  
-  https://www.youtube.com/watch?v=bJwQYBnzXzQ  
+  https://www.youtube.com/watch?v=qndXrHcV1sM  
   Duration: ~1h | Speaker: Sam Ganzfried (Miami)  
   *Ganzfried worked on game-theoretic strategy computation for poker (Tartanian series of poker bots). Covers the full pipeline: abstraction → solving → action translation. Good for seeing the entire workflow end-to-end.*
 
@@ -108,8 +108,8 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Paper 1: Gilpin & Sandholm — "Lossless Abstraction of Imperfect Information Games" (2007)
 
-**Link:** https://dl.acm.org/doi/10.5555/1625275.1625300  
-**Alt link (Sandholm's page):** https://www.cs.cmu.edu/~sandholm/lossless.jacm.pdf
+https://dl.acm.org/doi/10.5555/1625275.1625300https://arxiv.org/abs/1901.08106  
+https://www.cs.cmu.edu/~sandholm/lossless.jacm.pdfhttps://arxiv.org/abs/2010.02493
 
 ```
 ├── READ:  Section 2 (Game-theoretic background — skim if comfortable from Step 2),
@@ -136,7 +136,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Paper 2: Johanson, Burch, Valenzano & Bowling — "Evaluating State-Space Abstractions in Extensive-Form Games" (2013)
 
-**Link:** https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdf
+https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdfhttps://arxiv.org/abs/2110.02100
 
 ```
 ├── READ:  Section 3 (Earth Mover's Distance for evaluating abstraction quality —
@@ -160,7 +160,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Paper 3: Kroer & Sandholm — "Imperfect-Recall Abstractions with Bounds in Games" (2016)
 
-**Link:** https://arxiv.org/abs/1409.3302
+https://arxiv.org/abs/1409.3302https://arxiv.org/abs/1908.08708
 
 ```
 ├── READ:  Section 3 (Bounded imperfect-recall abstractions — how to deliberately 
@@ -183,7 +183,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Paper 4: Brown & Sandholm — "Safe and Nested Subgame Solving for Imperfect-Information Games" (2017)
 
-**Link:** https://arxiv.org/abs/1705.02955
+https://arxiv.org/abs/1705.02955https://arxiv.org/abs/2202.03169
 
 ```
 ├── READ:  Section 3 (Subgame solving — how Libratus/Pluribus refines the abstract 
@@ -206,11 +206,11 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 ### Supplementary References
 
 - **Li, W. et al. (2024) — "RL-CFR: A New RL Framework for Action Abstraction in Imperfect Information Extensive-Form Games"**  
-  https://arxiv.org/abs/2403.14114  
+  https://arxiv.org/abs/2403.14114https://arxiv.org/abs/1811.00164  
   *Uses RL to learn action abstractions instead of hand-crafting them. Bridges Step 1 (RL) → Step 4 (abstraction). SKIM abstract + Section 3 (RL-CFR method). Log as potential enrichment for Steps 5–6.*
 
 - **Fu, H. et al. (2025) — "No-Regret Strategy Optimization with KrwEmd Metric for Imperfect-Recall Abstraction" (AAAI 2026)**  
-  https://arxiv.org/abs/2411.16111  
+  https://arxiv.org/abs/2411.16111https://arxiv.org/abs/2007.13544  
   *Frontier work on abstraction metrics. SKIM abstract only. Log for Step 15 (frontier mapping).*
 
 ### Math Flags

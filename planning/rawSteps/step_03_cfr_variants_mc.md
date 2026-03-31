@@ -28,24 +28,24 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ### Videos
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
+  https://www.youtube.com/watch?v=aEKg0TJN-as  
   Duration: ~25m | Speaker: Noam Brown  
   *You bookmarked this in Step 2. NOW watch the section about blueprint computation (~5:00–12:00) — Brown explains why vanilla CFR can't handle Texas Hold'em and how MCCFR + abstraction solved Libratus/Pluribus.*
 
 - **Marc Lanctot — "OpenSpiel: A Framework for Reinforcement Learning in Games"**  
-  https://www.youtube.com/watch?v=8BD6nDq0PHw  
+  https://www.youtube.com/watch?v=ZIkr9JFJ2Ks  
   Duration: ~45m | Speaker: Marc Lanctot (DeepMind/Google)  
   *Lanctot literally wrote the MCCFR paper. This talk covers the framework that implements all the CFR variants you'll study. Focus on the first 20 minutes for algorithm overview.*
 
 - **Dustin Morrill — "CFR and its Variants" (AAAI 2020 Tutorial)**  
-  https://www.youtube.com/watch?v=aEKg0TJN-as  
+  https://www.youtube.com/watch?v=bJwQYBnzXzQ  
   Duration: ~1h 30m | Speaker: Dustin Morrill (UAlberta/DeepMind)  
   *Detailed walkthrough of CFR, MCCFR (external/outcome/chance sampling), CFR+, Discounted CFR, Linear CFR. Watch at 1.25x. This is the best single video for this step.*
 
 ### Blog Posts
 
 - **Martin Schmid — "Variance Reduction in MCCFR"**  
-  https://arxiv.org/abs/1809.03057 (read abstract and introduction only — paper is for Phase 3)  
+  https://arxiv.org/abs/1809.03057https://arxiv.org/abs/1711.00832 (read abstract and introduction only — paper is for Phase 3)  
   *Quick context on why variance matters in MCCFR — motivates why you'll experiment with different sampling schemes.*
 
 ---
@@ -126,7 +126,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ### Paper 1: Lanctot et al. — "Monte Carlo Sampling for Regret Minimization in Extensive Games" (2009)
 
 **Link:** https://papers.nips.cc/paper/2009/hash/00411460f7c92d2124a67ea0f4cb5f85-Abstract.html  
-**Alt link (Lanctot's page):** http://mlanctot.info/files/papers/nips09mccfr.pdf
+http://mlanctot.info/files/papers/nips09mccfr.pdfhttps://arxiv.org/abs/1802.01569
 
 ```
 ├── READ:  Section 3 (MCCFR framework — the unifying theory for all sampling variants),
@@ -154,7 +154,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 
 ### Paper 2: Tammelin et al. — "Solving Heads-Up Limit Texas Hold'em" (2015)
 
-**Link:** https://arxiv.org/abs/1407.5042 (originally appeared in AAAI 2015 / Science 2015)
+https://arxiv.org/abs/1407.5042https://arxiv.org/abs/1812.05944 (originally appeared in AAAI 2015 / Science 2015)
 
 ```
 ├── READ:  Section 2 (CFR+ algorithm — the three modifications: floor regrets at 0
@@ -176,7 +176,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 
 ### Paper 3: Zinkevich et al. (2007) — Revisit Section 5
 
-**Link:** https://arxiv.org/abs/0709.2092  
+https://arxiv.org/abs/0709.2092https://arxiv.org/abs/2104.03113  
 *You read this in Step 2. Now revisit Section 5 (the Kuhn/Rhode Island experiments) with fresh eyes — you've now seen MCCFR and CFR+ convergence in Phase 2. Compare the convergence plots.*
 
 ### Book: Chen & Ankenman — "The Mathematics of Poker" (2006)
@@ -195,11 +195,11 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ### Optional Supplementary
 
 - **Schmid et al. (2018) — "Variance Reduction in Monte Carlo Counterfactual Regret Minimization"**  
-  https://arxiv.org/abs/1809.03057  
+  https://arxiv.org/abs/1809.03057https://arxiv.org/abs/2012.00849  
   *VR-MCCFR adds baseline subtraction to reduce sampling variance. SKIM Sections 1–3 only. This technique reappears in Step 5 (Deep CFR relies on variance reduction).*
 
 - **Farina et al. (2020) — "Stochastic Regret Minimization in Extensive-Form Games"**  
-  https://arxiv.org/abs/2002.08493  
+  https://arxiv.org/abs/2002.08493https://arxiv.org/abs/1911.08265  
   *Unifies sampling-based regret minimization. SKIM abstract only — good for bibliography mining.*
 
 ### Math Flags

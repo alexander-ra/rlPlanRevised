@@ -34,17 +34,17 @@ The goal: understand WHY coalition formation is hard (and interesting). Key insi
 End of day: you should be able to explain to a non-expert: "In a poker game with 6 players, two players might secretly work together — sharing information about their hands, or one folding to let the other win a big pot. This is a COALITION. But coalitions in competitive games are unstable — eventually, one member will betray the other when it's profitable. Learning WHEN to form, MAINTAIN, and BREAK coalitions is an unsolved problem in AI. Traditional game theory (Nash equilibrium) can't tell you much about this because Nash treats each player independently. Cooperative game theory (Shapley value, the core) provides tools to analyze WHO should be in a coalition and HOW to divide the gains — but it assumes coalitions are stable. The real challenge is when coalitions are DYNAMIC."
 
 - **Noam Brown — "CICERO: An AI agent that negotiates, persuades, and cooperates with people" (Meta AI, 2022)**  
-  https://www.youtube.com/watch?v=u5_BHosc7bE  
+  https://www.youtube.com/watch?v=aEKg0TJN-as  
   Duration: ~20m | Speaker: Noam Brown (Meta AI)  
   *THE state-of-the-art in multi-player game AI with coalition dynamics. Diplomacy is a 7-player game where players form alliances, negotiate, and betray. CICERO combines a language model (for negotiation) with strategic planning (for moves). Watch for: how does the system decide WHOM to ally with? When does it betray? How does it balance short-term alliance utility vs long-term strategic independence? You won't implement CICERO's language component, but the STRATEGIC component (planning under temporary alliances) is directly relevant.*
 
 - **Tim Roughgarden — "Algorithmic Game Theory" (Stanford, Lecture on Cooperative Games)**  
-  https://www.youtube.com/watch?v=aImpLOhtPBc  
+  https://www.youtube.com/watch?v=ZIkr9JFJ2Ks  
   Duration: ~75m | Speaker: Tim Roughgarden (Stanford/Columbia)  
   *THE accessible introduction to cooperative game theory: the Shapley value, the core, the nucleolus. These concepts tell you how to fairly divide gains from cooperation — and when a coalition is stable (no subgroup has incentive to leave). Critical for understanding WHEN coalitions should form and WHY they break.*
 
 - **Grant Sanderson (3Blue1Brown-style) — "The Shapley Value" (short explainer)**  
-  Search YouTube for "Shapley value explained" — pick a 10-15m video.  
+  https://www.youtube.com/watch?v=bJwQYBnzXzQ — pick a 10-15m video.  
   *Quick visual intuition for the Shapley value: each player's marginal contribution to every possible coalition, averaged. This is the "fair" way to distribute coalition gains. You'll use it for credit assignment in multi-agent SLS.*
 
 ### Blog Posts / Accessible Reads
@@ -147,7 +147,7 @@ End of day: you should be able to explain to a non-expert: "In a poker game with
 
 ### Paper 1: Sharan & Adak — "Reinforcing Competitive Multi-Agents for Playing 'So Long Sucker'" (2024)
 
-**Link:** https://arxiv.org/abs/2411.11057
+https://arxiv.org/abs/2411.11057https://arxiv.org/abs/1908.08708
 
 ```
 ├── READ:  Section 2 (SLS game formalization — state representation, action space,
@@ -173,7 +173,7 @@ End of day: you should be able to explain to a non-expert: "In a poker game with
 
 ### Paper 2: De Carufel & Jerade — "So Long Sucker: Endgame Analysis" (2024)
 
-**Link:** https://arxiv.org/abs/2403.17302
+https://arxiv.org/abs/2403.17302https://arxiv.org/abs/2202.03169
 
 ```
 ├── READ:  Section 2 (Formal game rules — the definitive mathematical formalization
@@ -193,7 +193,7 @@ End of day: you should be able to explain to a non-expert: "In a poker game with
 
 ### Paper 3: Bakhtin et al. — "Mastering the Game of No-Press Diplomacy" (2022)
 
-**Link:** https://arxiv.org/abs/2210.05492
+https://arxiv.org/abs/2210.05492https://arxiv.org/abs/1811.00164
 
 ```
 ├── READ:  Section 2 (How to handle N>2 players in an imperfect-information game:
@@ -257,7 +257,7 @@ This is a slim textbook (~160 pages), not a paper. You need Chapters 2–4.
 
 ### Paper 5: Wang, Zhang, Kim & Gu — "Shapley Q-value: A Local Reward Approach to Solve Global Reward Games" (AAAI 2020)
 
-**Link:** https://arxiv.org/abs/1907.05707
+https://arxiv.org/abs/1907.05707https://arxiv.org/abs/2007.13544
 
 ```
 ├── READ:  Section 3 (Shapley Q-value — decomposes the team's joint Q-value into
@@ -286,11 +286,11 @@ This is a slim textbook (~160 pages), not a paper. You need Chapters 2–4.
 ### Supplementary References
 
 - **Li, Kuang, Wang, Liu, Chen, Wu & Xiao (2021, KDD) — "Shapley Counterfactual Credits for Multi-Agent Reinforcement Learning"**  
-  https://arxiv.org/abs/2106.00285  
+  https://arxiv.org/abs/2106.00285https://arxiv.org/abs/1901.08106  
   *Combines Shapley values with counterfactual baselines (reminiscent of CFR's counterfactual regret). SKIM Section 3 for the counterfactual Shapley mechanism. Connection: your CFR expertise (Steps 2–4) meets cooperative GT here.*
 
 - **Wang, Li, Kaski & Lawry (2025) — "Shapley Machine: A Game-Theoretic Framework for N-Agent Ad Hoc Teamwork"**  
-  https://arxiv.org/abs/2506.11285  
+  https://arxiv.org/abs/2506.11285https://arxiv.org/abs/2010.02493  
   *N-agent ad hoc teamwork = implicit coalition formation with unknown teammates. SKIM for the connection between Shapley values and ad hoc team formation.*
 
 - **Meta AI — "Human-Level Play in the Game of Diplomacy by Combining Language Models with Strategic Reasoning" (CICERO, Science 2022)**  
@@ -298,7 +298,7 @@ This is a slim textbook (~160 pages), not a paper. You need Chapters 2–4.
   *The full-press Diplomacy system — combines language model for negotiation with game-theoretic planning. SKIM for architecture insights only. You will NOT implement language-based negotiation, but the planning component (Section 2) shows how to integrate coalition reasoning into search.*
 
 - **Mukobi et al. (2023) — "Welfare Diplomacy: Benchmarking Language Model Cooperation"**  
-  https://arxiv.org/abs/2310.08901  
+  https://arxiv.org/abs/2310.08901https://arxiv.org/abs/2110.02100  
   *LLM agents playing Diplomacy variants. Relevant for Step 12 bridge (LLM agents in strategic settings). SKIM abstract only.*
 
 ### Math Flags
@@ -554,11 +554,11 @@ Starting point: Sharan & Adak's SLS implementation + your Step 9 MARL infrastruc
   *Dynamic coalition formation and games with externalities. Skim for: does any classical theory address the DYNAMIC coalition case? (Answer: very little — most theory is static, which is exactly your PhD gap.)*
 
 - **Supplementary skim:** Li et al. (2021, KDD) — "Shapley Counterfactual Credits for MARL"  
-  https://arxiv.org/abs/2106.00285  
+  https://arxiv.org/abs/2106.00285https://arxiv.org/abs/1705.01820  
   *Read Section 3: counterfactual Shapley — combines counterfactual baselines (from your CFR expertise, Steps 2–4) with Shapley decomposition. Could this improve your SLS credit assignment?*
 
 - **Supplementary skim:** Wang et al. (2025) — "Shapley Machine: N-Agent Ad Hoc Teamwork"  
-  https://arxiv.org/abs/2506.11285  
+  https://arxiv.org/abs/2506.11285https://arxiv.org/abs/1505.00533  
   *Read abstract + method overview. Ad hoc teamwork = joining a team of unknown agents without pre-coordination. This is exactly what happens when a new coalition forms in SLS — you don't know if your "ally" will cooperate or betray.*
 
 - **Forward scan:** Skim arXiv for any new SLS or FFA coalition papers since the freshness scan. Search: "So Long Sucker", "coalition formation competitive", "multi-player free-for-all".

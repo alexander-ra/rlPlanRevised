@@ -34,12 +34,12 @@ The goal: understand what game theory IS, why Nash equilibrium matters, what an 
   *The classic game theory example. Builds intuition for why rational agents can end up at suboptimal outcomes.*
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019 talk)**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
+  https://www.youtube.com/watch?v=u9bJlfFhHbw  
   Duration: ~25m | Speaker: Noam Brown (Facebook/Meta AI → OpenAI)  
   *The creator of Pluribus explains the journey from CFR basics to beating world-class poker players. This talk makes you understand WHY you're learning CFR — it's the algorithm family that cracked poker. Watch the first 15 minutes for CFR intuition, bookmark the rest for Steps 4–6.*
 
 - **Todd W. Neller — "An Introduction to Counterfactual Regret Minimization" (lecture version)**  
-  https://www.youtube.com/watch?v=u9bJlfFhHbw  
+  https://www.youtube.com/watch?v=8BD6nDq0PHw  
   Duration: ~1h | Speaker: Todd Neller (Gettysburg College)  
   *The author of the tutorial paper you'll read in Phase 3. Hearing him explain it before reading the paper makes the reading 2x faster. Covers: regret matching, game trees, information sets, the CFR algorithm on Rock-Paper-Scissors and Kuhn Poker.*
 
@@ -175,7 +175,7 @@ No reading yet. Run existing CFR solvers, play games, see convergence happen.
 
 ### Core Reading: Neller & Lanctot — "An Introduction to Counterfactual Regret Minimization" (2013)
 
-**Link:** http://modelai.gettysburg.edu/2013/cfr/cfr.pdf  
+http://modelai.gettysburg.edu/2013/cfr/cfr.pdfhttps://arxiv.org/abs/2305.10601  
 **Length:** ~30 pages  
 **This is the single most important reading for Step 2.** Read it front-to-back — it's a tutorial, not a research paper. It's specifically designed to teach CFR from scratch.
 
@@ -215,7 +215,7 @@ No reading yet. Run existing CFR solvers, play games, see convergence happen.
 
 ### Paper 1: Zinkevich et al. — "Regret Minimization in Games with Incomplete Information" (2007)
 
-**Link:** https://arxiv.org/abs/0709.2092  
+https://arxiv.org/abs/0709.2092https://arxiv.org/abs/2206.15378  
 *The original CFR paper. You DON'T need to read this front-to-back — Neller & Lanctot covers the same material more accessibly. Use this paper as a reference.*
 
 ```

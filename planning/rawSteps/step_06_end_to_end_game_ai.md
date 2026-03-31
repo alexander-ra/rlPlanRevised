@@ -36,34 +36,34 @@ End of phase: you should be able to draw the architecture diagram of each system
 ### Day 1: The Poker AI Progression (DeepStack → Libratus → Pluribus)
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
+  https://www.youtube.com/watch?v=7L2sUGcOgh0  
   Duration: ~25m | Speaker: Noam Brown  
   *Fourth and final time watching this talk. NOW you have the full context (CFR, MCCFR, abstraction, Deep CFR) to understand every component Brown describes. Follow the full pipeline: blueprint → depth-limited solving → real-time search.*
 
 - **Matej Moravcik — "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker"**  
-  https://www.youtube.com/watch?v=qndXrHcV1sM  
+  https://www.youtube.com/watch?v=2dX0lwaQRX0  
   Duration: ~20m | Speaker: Matej Moravcik (DeepMind/UAlberta)  
   *DeepStack's creator explains: continual re-solving + deep counterfactual value networks. Key difference from Libratus: DeepStack uses neural value estimation AT EVERY decision point, not just at the blueprint level.*
 
 - **Tuomas Sandholm — "Superhuman AI for Strategic Reasoning: Libratus"**  
-  https://www.youtube.com/watch?v=2oHH4aClJQs  
+  https://www.youtube.com/watch?v=b7bStIQovcY  
   Duration: ~1h | Speaker: Tuomas Sandholm (CMU)  
   *Sandholm walks through the full Libratus architecture: (1) blueprint via abstracted MCCFR, (2) subgame solving for off-tree actions, (3) self-improvement module. Watch 15:00–45:00.*
 
 ### Day 2: The Unification Progression (ReBeL → Student of Games)
 
 - **Noam Brown — "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games" (NeurIPS 2020)**  
-  https://www.youtube.com/watch?v=hfZcAr5pET4  
+  https://www.youtube.com/watch?v=kRGJIn8mh5Q  
   Duration: ~25m | Speaker: Noam Brown  
   *Brown presents ReBeL — the first algorithm that treats imperfect-info game solving like AlphaZero treats perfect-info: alternate between (1) self-play to generate data and (2) training a value/policy network. The key innovation: the game state for imperfect info is a PUBLIC BELIEF STATE (probability distribution over all possible private information).*
 
 - **Martin Schmid — "Student of Games: A Unified Learning Algorithm" (Science Advances 2023)**  
-  https://www.youtube.com/watch?v=TFBSzfGBvZA  
+  https://www.youtube.com/watch?v=HZGCoVF3YvM  
   Duration: ~30m | Speaker: Martin Schmid (DeepMind/Modelbased)  
   *Schmid presents the student of games framework: Growing-Tree CFR (GT-CFR) + search + value networks. Works on BOTH perfect-info (Go, chess) AND imperfect-info (poker) games. This is the generalization proof your professors want.*
 
 - **David Silver — "AlphaZero: Shedding New Light on Chess, Shogi, and Go" (optional)**  
-  https://www.youtube.com/watch?v=7L2sUGcOgh0  
+  https://www.youtube.com/watch?v=p_n5fF8apiE  
   Duration: ~50m | Speaker: David Silver (DeepMind)  
   *Watch 10:00–25:00 for the AlphaZero architecture. This is the PERFECT-information template that ReBeL and Student of Games extend to imperfect information. Knowing AlphaZero helps you see exactly what ReBeL changed.*
 
@@ -194,7 +194,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 
 ### Paper 1: Moravcik et al. — "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker" (2017)
 
-**Link:** https://arxiv.org/abs/1701.01724
+https://arxiv.org/abs/1701.01724https://arxiv.org/abs/2102.04360
 
 ```
 ├── READ:  Section 2 (Continual Re-Solving — how DeepStack operates without a 
@@ -223,7 +223,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 ### Paper 2: Brown & Sandholm — "Superhuman AI for Heads-Up No-Limit Poker: Libratus Beats Top Professionals" (2018)
 
 **Link:** https://www.science.org/doi/10.1126/science.aao1733  
-**Alt link:** http://www.cs.cmu.edu/~noamb/papers/17-IJCAI-Libratus.pdf
+http://www.cs.cmu.edu/~noamb/papers/17-IJCAI-Libratus.pdfhttps://arxiv.org/abs/2006.04635
 
 ```
 ├── READ:  Section: "Blueprint computation" (how Libratus uses abstracted MCCFR 
@@ -248,7 +248,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 ### Paper 3: Brown & Sandholm — "Superhuman AI for Multiplayer Poker" (Pluribus, 2019)
 
 **Link:** https://www.science.org/doi/10.1126/science.aay2400  
-**Alt link:** https://arxiv.org/abs/1911.07559 (extended version)
+**Alt link:** https://arxiv.org/abs/1911.07559https://arxiv.org/abs/2004.04136 (extended version)
 
 ```
 ├── READ:  Section 2 (Methods — the full 6-player architecture: MCCFR blueprint
@@ -278,7 +278,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 
 ### Paper 4: Brown, Bakhtin, Lerer & Hu — "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games" (ReBeL, 2020)
 
-**Link:** https://arxiv.org/abs/2007.13544 (NeurIPS 2020)
+https://arxiv.org/abs/2007.13544https://arxiv.org/abs/1707.06203 (NeurIPS 2020)
 
 ```
 ├── READ:  Section 3 (Public Belief States — THE key theoretical innovation: 
@@ -313,7 +313,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 
 ### Paper 5: Schmid et al. — "Student of Games: A Unified Learning Algorithm for Both Perfect and Imperfect Information Games" (2023)
 
-**Link:** https://arxiv.org/abs/2112.03178 (Science Advances 2023)
+https://arxiv.org/abs/2112.03178https://arxiv.org/abs/1611.02779 (Science Advances 2023)
 
 ```
 ├── READ:  Section 2 (Growing-Tree CFR — GT-CFR: the algorithm that incrementally
@@ -344,7 +344,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 
 ### Paper 6: Brown & Sandholm — "Depth-Limited Solving for Imperfect-Information Games" (2018)
 
-**Link:** https://arxiv.org/abs/1805.08195 (NeurIPS 2018)
+https://arxiv.org/abs/1805.08195https://arxiv.org/abs/2009.04416 (NeurIPS 2018)
 
 ```
 ├── READ:  Section 3 (Depth-limited solving — the theoretical framework for 
@@ -371,15 +371,15 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 ### Supplementary References
 
 - **Milec, Kovařík & Lisý (2025) — "Adapting Beyond the Depth Limit"**  
-  https://arxiv.org/abs/2501.10464  
+  https://arxiv.org/abs/2501.10464https://arxiv.org/abs/1507.01228  
   *Studies opponent adaptation beyond the search depth. SKIM abstract + Section 3. Bridges Step 6 → Step 8 (safe exploitation). Key question: can depth-limited search-based systems adapt to sub-rational opponents while maintaining robustness?*
 
 - **Kubíček & Lisý (2023/2025) — "Look-ahead Search on Top of Policy Networks in IIGs"**  
-  https://arxiv.org/abs/2312.15220  
+  https://arxiv.org/abs/2312.15220https://arxiv.org/abs/2103.04026  
   *Explores adding test-time search on top of policy networks trained via RL/CFR. SKIM abstract + Section 2. Relevant to the search-vs-learning tradeoff.*
 
 - **Zarick et al. (2020) — "Unlocking the Potential of Deep Counterfactual Value Networks"**  
-  https://arxiv.org/abs/2007.10442  
+  https://arxiv.org/abs/2007.10442https://arxiv.org/abs/1912.06680  
   *Improvements to DeepStack-style value network training. SKIM for practical insights if implementing value networks.*
 
 ### Math Flags

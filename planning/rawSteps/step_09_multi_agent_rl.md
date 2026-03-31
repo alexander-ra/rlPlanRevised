@@ -34,17 +34,17 @@ The goal: understand WHY multi-agent RL is fundamentally different from single-a
 End of day: you should be able to explain to a non-expert: "In single-agent RL, the agent learns by trial and error in a fixed world. In multi-agent RL, every agent IS the 'world' for every other agent — so the 'world' keeps changing as agents learn. It's like learning to dance with a partner who is also learning to dance — you keep stepping on each other's toes until you accidentally synchronize."
 
 - **Jakob Foerster — "Multi-Agent Reinforcement Learning" (AAAI 2024 Tutorial)**  
-  https://www.youtube.com/watch?v=p_n5fF8apiE  
+  https://www.youtube.com/watch?v=2GwBez0D20A  
   Duration: ~2h | Speaker: Jakob Foerster (Oxford)  
   *THE definitive MARL tutorial. Foerster covers: (1) why single-agent RL fails in multi-agent settings (non-stationarity), (2) the CTDE (Centralized Training, Decentralized Execution) paradigm, (3) cooperative MARL (QMIX, MAPPO), (4) competitive MARL (self-play, PSRO), (5) communication. Watch 0:00–1:00 for the conceptual framework, skim the rest for specific algorithms you'll read about in Phase 3.*
 
 - **Shimon Whiteson — "Cooperative Multi-Agent Learning" (invited talk)**  
-  https://www.youtube.com/watch?v=CjmzDHHLMbQ  
+  https://www.youtube.com/watch?v=nIgIv4IfJ6s  
   Duration: ~50m | Speaker: Shimon Whiteson (Waymo / Oxford)  
   *Whiteson's group created QMIX and many cooperative MARL methods. This talk gives the intuition for the CENTRAL-THEN-DECENTRAL design: train with global info, execute with local info. Watch 10:00–30:00 for the design rationale.*
 
 - **Natasha Jaques — "Social Influence as Intrinsic Motivation for MARL"**  
-  https://www.youtube.com/watch?v=Z-6pHHWJod0  
+  https://www.youtube.com/watch?v=NSVmOC_5zrE  
   Duration: ~25m | Speaker: Natasha Jaques (Google Brain → UC Berkeley)  
   *A different angle: agents learn to INFLUENCE each other's behavior as an intrinsic reward. This bridges to your thesis's opponent modeling (Step 7): instead of modeling an opponent to exploit them, you model them to COORDINATE with them.*
 
@@ -59,7 +59,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
   *The standard multi-agent environment library (successor to OpenAI's multiagent-particle-envs). Browse the environment list to see the variety of MARL settings: cooperative, competitive, mixed.*
 
 - **Amato (2024/2025) — "An Initial Introduction to Cooperative MARL"**  
-  https://arxiv.org/abs/2405.06161  
+  https://arxiv.org/abs/2405.06161https://arxiv.org/abs/1705.01820  
   *Pedagogical survey — read Sections 1–3 for a gentle conceptual intro if the video tutorials feel too fast.*
 
 ---
@@ -133,7 +133,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 1: Lowe et al. — "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments" (MADDPG, 2017)
 
-**Link:** https://arxiv.org/abs/1706.02275
+https://arxiv.org/abs/1706.02275https://arxiv.org/abs/1505.00533
 
 ```
 ├── READ:  Section 3 (MADDPG algorithm — multi-agent version of DDPG where each 
@@ -158,7 +158,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 2: Rashid et al. — "QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning" (2018)
 
-**Link:** https://arxiv.org/abs/1803.11485 (ICML 2018)
+https://arxiv.org/abs/1803.11485https://arxiv.org/abs/1603.01121 (ICML 2018)
 
 ```
 ├── READ:  Section 3 (QMIX architecture — how individual agent Q-values are 
@@ -184,7 +184,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 3: Yu et al. — "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games" (MAPPO, 2022)
 
-**Link:** https://arxiv.org/abs/2103.01955 (NeurIPS 2022)
+https://arxiv.org/abs/2103.01955https://arxiv.org/abs/1906.02701 (NeurIPS 2022)
 
 ```
 ├── READ:  Section 3 (MAPPO — multi-agent PPO with shared parameters and centralized
@@ -206,7 +206,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 4: Foerster et al. — "Learning with Opponent-Learning Awareness" (LOLA, 2018)
 
-**Link:** https://arxiv.org/abs/1709.04326 (AAMAS 2018)
+https://arxiv.org/abs/1709.04326https://arxiv.org/abs/2208.11326 (AAMAS 2018)
 
 ```
 ├── READ:  Section 3 (LOLA algorithm — instead of just optimizing your own reward,
@@ -233,7 +233,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 5: Lanctot et al. — "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning" (PSRO, 2017)
 
-**Link:** https://arxiv.org/abs/1711.00832 (NeurIPS 2017)
+https://arxiv.org/abs/1711.00832https://arxiv.org/abs/2301.02345 (NeurIPS 2017)
 
 ```
 ├── READ:  Section 3 (PSRO framework — the double oracle approach: maintain a 
@@ -262,7 +262,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 6: Sukhbaatar et al. — "Learning Multiagent Communication with Backpropagation" (CommNet, 2016)
 
-**Link:** https://arxiv.org/abs/1605.07736 (NeurIPS 2016)
+https://arxiv.org/abs/1605.07736https://arxiv.org/abs/2102.04360 (NeurIPS 2016)
 
 ```
 ├── READ:  Section 2 (CommNet architecture — agents share a continuous communication
@@ -285,15 +285,15 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 ### Supplementary References
 
 - **Zhong et al. (2023) — "Heterogeneous-Agent Reinforcement Learning (HARL)"**  
-  https://arxiv.org/abs/2304.09870  
+  https://arxiv.org/abs/2304.09870https://arxiv.org/abs/2004.04136  
   *Unified framework for cooperative MARL with heterogeneous agents. SKIM abstract + Section 3 architecture. Addresses the "homogeneous agent assumption" that QMIX/MAPPO make.*
 
 - **Bighashdel et al. (2026) — "Sample-Efficient PSRO with Joint Experience Best Response"**  
-  https://arxiv.org/abs/2602.06599  
+  https://arxiv.org/abs/2602.06599https://arxiv.org/abs/1707.06203  
   *AAMAS 2026. Improves PSRO sample efficiency. SKIM abstract. Relevant for understanding latest PSRO advances.*
 
 - **Wittner (2026) — "Communication Methods in Multi-Agent Reinforcement Learning"**  
-  https://arxiv.org/abs/2601.12886  
+  https://arxiv.org/abs/2601.12886https://arxiv.org/abs/1611.02779  
   *12-page survey of MARL communication. SKIM for reference map of communication approaches.*
 
 ### Math Flags
@@ -441,11 +441,11 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
   *Chapters 6–7 (learning in games). Skip Chapters 1–5 (game theory basics — you know this from Steps 2–3). Skip Chapters 8+ (mechanism design, social choice — relevant to a different thesis). Focus: how does the textbook characterize the convergence difficulties in multi-agent learning?*
 
 - **Survey skim:** Zhang, Yang & Basar (2021) — "Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms"  
-  https://arxiv.org/abs/1911.10635  
+  https://arxiv.org/abs/1911.10635https://arxiv.org/abs/2009.04416  
   *The canonical MARL survey. SKIM Sections 3 (cooperative MARL), 4 (competitive MARL), and 6 (emergent communication). Cross-reference with what you just implemented — map each algorithm you built to its section in this survey.*
 
 - **Supplementary read:** Samvelyan (2025) — "Robust Agents in Open-Ended Worlds" PhD thesis  
-  https://arxiv.org/abs/2512.08139  
+  https://arxiv.org/abs/2512.08139https://arxiv.org/abs/1507.01228  
   *SKIM Chapter 2 (background on open-ended learning + auto-curricula). This connects to Step 10 (population-based training + evolution) and Step 11 (emergent complexity in competitive FFA).*
 
 ### Day 2 — PhD Mapping + One-Pager + Learning Log

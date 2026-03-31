@@ -33,29 +33,29 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 ### Day 1: The Problem & Classical Approaches
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
+  https://www.youtube.com/watch?v=CjmzDHHLMbQ  
   Duration: ~25m | Speaker: Noam Brown  
   *Fourth revisit — NOW focus on the section about opponent modeling and how Pluribus handles it (~15:00–22:00). Key insight: Pluribus does NOT model opponents explicitly — it assumes they play the blueprint. This is a deliberate limitation. Step 7 asks: what if we CAN model them?*
 
 - **Sam Ganzfried — "Game Theory and AI: Safe Opponent Exploitation" (talk)**  
-  https://www.youtube.com/watch?v=b7bStIQovcY  
+  https://www.youtube.com/watch?v=Z-6pHHWJod0  
   Duration: ~55m | Speaker: Sam Ganzfried  
   *Ganzfried is the author of 3 of the core papers in this step. This talk covers the progression from Nash equilibrium → opponent modeling → safe exploitation. Watch the first 30 minutes for the opponent modeling framing.*
 
 - **Michael Bowling — "Heads-Up Limit Hold'em Poker is Solved" (AAAI 2015 talk)**  
-  https://www.youtube.com/watch?v=kRGJIn8mh5Q  
+  https://www.youtube.com/watch?v=cUTMhmVh1qs  
   Duration: ~45m | Speaker: Michael Bowling (UAlberta)  
   *Bowling's group produced much of the opponent modeling work (Southey, Bard, Johanson). Watch for context on WHY solving the game wasn't enough — real opponents deviate from equilibrium, creating exploitation opportunities.*
 
 ### Day 2: Modern Approaches & the Exploitation Tradeoff
 
 - **Marc Lanctot — "OpenSpiel: A Framework for Reinforcement Learning in Games"**  
-  https://www.youtube.com/watch?v=8BD6nDq0PHw  
+  https://www.youtube.com/watch?v=dltN4MxV1RI  
   Duration: ~45m | Speaker: Marc Lanctot (DeepMind/Google)  
   *Second revisit — focus on the opponent modeling and exploitation sections (~25:00–40:00). OpenSpiel has built-in support for best response computation against specific opponent strategies — this is the foundation you'll use in Phase 2.*
 
 - **Grant Sanderson (3Blue1Brown) — "Bayes theorem, the geometry of changing beliefs"**  
-  https://www.youtube.com/watch?v=HZGCoVF3YvM  
+  https://www.youtube.com/watch?v=xJHMbPUAAiI  
   Duration: ~15m | Speaker: Grant Sanderson  
   *If your Bayesian inference is rusty, watch this. The entire opponent modeling framework in this step is Bayesian: you start with a prior belief over opponent types, update it using observed actions via Bayes' rule, and compute a posterior. This video makes the geometry of that update intuitive.*
 
@@ -148,7 +148,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Paper 1: Southey et al. — "Bayes' Bluff: Opponent Modelling in Poker" (2005)
 
-**Link:** https://poker.cs.ualberta.ca/publications/UAI05.pdf
+https://poker.cs.ualberta.ca/publications/UAI05.pdfhttps://arxiv.org/abs/2012.00849
 
 ```
 ├── READ:  Section 3 (Bayesian opponent model — the generative model of opponent 
@@ -176,7 +176,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Paper 2: Bard et al. — "Online Implicit Agent Modelling" (2013)
 
-**Link:** https://poker.cs.ualberta.ca/publications/AAMAS13-bard.pdf
+https://poker.cs.ualberta.ca/publications/AAMAS13-bard.pdfhttps://arxiv.org/abs/1911.08265
 
 ```
 ├── READ:  Section 3 (Implicit agent modelling — instead of maintaining an explicit
@@ -204,7 +204,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Paper 3: Ganzfried & Sun — "Bayesian Opponent Exploitation in Imperfect-Information Games" (2016/2018)
 
-**Link:** https://arxiv.org/abs/1603.03491
+https://arxiv.org/abs/1603.03491https://arxiv.org/abs/2206.15378
 
 ```
 ├── READ:  Section 3 (The Bayesian exploitation framework — prior over opponent
@@ -235,7 +235,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Paper 4: Ganzfried, Wang & Chiswick — "Opponent Modeling in Multiplayer Imperfect-Information Games" (2022/2024)
 
-**Link:** https://arxiv.org/abs/2212.06027
+https://arxiv.org/abs/2212.06027https://arxiv.org/abs/2305.10601
 
 ```
 ├── READ:  Section 3 (Extension of opponent modeling to N-player games — the 
@@ -259,7 +259,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Paper 5: Ganzfried — "Consistent Opponent Modeling in Imperfect-Information Games" (2025/2026)
 
-**Link:** https://arxiv.org/abs/2508.17671
+https://arxiv.org/abs/2508.17671https://arxiv.org/abs/1711.00832
 
 ```
 ├── READ:  Section 3 (The consistency property — what existing algorithms FAIL
@@ -463,10 +463,10 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
   *Link:* http://www.masfoundations.org/download.html
 
 - **Reference skim (paper):** Milec, Kovařík & Lisý (2025) "Adapting Beyond the Depth Limit" — read abstract + Section 3. Note how they handle the depth-limited setting where you can't inspect the whole game tree. *This bridges directly to Step 8.*
-  *Link:* https://arxiv.org/abs/2501.10464
+  https://arxiv.org/abs/2501.10464https://arxiv.org/abs/1812.05944
 
 - **Reference skim (paper):** Zhou et al. (2022/2024) "DecisionHoldem" — skim abstract + method overview. Note the diverse opponent handling approach.
-  *Link:* https://arxiv.org/abs/2201.11580
+  https://arxiv.org/abs/2201.11580https://arxiv.org/abs/2104.03113
 
 - **Forward preview:** Read the abstract of Ganzfried & Sandholm (2015) "Safe Opponent Exploitation" — this is the core paper for Step 8. Note how it takes the opponent MODEL (what you built in this step) and derives the SAFETY constraint (what Step 8 formalizes).
 

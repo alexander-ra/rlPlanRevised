@@ -153,7 +153,7 @@ See the algorithms work (and fail) before reading the theory. No papers yet — 
 
 ### Paper 1: Playing Atari with Deep Reinforcement Learning (Mnih et al., 2013/2015)
 
-**Link:** https://arxiv.org/abs/1312.5602 (2013 workshop version) / https://arxiv.org/abs/1509.06461 (2015 Nature version)
+https://arxiv.org/abs/1312.5602https://arxiv.org/abs/1507.01228 (2013 workshop version) / https://arxiv.org/abs/1509.06461https://arxiv.org/abs/2103.04026 (2015 Nature version)
 ```
 ├── READ:  Section 4 (Deep Q-Network architecture), Section 5 (Experiments/Results)
 ├── SKIM:  Abstract, Section 1 (Introduction), Section 3 (Background — you know this from S&B)
@@ -168,7 +168,7 @@ See the algorithms work (and fail) before reading the theory. No papers yet — 
 
 ### Paper 2: Proximal Policy Optimization Algorithms (Schulman et al., 2017)
 
-**Link:** https://arxiv.org/abs/1707.06347
+https://arxiv.org/abs/1707.06347https://arxiv.org/abs/1912.06680
 ```
 ├── READ:  Sections 3–5 (Clipped surrogate objective, algorithm, experiments)
 ├── SKIM:  Abstract, Section 1 (Intro), Section 2 (Background — TRPO context)
@@ -185,7 +185,7 @@ See the algorithms work (and fail) before reading the theory. No papers yet — 
 ### Optional Supplementary Reading
 
 - **Santana (2025) — "An Introduction to Deep Reinforcement and Imitation Learning"**  
-  https://arxiv.org/abs/2512.08052  
+  https://arxiv.org/abs/2512.08052https://arxiv.org/abs/2006.04635  
   *A recent self-contained introduction (Dec 2025) covering MDP → REINFORCE → PPO. Good for a modern perspective if S&B chapters feel dated. SKIM only — don't read front-to-back.*
 
 - **OpenAI Spinning Up — "Intro to Policy Optimization"**  

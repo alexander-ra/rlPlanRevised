@@ -44,12 +44,12 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
   *Not game-specific, but THE reference for building real-world ML pipelines. You'll need data cleaning, feature validation, and train/test splitting discipline that simulation-based Steps 2–11 didn't require. Watch for: data drift, label noise, feature engineering best practices.*
 
 - **Sentdex / Applied AI — "Poker AI" tutorials**  
-  Search YouTube: "poker AI python tutorial" or "poker hand history analysis python"  
+  https://www.youtube.com/watch?v=2oHH4aClJQs  
   Duration: varies  
   *Look for any tutorial that parses hand history files (PokerStars .txt format or similar). The parsing logic is transferable to Playtech data with format adaptation.*
 
 - **DataCamp / StatQuest — "Clustering and Anomaly Detection" tutorials**  
-  Search YouTube: "anomaly detection clustering DBSCAN isolation forest"  
+  https://www.youtube.com/watch?v=hfZcAr5pET4  
   Duration: ~15m each  
   *Quick refresher on the unsupervised methods you'll use for style clustering and collusion detection: DBSCAN (density-based clusters → finds collusion groups), Isolation Forest (anomaly scoring → flags bots), and k-means (player style archetypes).*
 
@@ -296,7 +296,7 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 ## Phase 3: Targeted Reading (3 days)
 
 ### Paper 1: Wang, Honari-Jahromi, Katsarou, Mikheeva, Panagiotakopoulos, Asadi & Smirnov — "player2vec: A Language Modeling Approach to Understand Player Behavior in Games" (2024)
-**Link:** https://arxiv.org/abs/2404.04234
+https://arxiv.org/abs/2404.04234https://arxiv.org/abs/1611.02779
 
 - **READ:** Entire paper carefully
   - KEY INSIGHT: In-game events treated as tokens (like words in NLP), player behavior = sequence of tokens → Transformer learns embeddings that capture behavioral patterns.
@@ -306,7 +306,7 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 - **Adaptation needed:** player2vec uses general game events (movement, interaction, purchase). Poker events have richer structure: position, street, sizing, relative to pot. Your encoding should be more structured than raw tokenization.
 
 ### Paper 2: Kumar, Hong, Singh & Levine — "When Should We Prefer Offline Reinforcement Learning Over Behavioral Cloning?" (2022, ICLR)
-**Link:** https://arxiv.org/abs/2204.05618
+https://arxiv.org/abs/2204.05618https://arxiv.org/abs/2009.04416
 
 - **READ:** Sections 1–4 (Introduction, Problem Setup, Theoretical Analysis, Experiments)
   - KEY INSIGHT: BC outperforms offline RL when data is expert-quality and narrowly distributed. Offline RL wins when: (a) rewards are sparse, (b) data is noisy/suboptimal, (c) horizons are long.
@@ -722,11 +722,11 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 ### Day 1 — Survey Skim + Cross-References
 
 - **Reference skim:** Kim et al. (2025) — "Mining Collectively-Behaving Bots in MMORPGs"  
-  https://arxiv.org/abs/2501.10461  
+  https://arxiv.org/abs/2501.10461https://arxiv.org/abs/1507.01228  
   *Skim their trajectory representation + DBSCAN pipeline. Compare with your poker pipeline: how do they handle variable-length trajectories? What clustering parameters did they use? Can their evaluation methodology (comparing detected clusters against known bot accounts) be adapted for collusion evaluation?*
 
 - **Supplementary skim:** Ganzfried (2025) — "Consistent Opponent Modeling"  
-  https://arxiv.org/abs/2508.17671  
+  https://arxiv.org/abs/2508.17671https://arxiv.org/abs/2103.04026  
   *From Step 7 freshness scan. Re-skim with data pipeline lens: the consistent modeling algorithm could be applied to your Playtech data to produce per-player strategy estimates. How would this compare with BC for understanding player behavior?*
 
 - **Supplementary skim:** Paster et al. (2022) — Final re-read  

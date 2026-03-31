@@ -31,17 +31,17 @@ The goal: understand WHY population-based training exists (self-play against ONE
 End of day: you should be able to explain to a non-expert: "Instead of training one AI against itself (self-play), we train a POPULATION of different AIs against each other. The strong ones survive, the weak ones get replaced. This is like evolution — but instead of biological organisms, we're evolving AI strategies. The result is more robust AIs because they've been tested against many different opponents, not just one. Evolutionary game theory is the math that tells us what this population converges to."
 
 - **Oriol Vinyals — "AlphaStar: Mastering the Game of StarCraft II" (DeepMind, 2019)**  
-  https://www.youtube.com/watch?v=cUTMhmVh1qs  
+  https://www.youtube.com/watch?v=t9Lo2fgxWHw  
   Duration: ~35m | Speaker: Oriol Vinyals (DeepMind)  
   *THE definitive example of population-based training in games. Watch carefully for the "AlphaStar League" — a population of agents with different strategies (aggressive, defensive, economic) that play against each other. The league mechanism (three agent types: main agents, league exploiters, main exploiters) is the gold standard for PBT in games. Every subsequent system references this design.*
 
 - **Max Jaderberg — "Human-Level Performance in First-Person Multiplayer Games with Population-Based DRL" (2019)**  
-  https://www.youtube.com/watch?v=dltN4MxV1RI  
+  https://www.youtube.com/watch?v=u9bJlfFhHbw  
   Duration: ~30m | Speaker: Max Jaderberg (DeepMind)  
   *The Capture-the-Flag (CTF) work that preceded AlphaStar. Important because it shows PBT in a TEAM game: agents must both cooperate (with teammates) and compete (against opponents). The population creates a natural curriculum — weaker agents face weaker opponents, stronger agents face stronger ones.*
 
 - **David Balduzzi — "Open-Ended Learning in Symmetric Zero-Sum Games" (Google Brain, 2019)**  
-  https://www.youtube.com/watch?v=xJHMbPUAAiI  
+  https://www.youtube.com/watch?v=8BD6nDq0PHw  
   Duration: ~25m | Speaker: David Balduzzi  
   *Balduzzi introduces the "spinning top" decomposition: in a population of strategies playing a game, the payoff matrix can be decomposed into a transitive (skill) component and a cyclic (non-transitive/rock-paper-scissors) component. This is crucial for understanding when self-play converges to a useful strategy and when it just cycles.*
 
@@ -125,7 +125,7 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
 
 ### Paper 1: Jaderberg et al. — "Population Based Training of Neural Networks" (2017)
 
-**Link:** https://arxiv.org/abs/1711.09846 (Original PBT paper)
+https://arxiv.org/abs/1711.09846https://arxiv.org/abs/2103.04026 (Original PBT paper)
 
 ```
 ├── READ:  Section 2 (PBT algorithm — the explore-exploit mechanism: a population
@@ -150,7 +150,7 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
 
 ### Paper 2: Jaderberg et al. — "Human-Level Performance in First-Person Multiplayer Games with Population-Based DRL" (FTW, 2019)
 
-**Link:** https://arxiv.org/abs/1807.01281 (Science 2019)
+https://arxiv.org/abs/1807.01281https://arxiv.org/abs/1912.06680 (Science 2019)
 
 ```
 ├── READ:  Section 2 (The FTW architecture — how PBT is applied to a 
@@ -175,7 +175,7 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
 ### Paper 3: Vinyals et al. — "Grandmaster Level in StarCraft II Using Multi-Agent Reinforcement Learning" (AlphaStar, 2019)
 
 **Link:** https://www.nature.com/articles/s41586-019-1724-z  
-**Alt link:** https://arxiv.org/abs/1911.12254 (extended version)
+**Alt link:** https://arxiv.org/abs/1911.12254https://arxiv.org/abs/2006.04635 (extended version)
 
 ```
 ├── READ:  Section 2.3 ("AlphaStar League" — THE gold standard for PBT in games.
@@ -210,7 +210,7 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
 
 ### Paper 4: Balduzzi et al. — "Open-Ended Learning in Symmetric Zero-Sum Games" (2019)
 
-**Link:** https://arxiv.org/abs/1901.01753 (ICLR 2019)
+https://arxiv.org/abs/1901.01753https://arxiv.org/abs/2206.15378 (ICLR 2019)
 
 ```
 ├── READ:  Section 3 (Spinning top decomposition — the payoff matrix between 
@@ -247,7 +247,7 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
 
 ### Paper 5: Tuyls, Pérolat, Lanctot et al. — "A Generalised Method for Empirical Game Theoretic Analysis" (2018)
 
-**Link:** https://arxiv.org/abs/1803.06376 (AAMAS 2018)
+https://arxiv.org/abs/1803.06376https://arxiv.org/abs/2305.10601 (AAMAS 2018)
 
 ```
 ├── READ:  Section 3 (EGTA framework — how to analyze a multi-agent system as 
@@ -279,19 +279,19 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
   *The foundational reference on replicator dynamics and evolutionary stability. Read Section 2 for the replicator equation and Section 3 for evolutionary stable strategies (ESS). This is the mathematical backbone connecting evolutionary dynamics to multi-agent learning.*
 
 - **Hill (2025) — "Co-Evolving Complexity: An Adversarial Framework for Automatic MARL Curricula"**  
-  https://arxiv.org/abs/2509.03771  
+  https://arxiv.org/abs/2509.03771https://arxiv.org/abs/1711.00832  
   *NeurIPS 2025 workshop paper on co-evolutionary curriculum design. SKIM abstract + Section 3. Relevant to the auto-curriculum mechanism in PBT and Step 11's emergent complexity.*
 
 - **Xu et al. (2025) — "Heterogeneous Adversarial Play in Interactive Environments"**  
-  https://arxiv.org/abs/2510.18407  
+  https://arxiv.org/abs/2510.18407https://arxiv.org/abs/1812.05944  
   *NeurIPS 2025. Diversity through heterogeneous adversarial self-play. SKIM for population diversity mechanisms.*
 
 - **De La Fuente et al. (2024) — "Game Theory and MARL: From Nash Equilibria to Evolutionary Dynamics"**  
-  https://arxiv.org/abs/2412.20523  
+  https://arxiv.org/abs/2412.20523https://arxiv.org/abs/2104.03113  
   *22-page survey connecting game theory with evolutionary MARL. SKIM for conceptual overview.*
 
 - **Yao et al. (2023) — "Policy Space Diversity for Non-Transitive Games"**  
-  https://arxiv.org/abs/2306.16884  
+  https://arxiv.org/abs/2306.16884https://arxiv.org/abs/2012.00849  
   *Addresses PSRO diversity collapse in non-transitive games via diversity regularization. SKIM Section 3 for the diversity mechanism.*
 
 ### Math Flags
@@ -478,11 +478,11 @@ Starting point: Your PSRO from Step 9 + your Nash solver from Step 2 + your Deep
   *The canonical survey connecting evolutionary game theory to multi-agent learning. SKIM Sections 4–6 for the connection between replicator dynamics and learning algorithms. Key result: many multi-agent learning algorithms can be INTERPRETED as replicator dynamics — the learning rate maps to selection pressure, the exploration rate maps to mutation.*
 
 - **Supplementary skim:** Hill (2025) "Co-Evolving Complexity"  
-  https://arxiv.org/abs/2509.03771  
+  https://arxiv.org/abs/2509.03771https://arxiv.org/abs/1911.08265  
   *Read abstract + Section 3 (co-evolutionary curriculum). Connection to Step 11: FFA games need auto-curricula because the opponent population evolves.*
 
 - **Supplementary skim:** Yao et al. (2023) "Policy Space Diversity for Non-Transitive Games"  
-  https://arxiv.org/abs/2306.16884  
+  https://arxiv.org/abs/2306.16884https://arxiv.org/abs/1802.01569  
   *Read abstract + diversity regularization (Section 3). For Step 11: preventing diversity collapse in the coalition formation game.*
 
 ### Day 2 — PhD Mapping + One-Pager + Learning Log
