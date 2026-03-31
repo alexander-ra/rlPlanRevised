@@ -167,8 +167,8 @@ function setupCheckboxes() {
   const stepId = STEP_META[currentStepIndex].id;
   const checkboxes = contentEl.querySelectorAll('input[type="checkbox"]');
   checkboxes.forEach((cb, idx) => {
-    cb.style.pointerEvents = 'auto';
-    cb.style.cursor = 'pointer';
+    cb.disabled = false;          // marked.js adds disabled by default
+    cb.removeAttribute('disabled');
     const key = `cb_${stepId}_${idx}`;
     // Restore state
     try {

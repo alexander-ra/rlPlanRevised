@@ -190,7 +190,8 @@ body {
 /* Task list checkboxes */
 .content input[type="checkbox"] {
   margin-right: 0.4rem; vertical-align: middle;
-  pointer-events: none;
+  cursor: pointer; accent-color: #6c63ff;
+  width: 1.1em; height: 1.1em;
 }
 .content li:has(> input[type="checkbox"]) { list-style: none; margin-left: -1.25rem; }
 
@@ -357,13 +358,7 @@ body {
   .yt-thumb { width: 220px; }
 }
 
-/* ===== Checkbox Interaction ===== */
-.content input[type="checkbox"] {
-  pointer-events: auto !important;
-  cursor: pointer;
-  accent-color: #6c63ff;
-  width: 1.1em; height: 1.1em;
-}
+/* (checkbox styles consolidated above) */
 
 /* ===== Sidebar Footer (Schedule Adjust) ===== */
 .sidebar-footer {
@@ -642,8 +637,8 @@ function setupCheckboxes() {
   const stepId = STEP_META[currentStepIndex].id;
   const checkboxes = contentEl.querySelectorAll('input[type="checkbox"]');
   checkboxes.forEach((cb, idx) => {
-    cb.style.pointerEvents = 'auto';
-    cb.style.cursor = 'pointer';
+    cb.disabled = false;          // marked.js adds disabled by default
+    cb.removeAttribute('disabled');
     const key = `cb_${stepId}_${idx}`;
     // Restore state
     try {
