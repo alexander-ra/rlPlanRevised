@@ -87,17 +87,19 @@ function renderTimeline() {
     const isMonday = dow === 1;
     const is1st = d.getDate() === 1;
 
-    let cls = 'tl-cell';
+let cls = 'tl-cell';
     if (isInStep) cls += ' in-step';
     if (isWeekend && isInStep) cls += ' wknd-active';
     if (isWeekend && !isInStep) cls += ' wknd';
     if (isToday) cls += ' today';
     if (isStepBound) cls += ' bound';
 
-    // Show label on: step boundaries, every Monday, 1st of month
-    const showLabel = isStepBound || isMonday || is1st;
+    // Show label on: step boundaries, every Monday, 1st of month, and Today
+    const showLabel = isStepBound || isMonday || is1st || isToday;
     const label = showLabel
-      ? `<span class="tl-label">${d.getDate()}<br>${DAY_NAMES[dow]}</span>`
+      ? (isToday 
+          ? `<span class="tl-label" style="color: #ea580c; font-weight: bold; font-size: 0.65rem; z-index: 10;">Today<br>${d.getDate()}</span>`
+          : `<span class="tl-label">${d.getDate()}<br>${DAY_NAMES[dow]}</span>`)
       : '';
     // Thin tick for every day; taller for labelled days
     const tickCls = showLabel ? 'tl-tick tall' : 'tl-tick';
