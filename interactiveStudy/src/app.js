@@ -277,11 +277,93 @@ function renderStep(stepId) {
     });
   }
 
+  
+  // Set IDs for headers so anchors work
+  contentEl.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+    if (!h.id) {
+      let anchor = h.textContent.toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+      h.id = anchor;
+    }
+  });
+
+  // Smooth scroll for internal links
+  contentEl.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Make Table of Contents collapsable
+  const tocHeader = Array.from(contentEl.querySelectorAll('h2')).find(h => h.textContent.trim() === 'Table of Contents');
+  if (tocHeader) {
+    tocHeader.style.cursor = 'pointer';
+    tocHeader.style.userSelect = 'none';
+    tocHeader.innerHTML = '&#9654; Table of Contents'; // Right pointing triangle
+    
+    // The ul is exactly the next element sibling
+    const tocList = tocHeader.nextElementSibling;
+    if (tocList && tocList.tagName.toLowerCase() === 'ul') {
+      tocList.style.display = 'none'; // Collapsed by default
+      
+      tocHeader.addEventListener('click', () => {
+        if (tocList.style.display === 'none') {
+          tocList.style.display = 'block';
+          tocHeader.innerHTML = '&#9660; Table of Contents'; // Down pointing triangle
+        } else {
+          tocList.style.display = 'none';
+          tocHeader.innerHTML = '&#9654; Table of Contents';
+        }
+      });
+    }
+  }
+
   // Make external links open in new tab
   contentEl.querySelectorAll('a[href^="http"]').forEach(a => {
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
   });
+
+  
+  // Replace missing interactive checkboxes setup since we removed it by accident earlier maybe? We'll put it later.
+  // Add intersection observer to track which section we're in
+  if (window.__sectionObserver) {
+    window.__sectionObserver.disconnect();
+  }
+  
+  const headers = Array.from(document.querySelectorAll('#content h1, #content h2'));
+  const observer = new IntersectionObserver((entries) => {
+    // Determine current active header based on scroll position
+    const visibleHeaders = headers.filter(h => {
+       const rect = h.getBoundingClientRect();
+       return rect.top <= window.innerHeight * 0.4 && rect.bottom >= -window.innerHeight;
+    });
+    
+    if(visibleHeaders.length > 0) {
+      // get the last one that passed the threshold
+      const h = visibleHeaders[visibleHeaders.length - 1];
+      let txt = h.textContent.replace('▶', '').replace('▼', '').replace('Table of Contents', 'Overview').trim();
+      
+      let titleEl = document.getElementById('topbar-title');
+      let stepMeta = window.STEP_META[window.currentStepIndex];
+      titleEl.innerHTML = `Step ${stepMeta.num}: ${stepMeta.title} <span class="sub-header" style="opacity:0.6;font-size:0.8em;margin-left:10px;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">❯ ${txt} <span style="font-size:0.8em;">▲</span></span>`;
+    } else if (window.scrollY < 100) {
+      let titleEl = document.getElementById('topbar-title');
+      let stepMeta = window.STEP_META[window.currentStepIndex];
+      titleEl.innerHTML = `Step ${stepMeta.num}: ${stepMeta.title}`;
+    }
+  }, { rootMargin: '-10px 0px -80% 0px', threshold: [0, 1] });
+
+  headers.forEach(h => observer.observe(h));
+  window.__sectionObserver = observer;
+
 
   // Wrap tables in scrollable container
   contentEl.querySelectorAll('table').forEach(table => {
@@ -317,8 +399,7 @@ function navigateTo(stepId) {
 
   // Update topbar title
   const meta = STEP_META[idx];
-  document.getElementById('topbar-title').textContent =
-    'Step ' + meta.num + ': ' + meta.title;
+  document.getElementById('topbar-title').innerHTML = 'Step ' + meta.num + ': ' + meta.title;
 
   // Update URL hash
   history.replaceState(null, '', '#' + stepId);
