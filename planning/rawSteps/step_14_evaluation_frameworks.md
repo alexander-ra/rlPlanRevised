@@ -47,7 +47,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 ### Videos
 
 - **Marc Lanctot — "OpenSpiel: A Framework for RL in Games" (2019/2020 talk)**  
-  https://www.youtube.com/watch?v=TFBSzfGBvZA  
+  https://www.youtube.com/watch?v=nIgIv4IfJ6s  
   Duration: ~30-40m  
   *Lanctot is co-author of both OpenSpiel and the VasE paper. Watch for: how the research community evaluates agents in practice, the problems with Elo in game AI, and why game-theoretic evaluation is needed.*
 

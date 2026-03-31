@@ -53,7 +53,7 @@ End of phase: you should be able to draw the architecture diagram of each system
 ### Day 2: The Unification Progression (ReBeL → Student of Games)
 
 - **Noam Brown — "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games" (NeurIPS 2020)**  
-  https://www.youtube.com/watch?v=kRGJIn8mh5Q  
+  https://www.youtube.com/watch?v=cUTMhmVh1qs  
   Duration: ~25m | Speaker: Noam Brown  
   *Brown presents ReBeL — the first algorithm that treats imperfect-info game solving like AlphaZero treats perfect-info: alternate between (1) self-play to generate data and (2) training a value/policy network. The key innovation: the game state for imperfect info is a PUBLIC BELIEF STATE (probability distribution over all possible private information).*
 

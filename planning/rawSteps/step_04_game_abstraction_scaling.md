@@ -30,12 +30,12 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 ### Videos
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=jIAZGz7wN3I  
+  https://www.youtube.com/watch?v=nIgIv4IfJ6s  
   Duration: ~25m | Speaker: Noam Brown  
   *Third time watching — NOW focus on the section about abstraction (~8:00–14:00). Brown explains how Libratus used card bucketing and action translation. Pay attention to the concept of "blueprint strategy" vs "real-time solving" — abstraction produces the blueprint, real-time solving fixes its errors.*
 
 - **Tuomas Sandholm — "AI for Strategic Reasoning" (invited talk)**  
-  https://www.youtube.com/watch?v=YJO3-bMKvnI  
+  https://www.youtube.com/watch?v=2oHH4aClJQs  
   Duration: ~50m | Speaker: Tuomas Sandholm (CMU / Strategy Robot)  
   *Sandholm is THE person behind game abstraction in poker AI (advisor on Libratus/Pluribus). This talk covers abstraction theory at a high level — card isomorphisms, action mapping, the "solve the abstract game then translate back" pipeline. Watch 15:00–35:00 for abstraction overview.*
 

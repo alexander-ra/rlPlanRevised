@@ -28,17 +28,17 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ### Videos
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=aEKg0TJN-as  
+  https://www.youtube.com/watch?v=p_n5fF8apiE  
   Duration: ~25m | Speaker: Noam Brown  
   *You bookmarked this in Step 2. NOW watch the section about blueprint computation (~5:00–12:00) — Brown explains why vanilla CFR can't handle Texas Hold'em and how MCCFR + abstraction solved Libratus/Pluribus.*
 
 - **Marc Lanctot — "OpenSpiel: A Framework for Reinforcement Learning in Games"**  
-  https://www.youtube.com/watch?v=ZIkr9JFJ2Ks  
+  https://www.youtube.com/watch?v=b7bStIQovcY  
   Duration: ~45m | Speaker: Marc Lanctot (DeepMind/Google)  
   *Lanctot literally wrote the MCCFR paper. This talk covers the framework that implements all the CFR variants you'll study. Focus on the first 20 minutes for algorithm overview.*
 
 - **Dustin Morrill — "CFR and its Variants" (AAAI 2020 Tutorial)**  
-  https://www.youtube.com/watch?v=bJwQYBnzXzQ  
+  https://www.youtube.com/watch?v=7L2sUGcOgh0  
   Duration: ~1h 30m | Speaker: Dustin Morrill (UAlberta/DeepMind)  
   *Detailed walkthrough of CFR, MCCFR (external/outcome/chance sampling), CFR+, Discounted CFR, Linear CFR. Watch at 1.25x. This is the best single video for this step.*
 

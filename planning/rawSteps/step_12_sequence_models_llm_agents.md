@@ -45,12 +45,12 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
 ### Videos
 
 - **Lilian Weng — "Decision Transformer / Offline RL as Sequence Modeling"**  
-  https://www.youtube.com/watch?v=jIAZGz7wN3I  
+  https://www.youtube.com/watch?v=b7bStIQovcY  
   Duration: ~30m  
   *Clear walkthrough of the Decision Transformer architecture. Watch for: how return-to-go conditioning works, how the positional encoding captures time, and the comparison with traditional RL.*
 
 - **Noam Brown — "CICERO: An AI agent that negotiates, persuades, and cooperates with people"**  
-  https://www.youtube.com/watch?v=YJO3-bMKvnI  
+  https://www.youtube.com/watch?v=7L2sUGcOgh0  
   Duration: ~20m | Speaker: Noam Brown (Meta AI)  
   *Already watched in Step 11 for coalition dynamics. RE-WATCH with a different lens: this time focus on the LANGUAGE MODEL component. How does CICERO use a language model for negotiation? How is the LM output constrained by the strategic planner? This is the most successful LLM+game integration to date.*
 

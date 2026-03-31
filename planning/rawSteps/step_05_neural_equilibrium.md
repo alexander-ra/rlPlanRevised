@@ -36,12 +36,12 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
   *Brown's own presentation of Deep CFR at ICML 2019. Concise explanation of: why tabular CFR can't scale to NLHE, how advantage networks approximate counterfactual regret, how reservoir sampling creates training data, and the key experiments on poker.*
 
 - **Eric Steinberger — "Single Deep CFR / DREAM"**  
-  https://www.youtube.com/watch?v=hfZcAr5pET4  
+  https://www.youtube.com/watch?v=2dX0lwaQRX0  
   Duration: ~20m | Speaker: Eric Steinberger  
   *Steinberger explains how DREAM simplifies Deep CFR: single network instead of separate advantage + strategy networks, lower variance through tighter sampling. More practical to implement.*
 
 - **Johannes Heinrich — "Deep RL from Self-Play in Imperfect-Information Games" (NIPS 2016 workshop)**  
-  https://www.youtube.com/watch?v=TFBSzfGBvZA  
+  https://www.youtube.com/watch?v=dltN4MxV1RI  
   Duration: ~25m | Speaker: Johannes Heinrich  
   *Heinrich introduces NFSP — Neural Fictitious Self-Play. The key insight: instead of using CFR at all, use two neural networks (best-response + average strategy) that play against each other, converging to Nash via fictitious play. Totally different architecture from Deep CFR.*
 

@@ -33,12 +33,12 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 ### Day 1: The Problem & Classical Approaches
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=CjmzDHHLMbQ  
+  https://www.youtube.com/watch?v=2GwBez0D20A  
   Duration: ~25m | Speaker: Noam Brown  
   *Fourth revisit — NOW focus on the section about opponent modeling and how Pluribus handles it (~15:00–22:00). Key insight: Pluribus does NOT model opponents explicitly — it assumes they play the blueprint. This is a deliberate limitation. Step 7 asks: what if we CAN model them?*
 
 - **Sam Ganzfried — "Game Theory and AI: Safe Opponent Exploitation" (talk)**  
-  https://www.youtube.com/watch?v=Z-6pHHWJod0  
+  https://www.youtube.com/watch?v=NSVmOC_5zrE  
   Duration: ~55m | Speaker: Sam Ganzfried  
   *Ganzfried is the author of 3 of the core papers in this step. This talk covers the progression from Nash equilibrium → opponent modeling → safe exploitation. Watch the first 30 minutes for the opponent modeling framing.*
 
@@ -55,7 +55,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
   *Second revisit — focus on the opponent modeling and exploitation sections (~25:00–40:00). OpenSpiel has built-in support for best response computation against specific opponent strategies — this is the foundation you'll use in Phase 2.*
 
 - **Grant Sanderson (3Blue1Brown) — "Bayes theorem, the geometry of changing beliefs"**  
-  https://www.youtube.com/watch?v=xJHMbPUAAiI  
+  https://www.youtube.com/watch?v=t9Lo2fgxWHw  
   Duration: ~15m | Speaker: Grant Sanderson  
   *If your Bayesian inference is rusty, watch this. The entire opponent modeling framework in this step is Bayesian: you start with a prior belief over opponent types, update it using observed actions via Bayes' rule, and compute a posterior. This video makes the geometry of that update intuitive.*
 

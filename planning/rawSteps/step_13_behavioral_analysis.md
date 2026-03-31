@@ -49,7 +49,7 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
   *Look for any tutorial that parses hand history files (PokerStars .txt format or similar). The parsing logic is transferable to Playtech data with format adaptation.*
 
 - **DataCamp / StatQuest — "Clustering and Anomaly Detection" tutorials**  
-  https://www.youtube.com/watch?v=hfZcAr5pET4  
+  https://www.youtube.com/watch?v=p_n5fF8apiE  
   Duration: ~15m each  
   *Quick refresher on the unsupervised methods you'll use for style clustering and collusion detection: DBSCAN (density-based clusters → finds collusion groups), Isolation Forest (anomaly scoring → flags bots), and k-means (player style archetypes).*
 

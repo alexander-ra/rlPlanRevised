@@ -49,7 +49,7 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
   *Brown is the architect of Libratus, Pluribus, and CICERO. He provides the broadest view of where game AI is heading. Watch for: what he identifies as OPEN problems (especially N-player, opponent modeling, real-time adaptation). His CICERO talk is especially relevant because it addresses multi-agent communication and trust — directly adjacent to Contribution #2.*
 
 - **Tuomas Sandholm — "AI for Strategic Reasoning" (Carnegie Mellon talks)**  
-  https://www.youtube.com/watch?v=kRGJIn8mh5Q  
+  https://www.youtube.com/watch?v=2oHH4aClJQs  
   Duration: ~45-60m  
   *Sandholm leads the group that produced Libratus and influenced all safe exploitation work including OX-Search. Watch for: his framing of the exploitation-safety tradeoff, and any comments on N-player extensions. His perspective on "what makes a good research contribution in game AI" is directly relevant to contribution design.*
 

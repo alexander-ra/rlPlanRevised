@@ -34,12 +34,12 @@ The goal: understand what game theory IS, why Nash equilibrium matters, what an 
   *The classic game theory example. Builds intuition for why rational agents can end up at suboptimal outcomes.*
 
 - **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019 talk)**  
-  https://www.youtube.com/watch?v=u9bJlfFhHbw  
+  https://www.youtube.com/watch?v=2pWv7GOvuf0  
   Duration: ~25m | Speaker: Noam Brown (Facebook/Meta AI → OpenAI)  
   *The creator of Pluribus explains the journey from CFR basics to beating world-class poker players. This talk makes you understand WHY you're learning CFR — it's the algorithm family that cracked poker. Watch the first 15 minutes for CFR intuition, bookmark the rest for Steps 4–6.*
 
 - **Todd W. Neller — "An Introduction to Counterfactual Regret Minimization" (lecture version)**  
-  https://www.youtube.com/watch?v=8BD6nDq0PHw  
+  https://www.youtube.com/watch?v=w4Bw8WYL8Ps  
   Duration: ~1h | Speaker: Todd Neller (Gettysburg College)  
   *The author of the tutorial paper you'll read in Phase 3. Hearing him explain it before reading the paper makes the reading 2x faster. Covers: regret matching, game trees, information sets, the CFR algorithm on Rock-Paper-Scissors and Kuhn Poker.*
 

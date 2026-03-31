@@ -36,12 +36,12 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
   *THE definitive example of population-based training in games. Watch carefully for the "AlphaStar League" — a population of agents with different strategies (aggressive, defensive, economic) that play against each other. The league mechanism (three agent types: main agents, league exploiters, main exploiters) is the gold standard for PBT in games. Every subsequent system references this design.*
 
 - **Max Jaderberg — "Human-Level Performance in First-Person Multiplayer Games with Population-Based DRL" (2019)**  
-  https://www.youtube.com/watch?v=u9bJlfFhHbw  
+  https://www.youtube.com/watch?v=DmtoVnTkQnM  
   Duration: ~30m | Speaker: Max Jaderberg (DeepMind)  
   *The Capture-the-Flag (CTF) work that preceded AlphaStar. Important because it shows PBT in a TEAM game: agents must both cooperate (with teammates) and compete (against opponents). The population creates a natural curriculum — weaker agents face weaker opponents, stronger agents face stronger ones.*
 
 - **David Balduzzi — "Open-Ended Learning in Symmetric Zero-Sum Games" (Google Brain, 2019)**  
-  https://www.youtube.com/watch?v=8BD6nDq0PHw  
+  https://www.youtube.com/watch?v=XL5bq8DRn64  
   Duration: ~25m | Speaker: David Balduzzi  
   *Balduzzi introduces the "spinning top" decomposition: in a population of strategies playing a game, the payoff matrix can be decomposed into a transitive (skill) component and a cyclic (non-transitive/rock-paper-scissors) component. This is crucial for understanding when self-play converges to a useful strategy and when it just cycles.*
 
