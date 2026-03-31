@@ -1,7 +1,7 @@
 /* ===== Step Metadata ===== */
 const STEP_META = [
   { id: "step_01", num: 1,  title: "RL Basics",             phase: "A", phaseLabel: "A \u2014 Foundation",         days: 14 },
-  { id: "step_02", num: 2,  title: "Game Theory + CFR",     phase: "A", phaseLabel: "A \u2014 Foundation",         days: 14 },
+  { id: "step_02", num: 2,  title: "Game Theory + CFR",     phase: "A", phaseLabel: "A \u2014 Foundation",         days: 35 },
   { id: "step_03", num: 3,  title: "CFR Variants + MC",     phase: "B", phaseLabel: "B \u2014 Scaling",            days: 10 },
   { id: "step_04", num: 4,  title: "Game Abstraction",      phase: "B", phaseLabel: "B \u2014 Scaling",            days: 10 },
   { id: "step_05", num: 5,  title: "Neural Equilibrium",    phase: "C", phaseLabel: "C \u2014 Neural Methods",     days: 11 },
@@ -18,7 +18,7 @@ const STEP_META = [
 ];
 
 const PLAN_START = new Date(2026, 1, 16); // Feb 16 2026
-const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 211
+const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 
 // STEPS_CONTENT is injected by build.py via the content placeholder
 

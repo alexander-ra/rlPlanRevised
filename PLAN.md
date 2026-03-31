@@ -143,30 +143,30 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 
 | Dates | Step | Tier | Duration |
 |-------|------|------|----------|
-| Apr 1–10 | Step 3: CFR Variants + MC Methods | T2 | 10 days |
-| Apr 11–20 | Step 4: Game Abstraction + Scaling | T2 | 10 days |
-| Apr 21–May 1 | Step 5: Neural Equilibrium (Deep CFR, DREAM) | T2 | 11 days |
-| May 2–22 | Step 6: End-to-End Game AI (Pluribus→ReBeL→SoG) | **T1** | **3 weeks** |
-| May 23–Jun 12 | Step 7: Opponent Modeling | **T1** | **3 weeks** |
-| Jun 13–Jul 3 | Step 8: Safe Exploitation | **T1** | **3 weeks** |
-| Jul 4–17 | Step 9: MARL — Coordination, Competition, Comms | T2 | 2 weeks |
-| Jul 18–31 | Step 10: PBT + Evolutionary Game Theory | T2 | 2 weeks |
-| Aug 1–14 | Step 11: Coalition Formation in FFA Games | T2 | 2 weeks |
-| Aug 15–24 | Step 12: Sequence Models + LLM Agents | T3 | 10 days |
-| Aug 25–Sep 7 | Step 13: Behavioral Analysis Pipelines | T2 | 2 weeks |
-| Sep 8–21 | Step 14: Evaluation Frameworks + Exploitability | T2 | 2 weeks |
-| Sep 22–Oct 1 | Step 15: Research Frontier Mapping | T3 | 10 days |
-| Oct 2–31 | **Buffer** | — | **~4.3 weeks** |
+| Apr 6–15 | Step 3: CFR Variants + MC Methods | T2 | 10 days |
+| Apr 16–25 | Step 4: Game Abstraction + Scaling | T2 | 10 days |
+| Apr 26–May 6 | Step 5: Neural Equilibrium (Deep CFR, DREAM) | T2 | 11 days |
+| May 7–27 | Step 6: End-to-End Game AI (Pluribus→ReBeL→SoG) | **T1** | **3 weeks** |
+| May 28–Jun 17 | Step 7: Opponent Modeling | **T1** | **3 weeks** |
+| Jun 18–Jul 8 | Step 8: Safe Exploitation | **T1** | **3 weeks** |
+| Jul 9–22 | Step 9: MARL — Coordination, Competition, Comms | T2 | 2 weeks |
+| Jul 23–Aug 5 | Step 10: PBT + Evolutionary Game Theory | T2 | 2 weeks |
+| Aug 6–19 | Step 11: Coalition Formation in FFA Games | T2 | 2 weeks |
+| Aug 20–29 | Step 12: Sequence Models + LLM Agents | T3 | 10 days |
+| Aug 30–Sep 12 | Step 13: Behavioral Analysis Pipelines | T2 | 2 weeks |
+| Sep 13–26 | Step 14: Evaluation Frameworks + Exploitability | T2 | 2 weeks |
+| Sep 27–Oct 6 | Step 15: Research Frontier Mapping | T3 | 10 days |
+| Oct 7–31 | **Buffer** | — | **~3.6 weeks** |
 | November | Chapter 1 + first publication draft | — | — |
 
-**Time budget:** 9 weeks (Tier 1) + 14.4 weeks (Tier 2, compressed) + 3 weeks (Tier 3) = **~26.4 weeks** (Apr 1 → Oct 1). Buffer: ~4.3 weeks before November deadline.
+**Time budget:** 9 weeks (Tier 1) + 14.4 weeks (Tier 2, compressed) + 3 weeks (Tier 3) = **~26.1 weeks** (Apr 6 → Oct 6). Buffer: ~3.6 weeks before November deadline.
 
 ### Why this ordering:
-- **Months 1–2 (Steps 3–6, Apr–early Jun):** Complete the algorithmic toolbox. You can't model opponents or evaluate agents without first knowing how equilibria are computed, scaled, and approximated neurally. Student of Games (Step 6) gets 3 weeks (Tier 1) — it unifies perfect and imperfect information into one framework, which is the generalization proof your professors want.
-- **Month 3 (Steps 7–8, Jun–mid Jul):** The exploitation core. This is the thesis heartbeat. 3 weeks each (Tier 1) because these two steps ARE the PhD. Step 7 builds the "sensor" (opponent modeling), Step 8 builds the "actuator" (safe exploitation). Together they're Contribution #1.
-- **Month 4 (Steps 9–11, mid Jul–Aug):** The multi-agent extension. MARL foundations → population training → then coalition dynamics in FFA games. Step 11 covers a frontier topic — nearly unstudied in competitive settings (only the "So Long Sucker" benchmark exists, arXiv 2411.11057), a direct PhD differentiator. Together = Contribution #2.
-- **Month 5 (Steps 12–13, late Aug–Sep):** The data bridge. Sequence models + LLM survey (10 days, Tier 3 — the field is too young for more) → Playtech data pipeline. Connects theory to Contribution #3.
-- **Month 6 (Steps 14–15, late Sep–mid Oct):** Integration. Evaluation framework (Contribution #3) → research frontier map → exit ready for the research phase.
+- **Months 1–2 (Steps 3–6, Apr–late May):** Complete the algorithmic toolbox. You can't model opponents or evaluate agents without first knowing how equilibria are computed, scaled, and approximated neurally. Student of Games (Step 6) gets 3 weeks (Tier 1) — it unifies perfect and imperfect information into one framework, which is the generalization proof your professors want.
+- **Month 3 (Steps 7–8, late May–early Jul):** The exploitation core. This is the thesis heartbeat. 3 weeks each (Tier 1) because these two steps ARE the PhD. Step 7 builds the "sensor" (opponent modeling), Step 8 builds the "actuator" (safe exploitation). Together they're Contribution #1.
+- **Month 4 (Steps 9–11, mid Jul–mid Aug):** The multi-agent extension. MARL foundations → population training → then coalition dynamics in FFA games. Step 11 covers a frontier topic — nearly unstudied in competitive settings (only the "So Long Sucker" benchmark exists, arXiv 2411.11057), a direct PhD differentiator. Together = Contribution #2.
+- **Month 5 (Steps 12–13, late Aug–mid Sep):** The data bridge. Sequence models + LLM survey (10 days, Tier 3 — the field is too young for more) → Playtech data pipeline. Connects theory to Contribution #3.
+- **Month 6 (Steps 14–15, mid Sep–Oct):** Integration. Evaluation framework (Contribution #3) → research frontier map → exit ready for the research phase.
 - **November:** Write Chapter 1 + first publication draft. (Meets the 11.2026 deadline.)
 
 ### Toy game progression:
