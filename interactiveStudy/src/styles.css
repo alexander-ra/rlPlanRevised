@@ -37,7 +37,7 @@ body {
 }
 .sidebar-header h2 { font-size: 1.1rem; font-weight: 600; color: #fff; }
 
-.nav-list { flex: 1; padding: 0.5rem 0; overflow-y: auto; }
+.nav-list { flex: 1; padding: 0.5rem 0; overflow-y: auto; min-height: 0; }
 
 .phase-label {
   padding: 0.75rem 1rem 0.35rem;
@@ -251,7 +251,123 @@ body {
 
 /* ===== Print ===== */
 @media print {
-  .sidebar, .topbar, .bottombar, .overlay, .section-nav { display: none !important; }
+  .sidebar, .topbar, .bottombar, .overlay, .section-nav, .timeline-bar { display: none !important; }
   .main { margin-left: 0 !important; }
   .content { max-width: 100%; padding: 0; }
+}
+
+/* ===== Timeline Bar ===== */
+.timeline-bar {
+  background: #fff; border-bottom: 1px solid #e5e7eb;
+  padding: 0.35rem 0.5rem 0.3rem;
+  position: sticky; top: 52px; z-index: 49;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tl-row {
+  display: flex; min-width: max-content;
+}
+.tl-cell {
+  flex: 1 1 0; min-width: 14px;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+}
+/* Day tick marks */
+.tl-tick {
+  width: 1px; height: 5px; background: #d1d5db;
+  margin-bottom: 1px;
+}
+.tl-tick.tall { height: 9px; background: #9ca3af; }
+/* Date labels */
+.tl-label {
+  font-size: 0.58rem; line-height: 1.15; text-align: center;
+  color: #6b7280; white-space: nowrap;
+}
+/* In-step range */
+.tl-cell.in-step { background: rgba(108,99,255,0.10); }
+.tl-cell.in-step .tl-tick { background: #6c63ff; }
+.tl-cell.in-step .tl-label { color: #4338ca; }
+/* Weekend: outside step = darker gray */
+.tl-cell.wknd { background: rgba(0,0,0,0.05); }
+.tl-cell.wknd .tl-tick { background: #9ca3af; }
+.tl-cell.wknd .tl-label { color: #9ca3af; }
+/* Weekend: inside step = blue tint */
+.tl-cell.wknd-active { background: rgba(108,99,255,0.20); }
+.tl-cell.wknd-active .tl-tick { background: #6c63ff; }
+.tl-cell.wknd-active .tl-label { color: #4338ca; font-weight: 600; }
+/* Step boundary markers */
+.tl-cell.bound .tl-tick { width: 2px; background: #1a1a2e; height: 11px; }
+.tl-cell.bound .tl-label { color: #1a1a2e; font-weight: 700; font-size: 0.62rem; }
+/* Today marker */
+.tl-cell.today::after {
+  content: ''; position: absolute; top: 0; left: 50%;
+  width: 3px; height: 100%; background: #ef4444;
+  transform: translateX(-50%); border-radius: 1px;
+  opacity: 0.7;
+}
+.timeline-label {
+  text-align: center; font-size: 0.72rem; color: #6b7280;
+  margin-top: 0.2rem;
+}
+
+/* ===== YouTube Thumbnails ===== */
+.yt-thumb-wrap {
+  margin: 0.5rem 0; display: inline-block;
+}
+.yt-thumb-link {
+  position: relative; display: inline-block; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  text-decoration: none;
+}
+.yt-thumb {
+  display: block; width: 280px; height: auto; border-radius: 8px;
+}
+.yt-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 2rem; color: #fff;
+  background: rgba(0,0,0,0.55); border-radius: 50%;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  text-indent: 2px;
+}
+.yt-thumb-link:hover .yt-play { background: rgba(255,0,0,0.8); }
+@media (max-width: 767px) {
+  .yt-thumb { width: 220px; }
+}
+
+/* ===== Checkbox Interaction ===== */
+.content input[type="checkbox"] {
+  pointer-events: auto !important;
+  cursor: pointer;
+  accent-color: #6c63ff;
+  width: 1.1em; height: 1.1em;
+}
+
+/* ===== Sidebar Footer (Schedule Adjust) ===== */
+.sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 0.65rem 1rem;
+  flex-shrink: 0;
+}
+.sched-adjust {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.sched-label {
+  font-size: 0.72rem; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  flex: 1;
+}
+.sched-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #ccc; font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.sched-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); color: #fff; }
+.sched-btn:disabled { opacity: 0.3; cursor: default; }
+.sched-value {
+  font-size: 0.82rem; color: #e0e0e0; min-width: 2.5rem; text-align: center;
+  font-variant-numeric: tabular-nums;
 }

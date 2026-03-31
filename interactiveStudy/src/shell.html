@@ -35,6 +35,14 @@
     <div id="nav-list" class="nav-list">
       <!-- Populated by JS: grouped by phase -->
     </div>
+    <div class="sidebar-footer">
+      <div class="sched-adjust">
+        <span class="sched-label">Delay (days)</span>
+        <button id="sched-minus" class="sched-btn" aria-label="Remove day">&minus;</button>
+        <span id="sched-value" class="sched-value">0/0</span>
+        <button id="sched-plus" class="sched-btn" aria-label="Add day">+</button>
+      </div>
+    </div>
   </nav>
 
   <!-- MAIN LAYOUT -->
@@ -48,6 +56,9 @@
         <button id="next-btn" class="nav-btn" aria-label="Next step">Next &rarr;</button>
       </div>
     </header>
+
+    <!-- TIMELINE BAR -->
+    <div id="timeline-bar" class="timeline-bar"></div>
 
     <!-- CONTENT AREA -->
     <article id="content" class="content">

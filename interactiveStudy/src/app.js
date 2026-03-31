@@ -1,26 +1,216 @@
 /* ===== Step Metadata ===== */
 const STEP_META = [
-  { id: "step_01", num: 1,  title: "RL Basics",             phase: "A", phaseLabel: "A \u2014 Foundation" },
-  { id: "step_02", num: 2,  title: "Game Theory + CFR",     phase: "A", phaseLabel: "A \u2014 Foundation" },
-  { id: "step_03", num: 3,  title: "CFR Variants + MC",     phase: "B", phaseLabel: "B \u2014 Scaling" },
-  { id: "step_04", num: 4,  title: "Game Abstraction",      phase: "B", phaseLabel: "B \u2014 Scaling" },
-  { id: "step_05", num: 5,  title: "Neural Equilibrium",    phase: "C", phaseLabel: "C \u2014 Neural Methods" },
-  { id: "step_06", num: 6,  title: "End-to-End Game AI",    phase: "C", phaseLabel: "C \u2014 Neural Methods" },
-  { id: "step_07", num: 7,  title: "Opponent Modeling",      phase: "D", phaseLabel: "D \u2014 Opponent Modeling" },
-  { id: "step_08", num: 8,  title: "Safe Exploitation",     phase: "D", phaseLabel: "D \u2014 Opponent Modeling" },
-  { id: "step_09", num: 9,  title: "Multi-Agent RL",        phase: "E", phaseLabel: "E \u2014 Multi-Agent" },
-  { id: "step_10", num: 10, title: "Population Training",   phase: "E", phaseLabel: "E \u2014 Multi-Agent" },
-  { id: "step_11", num: 11, title: "Coalition Formation",   phase: "E", phaseLabel: "E \u2014 Multi-Agent" },
-  { id: "step_12", num: 12, title: "Sequence Models + LLM", phase: "F", phaseLabel: "F \u2014 Data-Driven" },
-  { id: "step_13", num: 13, title: "Behavioral Analysis",   phase: "F", phaseLabel: "F \u2014 Data-Driven" },
-  { id: "step_14", num: 14, title: "Evaluation Frameworks", phase: "G", phaseLabel: "G \u2014 Integration" },
-  { id: "step_15", num: 15, title: "Research Frontier",     phase: "G", phaseLabel: "G \u2014 Integration" },
+  { id: "step_01", num: 1,  title: "RL Basics",             phase: "A", phaseLabel: "A \u2014 Foundation",         days: 14 },
+  { id: "step_02", num: 2,  title: "Game Theory + CFR",     phase: "A", phaseLabel: "A \u2014 Foundation",         days: 14 },
+  { id: "step_03", num: 3,  title: "CFR Variants + MC",     phase: "B", phaseLabel: "B \u2014 Scaling",            days: 10 },
+  { id: "step_04", num: 4,  title: "Game Abstraction",      phase: "B", phaseLabel: "B \u2014 Scaling",            days: 10 },
+  { id: "step_05", num: 5,  title: "Neural Equilibrium",    phase: "C", phaseLabel: "C \u2014 Neural Methods",     days: 11 },
+  { id: "step_06", num: 6,  title: "End-to-End Game AI",    phase: "C", phaseLabel: "C \u2014 Neural Methods",     days: 21 },
+  { id: "step_07", num: 7,  title: "Opponent Modeling",      phase: "D", phaseLabel: "D \u2014 Opponent Modeling", days: 21 },
+  { id: "step_08", num: 8,  title: "Safe Exploitation",     phase: "D", phaseLabel: "D \u2014 Opponent Modeling", days: 21 },
+  { id: "step_09", num: 9,  title: "Multi-Agent RL",        phase: "E", phaseLabel: "E \u2014 Multi-Agent",       days: 14 },
+  { id: "step_10", num: 10, title: "Population Training",   phase: "E", phaseLabel: "E \u2014 Multi-Agent",       days: 14 },
+  { id: "step_11", num: 11, title: "Coalition Formation",   phase: "E", phaseLabel: "E \u2014 Multi-Agent",       days: 14 },
+  { id: "step_12", num: 12, title: "Sequence Models + LLM", phase: "F", phaseLabel: "F \u2014 Data-Driven",       days: 10 },
+  { id: "step_13", num: 13, title: "Behavioral Analysis",   phase: "F", phaseLabel: "F \u2014 Data-Driven",       days: 14 },
+  { id: "step_14", num: 14, title: "Evaluation Frameworks", phase: "G", phaseLabel: "G \u2014 Integration",       days: 14 },
+  { id: "step_15", num: 15, title: "Research Frontier",     phase: "G", phaseLabel: "G \u2014 Integration",       days: 10 },
 ];
 
-// STEPS_CONTENT is injected by build.py at <!-- INLINE_CONTENT -->
+const PLAN_START = new Date(2026, 1, 16); // Feb 16 2026
+const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 211
+
+// STEPS_CONTENT is injected by build.py via the content placeholder
 
 /* ===== State ===== */
 let currentStepIndex = 0;
+let scheduleAdjust = 0; // days to delay plan start (shifts all dates forward)
+
+/* ===== Schedule Computation ===== */
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function addDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+function getStepDateRange(stepIndex) {
+  const planStart = addDays(PLAN_START, scheduleAdjust);
+  let offset = 0;
+  for (let i = 0; i < stepIndex; i++) offset += STEP_META[i].days;
+  const start = addDays(planStart, offset);
+  const end = addDays(planStart, offset + STEP_META[stepIndex].days - 1);
+  return { start, end, days: STEP_META[stepIndex].days };
+}
+
+function formatDayShort(d) {
+  return d.getDate() + ' ' + MONTH_NAMES[d.getMonth()];
+}
+
+function getMaxAdjust() {
+  // Plan must end by Oct 31 2026
+  const deadline = new Date(2026, 9, 31); // Oct 31
+  const planEndBase = addDays(PLAN_START, BASE_TOTAL_DAYS - 1);
+  return Math.floor((deadline - planEndBase) / 86400000);
+}
+
+/* ===== Timeline Bar ===== */
+function renderTimeline() {
+  const bar = document.getElementById('timeline-bar');
+  if (!bar) return;
+
+  const range = getStepDateRange(currentStepIndex);
+  const windowBefore = 7;
+  const windowAfter = 7;
+  const windowStart = addDays(range.start, -windowBefore);
+  const windowEnd = addDays(range.end, windowAfter);
+  const totalWindowDays = Math.round((windowEnd - windowStart) / 86400000) + 1;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const stepStartStr = range.start.toDateString();
+  const stepEndStr = range.end.toDateString();
+
+  // Build day cells — one per day in the window
+  let cells = '';
+  for (let i = 0; i < totalWindowDays; i++) {
+    const d = addDays(windowStart, i);
+    const ds = d.toDateString();
+    const dow = d.getDay(); // 0=Sun, 6=Sat
+    const isWeekend = dow === 0 || dow === 6;
+    const isInStep = d >= range.start && d <= range.end;
+    const isToday = ds === today.toDateString();
+    const isStepBound = ds === stepStartStr || ds === stepEndStr;
+    const isMonday = dow === 1;
+    const is1st = d.getDate() === 1;
+
+    let cls = 'tl-cell';
+    if (isInStep) cls += ' in-step';
+    if (isWeekend && isInStep) cls += ' wknd-active';
+    if (isWeekend && !isInStep) cls += ' wknd';
+    if (isToday) cls += ' today';
+    if (isStepBound) cls += ' bound';
+
+    // Show label on: step boundaries, every Monday, 1st of month
+    const showLabel = isStepBound || isMonday || is1st;
+    const label = showLabel
+      ? `<span class="tl-label">${d.getDate()}<br>${DAY_NAMES[dow]}</span>`
+      : '';
+    // Thin tick for every day; taller for labelled days
+    const tickCls = showLabel ? 'tl-tick tall' : 'tl-tick';
+
+    cells += `<div class="${cls}"><div class="${tickCls}"></div>${label}</div>`;
+  }
+
+  bar.innerHTML =
+    `<div class="tl-row">${cells}</div>` +
+    `<div class="timeline-label">${formatDayShort(range.start)} \u2013 ${formatDayShort(range.end)} \u00b7 ${range.days}d</div>`;
+}
+
+/* ===== YouTube Thumbnails ===== */
+function embedYouTubeThumbnails() {
+  const contentEl = document.getElementById('content');
+  // Match YouTube links: youtube.com/watch?v=ID or youtu.be/ID
+  contentEl.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    let videoId = null;
+    try {
+      const url = new URL(href);
+      if (url.hostname.includes('youtube.com') && url.searchParams.get('v')) {
+        videoId = url.searchParams.get('v');
+      } else if (url.hostname === 'youtu.be') {
+        videoId = url.pathname.slice(1);
+      }
+    } catch(e) {}
+    if (!videoId) return;
+
+    // Don't wrap if already wrapped
+    if (a.parentElement.classList.contains('yt-thumb-wrap')) return;
+
+    // Create thumbnail block
+    const wrapper = document.createElement('div');
+    wrapper.className = 'yt-thumb-wrap';
+    const img = document.createElement('img');
+    img.src = `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/mqdefault.jpg`;
+    img.alt = a.textContent;
+    img.className = 'yt-thumb';
+    img.loading = 'lazy';
+    const overlay = document.createElement('span');
+    overlay.className = 'yt-play';
+    overlay.textContent = '\u25B6';
+
+    const link = document.createElement('a');
+    link.href = href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.className = 'yt-thumb-link';
+    link.appendChild(img);
+    link.appendChild(overlay);
+
+    wrapper.appendChild(link);
+    // Keep the original text link below
+    const textLink = a.cloneNode(true);
+    textLink.target = '_blank';
+    textLink.rel = 'noopener noreferrer';
+
+    a.parentNode.insertBefore(wrapper, a);
+    // Original link stays as-is
+  });
+}
+
+/* ===== Checkbox Persistence ===== */
+function setupCheckboxes() {
+  const contentEl = document.getElementById('content');
+  const stepId = STEP_META[currentStepIndex].id;
+  const checkboxes = contentEl.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach((cb, idx) => {
+    cb.style.pointerEvents = 'auto';
+    cb.style.cursor = 'pointer';
+    const key = `cb_${stepId}_${idx}`;
+    // Restore state
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved === '1') cb.checked = true;
+      else if (saved === '0') cb.checked = false;
+    } catch(e) {}
+    // Save on change
+    cb.addEventListener('change', () => {
+      try { localStorage.setItem(key, cb.checked ? '1' : '0'); } catch(e) {}
+    });
+  });
+}
+
+/* ===== Schedule Adjustment ===== */
+function initScheduleAdjust() {
+  try {
+    const saved = localStorage.getItem('scheduleAdjust');
+    if (saved !== null) scheduleAdjust = parseInt(saved, 10) || 0;
+  } catch(e) {}
+  updateScheduleUI();
+}
+
+function adjustSchedule(delta) {
+  const maxAdj = getMaxAdjust();
+  const newVal = scheduleAdjust + delta;
+  if (newVal < 0 || newVal > maxAdj) return;
+  scheduleAdjust = newVal;
+  try { localStorage.setItem('scheduleAdjust', String(scheduleAdjust)); } catch(e) {}
+  updateScheduleUI();
+  renderTimeline();
+}
+
+function updateScheduleUI() {
+  const maxAdj = getMaxAdjust();
+  const el = document.getElementById('sched-value');
+  if (el) el.textContent = `${scheduleAdjust}/${maxAdj}`;
+  const minusBtn = document.getElementById('sched-minus');
+  const plusBtn = document.getElementById('sched-plus');
+  if (minusBtn) minusBtn.disabled = scheduleAdjust <= 0;
+  if (plusBtn) plusBtn.disabled = scheduleAdjust >= maxAdj;
+}
 
 /* ===== Sidebar Navigation Builder ===== */
 function buildNav() {
@@ -108,6 +298,12 @@ function renderStep(stepId) {
 
   // Build section jump navigation
   buildSectionNav();
+
+  // YouTube thumbnails
+  embedYouTubeThumbnails();
+
+  // Checkbox persistence
+  setupCheckboxes();
 }
 
 /* ===== Navigation Logic ===== */
@@ -129,6 +325,9 @@ function navigateTo(stepId) {
 
   // Update prev/next button states
   updateNavButtons();
+
+  // Update timeline
+  renderTimeline();
 
   // Close sidebar if open (mobile)
   closeSidebar();
@@ -223,6 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const nav = document.getElementById('section-nav');
     if (!nav.contains(e.target)) closeSectionNav();
   });
+
+  // Schedule adjustment
+  initScheduleAdjust();
+  document.getElementById('sched-minus').addEventListener('click', () => adjustSchedule(-1));
+  document.getElementById('sched-plus').addEventListener('click', () => adjustSchedule(1));
 
   // Determine initial step: hash > localStorage > first
   const hash = window.location.hash.replace('#', '');
