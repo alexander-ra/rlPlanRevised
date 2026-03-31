@@ -121,7 +121,7 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
 ## Phase 3: Targeted Reading (2 days)
 
 ### Paper 1: Chen, Lu, Rajeswaran, Lee, Grover, Laskin, Abbeel, Srinivas & Mordatch — "Decision Transformer: Reinforcement Learning via Sequence Modeling" (2021)
-https://arxiv.org/abs/2106.01345https://arxiv.org/abs/1603.01121
+https://arxiv.org/abs/2106.01345
 
 - **READ:** Sections 1–3 (Introduction, Preliminaries, Decision Transformer)
   - KEY INSIGHT: RL reformulated as conditional sequence generation. The return-to-go token replaces the reward-maximization objective.
@@ -135,7 +135,7 @@ https://arxiv.org/abs/2106.01345https://arxiv.org/abs/1603.01121
 - **PhD Connection:** The state representation (cards, position, pot, stacks, betting history) from the original docPlan maps directly to the DT input tokenization. Hand histories become sequences. Return-to-go = desired winrate. This is the *architecture* for Step 13's Playtech behavioral cloning.
 
 ### Paper 2: Paster, McIlraith & Ba — "You Can't Count on Luck" (2022)
-https://arxiv.org/abs/2205.15967https://arxiv.org/abs/1906.02701
+https://arxiv.org/abs/2205.15967
 
 - **READ:** Sections 1–3 (Introduction, Problem formulation, Theoretical results)
   - KEY INSIGHT: In stochastic environments, high-return trajectories often OVERREPRESENT lucky outcomes rather than skilled decisions. Conditioning DT on high return-to-go amplifies luck, not skill.
@@ -148,7 +148,7 @@ https://arxiv.org/abs/2205.15967https://arxiv.org/abs/1906.02701
 - **PhD Connection:** CRITICAL. Poker hand histories are highly stochastic (card deals). A naive DT trained on Playtech data will associate "good outcomes" with "lucky cards," not "good strategy." The fix: condition on STRATEGIC quality metrics (e.g., EV of decisions) rather than raw win/loss. This insight shapes the Step 13 data pipeline design.
 
 ### Paper 3: Tang, Marques, Kamalaruban & Bogunovic — "Adversarially Robust Decision Transformer" (2024, NeurIPS 2024)
-https://arxiv.org/abs/2407.18414https://arxiv.org/abs/2208.11326
+https://arxiv.org/abs/2407.18414
 
 - **READ:** Sections 1–3 (Introduction, Preliminaries, ARDT method)
   - KEY INSIGHT: In adversarial games, the return-to-go is not just a function of your policy — it depends on the OPPONENT's strategy. ARDT conditions on MINIMAX returns-to-go: the best return achievable against the WORST-CASE opponent.
@@ -160,7 +160,7 @@ https://arxiv.org/abs/2407.18414https://arxiv.org/abs/2208.11326
 - **PhD Connection:** ARDT connects Step 5 (equilibrium computation) to the sequence model paradigm. If Nash can emerge from offline sequence modeling with the right conditioning, this may provide an alternative path to equilibrium strategies that doesn't require CFR at all. Direct bridge: Step 5's Deep CFR vs Step 12's ARDT — two roads to the same destination?
 
 ### Paper 4: Guertler, Cheng, Yu, Liu, Choshen & Tan — "TextArena" (2025)
-https://arxiv.org/abs/2504.11442https://arxiv.org/abs/2301.02345
+https://arxiv.org/abs/2504.11442
 
 - **READ:** Entire paper (5 pages — short)
   - 57+ competitive text-based game environments  
@@ -171,7 +171,7 @@ https://arxiv.org/abs/2504.11442https://arxiv.org/abs/2301.02345
 - **PhD Connection:** TextArena games map to "soft" strategic settings where behavioral signals matter more than equilibrium computation. This connects to Step 7's opponent modeling: can an LLM's in-context "model" of the opponent complement or replace explicit Bayesian inference?
 
 ### Paper 5: Janner, Li & Levine — "Offline Reinforcement Learning as One Big Sequence Modeling Problem" (2021)
-https://arxiv.org/abs/2106.02039https://arxiv.org/abs/2102.04360
+https://arxiv.org/abs/2106.02039
 
 - **READ:** Sections 1–3 (Introduction, discretization, Trajectory Transformer architecture)
   - KEY DIFFERENCE from DT: Trajectory Transformer (TT) models EVERYTHING as tokens — states, actions, AND rewards — and uses beam search at inference time instead of simple conditioning.
@@ -452,11 +452,11 @@ https://arxiv.org/abs/2106.02039https://arxiv.org/abs/2102.04360
   *Understand the value-based offline RL alternative: CQL penalizes Q-values for unseen actions (pessimism principle). Compare with DT's sequence modeling approach. When is CQL better than DT? (Answer from Paster et al.: CQL handles stochasticity better because it doesn't condition on return.)*
 
 - **Supplementary skim:** Zhang et al. (2025) — "Divide-Fuse-Conquer"  
-  https://arxiv.org/abs/2505.16401https://arxiv.org/abs/2004.04136  
+  https://arxiv.org/abs/2505.16401  
   *Skim Section 3: the divide-fuse-conquer pipeline for LLM game training. Note: they use TextArena as testbed. How does their Qwen2.5-32B compare to the Claude/GPT models on the leaderboard?*
 
 - **Supplementary skim:** Guo et al. (2023) — "Suspicion-Agent"  
-  https://arxiv.org/abs/2309.17277https://arxiv.org/abs/1707.06203  
+  https://arxiv.org/abs/2309.17277  
   *Skim the planning module: how GPT-4 simulates other players' intentions. Connect to Step 7: explicit theory of mind via LLM vs explicit Bayesian opponent model — two implementations of the same concept.*
 
 - **Supplementary skim:** Maugin & Cazenave (2025) — "SpinGPT"  

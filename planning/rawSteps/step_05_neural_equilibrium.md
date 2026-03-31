@@ -140,7 +140,7 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 
 ### Paper 1: Brown, Lerer, Gross & Sandholm — "Deep Counterfactual Regret Minimization" (2019)
 
-https://arxiv.org/abs/1811.00164https://arxiv.org/abs/1705.01820 (ICML 2019)
+https://arxiv.org/abs/1811.00164 (ICML 2019)
 
 ```
 ├── READ:  Section 3 (Deep CFR algorithm — the full specification: how advantage 
@@ -172,7 +172,7 @@ https://arxiv.org/abs/1811.00164https://arxiv.org/abs/1705.01820 (ICML 2019)
 
 ### Paper 2: Steinberger — "Single Deep Counterfactual Regret Minimization" (2019)
 
-https://arxiv.org/abs/1901.07621https://arxiv.org/abs/1505.00533  
+https://arxiv.org/abs/1901.07621  
 *(Later published as DREAM framework at AAAI 2020)*
 
 ```
@@ -199,7 +199,7 @@ https://arxiv.org/abs/1901.07621https://arxiv.org/abs/1505.00533
 
 ### Paper 3: Heinrich & Silver — "Deep Reinforcement Learning from Self-Play in Imperfect-Information Games" (2016)
 
-https://arxiv.org/abs/1603.01121https://arxiv.org/abs/1603.01121
+https://arxiv.org/abs/1603.01121
 
 ```
 ├── READ:  Section 3 (Neural Fictitious Self-Play — the two-network architecture:
@@ -226,15 +226,15 @@ https://arxiv.org/abs/1603.01121https://arxiv.org/abs/1603.01121
 ### Supplementary References
 
 - **Xu et al. (2025) — "Deep (Predictive) Discounted Counterfactual Regret Minimization" (AAAI 2026)**  
-  https://arxiv.org/abs/2511.08174https://arxiv.org/abs/1906.02701  
+  https://arxiv.org/abs/2511.08174  
   *Combines discounted regret weights (from DCFR) with predictive networks. Claims faster convergence than vanilla Deep CFR. SKIM abstract + Section 3. Log insights for implementation comparison.*
 
 - **Rudolph et al. (2025) — "Reevaluating Policy Gradient Methods for Imperfect-Information Games"**  
-  https://arxiv.org/abs/2502.08938https://arxiv.org/abs/2208.11326  
+  https://arxiv.org/abs/2502.08938  
   *Important perspective: challenges the assumption that naive self-play DRL fails in adversarial IIGs. Shows that with proper hyperparameter tuning, standard policy gradient can perform surprisingly well. SKIM Section 3 (experiments) and Table 1 (comparisons). This reframes the Deep CFR vs RL question.*
 
 - **Zarick et al. (2020) — "Unlocking the Potential of Deep Counterfactual Value Networks"**  
-  https://arxiv.org/abs/2007.10442https://arxiv.org/abs/2301.02345  
+  https://arxiv.org/abs/2007.10442  
   *Practical improvements to Deep CFR's value network training. SKIM abstract + Section 3.*
 
 ### Math Flags

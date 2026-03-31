@@ -194,7 +194,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
 
 ### Paper 1: Moravcik et al. — "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker" (2017)
 
-https://arxiv.org/abs/1701.01724https://arxiv.org/abs/2102.04360
+https://arxiv.org/abs/1701.01724
 
 ```
 ├── READ:  Section 2 (Continual Re-Solving — how DeepStack operates without a 
@@ -223,7 +223,7 @@ https://arxiv.org/abs/1701.01724https://arxiv.org/abs/2102.04360
 ### Paper 2: Brown & Sandholm — "Superhuman AI for Heads-Up No-Limit Poker: Libratus Beats Top Professionals" (2018)
 
 **Link:** https://www.science.org/doi/10.1126/science.aao1733  
-http://www.cs.cmu.edu/~noamb/papers/17-IJCAI-Libratus.pdfhttps://arxiv.org/abs/2006.04635
+http://www.cs.cmu.edu/~noamb/papers/17-IJCAI-Libratus.pdf
 
 ```
 ├── READ:  Section: "Blueprint computation" (how Libratus uses abstracted MCCFR 
@@ -248,7 +248,7 @@ http://www.cs.cmu.edu/~noamb/papers/17-IJCAI-Libratus.pdfhttps://arxiv.org/abs/2
 ### Paper 3: Brown & Sandholm — "Superhuman AI for Multiplayer Poker" (Pluribus, 2019)
 
 **Link:** https://www.science.org/doi/10.1126/science.aay2400  
-**Alt link:** https://arxiv.org/abs/1911.07559https://arxiv.org/abs/2004.04136 (extended version)
+**Alt link:** https://arxiv.org/abs/1911.07559 (extended version)
 
 ```
 ├── READ:  Section 2 (Methods — the full 6-player architecture: MCCFR blueprint
@@ -278,7 +278,7 @@ http://www.cs.cmu.edu/~noamb/papers/17-IJCAI-Libratus.pdfhttps://arxiv.org/abs/2
 
 ### Paper 4: Brown, Bakhtin, Lerer & Hu — "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games" (ReBeL, 2020)
 
-https://arxiv.org/abs/2007.13544https://arxiv.org/abs/1707.06203 (NeurIPS 2020)
+https://arxiv.org/abs/2007.13544 (NeurIPS 2020)
 
 ```
 ├── READ:  Section 3 (Public Belief States — THE key theoretical innovation: 
@@ -313,7 +313,7 @@ https://arxiv.org/abs/2007.13544https://arxiv.org/abs/1707.06203 (NeurIPS 2020)
 
 ### Paper 5: Schmid et al. — "Student of Games: A Unified Learning Algorithm for Both Perfect and Imperfect Information Games" (2023)
 
-https://arxiv.org/abs/2112.03178https://arxiv.org/abs/1611.02779 (Science Advances 2023)
+https://arxiv.org/abs/2112.03178 (Science Advances 2023)
 
 ```
 ├── READ:  Section 2 (Growing-Tree CFR — GT-CFR: the algorithm that incrementally
@@ -344,7 +344,7 @@ https://arxiv.org/abs/2112.03178https://arxiv.org/abs/1611.02779 (Science Advanc
 
 ### Paper 6: Brown & Sandholm — "Depth-Limited Solving for Imperfect-Information Games" (2018)
 
-https://arxiv.org/abs/1805.08195https://arxiv.org/abs/2009.04416 (NeurIPS 2018)
+https://arxiv.org/abs/1805.08195 (NeurIPS 2018)
 
 ```
 ├── READ:  Section 3 (Depth-limited solving — the theoretical framework for 
@@ -371,15 +371,15 @@ https://arxiv.org/abs/1805.08195https://arxiv.org/abs/2009.04416 (NeurIPS 2018)
 ### Supplementary References
 
 - **Milec, Kovařík & Lisý (2025) — "Adapting Beyond the Depth Limit"**  
-  https://arxiv.org/abs/2501.10464https://arxiv.org/abs/1507.01228  
+  https://arxiv.org/abs/2501.10464  
   *Studies opponent adaptation beyond the search depth. SKIM abstract + Section 3. Bridges Step 6 → Step 8 (safe exploitation). Key question: can depth-limited search-based systems adapt to sub-rational opponents while maintaining robustness?*
 
 - **Kubíček & Lisý (2023/2025) — "Look-ahead Search on Top of Policy Networks in IIGs"**  
-  https://arxiv.org/abs/2312.15220https://arxiv.org/abs/2103.04026  
+  https://arxiv.org/abs/2312.15220  
   *Explores adding test-time search on top of policy networks trained via RL/CFR. SKIM abstract + Section 2. Relevant to the search-vs-learning tradeoff.*
 
 - **Zarick et al. (2020) — "Unlocking the Potential of Deep Counterfactual Value Networks"**  
-  https://arxiv.org/abs/2007.10442https://arxiv.org/abs/1912.06680  
+  https://arxiv.org/abs/2007.10442  
   *Improvements to DeepStack-style value network training. SKIM for practical insights if implementing value networks.*
 
 ### Math Flags

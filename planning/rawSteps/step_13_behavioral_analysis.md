@@ -296,7 +296,7 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 ## Phase 3: Targeted Reading (3 days)
 
 ### Paper 1: Wang, Honari-Jahromi, Katsarou, Mikheeva, Panagiotakopoulos, Asadi & Smirnov — "player2vec: A Language Modeling Approach to Understand Player Behavior in Games" (2024)
-https://arxiv.org/abs/2404.04234https://arxiv.org/abs/1611.02779
+https://arxiv.org/abs/2404.04234
 
 - **READ:** Entire paper carefully
   - KEY INSIGHT: In-game events treated as tokens (like words in NLP), player behavior = sequence of tokens → Transformer learns embeddings that capture behavioral patterns.
@@ -306,7 +306,7 @@ https://arxiv.org/abs/2404.04234https://arxiv.org/abs/1611.02779
 - **Adaptation needed:** player2vec uses general game events (movement, interaction, purchase). Poker events have richer structure: position, street, sizing, relative to pot. Your encoding should be more structured than raw tokenization.
 
 ### Paper 2: Kumar, Hong, Singh & Levine — "When Should We Prefer Offline Reinforcement Learning Over Behavioral Cloning?" (2022, ICLR)
-https://arxiv.org/abs/2204.05618https://arxiv.org/abs/2009.04416
+https://arxiv.org/abs/2204.05618
 
 - **READ:** Sections 1–4 (Introduction, Problem Setup, Theoretical Analysis, Experiments)
   - KEY INSIGHT: BC outperforms offline RL when data is expert-quality and narrowly distributed. Offline RL wins when: (a) rewards are sparse, (b) data is noisy/suboptimal, (c) horizons are long.
@@ -722,11 +722,11 @@ https://arxiv.org/abs/2204.05618https://arxiv.org/abs/2009.04416
 ### Day 1 — Survey Skim + Cross-References
 
 - **Reference skim:** Kim et al. (2025) — "Mining Collectively-Behaving Bots in MMORPGs"  
-  https://arxiv.org/abs/2501.10461https://arxiv.org/abs/1507.01228  
+  https://arxiv.org/abs/2501.10461  
   *Skim their trajectory representation + DBSCAN pipeline. Compare with your poker pipeline: how do they handle variable-length trajectories? What clustering parameters did they use? Can their evaluation methodology (comparing detected clusters against known bot accounts) be adapted for collusion evaluation?*
 
 - **Supplementary skim:** Ganzfried (2025) — "Consistent Opponent Modeling"  
-  https://arxiv.org/abs/2508.17671https://arxiv.org/abs/2103.04026  
+  https://arxiv.org/abs/2508.17671  
   *From Step 7 freshness scan. Re-skim with data pipeline lens: the consistent modeling algorithm could be applied to your Playtech data to produce per-player strategy estimates. How would this compare with BC for understanding player behavior?*
 
 - **Supplementary skim:** Paster et al. (2022) — Final re-read  

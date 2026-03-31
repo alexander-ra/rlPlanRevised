@@ -59,7 +59,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
   *The standard multi-agent environment library (successor to OpenAI's multiagent-particle-envs). Browse the environment list to see the variety of MARL settings: cooperative, competitive, mixed.*
 
 - **Amato (2024/2025) — "An Initial Introduction to Cooperative MARL"**  
-  https://arxiv.org/abs/2405.06161https://arxiv.org/abs/1705.01820  
+  https://arxiv.org/abs/2405.06161  
   *Pedagogical survey — read Sections 1–3 for a gentle conceptual intro if the video tutorials feel too fast.*
 
 ---
@@ -133,7 +133,7 @@ End of day: you should be able to explain to a non-expert: "In single-agent RL, 
 
 ### Paper 1: Lowe et al. — "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments" (MADDPG, 2017)
 
-https://arxiv.org/abs/1706.02275https://arxiv.org/abs/1505.00533
+https://arxiv.org/abs/1706.02275
 
 ```
 ├── READ:  Section 3 (MADDPG algorithm — multi-agent version of DDPG where each 
@@ -158,7 +158,7 @@ https://arxiv.org/abs/1706.02275https://arxiv.org/abs/1505.00533
 
 ### Paper 2: Rashid et al. — "QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning" (2018)
 
-https://arxiv.org/abs/1803.11485https://arxiv.org/abs/1603.01121 (ICML 2018)
+https://arxiv.org/abs/1803.11485 (ICML 2018)
 
 ```
 ├── READ:  Section 3 (QMIX architecture — how individual agent Q-values are 
@@ -184,7 +184,7 @@ https://arxiv.org/abs/1803.11485https://arxiv.org/abs/1603.01121 (ICML 2018)
 
 ### Paper 3: Yu et al. — "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games" (MAPPO, 2022)
 
-https://arxiv.org/abs/2103.01955https://arxiv.org/abs/1906.02701 (NeurIPS 2022)
+https://arxiv.org/abs/2103.01955 (NeurIPS 2022)
 
 ```
 ├── READ:  Section 3 (MAPPO — multi-agent PPO with shared parameters and centralized
@@ -206,7 +206,7 @@ https://arxiv.org/abs/2103.01955https://arxiv.org/abs/1906.02701 (NeurIPS 2022)
 
 ### Paper 4: Foerster et al. — "Learning with Opponent-Learning Awareness" (LOLA, 2018)
 
-https://arxiv.org/abs/1709.04326https://arxiv.org/abs/2208.11326 (AAMAS 2018)
+https://arxiv.org/abs/1709.04326 (AAMAS 2018)
 
 ```
 ├── READ:  Section 3 (LOLA algorithm — instead of just optimizing your own reward,
@@ -233,7 +233,7 @@ https://arxiv.org/abs/1709.04326https://arxiv.org/abs/2208.11326 (AAMAS 2018)
 
 ### Paper 5: Lanctot et al. — "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning" (PSRO, 2017)
 
-https://arxiv.org/abs/1711.00832https://arxiv.org/abs/2301.02345 (NeurIPS 2017)
+https://arxiv.org/abs/1711.00832 (NeurIPS 2017)
 
 ```
 ├── READ:  Section 3 (PSRO framework — the double oracle approach: maintain a 
@@ -262,7 +262,7 @@ https://arxiv.org/abs/1711.00832https://arxiv.org/abs/2301.02345 (NeurIPS 2017)
 
 ### Paper 6: Sukhbaatar et al. — "Learning Multiagent Communication with Backpropagation" (CommNet, 2016)
 
-https://arxiv.org/abs/1605.07736https://arxiv.org/abs/2102.04360 (NeurIPS 2016)
+https://arxiv.org/abs/1605.07736 (NeurIPS 2016)
 
 ```
 ├── READ:  Section 2 (CommNet architecture — agents share a continuous communication
@@ -285,15 +285,15 @@ https://arxiv.org/abs/1605.07736https://arxiv.org/abs/2102.04360 (NeurIPS 2016)
 ### Supplementary References
 
 - **Zhong et al. (2023) — "Heterogeneous-Agent Reinforcement Learning (HARL)"**  
-  https://arxiv.org/abs/2304.09870https://arxiv.org/abs/2004.04136  
+  https://arxiv.org/abs/2304.09870  
   *Unified framework for cooperative MARL with heterogeneous agents. SKIM abstract + Section 3 architecture. Addresses the "homogeneous agent assumption" that QMIX/MAPPO make.*
 
 - **Bighashdel et al. (2026) — "Sample-Efficient PSRO with Joint Experience Best Response"**  
-  https://arxiv.org/abs/2602.06599https://arxiv.org/abs/1707.06203  
+  https://arxiv.org/abs/2602.06599  
   *AAMAS 2026. Improves PSRO sample efficiency. SKIM abstract. Relevant for understanding latest PSRO advances.*
 
 - **Wittner (2026) — "Communication Methods in Multi-Agent Reinforcement Learning"**  
-  https://arxiv.org/abs/2601.12886https://arxiv.org/abs/1611.02779  
+  https://arxiv.org/abs/2601.12886  
   *12-page survey of MARL communication. SKIM for reference map of communication approaches.*
 
 ### Math Flags
@@ -441,11 +441,11 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
   *Chapters 6–7 (learning in games). Skip Chapters 1–5 (game theory basics — you know this from Steps 2–3). Skip Chapters 8+ (mechanism design, social choice — relevant to a different thesis). Focus: how does the textbook characterize the convergence difficulties in multi-agent learning?*
 
 - **Survey skim:** Zhang, Yang & Basar (2021) — "Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms"  
-  https://arxiv.org/abs/1911.10635https://arxiv.org/abs/2009.04416  
+  https://arxiv.org/abs/1911.10635  
   *The canonical MARL survey. SKIM Sections 3 (cooperative MARL), 4 (competitive MARL), and 6 (emergent communication). Cross-reference with what you just implemented — map each algorithm you built to its section in this survey.*
 
 - **Supplementary read:** Samvelyan (2025) — "Robust Agents in Open-Ended Worlds" PhD thesis  
-  https://arxiv.org/abs/2512.08139https://arxiv.org/abs/1507.01228  
+  https://arxiv.org/abs/2512.08139  
   *SKIM Chapter 2 (background on open-ended learning + auto-curricula). This connects to Step 10 (population-based training + evolution) and Step 11 (emergent complexity in competitive FFA).*
 
 ### Day 2 — PhD Mapping + One-Pager + Learning Log

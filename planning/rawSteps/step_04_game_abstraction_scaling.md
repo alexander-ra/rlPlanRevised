@@ -108,8 +108,8 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Paper 1: Gilpin & Sandholm — "Lossless Abstraction of Imperfect Information Games" (2007)
 
-https://dl.acm.org/doi/10.5555/1625275.1625300https://arxiv.org/abs/1901.08106  
-https://www.cs.cmu.edu/~sandholm/lossless.jacm.pdfhttps://arxiv.org/abs/2010.02493
+https://dl.acm.org/doi/10.5555/1625275.1625300  
+https://www.cs.cmu.edu/~sandholm/lossless.jacm.pdf
 
 ```
 ├── READ:  Section 2 (Game-theoretic background — skim if comfortable from Step 2),
@@ -136,7 +136,7 @@ https://www.cs.cmu.edu/~sandholm/lossless.jacm.pdfhttps://arxiv.org/abs/2010.024
 
 ### Paper 2: Johanson, Burch, Valenzano & Bowling — "Evaluating State-Space Abstractions in Extensive-Form Games" (2013)
 
-https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdfhttps://arxiv.org/abs/2110.02100
+https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdf
 
 ```
 ├── READ:  Section 3 (Earth Mover's Distance for evaluating abstraction quality —
@@ -160,7 +160,7 @@ https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdfhttps://arxiv.o
 
 ### Paper 3: Kroer & Sandholm — "Imperfect-Recall Abstractions with Bounds in Games" (2016)
 
-https://arxiv.org/abs/1409.3302https://arxiv.org/abs/1908.08708
+https://arxiv.org/abs/1409.3302
 
 ```
 ├── READ:  Section 3 (Bounded imperfect-recall abstractions — how to deliberately 
@@ -183,7 +183,7 @@ https://arxiv.org/abs/1409.3302https://arxiv.org/abs/1908.08708
 
 ### Paper 4: Brown & Sandholm — "Safe and Nested Subgame Solving for Imperfect-Information Games" (2017)
 
-https://arxiv.org/abs/1705.02955https://arxiv.org/abs/2202.03169
+https://arxiv.org/abs/1705.02955
 
 ```
 ├── READ:  Section 3 (Subgame solving — how Libratus/Pluribus refines the abstract 
@@ -206,11 +206,11 @@ https://arxiv.org/abs/1705.02955https://arxiv.org/abs/2202.03169
 ### Supplementary References
 
 - **Li, W. et al. (2024) — "RL-CFR: A New RL Framework for Action Abstraction in Imperfect Information Extensive-Form Games"**  
-  https://arxiv.org/abs/2403.14114https://arxiv.org/abs/1811.00164  
+  https://arxiv.org/abs/2403.14114  
   *Uses RL to learn action abstractions instead of hand-crafting them. Bridges Step 1 (RL) → Step 4 (abstraction). SKIM abstract + Section 3 (RL-CFR method). Log as potential enrichment for Steps 5–6.*
 
 - **Fu, H. et al. (2025) — "No-Regret Strategy Optimization with KrwEmd Metric for Imperfect-Recall Abstraction" (AAAI 2026)**  
-  https://arxiv.org/abs/2411.16111https://arxiv.org/abs/2007.13544  
+  https://arxiv.org/abs/2411.16111  
   *Frontier work on abstraction metrics. SKIM abstract only. Log for Step 15 (frontier mapping).*
 
 ### Math Flags

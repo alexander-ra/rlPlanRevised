@@ -175,7 +175,7 @@ No reading yet. Run existing CFR solvers, play games, see convergence happen.
 
 ### Core Reading: Neller & Lanctot — "An Introduction to Counterfactual Regret Minimization" (2013)
 
-http://modelai.gettysburg.edu/2013/cfr/cfr.pdfhttps://arxiv.org/abs/2305.10601  
+http://modelai.gettysburg.edu/2013/cfr/cfr.pdf  
 **Length:** ~30 pages  
 **This is the single most important reading for Step 2.** Read it front-to-back — it's a tutorial, not a research paper. It's specifically designed to teach CFR from scratch.
 
@@ -215,7 +215,7 @@ http://modelai.gettysburg.edu/2013/cfr/cfr.pdfhttps://arxiv.org/abs/2305.10601
 
 ### Paper 1: Zinkevich et al. — "Regret Minimization in Games with Incomplete Information" (2007)
 
-https://arxiv.org/abs/0709.2092https://arxiv.org/abs/2206.15378  
+https://arxiv.org/abs/0709.2092  
 *The original CFR paper. You DON'T need to read this front-to-back — Neller & Lanctot covers the same material more accessibly. Use this paper as a reference.*
 
 ```

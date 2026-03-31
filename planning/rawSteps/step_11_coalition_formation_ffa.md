@@ -147,7 +147,7 @@ End of day: you should be able to explain to a non-expert: "In a poker game with
 
 ### Paper 1: Sharan & Adak — "Reinforcing Competitive Multi-Agents for Playing 'So Long Sucker'" (2024)
 
-https://arxiv.org/abs/2411.11057https://arxiv.org/abs/1908.08708
+https://arxiv.org/abs/2411.11057
 
 ```
 ├── READ:  Section 2 (SLS game formalization — state representation, action space,
@@ -173,7 +173,7 @@ https://arxiv.org/abs/2411.11057https://arxiv.org/abs/1908.08708
 
 ### Paper 2: De Carufel & Jerade — "So Long Sucker: Endgame Analysis" (2024)
 
-https://arxiv.org/abs/2403.17302https://arxiv.org/abs/2202.03169
+https://arxiv.org/abs/2403.17302
 
 ```
 ├── READ:  Section 2 (Formal game rules — the definitive mathematical formalization
@@ -193,7 +193,7 @@ https://arxiv.org/abs/2403.17302https://arxiv.org/abs/2202.03169
 
 ### Paper 3: Bakhtin et al. — "Mastering the Game of No-Press Diplomacy" (2022)
 
-https://arxiv.org/abs/2210.05492https://arxiv.org/abs/1811.00164
+https://arxiv.org/abs/2210.05492
 
 ```
 ├── READ:  Section 2 (How to handle N>2 players in an imperfect-information game:
@@ -257,7 +257,7 @@ This is a slim textbook (~160 pages), not a paper. You need Chapters 2–4.
 
 ### Paper 5: Wang, Zhang, Kim & Gu — "Shapley Q-value: A Local Reward Approach to Solve Global Reward Games" (AAAI 2020)
 
-https://arxiv.org/abs/1907.05707https://arxiv.org/abs/2007.13544
+https://arxiv.org/abs/1907.05707
 
 ```
 ├── READ:  Section 3 (Shapley Q-value — decomposes the team's joint Q-value into
@@ -286,11 +286,11 @@ https://arxiv.org/abs/1907.05707https://arxiv.org/abs/2007.13544
 ### Supplementary References
 
 - **Li, Kuang, Wang, Liu, Chen, Wu & Xiao (2021, KDD) — "Shapley Counterfactual Credits for Multi-Agent Reinforcement Learning"**  
-  https://arxiv.org/abs/2106.00285https://arxiv.org/abs/1901.08106  
+  https://arxiv.org/abs/2106.00285  
   *Combines Shapley values with counterfactual baselines (reminiscent of CFR's counterfactual regret). SKIM Section 3 for the counterfactual Shapley mechanism. Connection: your CFR expertise (Steps 2–4) meets cooperative GT here.*
 
 - **Wang, Li, Kaski & Lawry (2025) — "Shapley Machine: A Game-Theoretic Framework for N-Agent Ad Hoc Teamwork"**  
-  https://arxiv.org/abs/2506.11285https://arxiv.org/abs/2010.02493  
+  https://arxiv.org/abs/2506.11285  
   *N-agent ad hoc teamwork = implicit coalition formation with unknown teammates. SKIM for the connection between Shapley values and ad hoc team formation.*
 
 - **Meta AI — "Human-Level Play in the Game of Diplomacy by Combining Language Models with Strategic Reasoning" (CICERO, Science 2022)**  
@@ -298,7 +298,7 @@ https://arxiv.org/abs/1907.05707https://arxiv.org/abs/2007.13544
   *The full-press Diplomacy system — combines language model for negotiation with game-theoretic planning. SKIM for architecture insights only. You will NOT implement language-based negotiation, but the planning component (Section 2) shows how to integrate coalition reasoning into search.*
 
 - **Mukobi et al. (2023) — "Welfare Diplomacy: Benchmarking Language Model Cooperation"**  
-  https://arxiv.org/abs/2310.08901https://arxiv.org/abs/2110.02100  
+  https://arxiv.org/abs/2310.08901  
   *LLM agents playing Diplomacy variants. Relevant for Step 12 bridge (LLM agents in strategic settings). SKIM abstract only.*
 
 ### Math Flags
@@ -554,11 +554,11 @@ Starting point: Sharan & Adak's SLS implementation + your Step 9 MARL infrastruc
   *Dynamic coalition formation and games with externalities. Skim for: does any classical theory address the DYNAMIC coalition case? (Answer: very little — most theory is static, which is exactly your PhD gap.)*
 
 - **Supplementary skim:** Li et al. (2021, KDD) — "Shapley Counterfactual Credits for MARL"  
-  https://arxiv.org/abs/2106.00285https://arxiv.org/abs/1705.01820  
+  https://arxiv.org/abs/2106.00285  
   *Read Section 3: counterfactual Shapley — combines counterfactual baselines (from your CFR expertise, Steps 2–4) with Shapley decomposition. Could this improve your SLS credit assignment?*
 
 - **Supplementary skim:** Wang et al. (2025) — "Shapley Machine: N-Agent Ad Hoc Teamwork"  
-  https://arxiv.org/abs/2506.11285https://arxiv.org/abs/1505.00533  
+  https://arxiv.org/abs/2506.11285  
   *Read abstract + method overview. Ad hoc teamwork = joining a team of unknown agents without pre-coordination. This is exactly what happens when a new coalition forms in SLS — you don't know if your "ally" will cooperate or betray.*
 
 - **Forward scan:** Skim arXiv for any new SLS or FFA coalition papers since the freshness scan. Search: "So Long Sucker", "coalition formation competitive", "multi-player free-for-all".

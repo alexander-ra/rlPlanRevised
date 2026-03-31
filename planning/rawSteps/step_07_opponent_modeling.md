@@ -148,7 +148,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Paper 1: Southey et al. — "Bayes' Bluff: Opponent Modelling in Poker" (2005)
 
-https://poker.cs.ualberta.ca/publications/UAI05.pdfhttps://arxiv.org/abs/2012.00849
+https://poker.cs.ualberta.ca/publications/UAI05.pdf
 
 ```
 ├── READ:  Section 3 (Bayesian opponent model — the generative model of opponent 
@@ -176,7 +176,7 @@ https://poker.cs.ualberta.ca/publications/UAI05.pdfhttps://arxiv.org/abs/2012.00
 
 ### Paper 2: Bard et al. — "Online Implicit Agent Modelling" (2013)
 
-https://poker.cs.ualberta.ca/publications/AAMAS13-bard.pdfhttps://arxiv.org/abs/1911.08265
+https://poker.cs.ualberta.ca/publications/AAMAS13-bard.pdf
 
 ```
 ├── READ:  Section 3 (Implicit agent modelling — instead of maintaining an explicit
@@ -204,7 +204,7 @@ https://poker.cs.ualberta.ca/publications/AAMAS13-bard.pdfhttps://arxiv.org/abs/
 
 ### Paper 3: Ganzfried & Sun — "Bayesian Opponent Exploitation in Imperfect-Information Games" (2016/2018)
 
-https://arxiv.org/abs/1603.03491https://arxiv.org/abs/2206.15378
+https://arxiv.org/abs/1603.03491
 
 ```
 ├── READ:  Section 3 (The Bayesian exploitation framework — prior over opponent
@@ -235,7 +235,7 @@ https://arxiv.org/abs/1603.03491https://arxiv.org/abs/2206.15378
 
 ### Paper 4: Ganzfried, Wang & Chiswick — "Opponent Modeling in Multiplayer Imperfect-Information Games" (2022/2024)
 
-https://arxiv.org/abs/2212.06027https://arxiv.org/abs/2305.10601
+https://arxiv.org/abs/2212.06027
 
 ```
 ├── READ:  Section 3 (Extension of opponent modeling to N-player games — the 
@@ -259,7 +259,7 @@ https://arxiv.org/abs/2212.06027https://arxiv.org/abs/2305.10601
 
 ### Paper 5: Ganzfried — "Consistent Opponent Modeling in Imperfect-Information Games" (2025/2026)
 
-https://arxiv.org/abs/2508.17671https://arxiv.org/abs/1711.00832
+https://arxiv.org/abs/2508.17671
 
 ```
 ├── READ:  Section 3 (The consistency property — what existing algorithms FAIL
@@ -463,10 +463,10 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
   *Link:* http://www.masfoundations.org/download.html
 
 - **Reference skim (paper):** Milec, Kovařík & Lisý (2025) "Adapting Beyond the Depth Limit" — read abstract + Section 3. Note how they handle the depth-limited setting where you can't inspect the whole game tree. *This bridges directly to Step 8.*
-  https://arxiv.org/abs/2501.10464https://arxiv.org/abs/1812.05944
+  https://arxiv.org/abs/2501.10464
 
 - **Reference skim (paper):** Zhou et al. (2022/2024) "DecisionHoldem" — skim abstract + method overview. Note the diverse opponent handling approach.
-  https://arxiv.org/abs/2201.11580https://arxiv.org/abs/2104.03113
+  https://arxiv.org/abs/2201.11580
 
 - **Forward preview:** Read the abstract of Ganzfried & Sandholm (2015) "Safe Opponent Exploitation" — this is the core paper for Step 8. Note how it takes the opponent MODEL (what you built in this step) and derives the SAFETY constraint (what Step 8 formalizes).
 

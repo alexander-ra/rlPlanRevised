@@ -87,7 +87,7 @@ def build():
 
     # Write output
     DIST_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = DIST_DIR / "index.html"
+    out_path = DIST_DIR / "interactiveStudy.html"
     out_path.write_text(output, encoding="utf-8")
 
     size_kb = out_path.stat().st_size / 1024

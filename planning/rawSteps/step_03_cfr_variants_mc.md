@@ -45,7 +45,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ### Blog Posts
 
 - **Martin Schmid — "Variance Reduction in MCCFR"**  
-  https://arxiv.org/abs/1809.03057https://arxiv.org/abs/1711.00832 (read abstract and introduction only — paper is for Phase 3)  
+  https://arxiv.org/abs/1809.03057 (read abstract and introduction only — paper is for Phase 3)  
   *Quick context on why variance matters in MCCFR — motivates why you'll experiment with different sampling schemes.*
 
 ---
@@ -126,7 +126,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 ### Paper 1: Lanctot et al. — "Monte Carlo Sampling for Regret Minimization in Extensive Games" (2009)
 
 **Link:** https://papers.nips.cc/paper/2009/hash/00411460f7c92d2124a67ea0f4cb5f85-Abstract.html  
-http://mlanctot.info/files/papers/nips09mccfr.pdfhttps://arxiv.org/abs/1802.01569
+http://mlanctot.info/files/papers/nips09mccfr.pdf
 
 ```
 ├── READ:  Section 3 (MCCFR framework — the unifying theory for all sampling variants),
@@ -154,7 +154,7 @@ http://mlanctot.info/files/papers/nips09mccfr.pdfhttps://arxiv.org/abs/1802.0156
 
 ### Paper 2: Tammelin et al. — "Solving Heads-Up Limit Texas Hold'em" (2015)
 
-https://arxiv.org/abs/1407.5042https://arxiv.org/abs/1812.05944 (originally appeared in AAAI 2015 / Science 2015)
+https://arxiv.org/abs/1407.5042 (originally appeared in AAAI 2015 / Science 2015)
 
 ```
 ├── READ:  Section 2 (CFR+ algorithm — the three modifications: floor regrets at 0
@@ -176,7 +176,7 @@ https://arxiv.org/abs/1407.5042https://arxiv.org/abs/1812.05944 (originally appe
 
 ### Paper 3: Zinkevich et al. (2007) — Revisit Section 5
 
-https://arxiv.org/abs/0709.2092https://arxiv.org/abs/2104.03113  
+https://arxiv.org/abs/0709.2092  
 *You read this in Step 2. Now revisit Section 5 (the Kuhn/Rhode Island experiments) with fresh eyes — you've now seen MCCFR and CFR+ convergence in Phase 2. Compare the convergence plots.*
 
 ### Book: Chen & Ankenman — "The Mathematics of Poker" (2006)
@@ -195,11 +195,11 @@ https://arxiv.org/abs/0709.2092https://arxiv.org/abs/2104.03113
 ### Optional Supplementary
 
 - **Schmid et al. (2018) — "Variance Reduction in Monte Carlo Counterfactual Regret Minimization"**  
-  https://arxiv.org/abs/1809.03057https://arxiv.org/abs/2012.00849  
+  https://arxiv.org/abs/1809.03057  
   *VR-MCCFR adds baseline subtraction to reduce sampling variance. SKIM Sections 1–3 only. This technique reappears in Step 5 (Deep CFR relies on variance reduction).*
 
 - **Farina et al. (2020) — "Stochastic Regret Minimization in Extensive-Form Games"**  
-  https://arxiv.org/abs/2002.08493https://arxiv.org/abs/1911.08265  
+  https://arxiv.org/abs/2002.08493  
   *Unifies sampling-based regret minimization. SKIM abstract only — good for bibliography mining.*
 
 ### Math Flags
