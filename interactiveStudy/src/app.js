@@ -105,6 +105,9 @@ function renderStep(stepId) {
 
   // Scroll to top
   window.scrollTo(0, 0);
+
+  // Build section jump navigation
+  buildSectionNav();
 }
 
 /* ===== Navigation Logic ===== */
@@ -153,6 +156,40 @@ function updateNavButtons() {
   document.querySelectorAll('[id^="next-btn"]').forEach(b => b.disabled = atEnd);
 }
 
+/* ===== Section Jump Navigation ===== */
+function buildSectionNav() {
+  const headings = document.querySelectorAll('#content h2, #content h3');
+  const dropdown = document.getElementById('section-dropdown');
+  const fab = document.getElementById('section-fab');
+  dropdown.innerHTML = '';
+
+  if (headings.length === 0) {
+    fab.style.display = 'none';
+    return;
+  }
+  fab.style.display = '';
+
+  headings.forEach((h, i) => {
+    if (!h.id) h.id = 'section-' + i;
+    const item = document.createElement('button');
+    item.className = 'section-item' + (h.tagName === 'H3' ? ' indent' : '');
+    item.textContent = h.textContent;
+    item.addEventListener('click', () => {
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      closeSectionNav();
+    });
+    dropdown.appendChild(item);
+  });
+}
+
+function toggleSectionNav() {
+  document.getElementById('section-dropdown').classList.toggle('open');
+}
+
+function closeSectionNav() {
+  document.getElementById('section-dropdown').classList.remove('open');
+}
+
 /* ===== Sidebar Toggle (Mobile) ===== */
 function openSidebar() {
   document.getElementById('sidebar').classList.add('open');
@@ -179,6 +216,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('next-btn').addEventListener('click', goNext);
   document.getElementById('prev-btn-bottom').addEventListener('click', goPrev);
   document.getElementById('next-btn-bottom').addEventListener('click', goNext);
+
+  // Section jump FAB
+  document.getElementById('section-fab').addEventListener('click', toggleSectionNav);
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('section-nav');
+    if (!nav.contains(e.target)) closeSectionNav();
+  });
 
   // Determine initial step: hash > localStorage > first
   const hash = window.location.hash.replace('#', '');

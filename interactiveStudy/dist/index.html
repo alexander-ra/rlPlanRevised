@@ -224,9 +224,57 @@ body {
   .content { padding-bottom: 4rem; }
 }
 
+/* ===== Section Jump FAB ===== */
+.section-nav {
+  position: fixed;
+  bottom: 68px; right: 16px;
+  z-index: 80;
+  display: flex; flex-direction: column; align-items: flex-end;
+}
+.section-fab {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #6c63ff; color: #fff;
+  border: none; cursor: pointer;
+  font-size: 1.2rem; line-height: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transition: background 0.15s, transform 0.15s;
+}
+.section-fab:hover { background: #5a52d5; }
+.section-fab:active { transform: scale(0.92); }
+
+.section-dropdown {
+  display: none;
+  max-height: 60vh; overflow-y: auto;
+  width: 260px;
+  margin-bottom: 8px; padding: 6px 0;
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  border: 1px solid #e5e7eb;
+}
+.section-dropdown.open { display: block; }
+
+.section-item {
+  display: block; width: 100%;
+  padding: 0.45rem 0.85rem;
+  border: none; background: none;
+  font-size: 0.82rem; text-align: left;
+  color: #374151; cursor: pointer;
+  line-height: 1.35;
+  transition: background 0.12s;
+}
+.section-item:hover { background: #f3f4f6; }
+.section-item.indent { padding-left: 1.5rem; font-size: 0.78rem; color: #6b7280; }
+
+@media (min-width: 768px) {
+  .section-nav { bottom: 24px; right: 24px; }
+}
+@media (max-width: 767px) and (orientation: landscape) {
+  .section-nav { bottom: 58px; }
+}
+
 /* ===== Print ===== */
 @media print {
-  .sidebar, .topbar, .bottombar, .overlay { display: none !important; }
+  .sidebar, .topbar, .bottombar, .overlay, .section-nav { display: none !important; }
   .main { margin-left: 0 !important; }
   .content { max-width: 100%; padding: 0; }
 }
@@ -270,6 +318,12 @@ body {
       <button id="prev-btn-bottom" class="nav-btn">&larr; Previous</button>
       <button id="next-btn-bottom" class="nav-btn">Next &rarr;</button>
     </footer>
+  </div>
+
+  <!-- SECTION JUMP (floating action button) -->
+  <div id="section-nav" class="section-nav">
+    <div id="section-dropdown" class="section-dropdown"></div>
+    <button id="section-fab" class="section-fab" aria-label="Jump to section">&#x2630;</button>
   </div>
 
   <script>
@@ -417,6 +471,9 @@ function renderStep(stepId) {
 
   // Scroll to top
   window.scrollTo(0, 0);
+
+  // Build section jump navigation
+  buildSectionNav();
 }
 
 /* ===== Navigation Logic ===== */
@@ -465,6 +522,40 @@ function updateNavButtons() {
   document.querySelectorAll('[id^="next-btn"]').forEach(b => b.disabled = atEnd);
 }
 
+/* ===== Section Jump Navigation ===== */
+function buildSectionNav() {
+  const headings = document.querySelectorAll('#content h2, #content h3');
+  const dropdown = document.getElementById('section-dropdown');
+  const fab = document.getElementById('section-fab');
+  dropdown.innerHTML = '';
+
+  if (headings.length === 0) {
+    fab.style.display = 'none';
+    return;
+  }
+  fab.style.display = '';
+
+  headings.forEach((h, i) => {
+    if (!h.id) h.id = 'section-' + i;
+    const item = document.createElement('button');
+    item.className = 'section-item' + (h.tagName === 'H3' ? ' indent' : '');
+    item.textContent = h.textContent;
+    item.addEventListener('click', () => {
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      closeSectionNav();
+    });
+    dropdown.appendChild(item);
+  });
+}
+
+function toggleSectionNav() {
+  document.getElementById('section-dropdown').classList.toggle('open');
+}
+
+function closeSectionNav() {
+  document.getElementById('section-dropdown').classList.remove('open');
+}
+
 /* ===== Sidebar Toggle (Mobile) ===== */
 function openSidebar() {
   document.getElementById('sidebar').classList.add('open');
@@ -491,6 +582,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('next-btn').addEventListener('click', goNext);
   document.getElementById('prev-btn-bottom').addEventListener('click', goPrev);
   document.getElementById('next-btn-bottom').addEventListener('click', goNext);
+
+  // Section jump FAB
+  document.getElementById('section-fab').addEventListener('click', toggleSectionNav);
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('section-nav');
+    if (!nav.contains(e.target)) closeSectionNav();
+  });
 
   // Determine initial step: hash > localStorage > first
   const hash = window.location.hash.replace('#', '');
