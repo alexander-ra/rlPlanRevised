@@ -1,6 +1,6 @@
 # Individual Study Plan
 
-## Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments
+## Research on the possibilities for applying Artificial Intelligence in computer games.
 
 ---
 
@@ -36,7 +36,7 @@ The study plan is aligned with the milestones of the university individual plan.
 
 ### 1.2 Research Objective and Expected Contributions
 
-The primary objective of this doctoral research is to develop methods for adaptive strategy learning in multi-agent environments with imperfect information. The research program is structured around three planned contributions:
+The primary objective of this doctoral research is to develop an adaptive AI agent to be used in various computer games. The agent will start from a safe strategy but will be able to improve its outcome against sub-optimal opponents, thus removing the limitations of previous systems which rarely dynamically adapt their behavior. The research program is structured around three planned contributions:
 
 **Contribution 1 — Behavioral Adaptation Framework.** The goal is to develop a general method for inferring and adapting to opponent strategies from observed action sequences in real time, applicable to arbitrary imperfect-information games. This contribution aims to address the gap between static equilibrium computation and dynamic, opponent-aware play.
 

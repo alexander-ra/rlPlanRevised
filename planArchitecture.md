@@ -1,5 +1,5 @@
 # PhD Preparation Roadmap
-### Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments
+### Research on the possibilities for applying Artificial Intelligence in computer games.
 
 > **Author:** Alexander Andreev  
 > **University:** Ruse University "Angel Kanchev" — PhD in Informatics (4.6)  
@@ -54,8 +54,10 @@ A 15-step learning progression (2 completed + 13 new) spanning April–mid Octob
 
 ## 2. PhD Goal Alignment
 
-### Proposed Research Focus
-**"Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"**
+### Official Dissertation Topic
+**"Research on the possibilities for applying Artificial Intelligence in computer games."**
+
+*(Research Focus: Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments)*
 
 ### Why this framing:
 - **Game-theory themed** ✓ — imperfect-information games as testbed (satisfies university)
@@ -524,7 +526,8 @@ The plan was validated against 10 real job postings from Glassdoor (March 2026) 
 
 ## Appendix: Source Files
 - `oldSources/docPlan_EN.md` — Original preparation plan (Steps 1–2 completed)
-- `oldSources/ind_plan_A_Andreev_EN.md` — University individual plan (Phase 1 deadline: 11.2026)
+- `oldSources/ind_plan_A_Andreev_EN.md` — University individual plan (English translation, Phase 1 deadline: 11.2026)
+- `oldSources/ind_plan_A_Andreev_BG.md` — University individual plan (Original Bulgarian, Phase 1 deadline: 11.2026)
 - `oldSources/safeOpponentExploitation.md` — Safe Opponent Exploitation literature review (feeds Steps 7–8)
 - `oldSources/singleFuturePlan.md` — Bulgaria career plan (reviewed in Section 1)
 - `oldSources/coopFuturePlan.md` — Partnership career plan (reviewed in Section 1)
