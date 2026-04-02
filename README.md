@@ -39,7 +39,35 @@ The study plan spans 15 learning steps organized into 7 thematic phases (A–G),
 │   ├── studyPlanEN.pdf                  # Pre-built PDF (English)
 │   └── studyPlanBG.pdf                  # Pre-built PDF (Bulgarian)
 ├── implementation/
-│   └── step01/                          # Step 1: DQN + PPO from scratch (see its README)
+│   └── step01/                          # Step 1: DQN + PPO from scratch
+│       ├── config.py                    # All hyperparameters in one place (edit here to experiment)
+│       ├── benchmark.py                 # Trains SB3 baselines and compares against custom implementations
+│       ├── compare_sb3.py               # Loads sb3_results_cache.json and generates comparison plots
+│       ├── verify_setup.py              # Smoke-test: confirms gym, torch, tensorboard all work
+│       ├── sb3_results_cache.json       # Cached SB3 training curves (avoid re-running SB3 for plots)
+│       ├── dqn/
+│       │   ├── replay_buffer.py         # Circular buffer — push() and sample() for experience replay
+│       │   ├── q_network.py             # MLP: obs → hidden layers → Q-values per action
+│       │   ├── agent.py                 # Full DQN algorithm: ε-greedy, TD update, target network sync
+│       │   └── train.py                 # CartPole-v1 training loop; logs to logs/dqn/
+│       ├── ppo/
+│       │   ├── networks.py              # PolicyNetwork (actor, Categorical) + ValueNetwork (critic)
+│       │   ├── gae.py                   # Generalized Advantage Estimation — reverse-sweep with done mask
+│       │   ├── agent.py                 # Full PPO algorithm: rollout, clipped surrogate loss, update epochs
+│       │   └── train.py                 # LunarLander-v3 training loop; logs to logs/ppo/
+│       ├── utils/
+│       │   ├── env_wrappers.py          # Gymnasium wrappers and reward normalisation helpers
+│       │   ├── logger.py                # Thin TensorBoard SummaryWriter wrapper
+│       │   └── plotting.py              # Learning curve and comparison chart generators
+│       ├── models/                      # Saved checkpoints (.pt) and SB3 zips
+│       │   ├── dqn_cartpole.pt          # Final DQN weights (CartPole-v1)
+│       │   ├── dqn_cartpole_best.pt     # Best-performing DQN checkpoint during training
+│       │   ├── dqn_cartpole.zip         # SB3-format DQN model (for SB3 evaluation)
+│       │   ├── ppo_lunarlander.pt       # Final PPO weights (LunarLander-v3)
+│       │   └── ppo_lunarlander_best.pt  # Best-performing PPO checkpoint during training
+│       └── logs/                        # TensorBoard event files (gitignored; generated at runtime)
+│           ├── dqn/
+│           └── ppo/
 ├── planning/
 │   ├── rawSteps/                        # 15 executable learning steps (full 5-phase cycle each)
 │   ├── cleanSteps/                      # Supervisor-facing versions (formal references only)
