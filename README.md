@@ -25,25 +25,31 @@ The study plan spans 15 learning steps organized into 7 thematic phases (A–G),
 
 ```
 .
-├── planArchitecture.md              # Strategic core: 15-step plan, career alignment, methodology
+├── .venv/                               # Project-wide Python virtual environment (not committed)
+├── .vscode/settings.json               # VS Code interpreter + analysis config
+├── requirements.txt                     # Loose dependency constraints (pip install -r)
+├── requirements-lock.txt               # Pinned lockfile for exact reproduction
+├── planArchitecture.md                  # Strategic core: 15-step plan, career alignment, methodology
 ├── deliverables/
 │   ├── studyPlan/
-│   │   ├── en/                      # English study plan (YAML metadata + 9 markdown sections)
-│   │   └── bg/                      # Bulgarian translation
-│   └── terminology_EN_BG.md         # Translation dictionary
+│   │   ├── en/                          # English study plan (YAML metadata + 9 markdown sections)
+│   │   └── bg/                          # Bulgarian translation
+│   └── terminology_EN_BG.md             # Translation dictionary
 ├── exports/
-│   ├── studyPlanEN.pdf              # Pre-built PDF (English)
-│   └── studyPlanBG.pdf              # Pre-built PDF (Bulgarian)
+│   ├── studyPlanEN.pdf                  # Pre-built PDF (English)
+│   └── studyPlanBG.pdf                  # Pre-built PDF (Bulgarian)
+├── implementation/
+│   └── step01/                          # Step 1: DQN + PPO from scratch (see its README)
 ├── planning/
-│   ├── rawSteps/                    # 15 executable learning steps (full 5-phase cycle each)
-│   ├── cleanSteps/                  # Supervisor-facing versions (formal references only)
-│   ├── discussions/                 # Change proposals, debate trail
-│   └── email_instructions.md        # Email guidelines for supervisor communication
-├── interactiveStudy/                # Standalone HTML5 viewer for rawSteps
-│   ├── src/                         # Source: shell.html, styles.css, app.js
-│   ├── build.py                     # Build script → dist/index.html
-│   └── dist/                        # Built output (~638 KB single file)
-└── oldSources/                      # Prior drafts (reference only)
+│   ├── rawSteps/                        # 15 executable learning steps (full 5-phase cycle each)
+│   ├── cleanSteps/                      # Supervisor-facing versions (formal references only)
+│   ├── discussions/                     # Change proposals, debate trail
+│   └── email_instructions.md            # Email guidelines for supervisor communication
+├── interactiveStudy/                    # Standalone HTML5 viewer for rawSteps
+│   ├── src/                             # Source: shell.html, styles.css, app.js
+│   ├── build.py                         # Build script → dist/index.html
+│   └── dist/                            # Built output (~638 KB single file)
+└── oldSources/                          # Prior drafts (reference only)
 ```
 
 ## Study Plan Phases
@@ -91,3 +97,69 @@ pandoc deliverables/studyPlan/bg/00_metadata.yaml \
   -V geometry:margin=2cm -V fontsize=11pt \
   -o exports/studyPlanBG.pdf
 ```
+
+---
+
+## Python Environment Setup
+
+A single project-wide virtual environment (`.venv/` at the repo root) is used for all implementation steps.
+
+### Prerequisites
+
+- Python 3.10+
+- `git`
+
+### First-time setup
+
+```bash
+git clone <repo-url>
+cd rlPlanRevised
+
+# Create the virtual environment
+python3 -m venv .venv
+source .venv/bin/activate        # Linux / macOS
+# .venv\Scripts\activate         # Windows
+
+# Install from the pinned lockfile (exact reproducible versions)
+pip install -r requirements-lock.txt
+
+# OR install from loose requirements (latest compatible versions)
+# pip install -r requirements.txt
+
+# Verify everything works
+python implementation/step01/verify_setup.py
+```
+
+> **box2d (LunarLander):** `box2d-py` builds from source and requires SWIG.
+> If it fails, install SWIG first: `pip install swig`, then retry.
+
+> **PyTorch CPU vs CUDA:** The lockfile pins CPU-only PyTorch (`torch==2.11.0+cpu`).
+> For GPU training, install the appropriate CUDA wheel from https://pytorch.org/get-started/locally/ instead.
+
+### VS Code IDE configuration
+
+The workspace ships a `.vscode/settings.json` that points the Python interpreter at `.venv/bin/python` and adds the implementation paths to Pylance's analysis. After opening the workspace, VS Code should pick it up automatically.
+
+If you still see import-error squiggles:
+
+1. `Ctrl+Shift+P` → **Python: Select Interpreter**
+2. Choose the entry that shows `.venv/bin/python` at the project root.
+   If it is not listed, click **Enter interpreter path…** and paste: `./.venv/bin/python`
+3. `Ctrl+Shift+P` → **Developer: Reload Window**
+
+### Running scripts
+
+```bash
+# Activate the venv (if not already active)
+source .venv/bin/activate
+
+# Run any implementation step script
+cd implementation/step01
+python dqn/train.py
+python ppo/train.py
+python benchmark.py
+```
+
+Inside VS Code: open any `.py` file and press `F5` → choose **Python File**. The selected interpreter is used automatically.
+
+**TensorBoard:** install the VS Code extension `ms-toolsai.tensorboard`, then `Ctrl+Shift+P` → **Python: Launch TensorBoard** → point to `implementation/step01/logs/`.
