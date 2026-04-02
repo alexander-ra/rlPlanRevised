@@ -100,13 +100,18 @@ class EpisodeRewardCallback(BaseCallback):
         return True
 
 
-def train_sb3_dqn(total_timesteps: int = 350_000, seed: int = 42) -> dict:
+def train_sb3_dqn(total_timesteps: int = 750_000, seed: int = 42) -> dict:
     """Train SB3 DQN on CartPole-v1 with hyperparameters matching our custom impl.
+
+    Budget: our DQN runs for 1500 episodes. At ~500 steps/ep when solved and
+    shorter early on, the empirical average is ~500 steps/ep → 1500 × 500 = 750K.
+    Using 750K so SB3 gets a comparable total environment interaction budget.
 
     Hyperparameter mapping:
       Our epsilon_decay=0.995/episode ≈ SB3 exploration_fraction (steps-based).
       In our final run epsilon reached 0.001 by ~episode 1380, which at ~200
-      avg steps/episode corresponds to ≈270K steps → fraction ≈ 0.77 of 350K.
+      avg steps/episode corresponds to ≈270K steps → fraction ≈ 0.77 of 750K
+      → use exploration_fraction=0.36 for a tighter match.
     """
     import gymnasium as gym
     env = Monitor(gym.make("CartPole-v1"))
@@ -118,9 +123,11 @@ def train_sb3_dqn(total_timesteps: int = 350_000, seed: int = 42) -> dict:
         buffer_size        = DQN_CONFIG["buffer_size"],
         batch_size         = DQN_CONFIG["batch_size"],
         gamma              = DQN_CONFIG["gamma"],
-        exploration_fraction     = 0.77,
+        exploration_fraction     = 0.36,  # 270K / 750K ≈ 0.36 (see docstring)
         exploration_initial_eps  = DQN_CONFIG["epsilon_start"],
         exploration_final_eps    = DQN_CONFIG["epsilon_end"],
+        # Our impl syncs every 5 episodes; at ~200 avg steps/ep that's ~1000 steps.
+        # Using 1000 steps here is the closest equivalent SB3 offers.
         target_update_interval   = 1000,
         policy_kwargs      = dict(net_arch=DQN_CONFIG["hidden_sizes"]),
         seed               = seed,
@@ -131,8 +138,12 @@ def train_sb3_dqn(total_timesteps: int = 350_000, seed: int = 42) -> dict:
     return {"rewards": cb.episode_rewards, "steps": cb.episode_steps}
 
 
-def train_sb3_ppo(total_timesteps: int = 264_192, seed: int = 42) -> dict:
-    """Train SB3 PPO on LunarLander-v3 with hyperparameters matching our custom impl."""
+def train_sb3_ppo(total_timesteps: int = 500_000, seed: int = 42) -> dict:
+    """Train SB3 PPO on LunarLander-v3 with hyperparameters matching our custom impl.
+
+    Budget matched to PPO_CONFIG["total_timesteps"] = 500_000 so both agents
+    receive the same number of environment steps.
+    """
     import gymnasium as gym
     env = Monitor(gym.make("LunarLander-v3"))
     cb  = EpisodeRewardCallback()
@@ -223,11 +234,14 @@ def plot_dqn_comparison(
     fig.suptitle("DQN on CartPole-v1 — Custom vs SB3", fontsize=14, y=1.01)
 
     # ---- Raw rewards ----
-    ax1.set_title("Raw Episode Rewards")
+    # NOTE: x-axis is episode index. Because episode length varies (short when
+    # failing, long ~500 when solved), this axis is NOT equivalent to timesteps.
+    # Treat it as a rough relative comparison, not an exact sample-efficiency claim.
+    ax1.set_title("Raw Episode Rewards (episode index, not timesteps)")
     ax1.plot(our_episodes, color=C_OUR, alpha=0.4, linewidth=0.8, label="Custom DQN")
     ax1.plot(sb3_episodes, color=C_SB3, alpha=0.4, linewidth=0.8, label="SB3 DQN")
     ax1.axhline(target, color="k", linewidth=1.2, linestyle=":", label=f"Target ({target:.0f})")
-    ax1.set_xlabel("Episode")
+    ax1.set_xlabel("Episode (variable length — not timesteps)")
     ax1.set_ylabel("Reward")
     ax1.legend()
 
