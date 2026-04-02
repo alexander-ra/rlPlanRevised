@@ -1,0 +1,12 @@
+# Python cache and build artifacts
+**/__pycache__/
+*.pyc
+
+# Training logs
+implementation/step01/logs/
+
+# Optional: SB3 cache (remove if you want to keep it tracked)
+# implementation/step01/sb3_results_cache.json
+
+# Optional: model checkpoints (remove if you want to keep them tracked)
+# implementation/step01/models/
