@@ -4,14 +4,14 @@ DQN_CONFIG = {
     "env_id": "CartPole-v1",
     "learning_rate": 1e-3,
     "gamma": 0.99,
-    "buffer_size": 10_000,
+    "buffer_size": 50_000,
     "batch_size": 64,
     "epsilon_start": 1.0,
-    "epsilon_end": 0.01,
+    "epsilon_end": 0.001,
     "epsilon_decay": 0.995,
-    "target_update_freq": 10,  # episodes between target network syncs
-    "hidden_sizes": [64, 64],
-    "total_episodes": 500,
+    "target_update_freq": 5,     # episodes between target network syncs
+    "hidden_sizes": [128, 128],
+    "total_episodes": 1500,
     "eval_episodes": 100,
     "reward_target": 475.0,
 }
@@ -28,8 +28,8 @@ PPO_CONFIG = {
     "n_steps": 2048,        # steps per rollout
     "n_epochs": 10,          # update epochs per rollout
     "batch_size": 64,
-    "hidden_sizes": [64, 64],
-    "total_timesteps": 300_000,
+    "hidden_sizes": [128, 128],
+    "total_timesteps": 500_000,
     "eval_episodes": 100,
     "reward_target": 200.0,
 }

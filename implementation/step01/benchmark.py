@@ -46,8 +46,13 @@ def benchmark_dqn():
         target_update_interval=config["target_update_freq"],
         verbose=0,
     )
-    model.learn(total_timesteps=config["total_episodes"] * 500, callback=cb)
-
+    total_steps = config["total_episodes"] * 500
+    print(f"[DQN] Training SB3 DQN for {total_steps} steps...")
+    log_interval = max(1, total_steps // 10)
+    for i in range(0, total_steps, log_interval):
+        steps = min(log_interval, total_steps - i)
+        model.learn(total_timesteps=steps, reset_num_timesteps=False, callback=cb)
+        print(f"[DQN] Progress: {i + steps}/{total_steps} steps ({((i + steps) / total_steps) * 100:.1f}%)")
     env = gym.make(config["env_id"])
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=config["eval_episodes"])
     print(f"SB3 DQN — Mean reward: {mean_reward:.2f} ± {std_reward:.2f}")
@@ -73,8 +78,13 @@ def benchmark_ppo():
         batch_size=config["batch_size"],
         verbose=0,
     )
-    model.learn(total_timesteps=config["total_timesteps"], callback=cb)
-
+    total_steps = config["total_timesteps"]
+    print(f"[PPO] Training SB3 PPO for {total_steps} steps...")
+    log_interval = max(1, total_steps // 10)
+    for i in range(0, total_steps, log_interval):
+        steps = min(log_interval, total_steps - i)
+        model.learn(total_timesteps=steps, reset_num_timesteps=False, callback=cb)
+        print(f"[PPO] Progress: {i + steps}/{total_steps} steps ({((i + steps) / total_steps) * 100:.1f}%)")
     env = gym.make(config["env_id"])
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=config["eval_episodes"])
     print(f"SB3 PPO — Mean reward: {mean_reward:.2f} ± {std_reward:.2f}")
