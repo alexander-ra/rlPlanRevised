@@ -228,25 +228,43 @@ def plot_dqn_comparison(
     target: float,
     window: int = 100,
 ):
-    """Two-panel figure: raw episode rewards + 100-episode rolling average."""
+    """Two-panel figure: raw episode rewards + 100-episode rolling average.
+
+    Both curves are plotted on a shared episode-index x-axis, capped at our
+    implementation's stopping episode so both are visible at the same scale.
+    SB3 trained for many more episodes (CartPole episodes are short when the
+    agent fails), so we clip its display range and annotate the total count.
+    """
     figure_style()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
     fig.suptitle("DQN on CartPole-v1 — Custom vs SB3", fontsize=14, y=1.01)
 
+    our_n   = len(our_episodes)
+    sb3_n   = len(sb3_episodes)
+    x_limit = our_n + max(window // 2, 30)   # small right-side buffer
+
+    # Clip SB3 to the visible window so both curves share the same x-range
+    sb3_clipped = sb3_episodes[:x_limit]
+
     # ---- Raw rewards ----
-    # NOTE: x-axis is episode index. Because episode length varies (short when
-    # failing, long ~500 when solved), this axis is NOT equivalent to timesteps.
-    # Treat it as a rough relative comparison, not an exact sample-efficiency claim.
-    ax1.set_title("Raw Episode Rewards (episode index, not timesteps)")
-    ax1.plot(our_episodes, color=C_OUR, alpha=0.4, linewidth=0.8, label="Custom DQN")
-    ax1.plot(sb3_episodes, color=C_SB3, alpha=0.4, linewidth=0.8, label="SB3 DQN")
-    ax1.axhline(target, color="k", linewidth=1.2, linestyle=":", label=f"Target ({target:.0f})")
-    ax1.set_xlabel("Episode (variable length — not timesteps)")
+    ax1.set_title("Raw Episode Rewards")
+    ax1.plot(range(our_n), our_episodes,
+             color=C_OUR, alpha=0.4, linewidth=0.8, label="Custom DQN")
+    ax1.plot(range(len(sb3_clipped)), sb3_clipped,
+             color=C_SB3, alpha=0.4, linewidth=0.8, label="SB3 DQN")
+    ax1.axhline(target, color="k", linewidth=1.2, linestyle=":",
+                label=f"Target ({target:.0f})")
+    ax1.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
+    ax1.text(our_n - 2, target * 0.08,
+             f"Custom\nstopped\n(ep {our_n})",
+             color=C_OUR, fontsize=8, ha="right", va="bottom")
+    ax1.set_xlabel("Episode")
     ax1.set_ylabel("Reward")
+    ax1.set_xlim(0, x_limit)
     ax1.legend()
 
     # ---- Rolling average ----
-    ax2.set_title(f"Rolling Average (window = {window})")
+    ax2.set_title(f"Rolling Average (window = {window} ep)")
     w = window
 
     if len(our_episodes) >= w:
@@ -257,18 +275,27 @@ def plot_dqn_comparison(
         ax2.fill_between(our_x, our_avg - our_std, our_avg + our_std,
                          color=C_OUR, alpha=C_SHADE)
 
-    if len(sb3_episodes) >= w:
-        sb3_avg = rolling_avg(sb3_episodes, w)
-        sb3_std = rolling_std(sb3_episodes, w)
-        sb3_x   = x_axis_for_rolling(sb3_episodes, w)
+    if len(sb3_clipped) >= w:
+        sb3_avg = rolling_avg(sb3_clipped, w)
+        sb3_std = rolling_std(sb3_clipped, w)
+        sb3_x   = x_axis_for_rolling(sb3_clipped, w)
         ax2.plot(sb3_x, sb3_avg, color=C_SB3, label="SB3 DQN")
         ax2.fill_between(sb3_x, sb3_avg - sb3_std, sb3_avg + sb3_std,
                          color=C_SB3, alpha=C_SHADE)
 
-    ax2.axhline(target, color="k", linewidth=1.2, linestyle=":", label=f"Target ({target:.0f})")
+    ax2.axhline(target, color="k", linewidth=1.2, linestyle=":",
+                label=f"Target ({target:.0f})")
+    ax2.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
     ax2.set_xlabel("Episode")
-    ax2.set_ylabel(f"Avg Reward (last {w} eps)")
+    ax2.set_ylabel(f"Rolling Avg Reward ({w} ep)")
+    ax2.set_xlim(0, x_limit)
     ax2.legend()
+
+    if sb3_n > our_n:
+        fig.text(0.5, -0.03,
+                 f"SB3 DQN trained for {sb3_n:,} episodes total "
+                 f"(750 K env steps); plot shows first {x_limit:,} episodes.",
+                 ha="center", fontsize=8, style="italic", color="#666666")
 
     plt.tight_layout()
     out = FIGURES_DIR / "dqn_comparison.png"
@@ -285,23 +312,44 @@ def plot_ppo_comparison(
     target: float,
     window: int = 50,
 ):
-    """Two-panel figure: raw episode rewards vs steps + rolling average."""
+    """Two-panel figure: raw episode rewards + rolling average.
+
+    Both panels use episode index as the x-axis.
+    Rationale: our_steps are TB event steps = episode counts (0..N_ep), while
+    sb3_steps are actual environment timesteps (0..500K) — mixing them on the
+    same axis collapses our curve to a single pixel at x≈0.  Using episode
+    index for both gives a fair, readable comparison.
+    """
     figure_style()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
     fig.suptitle("PPO on LunarLander-v3 — Custom vs SB3", fontsize=14, y=1.01)
 
-    # ---- Raw rewards vs environment steps ----
+    our_n   = len(our_rewards)
+    sb3_n   = len(sb3_rewards)
+    x_limit = our_n + max(window // 2, 30)
+
+    # Clip SB3 to the same episode window as our impl
+    sb3_clipped = sb3_rewards[:x_limit]
+
+    # ---- Raw rewards (both episode-indexed) ----
     ax1.set_title("Raw Episode Rewards")
-    ax1.plot(our_steps, our_rewards, color=C_OUR, alpha=0.35, linewidth=0.8, label="Custom PPO")
-    ax1.plot(sb3_steps, sb3_rewards, color=C_SB3, alpha=0.35, linewidth=0.8, label="SB3 PPO")
-    ax1.axhline(target, color="k", linewidth=1.2, linestyle=":", label=f"Target ({target:.0f})")
-    ax1.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x/1000:.0f}K"))
-    ax1.set_xlabel("Environment Steps")
+    ax1.plot(range(our_n), our_rewards,
+             color=C_OUR, alpha=0.35, linewidth=0.8, label="Custom PPO")
+    ax1.plot(range(len(sb3_clipped)), sb3_clipped,
+             color=C_SB3, alpha=0.35, linewidth=0.8, label="SB3 PPO")
+    ax1.axhline(target, color="k", linewidth=1.2, linestyle=":",
+                label=f"Target ({target:.0f})")
+    ax1.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
+    ax1.text(our_n - 2, target * -1.5,
+             f"Custom\nstopped\n(ep {our_n})",
+             color=C_OUR, fontsize=8, ha="right", va="top")
+    ax1.set_xlabel("Episode")
     ax1.set_ylabel("Reward")
+    ax1.set_xlim(0, x_limit)
     ax1.legend()
 
-    # ---- Rolling average vs episode index ----
-    ax2.set_title(f"Rolling Average (window = {window} episodes)")
+    # ---- Rolling average (both episode-indexed) ----
+    ax2.set_title(f"Rolling Average (window = {window} ep)")
     w = window
 
     if len(our_rewards) >= w:
@@ -312,18 +360,27 @@ def plot_ppo_comparison(
         ax2.fill_between(our_x, our_avg - our_std, our_avg + our_std,
                          color=C_OUR, alpha=C_SHADE)
 
-    if len(sb3_rewards) >= w:
-        sb3_avg = rolling_avg(sb3_rewards, w)
-        sb3_std = rolling_std(sb3_rewards, w)
-        sb3_x   = x_axis_for_rolling(sb3_rewards, w)
+    if len(sb3_clipped) >= w:
+        sb3_avg = rolling_avg(sb3_clipped, w)
+        sb3_std = rolling_std(sb3_clipped, w)
+        sb3_x   = x_axis_for_rolling(sb3_clipped, w)
         ax2.plot(sb3_x, sb3_avg, color=C_SB3, label="SB3 PPO")
         ax2.fill_between(sb3_x, sb3_avg - sb3_std, sb3_avg + sb3_std,
                          color=C_SB3, alpha=C_SHADE)
 
-    ax2.axhline(target, color="k", linewidth=1.2, linestyle=":", label=f"Target ({target:.0f})")
+    ax2.axhline(target, color="k", linewidth=1.2, linestyle=":",
+                label=f"Target ({target:.0f})")
+    ax2.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
     ax2.set_xlabel("Episode")
-    ax2.set_ylabel(f"Avg Reward (last {w} eps)")
+    ax2.set_ylabel(f"Rolling Avg Reward ({w} ep)")
+    ax2.set_xlim(0, x_limit)
     ax2.legend()
+
+    if sb3_n > our_n:
+        fig.text(0.5, -0.03,
+                 f"SB3 PPO trained for {sb3_n:,} episodes total "
+                 f"(500 K env steps); plot shows first {x_limit:,} episodes.",
+                 ha="center", fontsize=8, style="italic", color="#666666")
 
     plt.tight_layout()
     out = FIGURES_DIR / "ppo_comparison.png"
@@ -357,23 +414,37 @@ def plot_dqn_iterations(iteration_data: list[dict]):
     print(f"  Saved: {out}")
 
 
+def _best_rolling(rewards: list[float], window: int = 100) -> float:
+    """Return the best rolling-window average over the full training curve.
+
+    This is fair regardless of early stopping: it measures peak capability,
+    not where training happened to end.
+    """
+    arr = np.array(rewards, dtype=float)
+    if len(arr) < window:
+        return float(np.mean(arr))
+    avgs = np.convolve(arr, np.ones(window) / window, mode="valid")
+    return float(np.max(avgs))
+
+
 def plot_final_metrics(results: dict):
-    """Bar chart comparing final performance metrics."""
+    """Bar chart comparing best rolling-100 performance (fair with early stopping)."""
     figure_style()
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-    fig.suptitle("Final Performance — Custom vs SB3", fontsize=14, y=1.01)
+    fig.suptitle("Peak Performance — Custom vs SB3  (best rolling-100 avg)",
+                 fontsize=14, y=1.01)
 
     # DQN
     ax = axes[0]
     dqn_data = results["dqn"]
     w = 100
-    our_fin = np.mean(dqn_data["our"][-w:])  if len(dqn_data["our"]) >= w  else np.mean(dqn_data["our"])
-    sb3_fin = np.mean(dqn_data["sb3"][-w:])  if len(dqn_data["sb3"]) >= w  else np.mean(dqn_data["sb3"])
+    our_fin = _best_rolling(dqn_data["our"], w)
+    sb3_fin = _best_rolling(dqn_data["sb3"], w)
     bars = ax.bar(["Custom DQN", "SB3 DQN"], [our_fin, sb3_fin],
                   color=[C_OUR, C_SB3], width=0.5, edgecolor="white")
     ax.axhline(DQN_CONFIG["reward_target"], color="k", linewidth=1.2, linestyle=":",
                label=f"Target ({DQN_CONFIG['reward_target']:.0f})")
-    ax.set_title("CartPole-v1 — Final Avg Reward (last 100 ep)")
+    ax.set_title("CartPole-v1 — Best Avg Reward (rolling 100 ep)")
     ax.set_ylabel("Mean Reward")
     ax.set_ylim(0, 520)
     for bar, val in zip(bars, [our_fin, sb3_fin]):
@@ -384,14 +455,13 @@ def plot_final_metrics(results: dict):
     # PPO
     ax = axes[1]
     ppo_data = results["ppo"]
-    w = 100
-    our_fin = np.mean(ppo_data["our_r"][-w:]) if len(ppo_data["our_r"]) >= w else np.mean(ppo_data["our_r"])
-    sb3_fin = np.mean(ppo_data["sb3_r"][-w:]) if len(ppo_data["sb3_r"]) >= w else np.mean(ppo_data["sb3_r"])
+    our_fin = _best_rolling(ppo_data["our_r"], w)
+    sb3_fin = _best_rolling(ppo_data["sb3_r"], w)
     bars = ax.bar(["Custom PPO", "SB3 PPO"], [our_fin, sb3_fin],
                   color=[C_OUR, C_SB3], width=0.5, edgecolor="white")
     ax.axhline(PPO_CONFIG["reward_target"], color="k", linewidth=1.2, linestyle=":",
                label=f"Target ({PPO_CONFIG['reward_target']:.0f})")
-    ax.set_title("LunarLander-v3 — Final Avg Reward (last 100 ep)")
+    ax.set_title("LunarLander-v3 — Best Avg Reward (rolling 100 ep)")
     ax.set_ylabel("Mean Reward")
     for bar, val in zip(bars, [our_fin, sb3_fin]):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 5,
@@ -439,11 +509,11 @@ def main():
         sb3_ppo = cache["sb3_ppo"]
     else:
         print("\n[Training SB3 DQN on CartPole-v1 ...]")
-        sb3_dqn = train_sb3_dqn(total_timesteps=350_000)
+        sb3_dqn = train_sb3_dqn()   # uses function default (750K steps)
         print(f"  Episodes captured: {len(sb3_dqn['rewards'])}")
 
         print("\n[Training SB3 PPO on LunarLander-v3 ...]")
-        sb3_ppo = train_sb3_ppo(total_timesteps=264_192)
+        sb3_ppo = train_sb3_ppo()   # uses function default (500K steps)
         print(f"  Episodes captured: {len(sb3_ppo['rewards'])}")
 
         save_cache({"sb3_dqn": sb3_dqn, "sb3_ppo": sb3_ppo})
