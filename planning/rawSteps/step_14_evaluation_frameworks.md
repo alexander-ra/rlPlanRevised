@@ -71,20 +71,25 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 
 ### Videos
 
-- **Marc Lanctot — "OpenSpiel: A Framework for RL in Games" (2019/2020 talk)**  
-  https://www.youtube.com/watch?v=nIgIv4IfJ6s  
-  Duration: ~30-40m  
-  *Lanctot is co-author of both OpenSpiel and the VasE paper. Watch for: how the research community evaluates agents in practice, the problems with Elo in game AI, and why game-theoretic evaluation is needed.*
+- **The Chess ELO Rating System Explained**  
+  https://www.youtube.com/watch?v=GtAilcl5md0  
+  Duration: ~1.5m | Channel: Norway Chess  
+  *Quick accessible intro to Elo ratings: how they work, what the numbers mean, and why they're the baseline evaluation method this step critiques and improves upon.*
 
-- **Karl Tuyls / DeepMind — "α-Rank: Multi-Agent Evaluation by Evolution" (talk)**  
-  https://www.youtube.com/watch?v=7L2sUGcOgh0  
-  Duration: ~30m  
-  *The original α-Rank presentation. Key idea: instead of solving for Nash equilibrium of the meta-game (computationally expensive), use Markov-Conley chains from evolutionary dynamics (polynomial time). The ranking is the stationary distribution of a random walk on the strategy space. Watch for: how α-Rank differs from Elo, why it handles intransitivity, and its computational complexity.*
+- **OpenSpiel Tutorial @ KU Leuven**  
+  https://www.youtube.com/watch?v=8NCPqtPwlFQ  
+  Duration: ~1h | Speaker: Marc Lanctot (DeepMind)  
+  *Hands-on tutorial by the co-author of alpha-Rank and OpenSpiel. Covers exploitability computation, game-theoretic evaluation tools, and how the research community evaluates agents in practice.*
 
-- **David Balduzzi — "Re-evaluating Evaluation" (NeurIPS 2019 talk or similar)**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
-  Duration: ~20m  
-  *Already watched in Step 10 — REWATCH with evaluation framework lens. The spinning top decomposition tells you WHAT FRACTION of the competitive structure is "real skill" (transitive) vs "rock-paper-scissors" (cyclic). This diagnostic should be part of any evaluation report for the thesis.*
+- **Stanford CS234 — Lecture 12: Exploration 2 (Spring 2024)**  
+  https://www.youtube.com/watch?v=gFJNsfg_35E  
+  Duration: ~1h10m | Instructor: Emma Brunskill (Stanford)  
+  *Exploration strategies and how to evaluate whether agents explore effectively. Covers bandits, Thompson sampling, and the theoretical foundations for measuring agent quality.*
+
+- **Self-Play**  
+  https://www.youtube.com/watch?v=EY9iHSe82Hc  
+  Duration: ~56m | Speaker: Noam Brown | Cooperative AI Summer School 2024  
+  *Evaluation challenges in self-play settings: when does self-play converge, how to measure improvement, and the role of population-level metrics vs single-agent exploitability.*
 
 ### Blog Posts / Accessible Reads
 

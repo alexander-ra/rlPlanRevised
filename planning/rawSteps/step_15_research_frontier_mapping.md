@@ -73,20 +73,20 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
 
 ### Talks and Overviews
 
-- **Noam Brown — "Superhuman AI for Strategic Games" (various talks, 2019–2024)**  
-  https://www.youtube.com/watch?v=b7bStIQovcY  
-  Duration: ~30-60m (multiple versions exist)  
-  *Brown is the architect of Libratus, Pluribus, and CICERO. He provides the broadest view of where game AI is heading. Watch for: what he identifies as OPEN problems (especially N-player, opponent modeling, real-time adaptation). His CICERO talk is especially relevant because it addresses multi-agent communication and trust — directly adjacent to Contribution #2.*
+- **Stanford CS224R — Lecture 1: Class Intro + MDPs (Spring 2025)**  
+  https://www.youtube.com/watch?v=EvHRQhMX7_w  
+  Duration: ~53m | Instructor: Chelsea Finn (Stanford)  
+  *"Why study deep RL?" — a field overview of where deep reinforcement learning stands today, what problems remain open, and the landscape of current research directions.*
 
-- **Tuomas Sandholm — "AI for Strategic Reasoning" (Carnegie Mellon talks)**  
-  https://www.youtube.com/watch?v=2oHH4aClJQs  
-  Duration: ~45-60m  
-  *Sandholm leads the group that produced Libratus and influenced all safe exploitation work including OX-Search. Watch for: his framing of the exploitation-safety tradeoff, and any comments on N-player extensions. His perspective on "what makes a good research contribution in game AI" is directly relevant to contribution design.*
+- **Stanford CS230 — Lecture 1: Introduction to Deep Learning (Autumn 2025)**  
+  https://www.youtube.com/watch?v=_NLHFoVNlbg  
+  Duration: ~1h | Instructor: Andrew Ng (Stanford)  
+  *Andrew Ng's perspective on where deep learning is heading: current capabilities, limitations, and frontier research directions. Broad context for positioning the thesis within the AI landscape.*
 
-- **Marc Lanctot — "Game Theory & Multi-Agent Systems" (DeepMind / OpenSpiel talks)**  
-  https://www.youtube.com/watch?v=HZGCoVF3YvM  
-  Duration: ~30-45m  
-  *Lanctot's perspective bridges game theory and evaluation. He co-authored α-Rank, VasE, and OpenSpiel. Watch for: his view on evaluation as a research contribution (this validates Contribution #3) and his comments on what evaluation challenges remain unsolved.*
+- **Parables on the Power of Planning in AI: From Poker to Diplomacy**  
+  https://www.youtube.com/watch?v=eaAonE58sLU  
+  Duration: ~57m | Speaker: Noam Brown (OpenAI) | Channel: Paul G. Allen School  
+  *The broadest game AI overview available: the full trajectory from poker to Go to Diplomacy. Brown identifies open problems including N-player safety, opponent modeling, and real-time adaptation — directly adjacent to all three thesis contributions.*
 
 ### Blog Posts / Accessible Reads
 

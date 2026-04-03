@@ -58,19 +58,20 @@ The goal: understand WHY coalition formation is hard (and interesting). Key insi
 
 End of day: you should be able to explain to a non-expert: "In a poker game with 6 players, two players might secretly work together — sharing information about their hands, or one folding to let the other win a big pot. This is a COALITION. But coalitions in competitive games are unstable — eventually, one member will betray the other when it's profitable. Learning WHEN to form, MAINTAIN, and BREAK coalitions is an unsolved problem in AI. Traditional game theory (Nash equilibrium) can't tell you much about this because Nash treats each player independently. Cooperative game theory (Shapley value, the core) provides tools to analyze WHO should be in a coalition and HOW to divide the gains — but it assumes coalitions are stable. The real challenge is when coalitions are DYNAMIC."
 
-- **Noam Brown — "CICERO: An AI agent that negotiates, persuades, and cooperates with people" (Meta AI, 2022)**  
-  https://www.youtube.com/watch?v=2pWv7GOvuf0  
-  Duration: ~20m | Speaker: Noam Brown (Meta AI)  
-  *THE state-of-the-art in multi-player game AI with coalition dynamics. Diplomacy is a 7-player game where players form alliances, negotiate, and betray. CICERO combines a language model (for negotiation) with strategic planning (for moves). Watch for: how does the system decide WHOM to ally with? When does it betray? How does it balance short-term alliance utility vs long-term strategic independence? You won't implement CICERO's language component, but the STRATEGIC component (planning under temporary alliances) is directly relevant.*
+- **"The mathematics behind Shapley Values" by A Data Odyssey**  
+  https://www.youtube.com/watch?v=UJeu29wq7d0  
+  Duration: ~12m | Channel: A Data Odyssey  
+  *Clear visual explanation of how to fairly divide gains among cooperating players. Builds the intuition for coalition value and credit assignment used in So Long Sucker.*
 
-- **Tim Roughgarden — "Algorithmic Game Theory" (Stanford, Lecture on Cooperative Games)**  
-  https://www.youtube.com/watch?v=RDQ4vHAPNls  
-  Duration: ~75m | Speaker: Tim Roughgarden (Stanford/Columbia)  
-  *THE accessible introduction to cooperative game theory: the Shapley value, the core, the nucleolus. These concepts tell you how to fairly divide gains from cooperation — and when a coalition is stable (no subgroup has incentive to leave). Critical for understanding WHEN coalitions should form and WHY they break.*
+- **"CICERO: An AI agent that negotiates, persuades, and cooperates with people" (Meta AI)**  
+  https://www.youtube.com/watch?v=ciNMc0Czmfc  
+  Speaker: Meta AI  
+  *State-of-the-art multi-player game AI with coalition dynamics. Shows how CICERO combines language models with strategic planning to form alliances, negotiate, and betray in 7-player Diplomacy.*
 
-- **Grant Sanderson (3Blue1Brown-style) — "The Shapley Value" (short explainer)**  
-  https://www.youtube.com/watch?v=w4Bw8WYL8Ps — pick a 10-15m video.  
-  *Quick visual intuition for the Shapley value: each player's marginal contribution to every possible coalition, averaged. This is the "fair" way to distribute coalition gains. You'll use it for credit assignment in multi-agent SLS.*
+- **"Parables on the Power of Planning in AI: From Poker to Diplomacy" by Noam Brown (OpenAI)**  
+  https://www.youtube.com/watch?v=eaAonE58sLU  
+  Duration: ~57m | Speaker: Noam Brown (OpenAI)  
+  *Distinguished lecture covering the full journey from poker to Diplomacy. Focus on the Diplomacy sections: how does the system decide whom to ally with, when to betray, and how to balance short-term alliance utility vs long-term strategic independence.*
 
 ### Blog Posts / Accessible Reads
 

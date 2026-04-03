@@ -54,20 +54,25 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 
 ### Videos
 
-- **Noam Brown — "Deep Counterfactual Regret Minimization" (ICML 2019)**  
-  https://www.youtube.com/watch?v=2oHH4aClJQs  
-  Duration: ~15m | Speaker: Noam Brown  
-  *Brown's own presentation of Deep CFR at ICML 2019. Concise explanation of: why tabular CFR can't scale to NLHE, how advantage networks approximate counterfactual regret, how reservoir sampling creates training data, and the key experiments on poker.*
+- **Stanford CS234 — Lecture 4: Q-learning and Function Approximation (Spring 2024)**  
+  https://www.youtube.com/watch?v=b_wvosA70f8  
+  Duration: ~1h19m | Instructor: Emma Brunskill (Stanford)  
+  *The bridge from tabular to neural: Q-learning, SARSA, and why function approximation is needed when state spaces are too large for tables. The foundational concept that Deep CFR builds on.*
 
-- **Eric Steinberger — "Single Deep CFR / DREAM"**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
-  Duration: ~20m | Speaker: Eric Steinberger  
-  *Steinberger explains how DREAM simplifies Deep CFR: single network instead of separate advantage + strategy networks, lower variance through tighter sampling. More practical to implement.*
+- **Stanford CS224R — Lecture 6: Q-Learning (Spring 2025)**  
+  https://www.youtube.com/watch?v=-7kv6jf0isQ  
+  Duration: ~1h2m | Instructor: Chelsea Finn (Stanford)  
+  *DQN, target networks, experience replay buffers — the practical deep RL building blocks. Covers how to stabilize Q-learning in practice with neural networks.*
 
-- **Johannes Heinrich — "Deep RL from Self-Play in Imperfect-Information Games" (NIPS 2016 workshop)**  
-  https://www.youtube.com/watch?v=dltN4MxV1RI  
-  Duration: ~25m | Speaker: Johannes Heinrich  
-  *Heinrich introduces NFSP — Neural Fictitious Self-Play. The key insight: instead of using CFR at all, use two neural networks (best-response + average strategy) that play against each other, converging to Nash via fictitious play. Totally different architecture from Deep CFR.*
+- **ReBeL — Combining Deep RL and Search for Imperfect-Information Games (Explained)**  
+  https://www.youtube.com/watch?v=BhUWvQmLzSk  
+  Duration: ~1h12m | Channel: Yannic Kilcher  
+  *Detailed paper explanation covering how neural networks replace tabular CFR: from counterfactual values to learned value functions, public belief states, and the transition from tabular to neural game solving.*
+
+- **Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**  
+  https://www.youtube.com/watch?v=U0mxx7AoNz0  
+  Duration: ~54m | Channel: Yannic Kilcher  
+  *Interview with the author covering how Student of Games unifies Deep CFR-style neural methods for both perfect and imperfect information games (chess, Go, poker, Scotland Yard).*
 
 ### Blog Posts
 

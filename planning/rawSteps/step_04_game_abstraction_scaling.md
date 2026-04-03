@@ -54,20 +54,30 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Videos
 
-- **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=nIgIv4IfJ6s  
-  Duration: ~25m | Speaker: Noam Brown  
-  *Third time watching — NOW focus on the section about abstraction (~8:00–14:00). Brown explains how Libratus used card bucketing and action translation. Pay attention to the concept of "blueprint strategy" vs "real-time solving" — abstraction produces the blueprint, real-time solving fixes its errors.*
+- **Stanford CS221 — Lecture 10: Games I (Autumn 2025)**  
+  https://www.youtube.com/watch?v=SMOD_GiRzb8  
+  Duration: ~1h13m | Instructor: Percy Liang (Stanford)  
+  *Why search explodes: game trees, minimax, evaluation functions, alpha-beta pruning. The motivation for why abstraction is needed — games are too large to solve exactly.*
 
-- **Tuomas Sandholm — "AI for Strategic Reasoning" (invited talk)**  
-  https://www.youtube.com/watch?v=2oHH4aClJQs  
-  Duration: ~50m | Speaker: Tuomas Sandholm (CMU / Strategy Robot)  
-  *Sandholm is THE person behind game abstraction in poker AI (advisor on Libratus/Pluribus). This talk covers abstraction theory at a high level — card isomorphisms, action mapping, the "solve the abstract game then translate back" pipeline. Watch 15:00–35:00 for abstraction overview.*
+- **Monte Carlo Tree Search — Computerphile**  
+  https://www.youtube.com/watch?v=BEFY7IHs0HM  
+  Duration: ~33m | Speaker: Nick Hawes (Oxford) | Channel: Computerphile  
+  *Why brute-force fails and how sampling-based search (MCTS) provides an alternative to full enumeration. The conceptual bridge from "traverse everything" to "sample intelligently."*
 
-- **Sam Ganzfried — "Computing Optimal Strategies in Imperfect Information Games"**  
-  https://www.youtube.com/watch?v=qndXrHcV1sM  
-  Duration: ~1h | Speaker: Sam Ganzfried (Miami)  
-  *Ganzfried worked on game-theoretic strategy computation for poker (Tartanian series of poker bots). Covers the full pipeline: abstraction → solving → action translation. Good for seeing the entire workflow end-to-end.*
+- **NIPS 2017 Best Paper — Safe & Nested Subgame Solving for Imperfect-Information Games**  
+  https://www.youtube.com/watch?v=tRiaGahlyy4  
+  Duration: ~16m | Channel: The Artificial Intelligence Channel  
+  *Accessible walkthrough of how subgame solving fixes abstraction errors in real-time during play. The key idea: solve a coarse abstract game first, then refine specific subgames.*
+
+- **AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**  
+  https://www.youtube.com/watch?v=McV4a6umbAY  
+  Duration: ~1h | Speaker: Noam Brown | Channel: Microsoft Research  
+  *Full deep-dive into the Libratus architecture: how card abstraction groups similar hands, how action abstraction restricts bet sizes, how strategies are translated back, and how subgame solving patches errors.*
+
+- **Stanford CS234 — Lecture 15: Value Alignment (Spring 2024)**  
+  https://www.youtube.com/watch?v=FOlPpjNbHjE  
+  Duration: ~1h14m | Instructor: Emma Brunskill + Dan Webber (Stanford)  
+  *Covers MCTS and AlphaZero — the search methods used inside modern game AI when doing depth-limited solving at the game tree's frontier, exactly where abstraction matters most.*
 
 ### Blog Posts / Accessible Reads
 

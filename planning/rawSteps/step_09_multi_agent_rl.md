@@ -59,20 +59,30 @@ The goal: understand WHY multi-agent RL is fundamentally different from single-a
 
 End of day: you should be able to explain to a non-expert: "In single-agent RL, the agent learns by trial and error in a fixed world. In multi-agent RL, every agent IS the 'world' for every other agent — so the 'world' keeps changing as agents learn. It's like learning to dance with a partner who is also learning to dance — you keep stepping on each other's toes until you accidentally synchronize."
 
-- **Jakob Foerster — "Multi-Agent Reinforcement Learning" (AAAI 2024 Tutorial)**  
-  https://www.youtube.com/watch?v=2GwBez0D20A  
-  Duration: ~2h | Speaker: Jakob Foerster (Oxford)  
-  *THE definitive MARL tutorial. Foerster covers: (1) why single-agent RL fails in multi-agent settings (non-stationarity), (2) the CTDE (Centralized Training, Decentralized Execution) paradigm, (3) cooperative MARL (QMIX, MAPPO), (4) competitive MARL (self-play, PSRO), (5) communication. Watch 0:00–1:00 for the conceptual framework, skim the rest for specific algorithms you'll read about in Phase 3.*
+- **Introduction to Multi-Agent Reinforcement Learning**  
+  https://www.youtube.com/watch?v=qgb0gyrpiGk  
+  Duration: ~15m | Channel: MATLAB  
+  *Accessible grid-world example: what multi-agent systems are, cooperative vs adversarial agents, decentralized vs centralized learning, and the non-stationarity problem explained with robot vacuums.*
 
-- **Shimon Whiteson — "Cooperative Multi-Agent Learning" (invited talk)**  
-  https://www.youtube.com/watch?v=nIgIv4IfJ6s  
-  Duration: ~50m | Speaker: Shimon Whiteson (Waymo / Oxford)  
-  *Whiteson's group created QMIX and many cooperative MARL methods. This talk gives the intuition for the CENTRAL-THEN-DECENTRAL design: train with global info, execute with local info. Watch 10:00–30:00 for the design rationale.*
+- **Stanford CS224R — Lecture 4: Actor-Critic Methods (Spring 2025)**  
+  https://www.youtube.com/watch?v=oejFZShW9hU  
+  Duration: ~1h4m | Instructor: Chelsea Finn (Stanford)  
+  *How to estimate state-action values and use them for efficient RL. The actor-critic architecture is the building block of MADDPG and all CTDE methods.*
 
-- **Natasha Jaques — "Social Influence as Intrinsic Motivation for MARL"**  
-  https://www.youtube.com/watch?v=NSVmOC_5zrE  
-  Duration: ~25m | Speaker: Natasha Jaques (Google Brain → UC Berkeley)  
-  *A different angle: agents learn to INFLUENCE each other's behavior as an intrinsic reward. This bridges to your thesis's opponent modeling (Step 7): instead of modeling an opponent to exploit them, you model them to COORDINATE with them.*
+- **Can AI Learn to Cooperate? Multi-Agent DDPG (MADDPG) in PyTorch**  
+  https://www.youtube.com/watch?v=tZTQ6S9PfkE  
+  Duration: ~2h | Channel: Machine Learning with Phil  
+  *Detailed walkthrough of the MADDPG paper with full PyTorch implementation. Covers centralized training with decentralized execution (CTDE) in cooperative-competitive environments.*
+
+- **Self-Play**  
+  https://www.youtube.com/watch?v=EY9iHSe82Hc  
+  Duration: ~56m | Speaker: Noam Brown | Cooperative AI Summer School 2024  
+  *Covers self-play methodology in competitive and cooperative settings, including PSRO and population-based approaches for multi-agent systems.*
+
+- **[ITSC 2024 Tutorial] Multi-agent Reinforcement Learning**  
+  https://www.youtube.com/watch?v=AjghzFf6PY8  
+  Duration: varies | Speaker: Maximilian Schiffer  
+  *Comprehensive tutorial covering MARL foundations, cooperative MARL (QMIX, MAPPO), competitive MARL, and communication between agents.*
 
 ### Blog Posts / Accessible Reads
 

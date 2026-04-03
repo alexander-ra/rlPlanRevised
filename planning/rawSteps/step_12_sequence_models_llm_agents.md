@@ -69,20 +69,25 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
 
 ### Videos
 
-- **Lilian Weng — "Decision Transformer / Offline RL as Sequence Modeling"**  
-  https://www.youtube.com/watch?v=b7bStIQovcY  
-  Duration: ~30m  
-  *Clear walkthrough of the Decision Transformer architecture. Watch for: how return-to-go conditioning works, how the positional encoding captures time, and the comparison with traditional RL.*
-
-- **Noam Brown — "CICERO: An AI agent that negotiates, persuades, and cooperates with people"**  
-  https://www.youtube.com/watch?v=7L2sUGcOgh0  
-  Duration: ~20m | Speaker: Noam Brown (Meta AI)  
-  *Already watched in Step 11 for coalition dynamics. RE-WATCH with a different lens: this time focus on the LANGUAGE MODEL component. How does CICERO use a language model for negotiation? How is the LM output constrained by the strategic planner? This is the most successful LLM+game integration to date.*
-
-- **Yannic Kilcher (or similar) — "Decision Transformer" paper review**  
+- **Stanford CS25: Decision Transformer: RL via Sequence Modeling**  
   https://www.youtube.com/watch?v=qndXrHcV1sM  
-  Duration: ~20m  
-  *Deeper dive into the technical details: tokenization of (return, state, action) triples, how GPT-2 architecture is adapted, key ablations.*
+  Duration: ~1h21m | Channel: Stanford Online  
+  *Aditya Grover presents the Decision Transformer: how return-to-go conditioning works, the GPT-2 backbone adaptation for RL, and comparison with traditional RL approaches.*
+
+- **Decision Transformer: RL via Sequence Modeling (Research Paper Explained)**  
+  https://www.youtube.com/watch?v=-buULmf7dec  
+  Duration: ~57m | Channel: Yannic Kilcher  
+  *Detailed paper walkthrough of the Decision Transformer architecture: tokenization of (return, state, action) triples, conditioning on desired returns, and key experimental results.*
+
+- **Stanford CS224R — Lecture 9: RL for LLMs — Preference Optimization (Spring 2025)**  
+  https://www.youtube.com/watch?v=XKLGuwvSKvI  
+  Duration: ~1h3m | Speaker: Archit Sharma (Gemini team, lead DPO author) | Stanford  
+  *Guest lecture covering how RL is applied to large language models via preference optimization (DPO). The bridge between sequence models and strategic reasoning.*
+
+- **Stanford CS224R — Lecture 10: RL for LLM Reasoning (Spring 2025)**  
+  https://www.youtube.com/watch?v=O2VpNnwB4lM  
+  Duration: ~1h11m | Speaker: Aviral Kumar (CMU) | Stanford  
+  *How reinforcement learning improves LLM reasoning capabilities. Directly relevant to understanding how LLM agents might learn strategic reasoning in games.*
 
 ### Blog Posts / Accessible Reads
 

@@ -55,20 +55,30 @@ The goal: understand WHY population-based training exists (self-play against ONE
 
 End of day: you should be able to explain to a non-expert: "Instead of training one AI against itself (self-play), we train a POPULATION of different AIs against each other. The strong ones survive, the weak ones get replaced. This is like evolution — but instead of biological organisms, we're evolving AI strategies. The result is more robust AIs because they've been tested against many different opponents, not just one. Evolutionary game theory is the math that tells us what this population converges to."
 
-- **Oriol Vinyals — "AlphaStar: Mastering the Game of StarCraft II" (DeepMind, 2019)**  
-  https://www.youtube.com/watch?v=t9Lo2fgxWHw  
-  Duration: ~35m | Speaker: Oriol Vinyals (DeepMind)  
-  *THE definitive example of population-based training in games. Watch carefully for the "AlphaStar League" — a population of agents with different strategies (aggressive, defensive, economic) that play against each other. The league mechanism (three agent types: main agents, league exploiters, main exploiters) is the gold standard for PBT in games. Every subsequent system references this design.*
+- **Evolution of aggression and sharing: the replicator dynamics with the Hawk Dove Game**  
+  https://www.youtube.com/watch?v=tDTVRvfaaQo  
+  Duration: ~11m | Channel: Vincent Knight  
+  *Visual walkthrough of evolutionary game theory: the Hawk-Dove game, replicator dynamics differential equations, and how populations reach mixed equilibrium. The mathematical foundation for understanding population evolution.*
 
-- **Max Jaderberg — "Human-Level Performance in First-Person Multiplayer Games with Population-Based DRL" (2019)**  
-  https://www.youtube.com/watch?v=DmtoVnTkQnM  
-  Duration: ~30m | Speaker: Max Jaderberg (DeepMind)  
-  *The Capture-the-Flag (CTF) work that preceded AlphaStar. Important because it shows PBT in a TEAM game: agents must both cooperate (with teammates) and compete (against opponents). The population creates a natural curriculum — weaker agents face weaker opponents, stronger agents face stronger ones.*
+- **Human-level in first-person multiplayer games with population-based deep RL**  
+  https://www.youtube.com/watch?v=dltN4MxV1RI  
+  Duration: ~8m | Channel: Max Jaderberg (DeepMind)  
+  *Supplementary video showing PBT applied to Capture the Flag. Agents learn to cooperate with teammates and compete against opponents through population-based training.*
 
-- **David Balduzzi — "Open-Ended Learning in Symmetric Zero-Sum Games" (Google Brain, 2019)**  
-  https://www.youtube.com/watch?v=XL5bq8DRn64  
-  Duration: ~25m | Speaker: David Balduzzi  
-  *Balduzzi introduces the "spinning top" decomposition: in a population of strategies playing a game, the payoff matrix can be decomposed into a transitive (skill) component and a cyclic (non-transitive/rock-paper-scissors) component. This is crucial for understanding when self-play converges to a useful strategy and when it just cycles.*
+- **Game highlights of AlphaStar versus Team Liquid's TLO and MaNa**  
+  https://www.youtube.com/watch?v=6EQAsrfUIyo  
+  Duration: ~13m | Channel: DeepMind  
+  *Commentary and analysis of AlphaStar matches with Artosis, RotterdaM, Oriol Vinyals and David Silver. Shows the result of population-based league training — diverse strategies emerging from the AlphaStar League.*
+
+- **Stanford CS234 — Lecture 15: Value Alignment (Spring 2024)**  
+  https://www.youtube.com/watch?v=FOlPpjNbHjE  
+  Duration: ~1h14m | Instructor: Emma Brunskill + Dan Webber (Stanford)  
+  *Covers MCTS, AlphaZero, DPO, and RLHF. The AlphaZero section is relevant for understanding how self-play within a population produces superhuman performance.*
+
+- **Self-Play**  
+  https://www.youtube.com/watch?v=EY9iHSe82Hc  
+  Duration: ~56m | Speaker: Noam Brown | Cooperative AI Summer School 2024  
+  *Covers population-based methods in depth, including the relationship between PSRO, evolutionary dynamics, and the AlphaStar league design.*
 
 ### Blog Posts / Accessible Reads
 

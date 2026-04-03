@@ -60,32 +60,22 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Day 1: The Problem & Classical Approaches
 
-- **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
-  https://www.youtube.com/watch?v=2GwBez0D20A  
-  Duration: ~25m | Speaker: Noam Brown  
-  *Fourth revisit — NOW focus on the section about opponent modeling and how Pluribus handles it (~15:00–22:00). Key insight: Pluribus does NOT model opponents explicitly — it assumes they play the blueprint. This is a deliberate limitation. Step 7 asks: what if we CAN model them?*
+- **Bayes theorem, the geometry of changing beliefs**  
+  https://www.youtube.com/watch?v=HZGCoVF3YvM  
+  Duration: ~15m | Channel: 3Blue1Brown  
+  *Essential refresher on Bayesian inference — the mathematical backbone of all opponent modeling. Prior beliefs updated by evidence to form posterior beliefs.*
 
-- **Sam Ganzfried — "Game Theory and AI: Safe Opponent Exploitation" (talk)**  
-  https://www.youtube.com/watch?v=NSVmOC_5zrE  
-  Duration: ~55m | Speaker: Sam Ganzfried  
-  *Ganzfried is the author of 3 of the core papers in this step. This talk covers the progression from Nash equilibrium → opponent modeling → safe exploitation. Watch the first 30 minutes for the opponent modeling framing.*
-
-- **Michael Bowling — "Heads-Up Limit Hold'em Poker is Solved" (AAAI 2015 talk)**  
-  https://www.youtube.com/watch?v=cUTMhmVh1qs  
-  Duration: ~45m | Speaker: Michael Bowling (UAlberta)  
-  *Bowling's group produced much of the opponent modeling work (Southey, Bard, Johanson). Watch for context on WHY solving the game wasn't enough — real opponents deviate from equilibrium, creating exploitation opportunities.*
+- **Stanford CS224R — Lecture 2: Imitation Learning (Spring 2025)**  
+  https://www.youtube.com/watch?v=WxRDyObrm_M  
+  Duration: ~1h7m | Instructor: Chelsea Finn (Stanford)  
+  *Learning from observing others' behavior: behavioral cloning, DAgger, and expressive policy distributions. The same paradigm used for inferring opponent strategies from their actions.*
 
 ### Day 2: Modern Approaches & the Exploitation Tradeoff
 
-- **Marc Lanctot — "OpenSpiel: A Framework for Reinforcement Learning in Games"**  
-  https://www.youtube.com/watch?v=dltN4MxV1RI  
-  Duration: ~45m | Speaker: Marc Lanctot (DeepMind/Google)  
-  *Second revisit — focus on the opponent modeling and exploitation sections (~25:00–40:00). OpenSpiel has built-in support for best response computation against specific opponent strategies — this is the foundation you'll use in Phase 2.*
-
-- **Grant Sanderson (3Blue1Brown) — "Bayes theorem, the geometry of changing beliefs"**  
-  https://www.youtube.com/watch?v=t9Lo2fgxWHw  
-  Duration: ~15m | Speaker: Grant Sanderson  
-  *If your Bayesian inference is rusty, watch this. The entire opponent modeling framework in this step is Bayesian: you start with a prior belief over opponent types, update it using observed actions via Bayes' rule, and compute a posterior. This video makes the geometry of that update intuitive.*
+- **AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**  
+  https://www.youtube.com/watch?v=McV4a6umbAY  
+  Duration: ~1h | Speaker: Noam Brown | Channel: Microsoft Research  
+  *Covers Libratus's self-improvement module: how the system detects opponent patterns during play and patches its own weaknesses overnight. The practical side of opponent adaptation.*
 
 ### Blog Posts / Accessible Reads
 

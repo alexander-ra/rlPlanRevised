@@ -64,37 +64,32 @@ End of phase: you should be able to draw the architecture diagram of each system
 
 ### Day 1: The Poker AI Progression (DeepStack → Libratus → Pluribus)
 
-- **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019)**  
+- **How DeepMind Conquered Go With Deep Learning (AlphaGo) — Two Minute Papers #42**  
+  https://www.youtube.com/watch?v=IFmj5M5Q5jg  
+  Duration: ~3m | Channel: Two Minute Papers  
+  *Quick accessible intro to the AlphaGo paradigm: deep learning + Monte Carlo tree search. The perfect-information template that ReBeL and Student of Games later extend to imperfect information.*
+
+- **AlphaZero: Shedding new light on the grand games of chess, shogi and Go**  
   https://www.youtube.com/watch?v=7L2sUGcOgh0  
-  Duration: ~25m | Speaker: Noam Brown  
-  *Fourth and final time watching this talk. NOW you have the full context (CFR, MCCFR, abstraction, Deep CFR) to understand every component Brown describes. Follow the full pipeline: blueprint → depth-limited solving → real-time search.*
+  Duration: ~5m | Channel: DeepMind  
+  *Short overview of AlphaZero's self-play paradigm: learning from scratch, no human knowledge, mastering chess/shogi/Go in hours. The architecture all poker AI systems build upon.*
 
-- **Matej Moravcik — "DeepStack: Expert-Level Artificial Intelligence in Heads-Up No-Limit Poker"**  
-  https://www.youtube.com/watch?v=2dX0lwaQRX0  
-  Duration: ~20m | Speaker: Matej Moravcik (DeepMind/UAlberta)  
-  *DeepStack's creator explains: continual re-solving + deep counterfactual value networks. Key difference from Libratus: DeepStack uses neural value estimation AT EVERY decision point, not just at the blueprint level.*
-
-- **Tuomas Sandholm — "Superhuman AI for Strategic Reasoning: Libratus"**  
-  https://www.youtube.com/watch?v=b7bStIQovcY  
-  Duration: ~1h | Speaker: Tuomas Sandholm (CMU)  
-  *Sandholm walks through the full Libratus architecture: (1) blueprint via abstracted MCCFR, (2) subgame solving for off-tree actions, (3) self-improvement module. Watch 15:00–45:00.*
+- **AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**  
+  https://www.youtube.com/watch?v=McV4a6umbAY  
+  Duration: ~1h | Speaker: Noam Brown | Channel: Microsoft Research  
+  *Full Libratus/DeepStack/Pluribus architecture walkthrough: blueprint computation, abstraction, subgame solving, and the three-module system that beat top professionals.*
 
 ### Day 2: The Unification Progression (ReBeL → Student of Games)
 
-- **Noam Brown — "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games" (NeurIPS 2020)**  
-  https://www.youtube.com/watch?v=cUTMhmVh1qs  
-  Duration: ~25m | Speaker: Noam Brown  
-  *Brown presents ReBeL — the first algorithm that treats imperfect-info game solving like AlphaZero treats perfect-info: alternate between (1) self-play to generate data and (2) training a value/policy network. The key innovation: the game state for imperfect info is a PUBLIC BELIEF STATE (probability distribution over all possible private information).*
+- **Combining Deep Reinforcement Learning and Search for Imperfect-Information Games (ReBeL)**  
+  https://www.youtube.com/watch?v=mCldyXOYNok  
+  Duration: ~35m | Speaker: Noam Brown  
+  *Brown presents ReBeL: the first algorithm that treats imperfect-info game solving like AlphaZero treats chess. Public belief states + CFR at leaf nodes + learned value network.*
 
-- **Martin Schmid — "Student of Games: A Unified Learning Algorithm" (Science Advances 2023)**  
-  https://www.youtube.com/watch?v=HZGCoVF3YvM  
-  Duration: ~30m | Speaker: Martin Schmid (DeepMind/Modelbased)  
-  *Schmid presents the student of games framework: Growing-Tree CFR (GT-CFR) + search + value networks. Works on BOTH perfect-info (Go, chess) AND imperfect-info (poker) games. This is the generalization proof your professors want.*
-
-- **David Silver — "AlphaZero: Shedding New Light on Chess, Shogi, and Go" (optional)**  
-  https://www.youtube.com/watch?v=p_n5fF8apiE  
-  Duration: ~50m | Speaker: David Silver (DeepMind)  
-  *Watch 10:00–25:00 for the AlphaZero architecture. This is the PERFECT-information template that ReBeL and Student of Games extend to imperfect information. Knowing AlphaZero helps you see exactly what ReBeL changed.*
+- **Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**  
+  https://www.youtube.com/watch?v=U0mxx7AoNz0  
+  Duration: ~54m | Channel: Yannic Kilcher  
+  *Interview with the Student of Games author. Covers how one algorithm handles both perfect-info (Go, chess) AND imperfect-info (poker, Scotland Yard) games.*
 
 ### Blog Posts / Accessible Reads
 

@@ -46,25 +46,30 @@ The goal: understand what game theory IS, why Nash equilibrium matters, what an 
 
 ### Videos
 
-- **Game Theory 101 — William Spaniel: "What is Game Theory?"**  
+- **Game Theory 101 (#1): Introduction**  
   https://www.youtube.com/watch?v=NSVmOC_5zrE  
-  Duration: ~8m | Speaker: William Spaniel  
+  Duration: ~7m | Channel: William Spaniel  
   *Clean primer on normal-form games, dominant strategies, Nash equilibrium. Perfect starting point if game theory is new.*
 
-- **William Spaniel — "The Prisoner's Dilemma"**  
+- **The Prisoner's Dilemma**  
   https://www.youtube.com/watch?v=t9Lo2fgxWHw  
-  Duration: ~7m | Speaker: William Spaniel  
-  *The classic game theory example. Builds intuition for why rational agents can end up at suboptimal outcomes.*
+  Duration: ~6m | Channel: This Place  
+  *The classic game theory example. Builds intuition for why rational agents can end up at suboptimal outcomes — and why equilibrium concepts matter.*
 
-- **Noam Brown — "Superhuman AI for Multiplayer Poker" (NeurIPS 2019 talk)**  
-  https://www.youtube.com/watch?v=2pWv7GOvuf0  
-  Duration: ~25m | Speaker: Noam Brown (Facebook/Meta AI → OpenAI)  
-  *The creator of Pluribus explains the journey from CFR basics to beating world-class poker players. This talk makes you understand WHY you're learning CFR — it's the algorithm family that cracked poker. Watch the first 15 minutes for CFR intuition, bookmark the rest for Steps 4–6.*
+- **Stanford CS221 — Lecture 10: Games I (Autumn 2025)**  
+  https://www.youtube.com/watch?v=SMOD_GiRzb8  
+  Duration: ~1h13m | Instructor: Percy Liang (Stanford)  
+  *University lecture covering game trees, minimax, alpha-beta pruning, and evaluation functions. The formal framework for two-player games that CFR operates on.*
 
-- **Todd W. Neller — "An Introduction to Counterfactual Regret Minimization" (lecture version)**  
-  https://www.youtube.com/watch?v=w4Bw8WYL8Ps  
-  Duration: ~1h | Speaker: Todd Neller (Gettysburg College)  
-  *The author of the tutorial paper you'll read in Phase 3. Hearing him explain it before reading the paper makes the reading 2x faster. Covers: regret matching, game trees, information sets, the CFR algorithm on Rock-Paper-Scissors and Kuhn Poker.*
+- **Poker AI: Libratus and an Introduction to Counterfactual Regret Minimization**  
+  https://www.youtube.com/watch?v=htRtfyab-Ns  
+  Duration: ~12m | Channel: Fullstack Academy  
+  *Concise intro to CFR with a Rock-Paper-Scissors worked example. Explains regret matching, convergence to Nash equilibrium, and how Libratus used CFR to beat top poker pros.*
+
+- **Noam Brown — AI for Imperfect-Information Games: Poker and Beyond**  
+  https://www.youtube.com/watch?v=cn8Sld4xQjg  
+  Duration: ~1h1m | Channel: London Machine Learning Meetup  
+  *Comprehensive talk covering the journey from game theory basics to superhuman poker AI. Covers CFR, abstraction, subgame solving, and why imperfect information is fundamentally harder than chess/Go.*
 
 ### Blog Posts
 

@@ -47,20 +47,35 @@ The goal is to build a mental model of what RL is and why it matters — NO math
 
 ### Videos
 
-- **David Silver — Lecture 1: Introduction to Reinforcement Learning**  
-  https://www.youtube.com/watch?v=2pWv7GOvuf0  
-  Duration: ~1h 20m | Speaker: David Silver (DeepMind/UCL)  
-  *The single best RL intro lecture. Covers: agent-environment loop, rewards, value functions, exploration vs exploitation. Watch at 1.25x.*
-
-- **Pieter Abbeel — Foundations of Deep RL (Lecture 1: MDPs, Exact Solution Methods)**  
-  https://www.youtube.com/watch?v=2GwBez0D20A  
-  Duration: ~1h 30m | Speaker: Pieter Abbeel (UC Berkeley / Covariant)  
-  *More practical / deep RL focused. Covers policy gradients, value functions, model-based vs model-free. Good second perspective after Silver.*
-
-- **Mutual Information — Reinforcement Learning: Crash Course AI #9**  
+- **Reinforcement Learning: Crash Course AI #9**  
   https://www.youtube.com/watch?v=nIgIv4IfJ6s  
   Duration: ~12m | Channel: CrashCourse  
-  *Quick progressive explanation. Good warmup before the longer lectures.*
+  *Quick, accessible introduction to RL concepts: agents, environments, rewards, exploration vs exploitation. No math, no code — perfect starting point.*
+
+- **Stanford CS234 — Lecture 1: Introduction to Reinforcement Learning (Spring 2024)**  
+  https://www.youtube.com/watch?v=WsvFL-LjA6U  
+  Duration: ~1h19m | Instructor: Emma Brunskill (Stanford)  
+  *University-level introduction to RL: what it is, why it matters, sequential decision making under uncertainty. The most recent Stanford RL course offering.*
+
+- **Stanford CS221 — Lecture 7: Markov Decision Processes (Autumn 2025)**  
+  https://www.youtube.com/watch?v=2ZtF1j3n6XE  
+  Duration: ~1h20m | Instructor: Percy Liang (Stanford)  
+  *Formal MDP framework: states, actions, transitions, rewards, value iteration, policy iteration. The mathematical backbone of everything in this step.*
+
+- **RL Course by David Silver — Lecture 1: Introduction to Reinforcement Learning**  
+  https://www.youtube.com/watch?v=2pWv7GOvuf0  
+  Duration: ~1h28m | Channel: DeepMind  
+  *The classic RL intro lecture. Covers the agent-environment loop, rewards, value functions, exploration vs exploitation, and the RL problem formulation.*
+
+- **Foundations of Deep RL — L1: MDPs, Exact Solution Methods, Max-ent RL**  
+  https://www.youtube.com/watch?v=2GwBez0D20A  
+  Duration: ~1h30m | Instructor: Pieter Abbeel  
+  *More practical / deep RL focused. Covers policy gradients, value functions, model-based vs model-free. Good second perspective after Silver.*
+
+- **Stanford CS230 — Lecture 5: Deep Reinforcement Learning (Autumn 2025)**  
+  https://www.youtube.com/watch?v=4E27qlfYw0A  
+  Duration: ~1h45m | Instructor: Andrew Ng (Stanford)  
+  *Andrew Ng's perspective on deep RL within the broader deep learning landscape. Covers how neural networks are applied to RL problems.*
 
 ### Blog Posts
 

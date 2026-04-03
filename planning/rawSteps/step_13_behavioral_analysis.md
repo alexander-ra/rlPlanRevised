@@ -63,20 +63,30 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 
 ### Videos
 
-- **Andrew Ng — "Machine Learning Engineering for Production (MLOps)" lecture series**  
-  https://www.youtube.com/playlist?list=PLkDaE6sCZn6GMoA0wbpJLi3t34Gd8l0aK  
-  Duration: Pick 2–3 videos (~20m each) covering data pipelines, data validation, and feature engineering  
-  *Not game-specific, but THE reference for building real-world ML pipelines. You'll need data cleaning, feature validation, and train/test splitting discipline that simulation-based Steps 2–11 didn't require. Watch for: data drift, label noise, feature engineering best practices.*
+- **StatQuest: K-means clustering**  
+  https://www.youtube.com/watch?v=4b5d3muPQmA  
+  Duration: ~9m | Channel: StatQuest with Josh Starmer  
+  *Intuitive visual explanation of k-means clustering — the core unsupervised method used for player style classification. Covers the algorithm, picking K via elbow plots, and applications to multidimensional data.*
 
-- **Sentdex / Applied AI — "Poker AI" tutorials**  
-  https://www.youtube.com/watch?v=2oHH4aClJQs  
-  Duration: varies  
-  *Look for any tutorial that parses hand history files (PokerStars .txt format or similar). The parsing logic is transferable to Playtech data with format adaptation.*
+- **Bayes theorem, the geometry of changing beliefs**  
+  https://www.youtube.com/watch?v=HZGCoVF3YvM  
+  Duration: ~15m | Channel: 3Blue1Brown  
+  *The Bayesian inference backbone of player type classification. Prior beliefs about player types, updated by observed actions, converging to a posterior — exactly the player modeling pipeline.*
 
-- **DataCamp / StatQuest — "Clustering and Anomaly Detection" tutorials**  
-  https://www.youtube.com/watch?v=p_n5fF8apiE  
-  Duration: ~15m each  
-  *Quick refresher on the unsupervised methods you'll use for style clustering and collusion detection: DBSCAN (density-based clusters → finds collusion groups), Isolation Forest (anomaly scoring → flags bots), and k-means (player style archetypes).*
+- **Stanford CS224R — Lecture 2: Imitation Learning (Spring 2025)**  
+  https://www.youtube.com/watch?v=WxRDyObrm_M  
+  Duration: ~1h7m | Instructor: Chelsea Finn (Stanford)  
+  *Behavioral cloning and learning from demonstrations. The same paradigm used for modeling player behavior from hand histories — predict what the player did from the game state.*
+
+- **Stanford CS224R — Lecture 7: Offline RL (Spring 2025)**  
+  https://www.youtube.com/watch?v=lRDaXnPIzks  
+  Duration: ~1h8m | Instructor: Chelsea Finn (Stanford)  
+  *Learning from static behavioral datasets without environment interaction. Directly relevant to learning from hand history logs: the key challenges of distribution shift and data quality.*
+
+- **Stanford CS230 — Lecture 3: Full Cycle of a DL Project (Autumn 2025)**  
+  https://www.youtube.com/watch?v=MGqQuQEUXhk  
+  Duration: ~1h7m | Instructor: Andrew Ng (Stanford)  
+  *End-to-end machine learning project pipeline: data collection, feature engineering, model training, evaluation, deployment. The practical pipeline discipline needed for real-world behavioral analysis.*
 
 ### Blog Posts / Accessible Reads
 
