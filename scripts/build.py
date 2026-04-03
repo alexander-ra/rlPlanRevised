@@ -18,7 +18,7 @@ from pathlib import Path
 # Paths — all resolved relative to repo root regardless of cwd
 REPO_ROOT     = Path(__file__).parent.parent.resolve()
 SRC_DIR       = REPO_ROOT / "interactiveStudy" / "src"
-DIST_DIR      = REPO_ROOT / "interactiveStudy" / "dist"
+DIST_DIR      = REPO_ROOT / "docs"    # served by GitHub Pages (branch → /docs)
 RAW_STEPS_DIR = REPO_ROOT / "planning" / "rawSteps"
 
 # Step file list (order matters)
