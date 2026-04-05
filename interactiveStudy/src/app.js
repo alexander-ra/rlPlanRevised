@@ -31,7 +31,7 @@ let isHomepage = false;
 const JSONBIN_API_KEY = '$2a$10$k1FLc/sztnYxUeK/9hzPROI8cAJxmQJHZX1CDs.YZbIJL.l2Wi6d6';
 const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b';
 // Set this once after the first bin is created — all devices share this ID
-const JSONBIN_BIN_ID = '';
+const JSONBIN_BIN_ID = '69d2c3e1aaba882197c967a7';
 const JSONBIN_BIN_KEY = 'rlstudy_bin_id';
 let cloudData = { checkboxes: {}, scheduleAdjust: 0 };
 let binId = null;
