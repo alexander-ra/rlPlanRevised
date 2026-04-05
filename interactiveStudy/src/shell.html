@@ -11,8 +11,14 @@
   <!-- marked.js — Markdown parser -->
   <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
 
-  <!-- highlight.js — Code syntax highlighting -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/github.min.css">
+  <!-- Inter font (Material-inspired typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- highlight.js — Code syntax highlighting (light + dark) -->
+  <link rel="stylesheet" class="hljs-light" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/github.min.css">
+  <link rel="stylesheet" class="hljs-dark" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/github-dark.min.css">
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/languages/python.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/languages/bash.min.js"></script>
@@ -44,6 +50,10 @@
         <button id="sched-minus" class="sched-btn" aria-label="Remove day">&minus;</button>
         <span id="sched-value" class="sched-value">0/0</span>
         <button id="sched-plus" class="sched-btn" aria-label="Add day">+</button>
+      </div>
+      <div class="theme-toggle-row">
+        <span class="theme-toggle-label">Theme</span>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme"></button>
       </div>
     </div>
   </nav>

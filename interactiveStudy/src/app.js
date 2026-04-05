@@ -82,16 +82,38 @@ function syncToCloud() {
   }, 1000);
 }
 
-/* ===== Phase Colors ===== */
-const PHASE_COLORS = {
-  'A': { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' },
-  'B': { bg: '#e0e7ff', border: '#6366f1', text: '#3730a3' },
-  'C': { bg: '#f3e8ff', border: '#a855f7', text: '#6b21a8' },
-  'D': { bg: '#ffe4e6', border: '#f43f5e', text: '#be123c' },
-  'E': { bg: '#dcfce7', border: '#22c55e', text: '#15803d' },
-  'F': { bg: '#ccfbf1', border: '#14b8a6', text: '#0f766e' },
-  'G': { bg: '#fef3c7', border: '#f59e0b', text: '#b45309' },
-};
+/* ===== Phase Colors (read from CSS vars for theme support) ===== */
+function getPhaseColors(phase) {
+  const s = getComputedStyle(document.documentElement);
+  const p = phase.toLowerCase();
+  return {
+    bg: s.getPropertyValue(`--phase-${p}-bg`).trim(),
+    border: s.getPropertyValue(`--phase-${p}-border`).trim(),
+    text: s.getPropertyValue(`--phase-${p}-text`).trim(),
+  };
+}
+
+/* ===== Theme Toggle ===== */
+function initTheme() {
+  let theme;
+  try { theme = localStorage.getItem('theme'); } catch(e) {}
+  if (!theme) {
+    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  applyTheme(theme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('theme', theme); } catch(e) {}
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  if (isHomepage) navigateHome(); // re-render to pick up new CSS vars
+}
 
 /* ===== Schedule Computation ===== */
 const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -182,7 +204,6 @@ let cls = 'tl-cell';
 /* ===== YouTube Thumbnails ===== */
 function embedYouTubeThumbnails() {
   const contentEl = document.getElementById('content');
-  // Match YouTube links: youtube.com/watch?v=ID or youtu.be/ID
   contentEl.querySelectorAll('a[href]').forEach(a => {
     const href = a.getAttribute('href');
     let videoId = null;
@@ -196,37 +217,45 @@ function embedYouTubeThumbnails() {
     } catch(e) {}
     if (!videoId) return;
 
-    // Don't wrap if already wrapped
-    if (a.parentElement.classList.contains('yt-thumb-wrap')) return;
+    // Don't rewrap if already a card
+    if (a.classList.contains('yt-card')) return;
 
-    // Create thumbnail block
-    const wrapper = document.createElement('div');
-    wrapper.className = 'yt-thumb-wrap';
+    const title = a.textContent.trim();
+
+    // Build card — the whole card is the link
+    const card = document.createElement('a');
+    card.href = href;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+    card.className = 'yt-card';
+    card.setAttribute('aria-label', title);
+
+    const thumbWrap = document.createElement('div');
+    thumbWrap.className = 'yt-thumb-wrap';
+
     const img = document.createElement('img');
     img.src = `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/mqdefault.jpg`;
-    img.alt = a.textContent;
+    img.alt = title;
     img.className = 'yt-thumb';
     img.loading = 'lazy';
-    const overlay = document.createElement('span');
-    overlay.className = 'yt-play';
-    overlay.textContent = '\u25B6';
 
-    const link = document.createElement('a');
-    link.href = href;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.className = 'yt-thumb-link';
-    link.appendChild(img);
-    link.appendChild(overlay);
+    const play = document.createElement('span');
+    play.className = 'yt-play';
+    play.setAttribute('aria-hidden', 'true');
+    play.textContent = '\u25B6';
 
-    wrapper.appendChild(link);
-    // Keep the original text link below
-    const textLink = a.cloneNode(true);
-    textLink.target = '_blank';
-    textLink.rel = 'noopener noreferrer';
+    thumbWrap.appendChild(img);
+    thumbWrap.appendChild(play);
 
-    a.parentNode.insertBefore(wrapper, a);
-    // Original link stays as-is
+    const label = document.createElement('div');
+    label.className = 'yt-title';
+    label.textContent = title;
+
+    card.appendChild(thumbWrap);
+    card.appendChild(label);
+
+    // Replace the original anchor entirely
+    a.parentNode.replaceChild(card, a);
   });
 }
 
@@ -556,6 +585,7 @@ function closeSidebar() {
 
 /* ===== Initialization ===== */
 document.addEventListener('DOMContentLoaded', async () => {
+  initTheme();
   await initCloudStorage();
   buildNav();
 
@@ -577,6 +607,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initScheduleAdjust();
   document.getElementById('sched-minus').addEventListener('click', () => adjustSchedule(-1));
   document.getElementById('sched-plus').addEventListener('click', () => adjustSchedule(1));
+  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
   // Determine initial view: hash > sessionStorage > homepage
   const hash = window.location.hash.replace('#', '');
@@ -697,7 +728,7 @@ function buildGanttCalendar() {
   STEP_META.forEach((step, i) => {
     const rng = getStepDateRange(i);
     const st = getStepStatus(i);
-    const c = PHASE_COLORS[step.phase];
+    const c = getPhaseColors(step.phase);
     const l = ((rng.start - planStart) / 86400000) / totalDays * 100;
     const w = rng.days / totalDays * 100;
     if (step.phase !== lastP) { lastP = step.phase; rows += `<div class="gc-phase">${step.phaseLabel}</div>`; }
@@ -738,7 +769,7 @@ function buildStepSummaries() {
   STEP_META.forEach((step, i) => {
     const rng = getStepDateRange(i);
     const st = getStepStatus(i);
-    const c = PHASE_COLORS[step.phase];
+    const c = getPhaseColors(step.phase);
     const tier = getStepTier(step.num);
     const summary = extractStepSummary(step.id);
     const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
