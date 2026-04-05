@@ -366,3 +366,54 @@ body {
   font-size: 0.82rem; color: #e0e0e0; min-width: 2.5rem; text-align: center;
   font-variant-numeric: tabular-nums;
 }
+
+/* ===== Homepage ===== */
+.hp { max-width: 900px; margin: 0 auto; }
+.hp-hdr { text-align: center; padding: 1.5rem 0 0.5rem; }
+.hp-hdr h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.3rem; }
+.hp-hdr p { font-size: 0.88rem; color: #6b7280; margin: 0.15rem 0; }
+.hp-meta { font-size: 0.78rem !important; color: #9ca3af !important; }
+.hp-sec { font-size: 1.05rem; font-weight: 600; color: #1a1a2e; margin: 1.5rem 0 0.6rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
+
+/* ===== Gantt Calendar ===== */
+.gc-wrap { margin: 0.5rem 0; }
+.gc-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.gc-hdr { display: flex; min-width: 680px; }
+.gc-label-sp { width: 130px; flex-shrink: 0; }
+.gc-months { flex: 1; position: relative; height: 26px; border-bottom: 1px solid #e5e7eb; }
+.gc-month { position: absolute; top: 0; height: 100%; display: flex; align-items: center; padding-left: 6px; font-size: 0.7rem; font-weight: 600; color: #6b7280; border-left: 1px dashed #d1d5db; box-sizing: border-box; }
+.gc-today { position: absolute; bottom: 100%; transform: translateX(-50%); z-index: 6; pointer-events: none; }
+.gc-today span { font-size: 0.58rem; font-weight: 700; color: #f97316; background: #fff; padding: 0 3px; }
+.gc-body { min-width: 680px; }
+.gc-phase { padding: 0.45rem 0 0.1rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; }
+.gc-row { display: flex; align-items: center; min-height: 28px; }
+.gc-label { width: 130px; flex-shrink: 0; font-size: 0.75rem; padding-right: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gc-label a { color: #374151; text-decoration: none; }
+.gc-label a:hover { color: #2563eb; text-decoration: underline; }
+.gc-track { flex: 1; position: relative; height: 24px; }
+.gc-tline { position: absolute; top: 0; bottom: 0; width: 2px; background: #f97316; opacity: 0.45; z-index: 2; pointer-events: none; }
+.gc-bar { position: absolute; top: 1px; height: 22px; border-radius: 4px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 500; cursor: pointer; overflow: hidden; white-space: nowrap; transition: opacity 0.15s, transform 0.15s; }
+.gc-bar:hover { opacity: 0.85; transform: scaleY(1.15); z-index: 3; }
+.gc-bar.done { opacity: 0.55; }
+.gc-bar.active { box-shadow: 0 0 0 2px rgba(108,99,255,0.35); }
+
+/* ===== Step Cards ===== */
+.sc-list { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 2rem; }
+.sc { padding: 0.65rem 0.9rem; background: #fff; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; transition: box-shadow 0.15s, transform 0.15s; }
+.sc:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); transform: translateY(-1px); }
+.sc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.15rem; }
+.sc-num { font-size: 0.75rem; color: #6b7280; }
+.sc-phase { font-size: 0.62rem; font-weight: 600; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+.sc-title { font-size: 0.95rem; font-weight: 600; color: #1a1a2e; }
+.sc-meta { display: flex; gap: 0.75rem; font-size: 0.72rem; color: #9ca3af; margin-top: 0.15rem; }
+.sc-desc { font-size: 0.78rem; color: #6b7280; line-height: 1.4; margin-top: 0.25rem; }
+
+/* ===== Home Nav Item ===== */
+.nav-home { border-bottom: 1px solid rgba(255,255,255,0.08) !important; margin-bottom: 0.3rem; font-weight: 500 !important; }
+
+@media (max-width: 767px) {
+  .gc-label-sp, .gc-label { width: 95px; }
+  .gc-label { font-size: 0.68rem; }
+  .gc-bar span { font-size: 0.55rem; }
+  .gc-hdr, .gc-body { min-width: 560px; }
+}

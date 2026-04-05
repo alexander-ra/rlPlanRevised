@@ -25,6 +25,73 @@ const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 /* ===== State ===== */
 let currentStepIndex = 0;
 let scheduleAdjust = 0; // days to delay plan start (shifts all dates forward)
+let isHomepage = false;
+
+/* ===== JSONBin.io Cloud Storage ===== */
+const JSONBIN_API_KEY = '$2a$10$IBM6VS1KokHpuvUKT.mAhemE.xKEdWLpZkuNugEMFbvr8gi5IM3b.';
+const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b';
+const JSONBIN_BIN_KEY = 'rlstudy_bin_id';
+let cloudData = { checkboxes: {}, scheduleAdjust: 0 };
+let binId = null;
+let syncTimeout = null;
+
+async function initCloudStorage() {
+  try { binId = localStorage.getItem(JSONBIN_BIN_KEY); } catch(e) {}
+  if (binId) {
+    try {
+      const res = await fetch(`${JSONBIN_API_URL}/${binId}/latest`, {
+        headers: { 'X-Master-Key': JSONBIN_API_KEY }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        cloudData = json.record || cloudData;
+      }
+    } catch(e) { console.warn('Cloud load failed:', e); }
+  } else {
+    try {
+      const res = await fetch(JSONBIN_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': JSONBIN_API_KEY,
+          'X-Bin-Name': 'rl-study-progress'
+        },
+        body: JSON.stringify(cloudData)
+      });
+      if (res.ok) {
+        const json = await res.json();
+        binId = json.metadata.id;
+        try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
+      }
+    } catch(e) { console.warn('Cloud create failed:', e); }
+  }
+  return cloudData;
+}
+
+function syncToCloud() {
+  if (!binId) return;
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(async () => {
+    try {
+      await fetch(`${JSONBIN_API_URL}/${binId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+        body: JSON.stringify(cloudData)
+      });
+    } catch(e) { console.warn('Cloud sync failed:', e); }
+  }, 1000);
+}
+
+/* ===== Phase Colors ===== */
+const PHASE_COLORS = {
+  'A': { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' },
+  'B': { bg: '#e0e7ff', border: '#6366f1', text: '#3730a3' },
+  'C': { bg: '#f3e8ff', border: '#a855f7', text: '#6b21a8' },
+  'D': { bg: '#ffe4e6', border: '#f43f5e', text: '#be123c' },
+  'E': { bg: '#dcfce7', border: '#22c55e', text: '#15803d' },
+  'F': { bg: '#ccfbf1', border: '#14b8a6', text: '#0f766e' },
+  'G': { bg: '#fef3c7', border: '#f59e0b', text: '#b45309' },
+};
 
 /* ===== Schedule Computation ===== */
 const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -59,7 +126,7 @@ function getMaxAdjust() {
 /* ===== Timeline Bar ===== */
 function renderTimeline() {
   const bar = document.getElementById('timeline-bar');
-  if (!bar) return;
+  if (!bar || isHomepage) return;
 
   const range = getStepDateRange(currentStepIndex);
   const windowBefore = 7;
@@ -163,34 +230,28 @@ function embedYouTubeThumbnails() {
   });
 }
 
-/* ===== Checkbox Persistence ===== */
+/* ===== Checkbox Persistence (Cloud) ===== */
 function setupCheckboxes() {
   const contentEl = document.getElementById('content');
   const stepId = STEP_META[currentStepIndex].id;
   const checkboxes = contentEl.querySelectorAll('input[type="checkbox"]');
   checkboxes.forEach((cb, idx) => {
-    cb.disabled = false;          // marked.js adds disabled by default
+    cb.disabled = false;
     cb.removeAttribute('disabled');
     const key = `cb_${stepId}_${idx}`;
-    // Restore state
-    try {
-      const saved = localStorage.getItem(key);
-      if (saved === '1') cb.checked = true;
-      else if (saved === '0') cb.checked = false;
-    } catch(e) {}
-    // Save on change
+    const saved = cloudData.checkboxes[key];
+    if (saved === '1') cb.checked = true;
+    else if (saved === '0') cb.checked = false;
     cb.addEventListener('change', () => {
-      try { localStorage.setItem(key, cb.checked ? '1' : '0'); } catch(e) {}
+      cloudData.checkboxes[key] = cb.checked ? '1' : '0';
+      syncToCloud();
     });
   });
 }
 
 /* ===== Schedule Adjustment ===== */
 function initScheduleAdjust() {
-  try {
-    const saved = localStorage.getItem('scheduleAdjust');
-    if (saved !== null) scheduleAdjust = parseInt(saved, 10) || 0;
-  } catch(e) {}
+  scheduleAdjust = cloudData.scheduleAdjust || 0;
   updateScheduleUI();
 }
 
@@ -199,9 +260,11 @@ function adjustSchedule(delta) {
   const newVal = scheduleAdjust + delta;
   if (newVal < 0 || newVal > maxAdj) return;
   scheduleAdjust = newVal;
-  try { localStorage.setItem('scheduleAdjust', String(scheduleAdjust)); } catch(e) {}
+  cloudData.scheduleAdjust = scheduleAdjust;
+  syncToCloud();
   updateScheduleUI();
-  renderTimeline();
+  if (isHomepage) navigateHome();
+  else renderTimeline();
 }
 
 function updateScheduleUI() {
@@ -217,6 +280,15 @@ function updateScheduleUI() {
 /* ===== Sidebar Navigation Builder ===== */
 function buildNav() {
   const navList = document.getElementById('nav-list');
+
+  // Home button
+  const homeBtn = document.createElement('button');
+  homeBtn.className = 'nav-item nav-home';
+  homeBtn.dataset.step = 'home';
+  homeBtn.textContent = '\u2302 Overview';
+  homeBtn.addEventListener('click', () => navigateHome());
+  navList.appendChild(homeBtn);
+
   let currentPhase = null;
 
   STEP_META.forEach((step) => {
@@ -237,7 +309,7 @@ function buildNav() {
 }
 
 function updateActiveNav() {
-  const activeId = STEP_META[currentStepIndex].id;
+  const activeId = isHomepage ? 'home' : STEP_META[currentStepIndex].id;
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.step === activeId);
   });
@@ -392,6 +464,12 @@ function renderStep(stepId) {
 
 /* ===== Navigation Logic ===== */
 function navigateTo(stepId) {
+  if (stepId === 'home') { navigateHome(); return; }
+
+  isHomepage = false;
+  document.getElementById('timeline-bar').style.display = '';
+  document.getElementById('section-nav').style.display = '';
+
   const idx = STEP_META.findIndex(s => s.id === stepId);
   if (idx === -1) return;
   currentStepIndex = idx;
@@ -399,24 +477,15 @@ function navigateTo(stepId) {
   renderStep(stepId);
   updateActiveNav();
 
-  // Update topbar title
   const meta = STEP_META[idx];
   document.getElementById('topbar-title').innerHTML = 'Step ' + meta.num + ': ' + meta.title;
 
-  // Update URL hash
   history.replaceState(null, '', '#' + stepId);
-
-  // Update prev/next button states
   updateNavButtons();
-
-  // Update timeline
   renderTimeline();
-
-  // Close sidebar if open (mobile)
   closeSidebar();
 
-  // Save to localStorage
-  try { localStorage.setItem('lastStep', stepId); } catch(e) {}
+  try { sessionStorage.setItem('lastStep', stepId); } catch(e) {}
 }
 
 function goNext() {
@@ -432,8 +501,8 @@ function goPrev() {
 }
 
 function updateNavButtons() {
-  const atStart = currentStepIndex === 0;
-  const atEnd = currentStepIndex === STEP_META.length - 1;
+  const atStart = isHomepage || currentStepIndex <= 0;
+  const atEnd = isHomepage || currentStepIndex === STEP_META.length - 1;
   document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = atStart);
   document.querySelectorAll('[id^="next-btn"]').forEach(b => b.disabled = atEnd);
 }
@@ -486,10 +555,10 @@ function closeSidebar() {
 }
 
 /* ===== Initialization ===== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await initCloudStorage();
   buildNav();
 
-  // Wire up event listeners
   document.getElementById('hamburger').addEventListener('click', openSidebar);
   document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
   document.getElementById('overlay').addEventListener('click', closeSidebar);
@@ -499,39 +568,35 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('prev-btn-bottom').addEventListener('click', goPrev);
   document.getElementById('next-btn-bottom').addEventListener('click', goNext);
 
-  // Section jump FAB
   document.getElementById('section-fab').addEventListener('click', toggleSectionNav);
   document.addEventListener('click', (e) => {
     const nav = document.getElementById('section-nav');
     if (!nav.contains(e.target)) closeSectionNav();
   });
 
-  // Schedule adjustment
   initScheduleAdjust();
   document.getElementById('sched-minus').addEventListener('click', () => adjustSchedule(-1));
   document.getElementById('sched-plus').addEventListener('click', () => adjustSchedule(1));
 
-  // Determine initial step: hash > localStorage > first
+  // Determine initial view: hash > sessionStorage > homepage
   const hash = window.location.hash.replace('#', '');
-  let initialStep = STEP_META[0].id;
-  if (STEP_META.find(s => s.id === hash)) {
-    initialStep = hash;
+  if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
+    navigateTo(hash);
   } else {
     try {
-      const saved = localStorage.getItem('lastStep');
-      if (saved && STEP_META.find(s => s.id === saved)) {
-        initialStep = saved;
+      const saved = sessionStorage.getItem('lastStep');
+      if (saved && saved !== 'home' && STEP_META.find(s => s.id === saved)) {
+        navigateTo(saved);
+      } else {
+        navigateHome();
       }
-    } catch(e) {}
+    } catch(e) { navigateHome(); }
   }
-  navigateTo(initialStep);
 
-  // Browser back/forward
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.replace('#', '');
-    if (STEP_META.find(s => s.id === h)) {
-      navigateTo(h);
-    }
+    if (h === 'home' || h === '') { navigateHome(); }
+    else if (STEP_META.find(s => s.id === h)) { navigateTo(h); }
   });
 });
 
@@ -566,3 +631,149 @@ document.addEventListener('touchend', (e) => {
     }
   }
 }, { passive: true });
+
+/* ===== Homepage ===== */
+function getStepStatus(stepIndex) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const range = getStepDateRange(stepIndex);
+  if (today > range.end) return 'done';
+  if (today >= range.start) return 'active';
+  return 'upcoming';
+}
+
+function getStepTier(num) {
+  if ([6,7,8].includes(num)) return 'T1';
+  if ([12,15].includes(num)) return 'T3';
+  return 'T2';
+}
+
+function extractStepSummary(stepId) {
+  const md = typeof STEPS_CONTENT !== 'undefined' ? STEPS_CONTENT[stepId] : null;
+  if (!md) return '';
+  const lines = md.split('\n');
+  for (const target of ['Contribution Alignment:', 'Phase Overview:']) {
+    let result = '', capturing = false;
+    for (const line of lines) {
+      if (line.includes(`**${target}**`) || line.includes(`**${target}`)) {
+        result = line.replace(/^>\s*/, '').replace(/\*\*/g, '');
+        capturing = true; continue;
+      }
+      if (capturing) {
+        if (line.startsWith('>')) { result += ' ' + line.replace(/^>\s*/, '').replace(/\*\*/g, ''); }
+        else break;
+      }
+    }
+    if (result.trim()) return result.trim();
+  }
+  return '';
+}
+
+function buildGanttCalendar() {
+  const planStart = addDays(PLAN_START, scheduleAdjust);
+  const calEnd = new Date(2026, 9, 31);
+  const totalDays = Math.round((calEnd - planStart) / 86400000) + 1;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const showToday = today >= planStart && today <= calEnd;
+  const todayPct = showToday ? (((today - planStart) / 86400000) / totalDays * 100) : -10;
+
+  // Month headers
+  let months = '';
+  let m = new Date(planStart.getFullYear(), planStart.getMonth(), 1);
+  while (m <= calEnd) {
+    const mS = m < planStart ? planStart : new Date(m);
+    const nxt = new Date(m.getFullYear(), m.getMonth() + 1, 1);
+    const mE = nxt > calEnd ? calEnd : addDays(nxt, -1);
+    const l = ((mS - planStart) / 86400000) / totalDays * 100;
+    const w = (((mE - mS) / 86400000) + 1) / totalDays * 100;
+    months += `<div class="gc-month" style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}%">${MONTH_NAMES[m.getMonth()]}</div>`;
+    m = nxt;
+  }
+
+  const todayHdr = showToday ? `<div class="gc-today" style="left:${todayPct.toFixed(1)}%"><span>Today</span></div>` : '';
+  const todayLine = showToday ? `<div class="gc-tline" style="left:${todayPct.toFixed(1)}%"></div>` : '';
+
+  // Step rows
+  let rows = '', lastP = '';
+  STEP_META.forEach((step, i) => {
+    const rng = getStepDateRange(i);
+    const st = getStepStatus(i);
+    const c = PHASE_COLORS[step.phase];
+    const l = ((rng.start - planStart) / 86400000) / totalDays * 100;
+    const w = rng.days / totalDays * 100;
+    if (step.phase !== lastP) { lastP = step.phase; rows += `<div class="gc-phase">${step.phaseLabel}</div>`; }
+    rows += `<div class="gc-row">
+      <div class="gc-label"><a href="#${step.id}" onclick="navigateTo('${step.id}');return false">${step.num}. ${step.title}</a></div>
+      <div class="gc-track">${todayLine}
+        <div class="gc-bar ${st}" style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}%;background:${c.bg};border-color:${c.border};color:${c.text};" onclick="navigateTo('${step.id}')">
+          <span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Buffer row
+  const lastEnd = getStepDateRange(STEP_META.length - 1).end;
+  const bufStart = addDays(lastEnd, 1);
+  if (bufStart <= calEnd) {
+    const bl = ((bufStart - planStart) / 86400000) / totalDays * 100;
+    const bw = (((calEnd - bufStart) / 86400000) + 1) / totalDays * 100;
+    rows += `<div class="gc-row">
+      <div class="gc-label" style="color:#9ca3af">Buffer</div>
+      <div class="gc-track">${todayLine}
+        <div class="gc-bar upcoming" style="left:${bl.toFixed(1)}%;width:${bw.toFixed(1)}%;background:#f3f4f6;border-color:#d1d5db;color:#9ca3af;">
+          <span>${formatDayShort(bufStart)} \u2013 31 Oct</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="gc-wrap"><div class="gc-scroll">
+    <div class="gc-hdr"><div class="gc-label-sp"></div><div class="gc-months">${months}${todayHdr}</div></div>
+    <div class="gc-body">${rows}</div>
+  </div></div>`;
+}
+
+function buildStepSummaries() {
+  let html = '';
+  STEP_META.forEach((step, i) => {
+    const rng = getStepDateRange(i);
+    const st = getStepStatus(i);
+    const c = PHASE_COLORS[step.phase];
+    const tier = getStepTier(step.num);
+    const summary = extractStepSummary(step.id);
+    const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
+    html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
+      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></div>
+      <div class="sc-title">${step.title}</div>
+      <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}d \u00b7 ${tier}</span></div>
+      ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
+    </div>`;
+  });
+  return html;
+}
+
+function navigateHome() {
+  isHomepage = true;
+  currentStepIndex = -1;
+  document.getElementById('topbar-title').textContent = 'RL Study Plan';
+  document.getElementById('timeline-bar').style.display = 'none';
+  document.getElementById('section-nav').style.display = 'none';
+  updateNavButtons();
+  updateActiveNav();
+  history.replaceState(null, '', '#home');
+  try { sessionStorage.setItem('lastStep', 'home'); } catch(e) {}
+
+  document.getElementById('content').innerHTML =
+    `<div class="hp">
+      <div class="hp-hdr"><h1>PhD Research Plan</h1>
+        <p>AI in Computer Games &mdash; Adaptive Strategy in Multi-Agent Imperfect-Information Environments</p>
+        <p class="hp-meta">15 steps &middot; 7 phases &middot; ${BASE_TOTAL_DAYS} days &middot; Mar&ndash;Oct 2026</p>
+      </div>
+      <h2 class="hp-sec">Timeline</h2>
+      ${buildGanttCalendar()}
+      <h2 class="hp-sec">Steps</h2>
+      <div class="sc-list">${buildStepSummaries()}</div>
+    </div>`;
+  window.scrollTo(0, 0);
+  closeSidebar();
+}
