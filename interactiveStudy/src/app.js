@@ -36,35 +36,71 @@ let binId = null;
 let syncTimeout = null;
 
 async function initCloudStorage() {
-  try { binId = localStorage.getItem(JSONBIN_BIN_KEY); } catch(e) {}
-  if (binId) {
+  // Fast path: cached bin ID from this device
+  let cachedId = null;
+  try { cachedId = localStorage.getItem(JSONBIN_BIN_KEY); } catch(e) {}
+
+  if (cachedId) {
     try {
-      const res = await fetch(`${JSONBIN_API_URL}/${binId}/latest`, {
+      const res = await fetch(`${JSONBIN_API_URL}/${cachedId}/latest`, {
         headers: { 'X-Master-Key': JSONBIN_API_KEY }
       });
       if (res.ok) {
         const json = await res.json();
         cloudData = json.record || cloudData;
+        binId = cachedId;
+        return cloudData;
       }
-    } catch(e) { console.warn('Cloud load failed:', e); }
-  } else {
-    try {
-      const res = await fetch(JSONBIN_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': JSONBIN_API_KEY,
-          'X-Bin-Name': 'rl-study-progress'
-        },
-        body: JSON.stringify(cloudData)
-      });
-      if (res.ok) {
-        const json = await res.json();
-        binId = json.metadata.id;
-        try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
-      }
-    } catch(e) { console.warn('Cloud create failed:', e); }
+    } catch(e) {}
+    // Cached ID invalid — clear it and fall through to lookup
+    try { localStorage.removeItem(JSONBIN_BIN_KEY); } catch(e) {}
   }
+
+  // Cross-device: find existing bin by name across all bins in this account
+  try {
+    const listRes = await fetch(JSONBIN_API_URL, {
+      headers: { 'X-Master-Key': JSONBIN_API_KEY }
+    });
+    if (listRes.ok) {
+      const bins = await listRes.json();
+      const list = Array.isArray(bins) ? bins : (bins.result || []);
+      const existing = list.find(b => {
+        const name = (b.metadata && b.metadata.name) || b.name || '';
+        return name === 'rl-study-progress';
+      });
+      if (existing) {
+        binId = (existing.metadata && existing.metadata.id) || existing.id;
+        try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
+        const dataRes = await fetch(`${JSONBIN_API_URL}/${binId}/latest`, {
+          headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        if (dataRes.ok) {
+          const json = await dataRes.json();
+          cloudData = json.record || cloudData;
+        }
+        return cloudData;
+      }
+    }
+  } catch(e) { console.warn('Cloud lookup failed:', e); }
+
+  // No existing bin — create one (only happens once, on first-ever device)
+  try {
+    const res = await fetch(JSONBIN_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_API_KEY,
+        'X-Bin-Name': 'rl-study-progress'
+      },
+      body: JSON.stringify(cloudData)
+    });
+    if (res.ok) {
+      const json = await res.json();
+      binId = json.metadata.id;
+      try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
+    }
+  } catch(e) { console.warn('Cloud create failed:', e); }
+
   return cloudData;
 }
 
@@ -516,8 +552,6 @@ function navigateTo(stepId) {
   updateNavButtons();
   renderTimeline();
   closeSidebar();
-
-  try { sessionStorage.setItem('lastStep', stepId); } catch(e) {}
 }
 
 function goNext() {
@@ -612,19 +646,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('sched-plus').addEventListener('click', () => adjustSchedule(1));
   document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
-  // Determine initial view: hash > sessionStorage > homepage
+  // Determine initial view: hash > homepage
   const hash = window.location.hash.replace('#', '');
   if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
     navigateTo(hash);
   } else {
-    try {
-      const saved = sessionStorage.getItem('lastStep');
-      if (saved && saved !== 'home' && STEP_META.find(s => s.id === saved)) {
-        navigateTo(saved);
-      } else {
-        navigateHome();
-      }
-    } catch(e) { navigateHome(); }
+    navigateHome();
   }
 
   window.addEventListener('hashchange', () => {
@@ -772,7 +799,6 @@ function navigateHome() {
   updateNavButtons();
   updateActiveNav();
   history.replaceState(null, '', '#home');
-  try { sessionStorage.setItem('lastStep', 'home'); } catch(e) {}
 
   document.getElementById('content').innerHTML =
     `<div class="hp">
