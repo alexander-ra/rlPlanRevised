@@ -640,29 +640,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { closeSidebar(); }
 });
 
-/* ===== Touch Swipe Navigation ===== */
-let touchStartX = 0;
-let touchStartY = 0;
-
-document.addEventListener('touchstart', (e) => {
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
-}, { passive: true });
-
-document.addEventListener('touchend', (e) => {
-  const dx = e.changedTouches[0].screenX - touchStartX;
-  const dy = e.changedTouches[0].screenY - touchStartY;
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 80) {
-    if (dx > 0) {
-      // Swipe right — edge swipe opens nav, otherwise prev step
-      if (touchStartX < 30) { openSidebar(); }
-      else { goPrev(); }
-    } else {
-      goNext();
-    }
-  }
-}, { passive: true });
-
 /* ===== Homepage ===== */
 function getStepStatus(stepIndex) {
   const today = new Date(); today.setHours(0,0,0,0);
