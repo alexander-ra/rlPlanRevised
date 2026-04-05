@@ -26,12 +26,14 @@
 
 ## Table of Contents
 - [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
+  - [Bridge: Neural Network Foundations for RL](#bridge-neural-network-foundations-for-rl)
   - [Videos](#videos)
   - [Blog Posts](#blog-posts)
 - [Phase 2: Exploration (2 days)](#phase-2-exploration-2-days)
   - [Day 1: Deep CFR in OpenSpiel](#day-1-deep-cfr-in-openspiel)
   - [Day 2: NFSP in OpenSpiel + Advantage Network Internals](#day-2-nfsp-in-openspiel-advantage-network-internals)
 - [Phase 3: Targeted Reading (3 days)](#phase-3-targeted-reading-3-days)
+  - [Preliminary Reading: Function Approximation Theory](#preliminary-reading-function-approximation-theory)
   - [Paper 1: Brown, Lerer, Gross & Sandholm — "Deep Counterfactual Regret Minimization" (2019)](#paper-1-brown-lerer-gross-sandholm-deep-counterfactual-regret-minimization-2019)
   - [Paper 2: Steinberger — "Single Deep Counterfactual Regret Minimization" (2019)](#paper-2-steinberger-single-deep-counterfactual-regret-minimization-2019)
   - [Paper 3: Heinrich & Silver — "Deep Reinforcement Learning from Self-Play in Imperfect-Information Games" (2016)](#paper-3-heinrich-silver-deep-reinforcement-learning-from-self-play-in-imperfect-information-games-2016)
@@ -51,6 +53,51 @@
 ## Phase 1: Intuition (1 day)
 
 The goal: understand WHY we need neural networks in CFR (tabular CFR can't handle full-scale games even WITH abstraction), what Deep CFR does differently (replaces the regret table with neural networks that generalize across similar states), and where NFSP fits (a completely different approach — RL-based instead of CFR-based). End of day: you should be able to explain to a non-expert: "Instead of memorizing the best strategy for every possible poker situation — which would take more memory than exists on Earth — we train a neural network to PREDICT what the best response would be. It's like learning a general rule instead of memorizing every answer."
+
+### Bridge: Neural Network Foundations for RL
+
+> **Why this section exists:** In Step 1, you implemented DQN and PPO — but the focus was on the RL algorithm, not on WHY neural networks work as function approximators. Before diving into Deep CFR (which replaces tabular regret with neural networks), you need a solid understanding of what a neural network actually computes, how gradient descent trains it, and what happens when you combine function approximation with bootstrapping (the "deadly triad"). This bridge fills the gap between tabular RL (Sutton & Barto Ch 1–6) and the neural methods in Phase C.
+
+**Neural Network Mechanics (~1.5 hours):**
+
+- **3Blue1Brown — "But what is a Neural Network?" (Chapter 1)**
+  https://www.3blue1brown.com/lessons/neural-networks
+  https://www.youtube.com/watch?v=aircAruvnKk
+  Duration: ~19m | Creator: Grant Sanderson
+  *Start here. What neurons, weights, biases, and activations actually ARE — introduced through handwritten digit recognition. This grounds the abstract "neural network" concept you've seen in DQN/PPO code (q_network.py's Linear layers, ReLU activations) in concrete visual intuition.*
+
+- **3Blue1Brown — "Gradient descent, how neural networks learn" (Chapter 2)**
+  https://www.3blue1brown.com/lessons/gradient-descent
+  https://www.youtube.com/watch?v=IHZwWFHWa-w
+  Duration: ~21m | Creator: Grant Sanderson
+  *How the cost function works and why gradient descent finds good weights. After watching: you'll understand what loss.backward() and optimizer.step() in your DQN train_step actually do — they compute the gradient of the loss and nudge all 33,000+ weights downhill.*
+
+- **3Blue1Brown — "What is backpropagation really doing?" (Chapter 4)**
+  https://www.3blue1brown.com/lessons/backpropagation
+  https://www.youtube.com/watch?v=Ilg3gGewQ5U
+  Duration: ~14m | Creator: Grant Sanderson
+  *The intuition behind backpropagation — how each training example "wants" to nudge the weights, and how averaging these desires across a mini-batch gives the gradient. This is exactly what happens inside your DQN's train_step when PyTorch calls .backward().*
+
+- **3Blue1Brown — "Backpropagation calculus" (Chapter 5)**
+  https://www.3blue1brown.com/lessons/backpropagation-calculus
+  https://www.youtube.com/watch?v=tIeHLnjs5U8
+  Duration: ~10m | Creator: Grant Sanderson
+  *Optional but recommended: the chain rule math behind backpropagation. If the previous video gave you the intuition, this one gives you the equations. Skip if you're comfortable with the conceptual version.*
+
+**Function Approximation in RL (~1.5 hours):**
+
+- **David Silver — Lecture 6: Value Function Approximation**
+  https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ (Lecture 6 in playlist)
+  Slides: https://davidstarsilver.wordpress.com/wp-content/uploads/2025/04/lecture-6-value-function-approximation-.pdf
+  Duration: ~1h20m | Instructor: David Silver (DeepMind / UCL)
+  *THE bridge lecture. Covers: why tables fail in large state spaces, linear function approximation, neural network approximation, convergence guarantees (and when they break), the deadly triad (function approximation + bootstrapping + off-policy = instability). After watching: you'll understand WHY DQN needs target networks and experience replay — they're engineering patches for the deadly triad. This directly explains the design decisions in your Step 1 implementation.*
+
+**🔗 Connection to Step 1:** After watching these, revisit your DQN code mentally:
+- `q_network.py` → the MLP architecture (3Blue1Brown Ch 1)
+- `loss.backward()` in `train_step` → backpropagation (3Blue1Brown Ch 4-5)
+- `optimizer.step()` → gradient descent (3Blue1Brown Ch 2)
+- Target network + replay buffer → deadly triad mitigation (David Silver L6)
+- The 33,000+ parameters in your [128,128] network → the weight matrices 3Blue1Brown visualizes
 
 ### Videos
 
@@ -170,6 +217,49 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 ---
 
 ## Phase 3: Targeted Reading (3 days)
+
+### Preliminary Reading: Function Approximation Theory
+
+> **Before the papers:** The Deep CFR and NFSP papers assume familiarity with function approximation in RL. These textbook chapters provide the theoretical foundation — read them on Day 1 of this phase before starting the papers.
+
+**Sutton & Barto — Chapter 9: On-policy Prediction with Approximation**
+http://incompleteideas.net/book/the-book-2nd.html (free PDF/HTML)
+```
+├── READ:  9.1 (Value-function Approximation — the general framework),
+│          9.2 (The Prediction Objective — what "best approximation" means when
+│               you can't represent every state exactly),
+│          9.3 (Stochastic Gradient and Semi-Gradient Methods — the core algorithms;
+│               this is what DQN's train_step implements),
+│          9.5.4 (Nonlinear Function Approximation: ANNs — neural networks as
+│                  value approximators, connecting to your Step 1 implementation)
+├── SKIM:  9.4 (Linear Methods — useful as contrast to understand what neural
+│               networks add beyond linear approximation),
+│          9.5 (Feature Construction — how different representations affect
+│               learning; relevant for your Leduc state encoding in this step)
+├── SKIP:  9.6–9.8 (memory-based methods, kernel-based, interest/emphasis —
+│               not needed for Deep CFR)
+└── KEY INSIGHT: "Semi-gradient methods (Section 9.3) are what almost all deep RL
+    uses in practice. They follow the gradient of the loss with respect to the
+    weights, but IGNORE the effect of changing weights on the target. This is
+    exactly what DQN does — and it's exactly what Deep CFR's advantage networks do.
+    Understanding this 'semi' part explains why target networks are needed."
+```
+
+**Sutton & Barto — Chapter 11.1–11.3: The Deadly Triad**
+```
+├── READ:  11.1 (Off-policy Learning — why learning from old experiences is harder
+│               than it sounds; directly relevant to replay buffers),
+│          11.2 (Examples of Instability — concrete cases where function
+│               approximation + bootstrapping + off-policy diverges),
+│          11.3 (The Deadly Triad — the combination of three individually-useful
+│               features that together cause instability)
+└── KEY INSIGHT: "The deadly triad: (1) function approximation (neural networks),
+    (2) bootstrapping (using your own estimates as targets — TD learning),
+    (3) off-policy learning (learning from past experiences, i.e., replay buffer).
+    DQN has ALL THREE. Deep CFR has (1) and a form of (2). Understanding WHY
+    these combine dangerously explains every stabilization trick in deep RL:
+    target networks, experience replay, gradient clipping, etc."
+```
 
 ### Paper 1: Brown, Lerer, Gross & Sandholm — "Deep Counterfactual Regret Minimization" (2019)
 
