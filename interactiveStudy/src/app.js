@@ -28,7 +28,7 @@ let scheduleAdjust = 0; // days to delay plan start (shifts all dates forward)
 let isHomepage = false;
 
 /* ===== JSONBin.io Cloud Storage ===== */
-const JSONBIN_API_KEY = '$2a$10$IBM6VS1KokHpuvUKT.mAhemE.xKEdWLpZkuNugEMFbvr8gi5IM3b.';
+const JSONBIN_API_KEY = '$2a$10$k1FLc/sztnYxUeK/9hzPROI8cAJxmQJHZX1CDs.YZbIJL.l2Wi6d6';
 const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b';
 const JSONBIN_BIN_KEY = 'rlstudy_bin_id';
 let cloudData = { checkboxes: {}, scheduleAdjust: 0 };
@@ -434,11 +434,14 @@ function renderStep(stepId) {
     a.setAttribute('rel', 'noopener noreferrer');
   });
 
-  
-  // Replace missing interactive checkboxes setup since we removed it by accident earlier maybe? We'll put it later.
   // Add intersection observer to track which section we're in
   if (window.__sectionObserver) {
     window.__sectionObserver.disconnect();
+  }
+  
+  // Skip observer setup if on homepage (currentStepIndex is -1)
+  if (isHomepage || currentStepIndex < 0) {
+    return;
   }
   
   const headers = Array.from(document.querySelectorAll('#content h1, #content h2'));
