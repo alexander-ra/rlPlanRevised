@@ -30,60 +30,42 @@ let isHomepage = false;
 /* ===== JSONBin.io Cloud Storage ===== */
 const JSONBIN_API_KEY = '$2a$10$k1FLc/sztnYxUeK/9hzPROI8cAJxmQJHZX1CDs.YZbIJL.l2Wi6d6';
 const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b';
+// Set this once after the first bin is created — all devices share this ID
+const JSONBIN_BIN_ID = '';
 const JSONBIN_BIN_KEY = 'rlstudy_bin_id';
 let cloudData = { checkboxes: {}, scheduleAdjust: 0 };
 let binId = null;
 let syncTimeout = null;
 
 async function initCloudStorage() {
-  // Fast path: cached bin ID from this device
-  let cachedId = null;
-  try { cachedId = localStorage.getItem(JSONBIN_BIN_KEY); } catch(e) {}
+  // 1) Use hardcoded bin ID if available (cross-device)
+  const targetId = JSONBIN_BIN_ID || (() => {
+    try { return localStorage.getItem(JSONBIN_BIN_KEY); } catch(e) { return null; }
+  })();
 
-  if (cachedId) {
+  if (targetId) {
     try {
-      const res = await fetch(`${JSONBIN_API_URL}/${cachedId}/latest`, {
+      const res = await fetch(`${JSONBIN_API_URL}/${targetId}/latest`, {
         headers: { 'X-Master-Key': JSONBIN_API_KEY }
       });
       if (res.ok) {
         const json = await res.json();
         cloudData = json.record || cloudData;
-        binId = cachedId;
+        binId = targetId;
+        try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
         return cloudData;
       }
-    } catch(e) {}
-    // Cached ID invalid — clear it and fall through to lookup
+    } catch(e) { console.warn('Cloud load failed:', e); }
+    // If hardcoded ID failed, don't fall through — it's a config error
+    if (JSONBIN_BIN_ID) {
+      console.error('Hardcoded JSONBIN_BIN_ID is invalid:', JSONBIN_BIN_ID);
+      return cloudData;
+    }
+    // Cached localStorage ID invalid — clear and create new
     try { localStorage.removeItem(JSONBIN_BIN_KEY); } catch(e) {}
   }
 
-  // Cross-device: find existing bin by name across all bins in this account
-  try {
-    const listRes = await fetch(JSONBIN_API_URL, {
-      headers: { 'X-Master-Key': JSONBIN_API_KEY }
-    });
-    if (listRes.ok) {
-      const bins = await listRes.json();
-      const list = Array.isArray(bins) ? bins : (bins.result || []);
-      const existing = list.find(b => {
-        const name = (b.metadata && b.metadata.name) || b.name || '';
-        return name === 'rl-study-progress';
-      });
-      if (existing) {
-        binId = (existing.metadata && existing.metadata.id) || existing.id;
-        try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
-        const dataRes = await fetch(`${JSONBIN_API_URL}/${binId}/latest`, {
-          headers: { 'X-Master-Key': JSONBIN_API_KEY }
-        });
-        if (dataRes.ok) {
-          const json = await dataRes.json();
-          cloudData = json.record || cloudData;
-        }
-        return cloudData;
-      }
-    }
-  } catch(e) { console.warn('Cloud lookup failed:', e); }
-
-  // No existing bin — create one (only happens once, on first-ever device)
+  // 2) No bin ID known — create a new bin
   try {
     const res = await fetch(JSONBIN_API_URL, {
       method: 'POST',
@@ -98,10 +80,25 @@ async function initCloudStorage() {
       const json = await res.json();
       binId = json.metadata.id;
       try { localStorage.setItem(JSONBIN_BIN_KEY, binId); } catch(e) {}
+      // Show the bin ID so the user can hardcode it for cross-device sync
+      console.info('%c[RL Study] New bin created. Set JSONBIN_BIN_ID to: ' + binId,
+        'color: #f97316; font-weight: bold; font-size: 14px;');
+      showBinIdBanner(binId);
     }
   } catch(e) { console.warn('Cloud create failed:', e); }
 
   return cloudData;
+}
+
+function showBinIdBanner(id) {
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#f97316;color:#fff;padding:10px 16px;font-size:13px;font-family:monospace;text-align:center;cursor:pointer;';
+  banner.innerHTML = `New cloud bin created. To sync across devices, set <b>JSONBIN_BIN_ID = '${id}'</b> in app.js then rebuild. <span style="text-decoration:underline">Click to copy & dismiss.</span>`;
+  banner.addEventListener('click', () => {
+    navigator.clipboard.writeText(id).catch(() => {});
+    banner.remove();
+  });
+  document.body.prepend(banner);
 }
 
 function syncToCloud() {
@@ -495,10 +492,12 @@ function renderStep(stepId) {
       
       let titleEl = document.getElementById('topbar-title');
       let stepMeta = window.STEP_META[window.currentStepIndex];
+      if (!stepMeta) return;
       titleEl.innerHTML = `Step ${stepMeta.num}: ${stepMeta.title} <span class="sub-header" style="opacity:0.6;font-size:0.8em;margin-left:10px;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">❯ ${txt} <span style="font-size:0.8em;">▲</span></span>`;
     } else if (window.scrollY < 100) {
       let titleEl = document.getElementById('topbar-title');
       let stepMeta = window.STEP_META[window.currentStepIndex];
+      if (!stepMeta) return;
       titleEl.innerHTML = `Step ${stepMeta.num}: ${stepMeta.title}`;
     }
   }, { rootMargin: '-10px 0px -80% 0px', threshold: [0, 1] });
