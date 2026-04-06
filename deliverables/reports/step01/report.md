@@ -265,7 +265,7 @@ Our custom PPO is simply more sample-efficient for this specific task.
 ### 5.3 Implementation vs SB3
 - A clean from-scratch implementation is 300–500 lines vs SB3's ~10K lines. The tradeoff:
   fewer features but complete transparency and debuggability.
-- SB3's defaults are tuned for robustness across many environments, not for a single task.
+- SB3's defaults are tuned for robustness across many environments (such as Atari games with millions of steps and discrete image inputs), not for classic control tasks like CartPole. This causes the SB3 default algorithm to struggle or fail without extensive tuning compared to our environment-specific hyperparameters.
   Task-specific implementations can outperform SB3 defaults with appropriate hyperparameters.
 - For research purposes (thesis work on opponent exploitation, Steps 7–8), custom
   implementations allow surgical modifications (e.g. injecting belief-state observations)

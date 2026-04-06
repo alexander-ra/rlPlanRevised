@@ -48,10 +48,11 @@ C_SHADE = 0.25        # alpha for shaded confidence bands
 # ===========================================================================
 
 def read_last_tb_run(log_dir: Path, tag: str) -> tuple[list[int], list[float]]:
-    """Return (steps, values) from the most recent TBEvent file in log_dir.
+    """Return (steps, values) from the TBEvent file with the most data in log_dir.
 
-    Why the most recent file?  Each training run appends a new event file.
-    We only want the final, successful run — not the aggregation of all runs.
+    Picks the event file with the most scalar entries for the given tag.
+    This avoids accidentally reading a tiny debug run that was started after
+    the full training completed.
     """
     from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
@@ -60,19 +61,26 @@ def read_last_tb_run(log_dir: Path, tag: str) -> tuple[list[int], list[float]]:
         print(f"  WARNING: No event files in {log_dir}")
         return [], []
 
-    last_file = event_files[-1]
-    ea = EventAccumulator(last_file)
-    ea.Reload()
+    best_steps, best_values = [], []
+    best_file = None
+    for ef in event_files:
+        ea = EventAccumulator(ef)
+        ea.Reload()
+        available = ea.Tags().get("scalars", [])
+        if tag not in available:
+            continue
+        events = ea.Scalars(tag)
+        if len(events) > len(best_values):
+            best_steps  = [e.step  for e in events]
+            best_values = [e.value for e in events]
+            best_file   = ef
 
-    available = ea.Tags().get("scalars", [])
-    if tag not in available:
-        print(f"  WARNING: tag '{tag}' not in {last_file}. Available: {available}")
+    if not best_values:
+        print(f"  WARNING: tag '{tag}' not found in any event file in {log_dir}")
         return [], []
 
-    events = ea.Scalars(tag)
-    steps  = [e.step  for e in events]
-    values = [e.value for e in events]
-    return steps, values
+    print(f"  Using: {Path(best_file).name} ({len(best_values)} entries)")
+    return best_steps, best_values
 
 
 # ===========================================================================
@@ -100,18 +108,16 @@ class EpisodeRewardCallback(BaseCallback):
         return True
 
 
-def train_sb3_dqn(total_timesteps: int = 750_000, seed: int = 42) -> dict:
-    """Train SB3 DQN on CartPole-v1 with hyperparameters matching our custom impl.
+def train_sb3_dqn(total_timesteps: int = 100_000, seed: int = 42) -> dict:
+    """Train SB3 DQN on CartPole-v1 using RL Zoo tuned hyperparameters.
 
-    Budget: our DQN runs for 1500 episodes. At ~500 steps/ep when solved and
-    shorter early on, the empirical average is ~500 steps/ep → 1500 × 500 = 750K.
-    Using 750K so SB3 gets a comparable total environment interaction budget.
+    The official RL Baselines3 Zoo provides tuned hyperparameters for
+    CartPole-v1 that solve the environment in ~50K steps.  We use these
+    rather than SB3 generic defaults (which are Atari-oriented and perform
+    poorly on classic control tasks).
 
-    Hyperparameter mapping:
-      Our epsilon_decay=0.995/episode ≈ SB3 exploration_fraction (steps-based).
-      In our final run epsilon reached 0.001 by ~episode 1380, which at ~200
-      avg steps/episode corresponds to ≈270K steps → fraction ≈ 0.77 of 750K
-      → use exploration_fraction=0.36 for a tighter match.
+    Source: https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/hyperparams/dqn.yml
+    Budget: 100K steps (2× the Zoo's 50K) to give SB3 comfortable headroom.
     """
     import gymnasium as gym
     env = Monitor(gym.make("CartPole-v1"))
@@ -119,19 +125,20 @@ def train_sb3_dqn(total_timesteps: int = 750_000, seed: int = 42) -> dict:
 
     model = SB3_DQN(
         "MlpPolicy", env,
-        learning_rate      = DQN_CONFIG["learning_rate"],
-        buffer_size        = DQN_CONFIG["buffer_size"],
-        batch_size         = DQN_CONFIG["batch_size"],
-        gamma              = DQN_CONFIG["gamma"],
-        exploration_fraction     = 0.36,  # 270K / 750K ≈ 0.36 (see docstring)
-        exploration_initial_eps  = DQN_CONFIG["epsilon_start"],
-        exploration_final_eps    = DQN_CONFIG["epsilon_end"],
-        # Our impl syncs every 5 episodes; at ~200 avg steps/ep that's ~1000 steps.
-        # Using 1000 steps here is the closest equivalent SB3 offers.
-        target_update_interval   = 1000,
-        policy_kwargs      = dict(net_arch=DQN_CONFIG["hidden_sizes"]),
-        seed               = seed,
-        verbose            = 0,
+        # RL Zoo tuned hyperparameters for CartPole-v1
+        learning_rate        = 2.3e-3,
+        batch_size           = 64,
+        buffer_size          = 100_000,
+        learning_starts      = 1000,
+        gamma                = 0.99,
+        target_update_interval = 10,
+        train_freq           = 256,
+        gradient_steps       = 128,
+        exploration_fraction = 0.16,
+        exploration_final_eps = 0.04,
+        policy_kwargs        = dict(net_arch=[256, 256]),
+        seed                 = seed,
+        verbose              = 0,
     )
     model.learn(total_timesteps=total_timesteps, callback=cb)
     env.close()
