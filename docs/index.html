@@ -1326,6 +1326,32 @@ function updateActiveNav() {
   });
 }
 
+/* ===== Cross-Origin Download Helper ===== */
+async function forceDownload(url, filename, element) {
+  const originalText = element.innerHTML;
+  element.innerHTML = '⏳...';
+  element.style.pointerEvents = 'none';
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(blobUrl);
+    a.remove();
+  } catch (error) {
+    console.error('Download failed, falling back to direct link:', error);
+    window.open(url, '_blank');
+  } finally {
+    element.innerHTML = originalText;
+    element.style.pointerEvents = 'auto';
+  }
+}
+
 /* ===== Markdown Rendering ===== */
 function renderStep(stepId) {
   const md = STEPS_CONTENT[stepId];
@@ -1351,9 +1377,13 @@ function renderStep(stepId) {
     const padNum = String(stepNum).padStart(2, '0');
     const bar = document.createElement('div');
     bar.className = 'report-bar';
+    const enUrl = `${REPORT_BASE_URL}/${reportFolder}/report_en.pdf`;
+    const bgUrl = `${REPORT_BASE_URL}/${reportFolder}/report_bg.pdf`;
+    const enFile = `step${padNum}_report_en.pdf`;
+    const bgFile = `step${padNum}_report_bg.pdf`;
     bar.innerHTML = `<span class="report-bar-label">\uD83D\uDCC4 Report available</span>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/report_en.pdf" download="step${padNum}_report_en.pdf" class="report-btn"><span class="report-flag">\uD83C\uDDEC\uD83C\uDDE7</span> EN \u2193</a>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/report_bg.pdf" download="step${padNum}_report_bg.pdf" class="report-btn"><span class="report-flag">\uD83C\uDDE7\uD83C\uDDEC</span> BG \u2193</a>`;
+      <a href="#" onclick="event.preventDefault(); forceDownload('${enUrl}', '${enFile}', this)" class="report-btn"><span class="report-flag">\uD83C\uDDEC\uD83C\uDDE7</span> EN \u2193</a>
+      <a href="#" onclick="event.preventDefault(); forceDownload('${bgUrl}', '${bgFile}', this)" class="report-btn"><span class="report-flag">\uD83C\uDDE7\uD83C\uDDEC</span> BG \u2193</a>`;
     contentEl.insertBefore(bar, contentEl.firstChild);
   }
 
