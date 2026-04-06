@@ -61,7 +61,7 @@ def find_engine() -> str:
     # Try tectonic first (available via miniconda on this system)
     conda_tectonic = Path.home() / "miniconda3" / "bin" / "tectonic"
     if conda_tectonic.exists():
-        return "tectonic"
+        return str(conda_tectonic)  # use absolute path so it works outside conda env
     if shutil.which("tectonic"):
         return "tectonic"
     if shutil.which("xelatex"):
@@ -102,16 +102,15 @@ def run_pandoc(
         "-V", f"geometry:margin={margin}",
         "-V", "fontsize=11pt",
         "-V", "linestretch=1.25",
-        # Force images to fit within text width (prevents cropping)
-        "-H", str(REPO_ROOT / "scripts" / "pandoc_img_fix.tex"),
         "-o", str(output_file),
     ]
 
-    # For Bulgarian: use DejaVu fonts for full Cyrillic support
+    # For Bulgarian: Liberation fonts + lang flag for proper hyphenation/layout
     if lang == "bg":
         cmd += [
-            "-V", "mainfont=DejaVu Serif",
-            "-V", "sansfont=DejaVu Sans",
+            "-V", "lang=bg",
+            "-V", "mainfont=Liberation Serif",
+            "-V", "sansfont=Liberation Sans",
         ]
 
     if extra_args:

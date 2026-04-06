@@ -189,18 +189,18 @@ To validate the theoretical guarantees of CFR and its application to Kuhn Poker,
 
 **Game Value Convergence**
 
-![Game Value Convergence](../figures/game_value_convergence.png)
+![Game Value Convergence](game_value_convergence.png)
 
 *This graph illustrates how the empirical average game value approaches the theoretical expectation of $-1/18$ as CFR iterations increase, confirming the strategy's stabilization.*
 
 **Exploitability Convergence**
 
-![Exploitability Convergence](../figures/exploitability_convergence.png)
+![Exploitability Convergence](exploitability_convergence.png)
 
 *Tracking exploitability over time shows the $O(1/\sqrt{T})$ convergence rate. The log-log plot demonstrates a linear decay, validating that the average strategy forms an approximate Nash equilibrium.*
 
 **Strategy Analysis**
 
-![Strategy Analysis](../figures/strategy_analysis.png)
+![Strategy Analysis](strategy_analysis.png)
 
 *This visualization breaks down the specific action probabilities at various information sets, demonstrating the emergence of the optimal bluffing and calling frequencies dictated by the Kuhn Poker Nash equilibrium family.*
