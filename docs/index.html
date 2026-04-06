@@ -602,6 +602,63 @@ body {
   background: #2a2a3a;
 }
 
+/* ===== Report Badge (Sidebar) ===== */
+.report-badge {
+  font-size: 0.72rem; margin-left: 4px; vertical-align: middle;
+  opacity: 0.8; filter: grayscale(0.2);
+}
+
+/* ===== Report Download Bar (Step View) ===== */
+.report-bar {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.55rem 1rem; margin-bottom: 1rem;
+  background: var(--primary-container); border-radius: 10px;
+  border: 1px solid var(--outline-variant);
+}
+.report-bar-label {
+  flex: 1; font-size: 0.82rem; font-weight: 500; color: var(--on-primary-container);
+}
+.report-btn {
+  display: inline-flex; align-items: center;
+  padding: 0.35rem 0.75rem; border-radius: 8px;
+  font-size: 0.78rem; font-weight: 600; text-decoration: none;
+  background: var(--primary); color: var(--on-primary);
+  transition: background 0.15s, transform 0.1s;
+}
+.report-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+/* ===== Sidebar Progress Bar ===== */
+.nav-item-wrap { position: relative; }
+.nav-progress {
+  height: 3px; margin: 0 1rem 2px 1.25rem;
+  background: rgba(255,255,255,0.08); border-radius: 2px;
+  overflow: hidden;
+}
+.nav-progress-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* ===== Step Card Progress Bar ===== */
+.sc-progress {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+.sc-progress-bar {
+  flex: 1; height: 4px; background: var(--surface-variant);
+  border-radius: 2px; overflow: hidden;
+}
+.sc-progress-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.sc-progress-text {
+  font-size: 0.68rem; color: var(--on-surface-faint);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.sc-badges { display: flex; align-items: center; gap: 0.35rem; }
+.sc-report-badge { font-size: 0.78rem; }
+
 /* ===== Homepage ===== */
 .hp { max-width: 900px; margin: 0 auto; }
 .hp-hdr { text-align: center; padding: 1.5rem 0 0.5rem; }
@@ -610,28 +667,63 @@ body {
 .hp-meta { font-size: 0.78rem !important; color: var(--on-surface-faint) !important; }
 .hp-sec { font-size: 1.05rem; font-weight: 600; color: var(--on-surface); margin: 1.5rem 0 0.6rem; padding-top: 1rem; border-top: 1px solid var(--divider); }
 
-/* ===== Gantt Calendar ===== */
-.gc-wrap { margin: 0.5rem 0; background: var(--surface); border-radius: 12px; padding: 0.75rem; border: 1px solid var(--divider); box-shadow: var(--shadow-1); }
-.gc-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.gc-hdr { display: flex; min-width: 680px; }
-.gc-label-sp { width: 130px; flex-shrink: 0; }
-.gc-months { flex: 1; position: relative; height: 26px; border-bottom: 1px solid var(--divider); }
-.gc-month { position: absolute; top: 0; height: 100%; display: flex; align-items: center; padding-left: 6px; font-size: 0.7rem; font-weight: 600; color: var(--on-surface-low); border-left: 1px dashed var(--outline); box-sizing: border-box; }
-.gc-today { position: absolute; bottom: 100%; transform: translateX(-50%); z-index: 6; pointer-events: none; }
-.gc-today span { font-size: 0.58rem; font-weight: 700; color: var(--accent-orange); background: var(--surface); padding: 0 3px; }
-.gc-body { min-width: 680px; }
-.gc-phase { padding: 0.45rem 0 0.1rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--on-surface-faint); }
-.gc-row { display: flex; align-items: center; min-height: 28px; }
-.gc-label { width: 130px; flex-shrink: 0; font-size: 0.75rem; padding-right: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.gc-label a { color: var(--on-surface-medium); text-decoration: none; }
-.gc-label a:hover { color: var(--link); text-decoration: underline; }
-.gc-track { flex: 1; position: relative; height: 24px; }
-.gc-tline { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent-orange); opacity: 0.45; z-index: 2; pointer-events: none; }
-.gc-bar { position: absolute; top: 1px; height: 22px; border-radius: 6px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 500; cursor: pointer; overflow: hidden; white-space: nowrap; transition: opacity 0.15s, transform 0.15s; }
-.gc-bar:hover { opacity: 0.85; transform: scaleY(1.15); z-index: 3; }
-.gc-bar.done { opacity: 0.55; }
-.gc-bar.active { box-shadow: 0 0 0 2px rgba(108,99,255,0.35); }
-[data-theme="dark"] .gc-bar.active { box-shadow: 0 0 0 2px rgba(165,153,255,0.45); }
+/* ===== Material Calendar ===== */
+.cal-wrap {
+  margin: 0.5rem 0; background: var(--surface); border-radius: 12px;
+  padding: 0.75rem; border: 1px solid var(--divider); box-shadow: var(--shadow-1);
+}
+.cal-header {
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+  padding: 0.25rem 0 0.6rem; user-select: none;
+}
+.cal-month-label { font-size: 1rem; font-weight: 600; color: var(--on-surface); min-width: 110px; text-align: center; }
+.cal-nav-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--outline);
+  background: var(--surface); color: var(--on-surface-medium);
+  font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.cal-nav-btn:hover:not(:disabled) { background: var(--surface-variant); color: var(--on-surface); }
+.cal-nav-btn:disabled, .cal-nav-btn.disabled { opacity: 0.3; cursor: default; }
+.cal-grid { width: 100%; }
+.cal-hdr-row {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  text-align: center; padding-bottom: 0.25rem; border-bottom: 1px solid var(--divider);
+}
+.cal-dh { font-size: 0.7rem; font-weight: 600; color: var(--on-surface-low); padding: 0.3rem 0; }
+.cal-dh:nth-child(6), .cal-dh:nth-child(7) { color: var(--on-surface-faint); }
+.cal-body {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px; padding-top: 2px;
+}
+.cal-cell {
+  position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; cursor: default; transition: background 0.12s, transform 0.1s;
+  border: 2px solid transparent;
+}
+.cal-cell.empty { background: transparent; }
+.cal-cell.has-step { cursor: pointer; }
+.cal-cell.has-step:hover { transform: scale(1.08); z-index: 2; filter: brightness(1.1); }
+.cal-cell.weekend:not(.has-step) { background: var(--surface-dim); }
+.cal-cell.weekend.has-step { opacity: 0.75; }
+.cal-cell.today { box-shadow: inset 0 0 0 2px var(--accent-orange); z-index: 3; }
+.cal-cell.today .cal-date { font-weight: 700; color: var(--accent-orange); }
+.cal-date { font-size: 0.78rem; font-weight: 500; color: var(--on-surface-medium); pointer-events: none; }
+.cal-cell.has-step .cal-date { font-weight: 600; }
+/* Multi-day continuity: merge adjacent same-step cells within a row */
+.cal-cell.cont-l { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.cal-cell.cont-r { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+/* Phase legend */
+.cal-legend {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;
+  padding: 0.6rem 0.25rem 0; justify-content: center;
+  border-top: 1px solid var(--divider); margin-top: 0.5rem;
+}
+.cal-legend-item {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.65rem; font-weight: 500; color: var(--on-surface-low);
+}
+.cal-legend-dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
 
 /* ===== Step Cards ===== */
 .sc-list { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 2rem; }
@@ -648,10 +740,10 @@ body {
 .nav-home { border-bottom: 1px solid var(--sidebar-border) !important; margin-bottom: 0.3rem; font-weight: 500 !important; }
 
 @media (max-width: 767px) {
-  .gc-label-sp, .gc-label { width: 95px; }
-  .gc-label { font-size: 0.68rem; }
-  .gc-bar span { font-size: 0.55rem; }
-  .gc-hdr, .gc-body { min-width: 560px; }
+  .cal-cell { aspect-ratio: auto; min-height: 36px; }
+  .cal-date { font-size: 0.7rem; }
+  .cal-legend { gap: 0.35rem 0.6rem; }
+  .cal-legend-item { font-size: 0.58rem; }
 }
 
 /* ===== hljs theme toggling (managed by JS) ===== */
@@ -766,12 +858,18 @@ const STEP_META = [
 const PLAN_START = new Date(2026, 2, 9); // March 8, 2026 (0-based month)
 const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 
+/* ===== Report Availability (stepId → reports folder name) ===== */
+const STEP_REPORTS = { step_01: 'step01', step_02: 'step02' };
+const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
+
 // STEPS_CONTENT is injected by build.py via the content placeholder
 
 /* ===== State ===== */
 let currentStepIndex = 0;
 let scheduleAdjust = 0; // days to delay plan start (shifts all dates forward)
 let isHomepage = false;
+let calendarMonth = new Date().getMonth();
+let calendarYear = new Date().getFullYear();
 
 /* ===== JSONBin.io Cloud Storage ===== */
 const JSONBIN_API_KEY = '$2a$10$k1FLc/sztnYxUeK/9hzPROI8cAJxmQJHZX1CDs.YZbIJL.l2Wi6d6';
@@ -1038,6 +1136,19 @@ function embedYouTubeThumbnails() {
   });
 }
 
+/* ===== Checkpoint Progress Counting ===== */
+function getStepCheckboxCounts(stepId) {
+  const md = typeof STEPS_CONTENT !== 'undefined' ? STEPS_CONTENT[stepId] : null;
+  if (!md) return { total: 0, checked: 0 };
+  const allMatches = md.match(/- \[[ x]\]/g);
+  const total = allMatches ? allMatches.length : 0;
+  let checked = 0;
+  for (let i = 0; i < total; i++) {
+    if (cloudData.checkboxes[`cb_${stepId}_${i}`] === '1') checked++;
+  }
+  return { total, checked };
+}
+
 /* ===== Checkbox Persistence (Cloud) ===== */
 function setupCheckboxes() {
   const contentEl = document.getElementById('content');
@@ -1053,6 +1164,7 @@ function setupCheckboxes() {
     cb.addEventListener('change', () => {
       cloudData.checkboxes[key] = cb.checked ? '1' : '0';
       syncToCloud();
+      updateNavProgress(stepId);
     });
   });
 }
@@ -1107,13 +1219,44 @@ function buildNav() {
       label.textContent = step.phaseLabel;
       navList.appendChild(label);
     }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'nav-item-wrap';
+
     const btn = document.createElement('button');
     btn.className = 'nav-item';
     btn.dataset.step = step.id;
-    btn.textContent = step.num + '. ' + step.title;
+    const hasReport = !!STEP_REPORTS[step.id];
+    btn.innerHTML = step.num + '. ' + step.title + (hasReport ? ' <span class="report-badge" title="Report available">\uD83D\uDCC4</span>' : '');
     btn.addEventListener('click', () => navigateTo(step.id));
-    navList.appendChild(btn);
+    wrapper.appendChild(btn);
+
+    // Thin progress bar
+    const progress = getStepCheckboxCounts(step.id);
+    const pct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
+    const c = getPhaseColors(step.phase);
+    const bar = document.createElement('div');
+    bar.className = 'nav-progress';
+    bar.id = `nav-progress-${step.id}`;
+    if (progress.total > 0) {
+      bar.innerHTML = `<div class="nav-progress-fill" style="width:${pct}%;background:${c.border}"></div>`;
+    }
+    wrapper.appendChild(bar);
+
+    navList.appendChild(wrapper);
   });
+}
+
+function updateNavProgress(stepId) {
+  const bar = document.getElementById(`nav-progress-${stepId}`);
+  if (!bar) return;
+  const progress = getStepCheckboxCounts(stepId);
+  if (progress.total > 0) {
+    const pct = Math.round((progress.checked / progress.total) * 100);
+    const step = STEP_META.find(s => s.id === stepId);
+    const c = getPhaseColors(step.phase);
+    bar.innerHTML = `<div class="nav-progress-fill" style="width:${pct}%;background:${c.border}"></div>`;
+  }
 }
 
 function updateActiveNav() {
@@ -1140,6 +1283,17 @@ function renderStep(stepId) {
   // Insert into DOM
   const contentEl = document.getElementById('content');
   contentEl.innerHTML = html;
+
+  // Report download bar
+  const reportFolder = STEP_REPORTS[stepId];
+  if (reportFolder) {
+    const bar = document.createElement('div');
+    bar.className = 'report-bar';
+    bar.innerHTML = `<span class="report-bar-label">\uD83D\uDCC4 Report available</span>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/report_en.pdf" target="_blank" rel="noopener noreferrer" class="report-btn">EN \u2193</a>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/report_bg.pdf" target="_blank" rel="noopener noreferrer" class="report-btn">BG \u2193</a>`;
+    contentEl.insertBefore(bar, contentEl.firstChild);
+  }
 
   // Syntax-highlight code blocks
   contentEl.querySelectorAll('pre code').forEach(block => {
@@ -1452,68 +1606,109 @@ function extractStepSummary(stepId) {
 }
 
 function buildGanttCalendar() {
+  return buildCalendar();
+}
+
+function changeCalMonth(delta) {
+  calendarMonth += delta;
+  if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
+  if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
   const planStart = addDays(PLAN_START, scheduleAdjust);
-  const calEnd = new Date(2026, 9, 31);
-  const totalDays = Math.round((calEnd - planStart) / 86400000) + 1;
+  const minM = planStart.getMonth(), minY = planStart.getFullYear();
+  if (calendarYear < minY || (calendarYear === minY && calendarMonth < minM)) { calendarYear = minY; calendarMonth = minM; }
+  if (calendarYear > 2026 || (calendarYear === 2026 && calendarMonth > 9)) { calendarYear = 2026; calendarMonth = 9; }
+  if (isHomepage) navigateHome();
+}
+window.changeCalMonth = changeCalMonth;
+
+function buildCalendar() {
+  const planStart = addDays(PLAN_START, scheduleAdjust);
+  const minM = planStart.getMonth(), minY = planStart.getFullYear();
+  const atMin = calendarYear === minY && calendarMonth === minM;
+  const atMax = calendarYear === 2026 && calendarMonth === 9;
+
+  const header = `<div class="cal-header">
+    <button class="cal-nav-btn${atMin ? ' disabled' : ''}" onclick="changeCalMonth(-1)" aria-label="Previous month" ${atMin ? 'disabled' : ''}>\u2039</button>
+    <span class="cal-month-label">${MONTH_NAMES[calendarMonth]} ${calendarYear}</span>
+    <button class="cal-nav-btn${atMax ? ' disabled' : ''}" onclick="changeCalMonth(1)" aria-label="Next month" ${atMax ? 'disabled' : ''}>\u203A</button>
+  </div>`;
+
+  const grid = buildCalendarMonth(calendarYear, calendarMonth);
+  const legend = buildCalendarLegend();
+  return `<div class="cal-wrap">${header}${grid}${legend}</div>`;
+}
+
+function buildCalendarMonth(year, month) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let startDow = new Date(year, month, 1).getDay() - 1; // Mon=0..Sun=6
+  if (startDow < 0) startDow = 6;
+
   const today = new Date(); today.setHours(0,0,0,0);
-  const showToday = today >= planStart && today <= calEnd;
-  const todayPct = showToday ? (((today - planStart) / 86400000) / totalDays * 100) : -10;
 
-  // Month headers
-  let months = '';
-  let m = new Date(planStart.getFullYear(), planStart.getMonth(), 1);
-  while (m <= calEnd) {
-    const mS = m < planStart ? planStart : new Date(m);
-    const nxt = new Date(m.getFullYear(), m.getMonth() + 1, 1);
-    const mE = nxt > calEnd ? calEnd : addDays(nxt, -1);
-    const l = ((mS - planStart) / 86400000) / totalDays * 100;
-    const w = (((mE - mS) / 86400000) + 1) / totalDays * 100;
-    months += `<div class="gc-month" style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}%">${MONTH_NAMES[m.getMonth()]}</div>`;
-    m = nxt;
+  // Precompute step index for each day
+  const stepForDay = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    let found = -1;
+    for (let i = 0; i < STEP_META.length; i++) {
+      const r = getStepDateRange(i);
+      if (date >= r.start && date <= r.end) { found = i; break; }
+    }
+    stepForDay.push(found);
   }
 
-  const todayHdr = showToday ? `<div class="gc-today" style="left:${todayPct.toFixed(1)}%"><span>Today</span></div>` : '';
-  const todayLine = showToday ? `<div class="gc-tline" style="left:${todayPct.toFixed(1)}%"></div>` : '';
+  const dayHeaders = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+    .map(d => `<div class="cal-dh">${d}</div>`).join('');
 
-  // Step rows
-  let rows = '', lastP = '';
-  STEP_META.forEach((step, i) => {
-    const rng = getStepDateRange(i);
-    const st = getStepStatus(i);
-    const c = getPhaseColors(step.phase);
-    const l = ((rng.start - planStart) / 86400000) / totalDays * 100;
-    const w = rng.days / totalDays * 100;
-    if (step.phase !== lastP) { lastP = step.phase; rows += `<div class="gc-phase">${step.phaseLabel}</div>`; }
-    rows += `<div class="gc-row">
-      <div class="gc-label"><a href="#${step.id}" onclick="navigateTo('${step.id}');return false">${step.num}. ${step.title}</a></div>
-      <div class="gc-track">${todayLine}
-        <div class="gc-bar ${st}" style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}%;background:${c.bg};border-color:${c.border};color:${c.text};" onclick="navigateTo('${step.id}')">
-          <span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span>
-        </div>
-      </div>
-    </div>`;
+  let cells = '';
+  for (let i = 0; i < startDow; i++) cells += `<div class="cal-cell empty"></div>`;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const isToday = date.toDateString() === today.toDateString();
+    const dow = date.getDay();
+    const isWeekend = dow === 0 || dow === 6;
+    const si = stepForDay[d - 1];
+
+    let cls = 'cal-cell';
+    let style = '';
+    let onclick = '';
+    let title = '';
+
+    if (isToday) cls += ' today';
+    if (isWeekend) cls += ' weekend';
+
+    if (si >= 0) {
+      cls += ' has-step';
+      const c = getPhaseColors(STEP_META[si].phase);
+      style = `background:${c.bg};border-color:${c.border};`;
+      onclick = `onclick="navigateTo('${STEP_META[si].id}')"`;
+      title = `title="Step ${STEP_META[si].num}: ${STEP_META[si].title}"`;
+
+      // Continuity classes for multi-day bar effect within a row
+      const gridPos = startDow + d - 1;
+      const isFirstCol = gridPos % 7 === 0;
+      const isLastCol = gridPos % 7 === 6;
+      if (!isFirstCol && d > 1 && stepForDay[d - 2] === si) cls += ' cont-l';
+      if (!isLastCol && d < daysInMonth && stepForDay[d] === si) cls += ' cont-r';
+    }
+
+    cells += `<div class="${cls}" style="${style}" ${onclick} ${title}><span class="cal-date">${d}</span></div>`;
+  }
+
+  return `<div class="cal-grid"><div class="cal-hdr-row">${dayHeaders}</div><div class="cal-body">${cells}</div></div>`;
+}
+
+function buildCalendarLegend() {
+  const seen = new Set();
+  let items = '';
+  STEP_META.forEach(s => {
+    if (seen.has(s.phase)) return;
+    seen.add(s.phase);
+    const c = getPhaseColors(s.phase);
+    items += `<span class="cal-legend-item"><span class="cal-legend-dot" style="background:${c.bg};border:2px solid ${c.border}"></span>${s.phaseLabel}</span>`;
   });
-
-  // Buffer row
-  const lastEnd = getStepDateRange(STEP_META.length - 1).end;
-  const bufStart = addDays(lastEnd, 1);
-  if (bufStart <= calEnd) {
-    const bl = ((bufStart - planStart) / 86400000) / totalDays * 100;
-    const bw = (((calEnd - bufStart) / 86400000) + 1) / totalDays * 100;
-    rows += `<div class="gc-row">
-      <div class="gc-label" style="color:#9ca3af">Buffer</div>
-      <div class="gc-track">${todayLine}
-        <div class="gc-bar upcoming" style="left:${bl.toFixed(1)}%;width:${bw.toFixed(1)}%;background:#f3f4f6;border-color:#d1d5db;color:#9ca3af;">
-          <span>${formatDayShort(bufStart)} \u2013 31 Oct</span>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  return `<div class="gc-wrap"><div class="gc-scroll">
-    <div class="gc-hdr"><div class="gc-label-sp"></div><div class="gc-months">${months}${todayHdr}</div></div>
-    <div class="gc-body">${rows}</div>
-  </div></div>`;
+  return `<div class="cal-legend">${items}</div>`;
 }
 
 function buildStepSummaries() {
@@ -1525,10 +1720,18 @@ function buildStepSummaries() {
     const tier = getStepTier(step.num);
     const summary = extractStepSummary(step.id);
     const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
+    const hasReport = !!STEP_REPORTS[step.id];
+    const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report available">\uD83D\uDCC4</span>' : '';
+    const progress = getStepCheckboxCounts(step.id);
+    const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
+    const progressHtml = progress.total > 0
+      ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
+      : '';
     html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
-      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></div>
+      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-badges">${reportBadge}<span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></span></div>
       <div class="sc-title">${step.title}</div>
       <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}d \u00b7 ${tier}</span></div>
+      ${progressHtml}
       ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
     </div>`;
   });

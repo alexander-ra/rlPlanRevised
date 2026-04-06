@@ -20,12 +20,18 @@ const STEP_META = [
 const PLAN_START = new Date(2026, 2, 9); // March 8, 2026 (0-based month)
 const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 
+/* ===== Report Availability (stepId → reports folder name) ===== */
+const STEP_REPORTS = { step_01: 'step01', step_02: 'step02' };
+const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
+
 // STEPS_CONTENT is injected by build.py via the content placeholder
 
 /* ===== State ===== */
 let currentStepIndex = 0;
 let scheduleAdjust = 0; // days to delay plan start (shifts all dates forward)
 let isHomepage = false;
+let calendarMonth = new Date().getMonth();
+let calendarYear = new Date().getFullYear();
 
 /* ===== JSONBin.io Cloud Storage ===== */
 const JSONBIN_API_KEY = '$2a$10$k1FLc/sztnYxUeK/9hzPROI8cAJxmQJHZX1CDs.YZbIJL.l2Wi6d6';
@@ -292,6 +298,19 @@ function embedYouTubeThumbnails() {
   });
 }
 
+/* ===== Checkpoint Progress Counting ===== */
+function getStepCheckboxCounts(stepId) {
+  const md = typeof STEPS_CONTENT !== 'undefined' ? STEPS_CONTENT[stepId] : null;
+  if (!md) return { total: 0, checked: 0 };
+  const allMatches = md.match(/- \[[ x]\]/g);
+  const total = allMatches ? allMatches.length : 0;
+  let checked = 0;
+  for (let i = 0; i < total; i++) {
+    if (cloudData.checkboxes[`cb_${stepId}_${i}`] === '1') checked++;
+  }
+  return { total, checked };
+}
+
 /* ===== Checkbox Persistence (Cloud) ===== */
 function setupCheckboxes() {
   const contentEl = document.getElementById('content');
@@ -307,6 +326,7 @@ function setupCheckboxes() {
     cb.addEventListener('change', () => {
       cloudData.checkboxes[key] = cb.checked ? '1' : '0';
       syncToCloud();
+      updateNavProgress(stepId);
     });
   });
 }
@@ -361,13 +381,44 @@ function buildNav() {
       label.textContent = step.phaseLabel;
       navList.appendChild(label);
     }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'nav-item-wrap';
+
     const btn = document.createElement('button');
     btn.className = 'nav-item';
     btn.dataset.step = step.id;
-    btn.textContent = step.num + '. ' + step.title;
+    const hasReport = !!STEP_REPORTS[step.id];
+    btn.innerHTML = step.num + '. ' + step.title + (hasReport ? ' <span class="report-badge" title="Report available">\uD83D\uDCC4</span>' : '');
     btn.addEventListener('click', () => navigateTo(step.id));
-    navList.appendChild(btn);
+    wrapper.appendChild(btn);
+
+    // Thin progress bar
+    const progress = getStepCheckboxCounts(step.id);
+    const pct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
+    const c = getPhaseColors(step.phase);
+    const bar = document.createElement('div');
+    bar.className = 'nav-progress';
+    bar.id = `nav-progress-${step.id}`;
+    if (progress.total > 0) {
+      bar.innerHTML = `<div class="nav-progress-fill" style="width:${pct}%;background:${c.border}"></div>`;
+    }
+    wrapper.appendChild(bar);
+
+    navList.appendChild(wrapper);
   });
+}
+
+function updateNavProgress(stepId) {
+  const bar = document.getElementById(`nav-progress-${stepId}`);
+  if (!bar) return;
+  const progress = getStepCheckboxCounts(stepId);
+  if (progress.total > 0) {
+    const pct = Math.round((progress.checked / progress.total) * 100);
+    const step = STEP_META.find(s => s.id === stepId);
+    const c = getPhaseColors(step.phase);
+    bar.innerHTML = `<div class="nav-progress-fill" style="width:${pct}%;background:${c.border}"></div>`;
+  }
 }
 
 function updateActiveNav() {
@@ -394,6 +445,17 @@ function renderStep(stepId) {
   // Insert into DOM
   const contentEl = document.getElementById('content');
   contentEl.innerHTML = html;
+
+  // Report download bar
+  const reportFolder = STEP_REPORTS[stepId];
+  if (reportFolder) {
+    const bar = document.createElement('div');
+    bar.className = 'report-bar';
+    bar.innerHTML = `<span class="report-bar-label">\uD83D\uDCC4 Report available</span>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/report_en.pdf" target="_blank" rel="noopener noreferrer" class="report-btn">EN \u2193</a>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/report_bg.pdf" target="_blank" rel="noopener noreferrer" class="report-btn">BG \u2193</a>`;
+    contentEl.insertBefore(bar, contentEl.firstChild);
+  }
 
   // Syntax-highlight code blocks
   contentEl.querySelectorAll('pre code').forEach(block => {
@@ -706,68 +768,109 @@ function extractStepSummary(stepId) {
 }
 
 function buildGanttCalendar() {
+  return buildCalendar();
+}
+
+function changeCalMonth(delta) {
+  calendarMonth += delta;
+  if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
+  if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
   const planStart = addDays(PLAN_START, scheduleAdjust);
-  const calEnd = new Date(2026, 9, 31);
-  const totalDays = Math.round((calEnd - planStart) / 86400000) + 1;
+  const minM = planStart.getMonth(), minY = planStart.getFullYear();
+  if (calendarYear < minY || (calendarYear === minY && calendarMonth < minM)) { calendarYear = minY; calendarMonth = minM; }
+  if (calendarYear > 2026 || (calendarYear === 2026 && calendarMonth > 9)) { calendarYear = 2026; calendarMonth = 9; }
+  if (isHomepage) navigateHome();
+}
+window.changeCalMonth = changeCalMonth;
+
+function buildCalendar() {
+  const planStart = addDays(PLAN_START, scheduleAdjust);
+  const minM = planStart.getMonth(), minY = planStart.getFullYear();
+  const atMin = calendarYear === minY && calendarMonth === minM;
+  const atMax = calendarYear === 2026 && calendarMonth === 9;
+
+  const header = `<div class="cal-header">
+    <button class="cal-nav-btn${atMin ? ' disabled' : ''}" onclick="changeCalMonth(-1)" aria-label="Previous month" ${atMin ? 'disabled' : ''}>\u2039</button>
+    <span class="cal-month-label">${MONTH_NAMES[calendarMonth]} ${calendarYear}</span>
+    <button class="cal-nav-btn${atMax ? ' disabled' : ''}" onclick="changeCalMonth(1)" aria-label="Next month" ${atMax ? 'disabled' : ''}>\u203A</button>
+  </div>`;
+
+  const grid = buildCalendarMonth(calendarYear, calendarMonth);
+  const legend = buildCalendarLegend();
+  return `<div class="cal-wrap">${header}${grid}${legend}</div>`;
+}
+
+function buildCalendarMonth(year, month) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let startDow = new Date(year, month, 1).getDay() - 1; // Mon=0..Sun=6
+  if (startDow < 0) startDow = 6;
+
   const today = new Date(); today.setHours(0,0,0,0);
-  const showToday = today >= planStart && today <= calEnd;
-  const todayPct = showToday ? (((today - planStart) / 86400000) / totalDays * 100) : -10;
 
-  // Month headers
-  let months = '';
-  let m = new Date(planStart.getFullYear(), planStart.getMonth(), 1);
-  while (m <= calEnd) {
-    const mS = m < planStart ? planStart : new Date(m);
-    const nxt = new Date(m.getFullYear(), m.getMonth() + 1, 1);
-    const mE = nxt > calEnd ? calEnd : addDays(nxt, -1);
-    const l = ((mS - planStart) / 86400000) / totalDays * 100;
-    const w = (((mE - mS) / 86400000) + 1) / totalDays * 100;
-    months += `<div class="gc-month" style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}%">${MONTH_NAMES[m.getMonth()]}</div>`;
-    m = nxt;
+  // Precompute step index for each day
+  const stepForDay = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    let found = -1;
+    for (let i = 0; i < STEP_META.length; i++) {
+      const r = getStepDateRange(i);
+      if (date >= r.start && date <= r.end) { found = i; break; }
+    }
+    stepForDay.push(found);
   }
 
-  const todayHdr = showToday ? `<div class="gc-today" style="left:${todayPct.toFixed(1)}%"><span>Today</span></div>` : '';
-  const todayLine = showToday ? `<div class="gc-tline" style="left:${todayPct.toFixed(1)}%"></div>` : '';
+  const dayHeaders = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+    .map(d => `<div class="cal-dh">${d}</div>`).join('');
 
-  // Step rows
-  let rows = '', lastP = '';
-  STEP_META.forEach((step, i) => {
-    const rng = getStepDateRange(i);
-    const st = getStepStatus(i);
-    const c = getPhaseColors(step.phase);
-    const l = ((rng.start - planStart) / 86400000) / totalDays * 100;
-    const w = rng.days / totalDays * 100;
-    if (step.phase !== lastP) { lastP = step.phase; rows += `<div class="gc-phase">${step.phaseLabel}</div>`; }
-    rows += `<div class="gc-row">
-      <div class="gc-label"><a href="#${step.id}" onclick="navigateTo('${step.id}');return false">${step.num}. ${step.title}</a></div>
-      <div class="gc-track">${todayLine}
-        <div class="gc-bar ${st}" style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}%;background:${c.bg};border-color:${c.border};color:${c.text};" onclick="navigateTo('${step.id}')">
-          <span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span>
-        </div>
-      </div>
-    </div>`;
+  let cells = '';
+  for (let i = 0; i < startDow; i++) cells += `<div class="cal-cell empty"></div>`;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const isToday = date.toDateString() === today.toDateString();
+    const dow = date.getDay();
+    const isWeekend = dow === 0 || dow === 6;
+    const si = stepForDay[d - 1];
+
+    let cls = 'cal-cell';
+    let style = '';
+    let onclick = '';
+    let title = '';
+
+    if (isToday) cls += ' today';
+    if (isWeekend) cls += ' weekend';
+
+    if (si >= 0) {
+      cls += ' has-step';
+      const c = getPhaseColors(STEP_META[si].phase);
+      style = `background:${c.bg};border-color:${c.border};`;
+      onclick = `onclick="navigateTo('${STEP_META[si].id}')"`;
+      title = `title="Step ${STEP_META[si].num}: ${STEP_META[si].title}"`;
+
+      // Continuity classes for multi-day bar effect within a row
+      const gridPos = startDow + d - 1;
+      const isFirstCol = gridPos % 7 === 0;
+      const isLastCol = gridPos % 7 === 6;
+      if (!isFirstCol && d > 1 && stepForDay[d - 2] === si) cls += ' cont-l';
+      if (!isLastCol && d < daysInMonth && stepForDay[d] === si) cls += ' cont-r';
+    }
+
+    cells += `<div class="${cls}" style="${style}" ${onclick} ${title}><span class="cal-date">${d}</span></div>`;
+  }
+
+  return `<div class="cal-grid"><div class="cal-hdr-row">${dayHeaders}</div><div class="cal-body">${cells}</div></div>`;
+}
+
+function buildCalendarLegend() {
+  const seen = new Set();
+  let items = '';
+  STEP_META.forEach(s => {
+    if (seen.has(s.phase)) return;
+    seen.add(s.phase);
+    const c = getPhaseColors(s.phase);
+    items += `<span class="cal-legend-item"><span class="cal-legend-dot" style="background:${c.bg};border:2px solid ${c.border}"></span>${s.phaseLabel}</span>`;
   });
-
-  // Buffer row
-  const lastEnd = getStepDateRange(STEP_META.length - 1).end;
-  const bufStart = addDays(lastEnd, 1);
-  if (bufStart <= calEnd) {
-    const bl = ((bufStart - planStart) / 86400000) / totalDays * 100;
-    const bw = (((calEnd - bufStart) / 86400000) + 1) / totalDays * 100;
-    rows += `<div class="gc-row">
-      <div class="gc-label" style="color:#9ca3af">Buffer</div>
-      <div class="gc-track">${todayLine}
-        <div class="gc-bar upcoming" style="left:${bl.toFixed(1)}%;width:${bw.toFixed(1)}%;background:#f3f4f6;border-color:#d1d5db;color:#9ca3af;">
-          <span>${formatDayShort(bufStart)} \u2013 31 Oct</span>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  return `<div class="gc-wrap"><div class="gc-scroll">
-    <div class="gc-hdr"><div class="gc-label-sp"></div><div class="gc-months">${months}${todayHdr}</div></div>
-    <div class="gc-body">${rows}</div>
-  </div></div>`;
+  return `<div class="cal-legend">${items}</div>`;
 }
 
 function buildStepSummaries() {
@@ -779,10 +882,18 @@ function buildStepSummaries() {
     const tier = getStepTier(step.num);
     const summary = extractStepSummary(step.id);
     const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
+    const hasReport = !!STEP_REPORTS[step.id];
+    const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report available">\uD83D\uDCC4</span>' : '';
+    const progress = getStepCheckboxCounts(step.id);
+    const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
+    const progressHtml = progress.total > 0
+      ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
+      : '';
     html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
-      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></div>
+      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-badges">${reportBadge}<span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></span></div>
       <div class="sc-title">${step.title}</div>
       <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}d \u00b7 ${tier}</span></div>
+      ${progressHtml}
       ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
     </div>`;
   });
