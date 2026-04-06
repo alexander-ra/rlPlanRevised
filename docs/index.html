@@ -98,13 +98,13 @@
   --checkbox-accent: var(--primary);
 
   /* Phase colors — light theme */
-  --phase-a-bg: #dbeafe; --phase-a-border: #3b82f6; --phase-a-text: #1e40af;
-  --phase-b-bg: #e0e7ff; --phase-b-border: #6366f1; --phase-b-text: #3730a3;
-  --phase-c-bg: #f3e8ff; --phase-c-border: #a855f7; --phase-c-text: #6b21a8;
-  --phase-d-bg: #ffe4e6; --phase-d-border: #f43f5e; --phase-d-text: #be123c;
-  --phase-e-bg: #dcfce7; --phase-e-border: #22c55e; --phase-e-text: #15803d;
-  --phase-f-bg: #ccfbf1; --phase-f-border: #14b8a6; --phase-f-text: #0f766e;
-  --phase-g-bg: #fef3c7; --phase-g-border: #f59e0b; --phase-g-text: #b45309;
+  --phase-a-bg: #dbeafe; --phase-a-border: #2563eb; --phase-a-text: #1e40af;   /* blue    */
+  --phase-b-bg: #fae8ff; --phase-b-border: #d946ef; --phase-b-text: #86198f;   /* fuchsia */
+  --phase-c-bg: #fef3c7; --phase-c-border: #d97706; --phase-c-text: #92400e;   /* amber   */
+  --phase-d-bg: #ffe4e6; --phase-d-border: #f43f5e; --phase-d-text: #be123c;   /* rose    */
+  --phase-e-bg: #dcfce7; --phase-e-border: #059669; --phase-e-text: #065f46;   /* emerald */
+  --phase-f-bg: #cffafe; --phase-f-border: #0891b2; --phase-f-text: #155e75;   /* cyan    */
+  --phase-g-bg: #ede9fe; --phase-g-border: #7c3aed; --phase-g-text: #4c1d95;   /* violet  */
 
   /* Transition */
   --theme-transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease,
@@ -163,14 +163,14 @@
   --tr-even: #1a1a26;
   --td-border: #3a3a4a;
 
-  /* Phase colors — dark theme (saturated backgrounds, lighter text) */
-  --phase-a-bg: #1e3a5f; --phase-a-border: #60a5fa; --phase-a-text: #93c5fd;
-  --phase-b-bg: #2e2b5f; --phase-b-border: #818cf8; --phase-b-text: #a5b4fc;
-  --phase-c-bg: #3b1f5f; --phase-c-border: #c084fc; --phase-c-text: #d8b4fe;
-  --phase-d-bg: #4a1a2e; --phase-d-border: #fb7185; --phase-d-text: #fda4af;
-  --phase-e-bg: #14432a; --phase-e-border: #4ade80; --phase-e-text: #86efac;
-  --phase-f-bg: #134e4a; --phase-f-border: #2dd4bf; --phase-f-text: #5eead4;
-  --phase-g-bg: #4a3520; --phase-g-border: #fbbf24; --phase-g-text: #fcd34d;
+  /* Phase colors — dark theme */
+  --phase-a-bg: #1e3a5f; --phase-a-border: #60a5fa; --phase-a-text: #93c5fd;   /* blue    */
+  --phase-b-bg: #4a1248; --phase-b-border: #e879f9; --phase-b-text: #f0abfc;   /* fuchsia */
+  --phase-c-bg: #44310a; --phase-c-border: #fbbf24; --phase-c-text: #fde68a;   /* amber   */
+  --phase-d-bg: #4a1a2e; --phase-d-border: #fb7185; --phase-d-text: #fda4af;   /* rose    */
+  --phase-e-bg: #14432a; --phase-e-border: #34d399; --phase-e-text: #6ee7b7;   /* emerald */
+  --phase-f-bg: #0a3040; --phase-f-border: #22d3ee; --phase-f-text: #67e8f9;   /* cyan    */
+  --phase-g-bg: #2a1555; --phase-g-border: #a78bfa; --phase-g-text: #c4b5fd;   /* violet  */
 
   color-scheme: dark;
 }
@@ -689,6 +689,25 @@ body {
 .sc-badges { display: flex; align-items: center; gap: 0.35rem; }
 .sc-report-badge { font-size: 0.78rem; }
 
+/* ===== Step Card Download Row ===== */
+.sc-dl-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;
+  margin-top: 0.5rem; padding-top: 0.4rem;
+  border-top: 1px solid var(--divider);
+  font-size: 0.7rem;
+}
+.sc-dl-label { color: var(--on-surface-medium); font-weight: 500; }
+.sc-dl-sep { color: var(--on-surface-faint); margin: 0 0.1rem; }
+.sc-dl-btn {
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  padding: 0.18rem 0.5rem; border-radius: 5px;
+  font-size: 0.68rem; font-weight: 600; text-decoration: none;
+  background: var(--surface-variant); color: var(--on-surface-medium);
+  border: 1px solid var(--outline-variant);
+  transition: background 0.12s;
+}
+.sc-dl-btn:hover { background: var(--outline-variant); color: var(--on-surface); }
+
 /* ===== Homepage ===== */
 .hp { max-width: 900px; margin: 0 auto; }
 .hp-hdr { text-align: center; padding: 1.5rem 0 0.5rem; }
@@ -901,22 +920,22 @@ const SUMMARY_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/mast
 
 /* ===== Tertiary step colors for calendar (cycle within phase) ===== */
 const STEP_BG_PALETTE = [
-  ['#dbeafe','#bfdbfe','#93c5fd'],  // A — blue tints
-  ['#e0e7ff','#c7d2fe','#a5b4fc'],  // B — indigo tints
-  ['#f3e8ff','#e9d5ff','#d8b4fe'],  // C — purple tints
-  ['#ffe4e6','#fecdd3','#fda4af'],  // D — rose tints
-  ['#dcfce7','#bbf7d0','#86efac'],  // E — green tints
-  ['#ccfbf1','#a7f3d0','#5eead4'],  // F — teal tints
-  ['#fef3c7','#fde68a','#fcd34d'],  // G — amber tints
+  ['#dbeafe','#bfdbfe','#93c5fd'],  // A — blue
+  ['#fae8ff','#f5d0fe','#f0abfc'],  // B — fuchsia (swap from indigo)
+  ['#fef3c7','#fde68a','#fcd34d'],  // C — amber  (swap from purple)
+  ['#ffe4e6','#fecdd3','#fda4af'],  // D — rose
+  ['#dcfce7','#bbf7d0','#86efac'],  // E — emerald
+  ['#cffafe','#a5f3fc','#67e8f9'],  // F — cyan   (swap from teal)
+  ['#ede9fe','#ddd6fe','#c4b5fd'],  // G — violet (swap from amber)
 ];
 const STEP_BG_PALETTE_DARK = [
-  ['#1e3a5f','#1a3050','#162845'],  // A
-  ['#2e2b5f','#262350','#1e1b45'],  // B
-  ['#3b1f5f','#321a50','#291545'],  // C
-  ['#4a1a2e','#401528','#361022'],  // D
-  ['#14432a','#103824','#0c2d1e'],  // E
-  ['#134e4a','#0f4240','#0b3636'],  // F
-  ['#4a3520','#3f2d1a','#342514'],  // G
+  ['#1e3a5f','#1a3050','#162845'],  // A — blue
+  ['#4a1248','#3d1040','#330e38'],  // B — fuchsia
+  ['#44310a','#3a2808','#302006'],  // C — amber
+  ['#4a1a2e','#401528','#361022'],  // D — rose
+  ['#14432a','#103824','#0c2d1e'],  // E — emerald
+  ['#0a3040','#08283a','#062033'],  // F — cyan
+  ['#2a1555','#23114a','#1c0d3e'],  // G — violet
 ];
 const PHASE_ORDER = ['A','B','C','D','E','F','G'];
 function getStepBg(stepIndex) {
@@ -1810,18 +1829,30 @@ function buildStepSummaries() {
     const summary = extractStepSummary(step.id);
     const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
     const hasReport = !!STEP_REPORTS[step.id];
+    const reportFolder = STEP_REPORTS[step.id];
     const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report & summary available">\uD83D\uDCD6</span>' : '';
     const progress = getStepCheckboxCounts(step.id);
     const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
     const progressHtml = progress.total > 0
       ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
       : '';
+    const dlHtml = reportFolder ? `
+      <div class="sc-dl-row" onclick="event.stopPropagation()">
+        <span class="sc-dl-label">\uD83D\uDCD6 Summary:</span>
+        <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
+        <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
+        <span class="sc-dl-sep">|</span>
+        <span class="sc-dl-label">\uD83D\uDCCA Report:</span>
+        <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
+        <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
+      </div>` : '';
     html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
       <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-badges">${reportBadge}<span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></span></div>
       <div class="sc-title">${step.title}</div>
       <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}d \u00b7 ${tier}</span></div>
       ${progressHtml}
       ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
+      ${dlHtml}
     </div>`;
   });
   return html;

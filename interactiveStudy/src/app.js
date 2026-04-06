@@ -27,22 +27,22 @@ const SUMMARY_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/mast
 
 /* ===== Tertiary step colors for calendar (cycle within phase) ===== */
 const STEP_BG_PALETTE = [
-  ['#dbeafe','#bfdbfe','#93c5fd'],  // A — blue tints
-  ['#e0e7ff','#c7d2fe','#a5b4fc'],  // B — indigo tints
-  ['#f3e8ff','#e9d5ff','#d8b4fe'],  // C — purple tints
-  ['#ffe4e6','#fecdd3','#fda4af'],  // D — rose tints
-  ['#dcfce7','#bbf7d0','#86efac'],  // E — green tints
-  ['#ccfbf1','#a7f3d0','#5eead4'],  // F — teal tints
-  ['#fef3c7','#fde68a','#fcd34d'],  // G — amber tints
+  ['#dbeafe','#bfdbfe','#93c5fd'],  // A — blue
+  ['#fae8ff','#f5d0fe','#f0abfc'],  // B — fuchsia (swap from indigo)
+  ['#fef3c7','#fde68a','#fcd34d'],  // C — amber  (swap from purple)
+  ['#ffe4e6','#fecdd3','#fda4af'],  // D — rose
+  ['#dcfce7','#bbf7d0','#86efac'],  // E — emerald
+  ['#cffafe','#a5f3fc','#67e8f9'],  // F — cyan   (swap from teal)
+  ['#ede9fe','#ddd6fe','#c4b5fd'],  // G — violet (swap from amber)
 ];
 const STEP_BG_PALETTE_DARK = [
-  ['#1e3a5f','#1a3050','#162845'],  // A
-  ['#2e2b5f','#262350','#1e1b45'],  // B
-  ['#3b1f5f','#321a50','#291545'],  // C
-  ['#4a1a2e','#401528','#361022'],  // D
-  ['#14432a','#103824','#0c2d1e'],  // E
-  ['#134e4a','#0f4240','#0b3636'],  // F
-  ['#4a3520','#3f2d1a','#342514'],  // G
+  ['#1e3a5f','#1a3050','#162845'],  // A — blue
+  ['#4a1248','#3d1040','#330e38'],  // B — fuchsia
+  ['#44310a','#3a2808','#302006'],  // C — amber
+  ['#4a1a2e','#401528','#361022'],  // D — rose
+  ['#14432a','#103824','#0c2d1e'],  // E — emerald
+  ['#0a3040','#08283a','#062033'],  // F — cyan
+  ['#2a1555','#23114a','#1c0d3e'],  // G — violet
 ];
 const PHASE_ORDER = ['A','B','C','D','E','F','G'];
 function getStepBg(stepIndex) {
@@ -936,18 +936,30 @@ function buildStepSummaries() {
     const summary = extractStepSummary(step.id);
     const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
     const hasReport = !!STEP_REPORTS[step.id];
+    const reportFolder = STEP_REPORTS[step.id];
     const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report & summary available">\uD83D\uDCD6</span>' : '';
     const progress = getStepCheckboxCounts(step.id);
     const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
     const progressHtml = progress.total > 0
       ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
       : '';
+    const dlHtml = reportFolder ? `
+      <div class="sc-dl-row" onclick="event.stopPropagation()">
+        <span class="sc-dl-label">\uD83D\uDCD6 Summary:</span>
+        <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
+        <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
+        <span class="sc-dl-sep">|</span>
+        <span class="sc-dl-label">\uD83D\uDCCA Report:</span>
+        <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
+        <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
+      </div>` : '';
     html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
       <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-badges">${reportBadge}<span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></span></div>
       <div class="sc-title">${step.title}</div>
       <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}d \u00b7 ${tier}</span></div>
       ${progressHtml}
       ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
+      ${dlHtml}
     </div>`;
   });
   return html;
