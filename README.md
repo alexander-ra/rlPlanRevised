@@ -1,6 +1,11 @@
 # RL PhD Study Plan
 
-**Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments**
+**Official PhD Title:**
+- **EN:** Research on the possibilities for applying Artificial Intelligence in computer games
+- **BG:** Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
+
+**Research Focus:**
+Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments
 
 | | |
 |---|---|

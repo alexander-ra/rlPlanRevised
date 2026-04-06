@@ -2,6 +2,10 @@
 # ---------------------------------------------------------------------------
 # scripts/build_pdf.py
 #
+# OFFICIAL PhD TITLE (keep consistent across all documents):
+#   EN: Research on the possibilities for applying Artificial Intelligence in computer games
+#   BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
+#
 # PURPOSE: Generate PDF study plans from the markdown source files in
 #   deliverables/studyPlan/{en,bg}/ using pandoc.
 #
@@ -61,6 +65,23 @@ def find_pandoc() -> str:
         "pandoc not found. Install it with:\n"
         "  conda install -c conda-forge pandoc\n"
         "or visit https://pandoc.org/installing.html"
+    )
+
+
+def find_engine() -> str:
+    """Locate a suitable PDF engine (tectonic preferred, then xelatex)."""
+    # Try tectonic first (available via miniconda on this system)
+    conda_tectonic = Path.home() / "miniconda3" / "bin" / "tectonic"
+    if conda_tectonic.exists():
+        return "tectonic"
+    if shutil.which("tectonic"):
+        return "tectonic"
+    if shutil.which("xelatex"):
+        return "xelatex"
+    raise FileNotFoundError(
+        "No suitable PDF engine found. Install tectonic with:\n"
+        "  conda install -c conda-forge tectonic\n"
+        "or install xelatex via texlive-xetex."
     )
 
 
@@ -129,20 +150,22 @@ def main():
         help="Language to build (default: both)"
     )
     parser.add_argument(
-        "--engine", default="xelatex",
-        help="PDF engine for pandoc (xelatex | pdflatex | weasyprint | wkhtmltopdf)"
+        "--engine", default="tectonic",
+        help="PDF engine for pandoc (tectonic | xelatex | pdflatex | weasyprint | wkhtmltopdf)"
     )
     args = parser.parse_args()
 
     try:
         pandoc_bin = find_pandoc()
-        print(f"Found pandoc: {pandoc_bin}")
+        print(f"pandoc : {pandoc_bin}")
+        engine = find_engine()
+        print(f"engine : {engine}")
     except FileNotFoundError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
 
     langs = ["en", "bg"] if args.lang == "both" else [args.lang]
-    success = all(build_pdf(lang, pdf_engine=args.engine, pandoc_bin=pandoc_bin)
+    success = all(build_pdf(lang, pdf_engine=engine, pandoc_bin=pandoc_bin)
                   for lang in langs)
     if success:
         print(f"\nAll PDFs written to: {OUTPUT_DIR}")

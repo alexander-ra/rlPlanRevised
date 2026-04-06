@@ -4,6 +4,9 @@ subtitle: "Адаптивно учене на стратегии в многоа
 author: "Александър Андреев"
 date: "Април 2026"
 lang: bg
+vars:
+  official_title_en: "Research on the possibilities for applying Artificial Intelligence in computer games"
+  official_title_bg: "Изследване на възможностите за приложение на изкуствения интелект в компютърни игри"
 ---
 
 # Стъпка 1 — Основи на обучението с подкрепление (Reinforcement Learning)

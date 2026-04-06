@@ -1,5 +1,9 @@
 # Step 01 — Reinforcement Learning Basics: Implementation
 
+**PhD Context:** This step is part of the official research program:
+- **EN:** Research on the possibilities for applying Artificial Intelligence in computer games
+- **BG:** Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
+
 DQN + PPO from scratch on classic control environments.
 
 > **Environment setup:** See the [project-level README](../../README.md#python-environment-setup).

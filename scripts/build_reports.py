@@ -2,6 +2,10 @@
 # ---------------------------------------------------------------------------
 # scripts/build_reports.py
 #
+# OFFICIAL PhD TITLE (keep consistent across all documents):
+#   EN: Research on the possibilities for applying Artificial Intelligence in computer games
+#   BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
+#
 # PURPOSE: Generate PDFs for step implementation reports and summaries.
 #   Mirrors the logic of scripts/build_pdf.py (used for the study plan).
 #

@@ -4,6 +4,9 @@ subtitle: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Envir
 author: "Alexander Andreev"
 date: "April 2026"
 lang: en
+vars:
+  official_title_en: "Research on the possibilities for applying Artificial Intelligence in computer games"
+  official_title_bg: "Изследване на възможностите за приложение на изкуствения интелект в компютърни игри"
 ---
 
 # Step 1 — Reinforcement Learning Basics

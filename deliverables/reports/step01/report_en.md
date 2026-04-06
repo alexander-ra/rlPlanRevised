@@ -1,3 +1,9 @@
+<!--
+OFFICIAL PhD TITLE (keep consistent across all documents):
+EN: Research on the possibilities for applying Artificial Intelligence in computer games
+BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
+-->
+
 # Step 01 — RL Basics: Implementation Report
 
 **Environment:** April 2026  
