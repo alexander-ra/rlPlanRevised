@@ -145,13 +145,13 @@ def build_report(step: str, lang: str, engine: str, pandoc_bin: str) -> bool:
     step_dir = REPORTS_DIR / step
     suffix = "en" if lang == "en" else "bg"
     md_file = step_dir / f"report_{suffix}.md"
-    pdf_file = step_dir / f"report_{suffix}.pdf"
+    pdf_file = step_dir / f"{step}_report_{suffix}.pdf"
 
     if not md_file.exists():
         print(f"  SKIP: {md_file.relative_to(REPO_ROOT)} not found")
         return True  # not an error — step may not have BG report yet
 
-    print(f"  Building report_{suffix}.pdf for step {step} ({lang.upper()}) ...")
+    print(f"  Building {step}_report_{suffix}.pdf for step {step} ({lang.upper()}) ...")
     return run_pandoc(md_file, pdf_file, lang, engine, pandoc_bin)
 
 
