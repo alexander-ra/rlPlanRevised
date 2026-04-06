@@ -536,7 +536,7 @@ The plan was validated against 10 real job postings from Glassdoor (March 2026) 
 
 ## Appendix: PDF Export
 
-**Toolchain:** [Pandoc](https://pandoc.org) + a LaTeX engine (e.g. `texlive-xetex` or `texlive-pdflatex`).
+**Toolchain:** [Pandoc](https://pandoc.org) + [Tectonic](https://tectonic-typesetting.github.io/) (XeTeX engine).
 
 **Install (once):**
 ```bash
@@ -544,28 +544,27 @@ The plan was validated against 10 real job postings from Glassdoor (March 2026) 
 conda install -c conda-forge pandoc tectonic -y
 ```
 
-**Export commands (run from project root):**
-```bash
-# English (multi-file build)
-pandoc deliverables/studyPlan/en/00_metadata.yaml \
-  deliverables/studyPlan/en/[0-9]*.md \
-  --toc --toc-depth=2 \
-  --pdf-engine=tectonic \
-  -V geometry:margin=2cm \
-  -V fontsize=11pt \
-  -o exports/studyPlanEN.pdf
+---
 
-# Bulgarian (multi-file build)
-pandoc deliverables/studyPlan/bg/00_metadata.yaml \
-  deliverables/studyPlan/bg/[0-9]*.md \
-  --toc --toc-depth=2 \
-  --pdf-engine=tectonic \
-  -V geometry:margin=2cm \
-  -V fontsize=11pt \
-  -o exports/studyPlanBG.pdf
+### Study Plan PDFs
+
+Built by `scripts/build_pdf.py`. Sources are the multi-file markdown chapters in `deliverables/studyPlan/{en,bg}/`.
+
+**Usage:**
+```bash
+python3 scripts/build_pdf.py               # both languages, xelatex engine
+python3 scripts/build_pdf.py --lang en     # English only
+python3 scripts/build_pdf.py --lang bg     # Bulgarian only
 ```
 
-**File structure:**
+**Output:**
+```
+deliverables/studyPlan/
+├── studyPlanEN.pdf
+└── studyPlanBG.pdf
+```
+
+**Source structure:**
 ```
 deliverables/studyPlan/
 ├── en/
@@ -579,11 +578,58 @@ deliverables/studyPlan/
     └── 02_phase_a.md  ...  08_phase_g.md
 ```
 
-**Flags explained:**
-- `--toc` — auto-generates a table of contents from headings
-- `--toc-depth=2` — includes `##` headings in TOC (phases), omits `###`
-- `--pdf-engine=tectonic` — lightweight LaTeX engine (auto-downloads packages on first run)
-- `-V geometry:margin=2cm` — tighter margins for denser layout
-- `-V fontsize=11pt` — slightly smaller base font to save space
+---
 
-> The `\small` / `\normalsize` raw LaTeX blocks in the Glossary are passed through automatically by pandoc and will reduce the glossary font size in the PDF.
+### Step Report and Summary PDFs
+
+Built by `scripts/build_reports.py`. Each step produces four PDFs — two implementation reports and two summaries, one per language.
+
+**Usage:**
+```bash
+python3 scripts/build_reports.py                        # all steps, both targets, both languages
+python3 scripts/build_reports.py --step step01          # one step only
+python3 scripts/build_reports.py --type summary         # summaries only
+python3 scripts/build_reports.py --lang bg              # Bulgarian only
+```
+
+**Output:**
+```
+deliverables/
+├── summaries/                          ← Reader-facing condensed summaries
+│   ├── step01_en.pdf                   ← English summary
+│   └── step01_bg.pdf                   ← Bulgarian summary
+└── reports/
+    └── step01/
+        ├── report_en.pdf               ← English implementation report
+        └── report_bg.pdf               ← Bulgarian implementation report
+```
+
+**Source structure (per step):**
+```
+deliverables/reports/step01/
+├── figures/
+│   ├── dqn_comparison.png
+│   ├── ppo_comparison.png
+│   └── final_metrics.png
+├── summary/
+│   ├── summaryEn.md                    ← English summary source → summaries/step01_en.pdf
+│   ├── summaryBg.md                    ← Bulgarian summary source → summaries/step01_bg.pdf
+│   ├── dqn_comparison.png              ← figure copies embedded in summary markdown
+│   └── ppo_comparison.png
+├── report_en.md                        ← English report source → report_en.pdf
+└── report_bg.md                        ← Bulgarian report source → report_bg.pdf
+```
+
+**Cyrillic/Bulgarian support:** BG builds use `--pdf-engine=tectonic` with `-V mainfont="DejaVu Serif"` and `-V sansfont="DejaVu Sans"` to ensure full Cyrillic character support. DejaVu fonts must be installed on the system (standard on Fedora/RHEL).
+
+**Image resolution:** Pandoc resolves image paths relative to each source `.md` file's directory, so `figures/dqn_comparison.png` in a report resolves to `reports/step01/figures/`, and bare `dqn_comparison.png` in a summary resolves to `reports/step01/summary/`.
+
+---
+
+**Flags used (shared between both build scripts):**
+- `--toc` — auto-generates a table of contents from headings
+- `--toc-depth=2` — includes `##` headings in TOC, omits `###`
+- `--pdf-engine=tectonic` — lightweight XeTeX engine (auto-downloads packages on first run)
+- `-V geometry:margin=2.5cm` — standard academic margins
+- `-V fontsize=11pt` — comfortable reading size
+- `-V linestretch=1.25` — generous line spacing
