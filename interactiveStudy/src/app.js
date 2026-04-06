@@ -24,6 +24,39 @@ const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 const STEP_REPORTS = { step_01: 'step01', step_02: 'step02' };
 const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
 
+/* ===== Tertiary step colors for calendar (cycle within phase) ===== */
+const STEP_BG_PALETTE = [
+  ['#dbeafe','#bfdbfe','#93c5fd'],  // A — blue tints
+  ['#e0e7ff','#c7d2fe','#a5b4fc'],  // B — indigo tints
+  ['#f3e8ff','#e9d5ff','#d8b4fe'],  // C — purple tints
+  ['#ffe4e6','#fecdd3','#fda4af'],  // D — rose tints
+  ['#dcfce7','#bbf7d0','#86efac'],  // E — green tints
+  ['#ccfbf1','#a7f3d0','#5eead4'],  // F — teal tints
+  ['#fef3c7','#fde68a','#fcd34d'],  // G — amber tints
+];
+const STEP_BG_PALETTE_DARK = [
+  ['#1e3a5f','#1a3050','#162845'],  // A
+  ['#2e2b5f','#262350','#1e1b45'],  // B
+  ['#3b1f5f','#321a50','#291545'],  // C
+  ['#4a1a2e','#401528','#361022'],  // D
+  ['#14432a','#103824','#0c2d1e'],  // E
+  ['#134e4a','#0f4240','#0b3636'],  // F
+  ['#4a3520','#3f2d1a','#342514'],  // G
+];
+const PHASE_ORDER = ['A','B','C','D','E','F','G'];
+function getStepBg(stepIndex) {
+  const step = STEP_META[stepIndex];
+  const phaseIdx = PHASE_ORDER.indexOf(step.phase);
+  const palette = document.documentElement.getAttribute('data-theme') === 'dark' ? STEP_BG_PALETTE_DARK : STEP_BG_PALETTE;
+  const colors = palette[phaseIdx] || palette[0];
+  // Find position within this phase
+  let posInPhase = 0;
+  for (let i = 0; i < stepIndex; i++) {
+    if (STEP_META[i].phase === step.phase) posInPhase++;
+  }
+  return colors[posInPhase % colors.length];
+}
+
 // STEPS_CONTENT is injected by build.py via the content placeholder
 
 /* ===== State ===== */
@@ -449,11 +482,13 @@ function renderStep(stepId) {
   // Report download bar
   const reportFolder = STEP_REPORTS[stepId];
   if (reportFolder) {
+    const stepNum = STEP_META.find(s => s.id === stepId)?.num || '';
+    const padNum = String(stepNum).padStart(2, '0');
     const bar = document.createElement('div');
     bar.className = 'report-bar';
     bar.innerHTML = `<span class="report-bar-label">\uD83D\uDCC4 Report available</span>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/report_en.pdf" target="_blank" rel="noopener noreferrer" class="report-btn">EN \u2193</a>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/report_bg.pdf" target="_blank" rel="noopener noreferrer" class="report-btn">BG \u2193</a>`;
+      <a href="${REPORT_BASE_URL}/${reportFolder}/report_en.pdf" download="step${padNum}_report_en.pdf" class="report-btn"><span class="report-flag">\uD83C\uDDEC\uD83C\uDDE7</span> EN \u2193</a>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/report_bg.pdf" download="step${padNum}_report_bg.pdf" class="report-btn"><span class="report-flag">\uD83C\uDDE7\uD83C\uDDEC</span> BG \u2193</a>`;
     contentEl.insertBefore(bar, contentEl.firstChild);
   }
 
@@ -687,6 +722,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   await initCloudStorage();
   buildNav();
 
+  // Dismiss loading overlay
+  const loadingEl = document.getElementById('loading-overlay');
+  if (loadingEl) { loadingEl.classList.add('hidden'); setTimeout(() => loadingEl.remove(), 500); }
+
   document.getElementById('hamburger').addEventListener('click', openSidebar);
   document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
   document.getElementById('overlay').addEventListener('click', closeSidebar);
@@ -843,7 +882,8 @@ function buildCalendarMonth(year, month) {
     if (si >= 0) {
       cls += ' has-step';
       const c = getPhaseColors(STEP_META[si].phase);
-      style = `background:${c.bg};border-color:${c.border};`;
+      const bg = getStepBg(si);
+      style = `background:${bg};border-color:${c.border};`;
       onclick = `onclick="navigateTo('${STEP_META[si].id}')"`;
       title = `title="Step ${STEP_META[si].num}: ${STEP_META[si].title}"`;
 
