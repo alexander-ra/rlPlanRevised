@@ -92,6 +92,8 @@ def run_pandoc(
         "-V", "geometry:margin=2.5cm",
         "-V", "fontsize=11pt",
         "-V", "linestretch=1.25",
+        "-V", "graphics",
+        "-V", "max-width=\\textwidth",
         "-o", str(output_file),
     ]
 
