@@ -1,12 +1,11 @@
 ---
 title: "Step 1 Summary — Reinforcement Learning Basics"
-subtitle: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
+subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "April 2026"
 lang: en
 vars:
-  official_title_en: "Research on the possibilities for applying Artificial Intelligence in computer games"
-  official_title_bg: "Изследване на възможностите за приложение на изкуствения интелект в компютърни игри"
+  research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
 # Step 1 — Reinforcement Learning Basics
