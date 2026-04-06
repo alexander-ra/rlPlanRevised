@@ -44,6 +44,12 @@ In Kuhn Poker, the information set `"2pb"` contains two game states: "I hold Que
 
 ---
 
+## Minimax Theorem
+
+The Minimax Theorem, established by John von Neumann in 1928, provides a foundational solution concept for two-player zero-sum games. It states that for every finite, two-player, zero-sum game, there exists a strategy for both players where the maximum expected loss is minimized. In other words, each player can guarantee a specific expected payoff, known as the "value of the game," regardless of the opponent's strategy. This creates a scenario where one player's optimal strategy is to maximize their minimum reward (maximin), while the opponent seeks to minimize the first player's maximum reward (minimax). When these two values equal, the game is in equilibrium. This algorithm directly relates to Nash Equilibrium: in the specific case of two-player zero-sum games, a Minimax strategy profile is equivalent to a Nash equilibrium. Discovering this Minimax solution guarantees safety against any exploitative strategy the opponent might employ.
+
+---
+
 ## Nash Equilibrium
 
 A **Nash equilibrium** is a strategy profile where each player's strategy is a best response to every other player's strategy. Formally, for each player $i$:
@@ -51,6 +57,8 @@ A **Nash equilibrium** is a strategy profile where each player's strategy is a b
 $$u_i(\sigma_i^*, \sigma_{-i}^*) \geq u_i(\sigma_i, \sigma_{-i}^*) \quad \forall \sigma_i$$
 
 No player can improve their expected payoff by unilaterally deviating. This does not mean everyone is happy with the outcome (Prisoner's Dilemma), just that no one can do better by changing only their own strategy.
+
+In games extended to more than two players (N-player games) or general-sum games, the properties of Nash equilibrium become significantly more complex. In these settings, finding an exact Nash equilibrium is known to be computationally intractable, often falling into the complexity class PPAD-complete. Furthermore, the equilibria lose their safety guarantee: playing a Nash strategy in a 3-player game does not protect against two opponents who might deviate from equilibrium, potentially forming temporary coalitions that exploit the third player. This dynamic necessitates entirely different evaluation and training frameworks (such as those discussed in Steps 9 and 11) since the direct equivalence between Nash and minimax optimality no longer holds.
 
 **Key properties:**
 - **Existence:** Nash (1950) proved that every finite game has at least one Nash equilibrium (possibly in mixed strategies). This is a foundational theorem but does not help with computation.
@@ -172,3 +180,27 @@ At Nash equilibrium, exploitability is exactly zero — neither player can impro
 
 > **Read more:** Bowling, M. et al. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149.
 > This paper used CFR+ (a variant) to solve heads-up limit Texas Hold'em — the first non-trivial imperfect-information game to be essentially solved.
+
+---
+
+## Empirical Visualizations
+
+To validate the theoretical guarantees of CFR and its application to Kuhn Poker, several metrics were tracked during the training process:
+
+**Game Value Convergence**
+
+![Game Value Convergence](../figures/game_value_convergence.png)
+
+*This graph illustrates how the empirical average game value approaches the theoretical expectation of $-1/18$ as CFR iterations increase, confirming the strategy's stabilization.*
+
+**Exploitability Convergence**
+
+![Exploitability Convergence](../figures/exploitability_convergence.png)
+
+*Tracking exploitability over time shows the $O(1/\sqrt{T})$ convergence rate. The log-log plot demonstrates a linear decay, validating that the average strategy forms an approximate Nash equilibrium.*
+
+**Strategy Analysis**
+
+![Strategy Analysis](../figures/strategy_analysis.png)
+
+*This visualization breaks down the specific action probabilities at various information sets, demonstrating the emergence of the optimal bluffing and calling frequencies dictated by the Kuhn Poker Nash equilibrium family.*

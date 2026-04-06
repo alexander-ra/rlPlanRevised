@@ -80,8 +80,17 @@ def run_pandoc(
     engine: str,
     pandoc_bin: str,
     extra_args: list[str] | None = None,
+    geometry: str | None = None,
+    number_offset: int = 0,
 ) -> bool:
-    """Run pandoc to convert a markdown file to PDF."""
+    """Run pandoc to convert a markdown file to PDF.
+    
+    number_offset: shifts section numbering so step N starts at N.1, N.2, etc.
+                   e.g. number_offset=1 makes sections start at 2.x
+    """
+    # Use custom geometry if provided, otherwise use default
+    margin = geometry if geometry else "2.5cm"
+    
     cmd = [
         pandoc_bin,
         str(input_file),
@@ -89,11 +98,12 @@ def run_pandoc(
         "--toc",
         "--toc-depth=2",
         "--number-sections",
-        "-V", "geometry:margin=2.5cm",
+        f"--number-offset={number_offset}",
+        "-V", f"geometry:margin={margin}",
         "-V", "fontsize=11pt",
         "-V", "linestretch=1.25",
-        "-V", "graphics",
-        "-V", "max-width=\\textwidth",
+        # Force images to fit within text width (prevents cropping)
+        "-H", str(REPO_ROOT / "scripts" / "pandoc_img_fix.tex"),
         "-o", str(output_file),
     ]
 
@@ -159,7 +169,12 @@ def build_summary(step: str, lang: str, engine: str, pandoc_bin: str) -> bool:
         return True
 
     print(f"  Building {step}_{lang}.pdf ({lang.upper()}) ...")
-    return run_pandoc(md_file, pdf_file, lang, engine, pandoc_bin)
+    # Extract step number for section numbering offset (step01 → 0, step02 → 1, etc.)
+    # so pandoc generates 1.x for step01, 2.x for step02, 3.x for step03...
+    step_num = int(step.replace("step", ""))
+    offset = step_num - 1
+    return run_pandoc(md_file, pdf_file, lang, engine, pandoc_bin,
+                      geometry="2.0cm", number_offset=offset)
 
 
 def main():

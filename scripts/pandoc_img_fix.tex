@@ -1,0 +1,6 @@
+% Force all images to fit within the text width.
+% Without this, wide images (e.g. matplotlib plots) overflow into the margin
+% and get cropped in the PDF output.
+\usepackage[export]{adjustbox}
+\let\oldincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{\oldincludegraphics[max width=\linewidth,#1]{#2}}
