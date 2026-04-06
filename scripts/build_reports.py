@@ -98,7 +98,6 @@ def run_pandoc(
         "--toc",
         "--toc-depth=2",
         "--number-sections",
-        f"--number-offset={number_offset}",
         "-V", f"geometry:margin={margin}",
         "-V", "fontsize=11pt",
         "-V", "linestretch=1.25",
@@ -112,6 +111,10 @@ def run_pandoc(
             "-V", "mainfont=Liberation Serif",
             "-V", "sansfont=Liberation Sans",
         ]
+
+    # Inject LaTeX section counter offset (--number-offset is ignored for PDF engines)
+    if number_offset > 0:
+        cmd += ["-V", f"header-includes=\\setcounter{{section}}{{{number_offset}}}"]
 
     if extra_args:
         cmd += extra_args

@@ -23,6 +23,7 @@ const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 /* ===== Report Availability (stepId → reports folder name) ===== */
 const STEP_REPORTS = { step_01: 'step01', step_02: 'step02' };
 const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
+const SUMMARY_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/summaries';
 
 /* ===== Tertiary step colors for calendar (cycle within phase) ===== */
 const STEP_BG_PALETTE = [
@@ -422,7 +423,7 @@ function buildNav() {
     btn.className = 'nav-item';
     btn.dataset.step = step.id;
     const hasReport = !!STEP_REPORTS[step.id];
-    btn.innerHTML = step.num + '. ' + step.title + (hasReport ? ' <span class="report-badge" title="Report available">\uD83D\uDCC4</span>' : '');
+    btn.innerHTML = step.num + '. ' + step.title + (hasReport ? ' <span class="report-badge" title="Report & summary available">\uD83D\uDCD6</span>' : '');
     btn.addEventListener('click', () => navigateTo(step.id));
     wrapper.appendChild(btn);
 
@@ -479,15 +480,29 @@ function renderStep(stepId) {
   const contentEl = document.getElementById('content');
   contentEl.innerHTML = html;
 
-  // Report download bar
+  // Download cards (summary + report)
   const reportFolder = STEP_REPORTS[stepId];
   if (reportFolder) {
-    const bar = document.createElement('div');
-    bar.className = 'report-bar';
-    bar.innerHTML = `<span class="report-bar-label">\uD83D\uDCC4 Report available</span>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="report-btn"><span class="report-flag">\uD83C\uDDEC\uD83C\uDDE7</span> EN \u2193</a>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="report-btn"><span class="report-flag">\uD83C\uDDE7\uD83C\uDDEC</span> BG \u2193</a>`;
-    contentEl.insertBefore(bar, contentEl.firstChild);
+    const wrap = document.createElement('div');
+    wrap.className = 'dl-cards';
+    wrap.innerHTML = `
+      <div class="dl-card dl-card--summary">
+        <div class="dl-card-title">📖 Study Summary</div>
+        <div class="dl-card-desc">Detailed theoretical narrative covering key concepts and learning notes for the step</div>
+        <div class="dl-btns">
+          <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">🇬🇧</span> EN ↓</a>
+          <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">🇧🇬</span> BG ↓</a>
+        </div>
+      </div>
+      <div class="dl-card dl-card--report">
+        <div class="dl-card-title">📊 Implementation Report</div>
+        <div class="dl-card-desc">Implementation results, experiment graphs, metrics, and minimal commentary</div>
+        <div class="dl-btns">
+          <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">🇬🇧</span> EN ↓</a>
+          <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">🇧🇬</span> BG ↓</a>
+        </div>
+      </div>`;
+    contentEl.insertBefore(wrap, contentEl.firstChild);
   }
 
   // Syntax-highlight code blocks
@@ -921,7 +936,7 @@ function buildStepSummaries() {
     const summary = extractStepSummary(step.id);
     const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
     const hasReport = !!STEP_REPORTS[step.id];
-    const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report available">\uD83D\uDCC4</span>' : '';
+    const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report & summary available">\uD83D\uDCD6</span>' : '';
     const progress = getStepCheckboxCounts(step.id);
     const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
     const progressHtml = progress.total > 0
@@ -941,7 +956,7 @@ function buildStepSummaries() {
 function navigateHome() {
   isHomepage = true;
   currentStepIndex = -1;
-  document.getElementById('topbar-title').textContent = 'RL Study Plan';
+  document.getElementById('topbar-title').textContent = '📚 RL Study Plan';
   document.getElementById('timeline-bar').style.display = 'none';
   document.getElementById('section-nav').style.display = 'none';
   updateNavButtons();
@@ -950,7 +965,7 @@ function navigateHome() {
 
   document.getElementById('content').innerHTML =
     `<div class="hp">
-      <div class="hp-hdr"><h1>PhD Research Plan</h1>
+      <div class="hp-hdr"><h1>📚 PhD Research Plan</h1>
         <p>AI in Computer Games &mdash; Adaptive Strategy in Multi-Agent Imperfect-Information Environments</p>
         <p class="hp-meta">15 steps &middot; 7 phases &middot; ${BASE_TOTAL_DAYS} days &middot; Mar&ndash;Oct 2026</p>
       </div>
