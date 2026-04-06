@@ -15,23 +15,23 @@ BG: Изследване на възможностите за приложени
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [DQN — Deep Q-Network](#dqn)
-   - [Architecture](#dqn-architecture)
-   - [Key Design Decisions](#dqn-design)
-   - [Hyperparameter Iterations](#dqn-iterations)
-   - [Final Results](#dqn-results)
-3. [PPO — Proximal Policy Optimization](#ppo)
-   - [Architecture](#ppo-architecture)
-   - [Key Design Decisions](#ppo-design)
-   - [Hyperparameter Iterations](#ppo-iterations)
-   - [Final Results](#ppo-results)
-4. [Comparison with SB3 Baselines](#comparison)
-5. [Key Learnings](#learnings)
+- [Overview](#overview)
+- [DQN — Deep Q-Network](#dqn)
+  - [Architecture](#dqn-architecture)
+  - [Key Design Decisions](#dqn-design)
+  - [Hyperparameter Iterations](#dqn-iterations)
+  - [Final Results](#dqn-results)
+- [PPO — Proximal Policy Optimization](#ppo)
+  - [Architecture](#ppo-architecture)
+  - [Key Design Decisions](#ppo-design)
+  - [Hyperparameter Iterations](#ppo-iterations)
+  - [Final Results](#ppo-results)
+- [Comparison with SB3 Baselines](#comparison)
+- [Key Learnings](#learnings)
 
 ---
 
-## 1. Overview <a id="overview"></a>
+## Overview <a id="overview"></a>
 
 Step 01 implements two foundational RL algorithms from scratch in PyTorch, with
 extensive inline comments explaining the *why* behind each design choice. Both
@@ -60,7 +60,7 @@ implementation/step01/
 
 ---
 
-## 2. DQN — Deep Q-Network <a id="dqn"></a>
+## DQN — Deep Q-Network <a id="dqn"></a>
 
 ### Architecture <a id="dqn-architecture"></a>
 
@@ -120,7 +120,7 @@ The final configuration was reached after 3 tuning rounds:
 
 ---
 
-## 3. PPO — Proximal Policy Optimization <a id="ppo"></a>
+## PPO — Proximal Policy Optimization <a id="ppo"></a>
 
 ### Architecture <a id="ppo-architecture"></a>
 
@@ -178,7 +178,7 @@ where $r_t(\theta) = \pi_\theta(a|s) / \pi_{old}(a|s)$ and $\epsilon = 0.2$.
 
 ---
 
-## 4. Comparison with SB3 Baselines <a id="comparison"></a>
+## Comparison with SB3 Baselines <a id="comparison"></a>
 
 SB3 was trained with matched core hyperparameters (learning rate, γ, network size,
 clip range, etc.) and **matched step budgets**. Source: `implementation/step01/compare_sb3.py`.
@@ -245,7 +245,7 @@ Our custom PPO is simply more sample-efficient for this specific task.
 
 ---
 
-## 5. Key Learnings <a id="learnings"></a>
+## Key Learnings <a id="learnings"></a>
 
 ### 5.1 DQN
 1. **Best-model checkpointing is essential**: DQN is prone to catastrophic forgetting once
