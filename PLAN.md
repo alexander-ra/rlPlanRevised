@@ -114,6 +114,11 @@ Step 1 ── Step 2 ──┤                           ├── Step 5 ──
 - **Step 1** ✅ — Reinforcement Learning Basics *(Done: DQN, PPO, Gym)*
 - **Step 2** ✅ — Game Theory + CFR Basics *(Done: Vanilla CFR, Kuhn Poker)*
 
+**Current artifact status (April 2026):**
+- Step 1 bilingual summary synchronized 1:1 (EN/BG) and rebuilt summary PDFs
+- Step 2 implementation package added under `implementation/step02/` (Vanilla CFR + exploitability + OpenSpiel comparison)
+- Step 2 bilingual report and summary completed in `deliverables/reports/step02/` and corresponding PDFs generated in `deliverables/summaries/` and `deliverables/reports/step02/`
+
 **Phase B: Scaling the Toolbox (April)** `[4 weeks]`
 - **Step 3** — CFR Variants + Monte Carlo Methods *(2 weeks, Tier 2)* — depends on: Step 2
 - **Step 4** — Game Abstraction + Scaling Imperfect-Information Games *(2 weeks, Tier 2)* — depends on: Steps 2, 3

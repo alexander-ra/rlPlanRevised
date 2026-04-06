@@ -39,6 +39,14 @@ The study plan spans 15 learning steps organized into 7 thematic phases (A–G),
 │   ├── studyPlan/
 │   │   ├── en/                          # English study plan (YAML metadata + 9 markdown sections)
 │   │   └── bg/                          # Bulgarian translation
+│   ├── reports/
+│   │   ├── step01/                      # Step 1 report package (EN/BG report + EN/BG summary + figures)
+│   │   └── step02/                      # Step 2 report package (EN/BG report + EN/BG summary + figures)
+│   ├── summaries/
+│   │   ├── step01_en.pdf                # Built summary PDF (Step 1, English)
+│   │   ├── step01_bg.pdf                # Built summary PDF (Step 1, Bulgarian)
+│   │   ├── step02_en.pdf                # Built summary PDF (Step 2, English)
+│   │   └── step02_bg.pdf                # Built summary PDF (Step 2, Bulgarian)
 │   └── terminology_EN_BG.md             # Translation dictionary
 ├── exports/
 │   ├── studyPlanEN.pdf                  # Pre-built PDF (English)
@@ -73,6 +81,22 @@ The study plan spans 15 learning steps organized into 7 thematic phases (A–G),
 │       └── logs/                        # TensorBoard event files (gitignored; generated at runtime)
 │           ├── dqn/
 │           └── ppo/
+│   └── step02/                          # Step 2: Vanilla CFR on Kuhn Poker
+│       ├── config.py                    # CFR training configuration
+│       ├── compare_openspiel.py         # Cross-check vs OpenSpiel and analytical Nash strategy
+│       ├── verify_setup.py              # Dependency and environment verification
+│       ├── cfr/
+│       │   ├── kuhn_poker.py            # Kuhn Poker game logic and terminal utilities
+│       │   ├── info_set_node.py         # Regret-matching node for one information set
+│       │   ├── cfr_trainer.py           # Recursive CFR traversal + training loop
+│       │   └── train.py                 # Training entrypoint
+│       ├── evaluate/
+│       │   ├── best_response.py         # Best-response computation against fixed strategy
+│       │   ├── exploitability.py        # Exploitability metrics and evaluation helpers
+│       │   └── convergence.py           # Convergence diagnostics and data export
+│       ├── figures/                     # Generated convergence/strategy figures
+│       ├── models/                      # Saved strategy snapshots
+│       └── logs/                        # JSON logs from CFR training/evaluation
 ├── planning/
 │   ├── rawSteps/                        # 15 executable learning steps (full 5-phase cycle each)
 │   ├── cleanSteps/                      # Supervisor-facing versions (formal references only)
