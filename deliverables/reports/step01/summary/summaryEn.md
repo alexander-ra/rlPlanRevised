@@ -14,7 +14,7 @@ This is a condensed summary of the foundational reinforcement learning material 
 
 ---
 
-## 1. How Reinforcement Learning Became a Discipline
+## How Reinforcement Learning Became a Discipline
 
 Reinforcement learning did not emerge fully formed. Its roots stretch across multiple fields that were largely unaware of each other for decades.
 
@@ -31,7 +31,7 @@ The important takeaway is that RL is not just "machine learning with rewards." I
 
 ---
 
-## 2. Core Principles — Agent, Action, Environment
+## Core Principles — Agent, Action, Environment
 
 The entire RL framework rests on a simple loop. An **agent** observes the current state of an **environment**, selects an **action**, and receives a **reward** signal plus a new state. Then it repeats. The agent's goal is to learn a **policy** — a mapping from states to actions — that maximizes the cumulative reward over time.
 
@@ -53,7 +53,7 @@ Two broad families of algorithms exist. **Value-based** methods (like DQN) learn
 
 ---
 
-## 3. The MDP Formulation
+## The MDP Formulation
 
 A **Markov Decision Process** (MDP) is the formal mathematical framework that most RL algorithms are built on. It consists of five components:
 
@@ -80,7 +80,7 @@ This says: the value of a state equals the expected immediate reward plus the di
 
 ---
 
-## 4. Information Sets — When You Cannot See Everything
+## Information Sets — When You Cannot See Everything
 
 Standard MDPs assume the agent can fully observe the state. Real problems often violate this. In poker, you do not see the opponent's cards. In real-time strategy games, you have fog of war. These are **partially observable** settings.
 
@@ -97,7 +97,7 @@ Understanding information sets now matters because the later steps (5–8) deal 
 
 ---
 
-## 5. Dynamic Programming — When You Have the Model
+## Dynamic Programming — When You Have the Model
 
 Dynamic programming (DP) is the oldest approach to solving MDPs. It works when you have complete knowledge of the environment: the transition probabilities $P(s'|s,a)$ and the reward function $R(s,a,s')$. In practice, this means you know the rules of the game perfectly.
 
@@ -116,7 +116,7 @@ The reason DP matters even though we rarely use it directly is that every subseq
 
 ---
 
-## 6. Temporal-Difference Learning — Learning Without a Model
+## Temporal-Difference Learning — Learning Without a Model
 
 Temporal-difference (TD) learning is the breakthrough that made RL practical. Unlike DP, it does not require a model of the environment. Unlike Monte Carlo methods, it does not have to wait until the end of an episode to learn. It updates value estimates after every single step, using a bootstrap: the current estimate of the next state's value stands in for the true future return.
 
@@ -141,7 +141,7 @@ TD learning is beneficial compared to DP because it needs no model. It is benefi
 
 ---
 
-## 7. DQN — Deep Q-Networks
+## DQN — Deep Q-Networks
 
 DQN (Mnih et al., 2015) is the algorithm that proved deep neural networks could work as function approximators in RL at scale. Before DQN, Q-learning was limited to tabular settings or hand-crafted features. DQN showed it could learn to play 49 Atari games from raw pixel input, surpassing human performance on many of them.
 
@@ -166,7 +166,7 @@ In our Step 1 implementation, DQN solved CartPole-v1 (achieving a 100-episode av
 
 ---
 
-## 8. PPO — Proximal Policy Optimization
+## PPO — Proximal Policy Optimization
 
 PPO (Schulman et al., 2017) takes a fundamentally different approach to RL than DQN. Instead of learning the value of actions and deriving a policy from those values, PPO **learns the policy directly** — a neural network outputs a probability distribution over actions, and the network is trained to increase the probability of actions that lead to high returns.
 
@@ -194,7 +194,7 @@ In our Step 1 implementation, PPO solved LunarLander-v3 (100-episode average of 
 
 ---
 
-## 9. Practical Validation — Custom Implementations vs Stable-Baselines3
+## Practical Validation — Custom Implementations vs Stable-Baselines3
 
 To verify that our from-scratch implementations actually work, we compared them against Stable-Baselines3 (SB3) — a widely used, well-tested RL library. Both our implementations and SB3 were given matched hyperparameters and equivalent training budgets.
 
