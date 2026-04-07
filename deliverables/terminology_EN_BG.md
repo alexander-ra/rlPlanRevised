@@ -17,6 +17,7 @@
 | Scientific supervisor | Научен ръководител | |
 | Scientific consultant | Научен консултант | |
 | Dissertation / Thesis | Дисертация / Дисертационен труд | |
+| Official research focus / Dissertation title | Изследване на възможностите за приложение на изкуствения интелект в компютърни игри | |
 | Contribution | Принос | научен принос |
 | Expected contribution | Очакван принос | |
 | Research objective | Цел на изследването | |
@@ -62,6 +63,7 @@
 | Utility | Полезност | |
 | Counterfactual value | Контрафактуална стойност | Foreign root unavoidable; gloss on first use: „хипотетична стойност при отклонение от текущата стратегия" |
 | Regret (algorithmic) | Съжаление | Standard term in BG optimization literature |
+| Cumulative regret | Сборно съжаление | Also: кумулативно |
 | Coalition | Коалиция | |
 | Coalition formation | Формиране на коалиции | |
 | Free-for-all (FFA) | Свободна конкуренция / Всеки срещу всеки | Use the descriptive phrase |
@@ -134,7 +136,7 @@
 | Policy gradient | Градиент на стратегията | |
 | Advantage function | Функция на предимството | |
 | Generalized advantage estimation (GAE) | Обобщена оценка на предимството | |
-| Clipped surrogate objective | Ограничена (отрязана) заместваща целева функция | Complex; consider paraphrase on first use |
+| Clipped surrogate objective | Изрязана сурогатна цел | Also: ограничена / отрязана заместваща целева функция |
 | Target network | Целева мрежа | |
 | Multi-agent RL (MARL) | Многоагентно обучение с подкрепление | |
 | Population-based training | Обучение на базата на популации | |
