@@ -6,22 +6,12 @@
 
 > **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one working abstraction example (card bucketing on Extended Leduc). Defer full abstraction pipeline (action abstraction, information abstraction comparison) to implementation phase post-November. All reading and intuition phases unchanged.
 > Phase allocation: Intuition 1d | Exploration 1d | Reading 3d | Implementation **3d** | Consolidation 2d  
-**Freshness Note:**  
-- ArXiv search: "game abstraction imperfect information" sorted by date (Mar 2026) — 7 results  
-- ArXiv search: "action abstraction poker" sorted by date (Mar 2026) — 1 result (Rebstock 2019 on Skat)  
-- Notable recent papers:  
-  - Fu et al. (Nov 2025) "No-Regret Strategy Optimization with KrwEmd Metric for Imperfect-Recall Abstraction" — accepted AAAI 2026. New earth-mover-distance-based abstraction metric for imperfect-recall games. *Relevant but advanced — log for Step 6 or Step 15 (frontier mapping).*  
-  - Fu et al. (Oct 2025) "Beyond Outcome-Based Imperfect-Recall Abstraction" — related imperfect-recall work. Same group, same thread. *Log for Step 15.*  
-  - Kubíček & Lisý (Oct 2025) "Look-ahead Reasoning with Learned Model for IIG" — learned-model search that partially replaces abstraction. *Log for Step 6.*  
-  - Li et al. (Mar 2024) "RL-CFR: A New RL Framework for Action Abstraction in Imperfect Information Extensive-Form Games" — uses RL to learn action abstractions. *Add as supplementary to this step — bridges to Step 1's RL knowledge.*  
-- Core references unchanged: Gilpin & Sandholm (2007) for lossless abstraction theory, Johanson et al. (2012) for finding optimal abstract strategies remain the standard foundational references.  
-- Kroer & Sandholm (2016) "Imperfect-Recall Abstractions with Bounds in Games" added — fills the gap between lossless abstraction and practical lossy approaches.  
-- No superseded content for Step 4 scope.
+
+### PhD Connection
+
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)**: the abstraction pipeline determines the game representation that the adaptive agent will operate on. Poor abstraction limits how finely the agent can distinguish between opponent types. Also feeds **Contribution #3 (Evaluation Methodology)**: the exploitability-gap metric from this step becomes a standard evaluation measure. The Pareto frontier framework (abstraction size vs strategy quality) provides a template for evaluating tradeoffs in the thesis evaluation chapter.
 
 ---
-
-> **Contribution Alignment:** This step will study how game abstraction — both lossless and lossy — affects the quality of computed equilibria, and how subgame solving can refine strategies during play. These techniques are directly relevant to later work on safe exploitation and opponent modeling.
-
 
 ## Table of Contents
 - [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
@@ -45,7 +35,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Reference Skim + Architecture Preview](#day-1-reference-skim-architecture-preview)
   - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -390,12 +379,6 @@ Starting point: Your Leduc Hold'em engine + MCCFR solver from Step 3.
     - [Step 4] Imperfect-recall abstraction requires forgetting past information. How do you decide WHAT to forget? Kroer & Sandholm give bounds, but the design space is huge. → OPEN (possibly resolved in Step 6 or Step 15 frontier)
     - [Step 3→4] MCCFR on an abstracted game: does sampling interact badly with abstraction? (Variance from sampling + error from abstraction — do they compound?) → OPEN (check during Step 5)
 
-### PhD Connection
-
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)**: the abstraction pipeline determines the game representation that the adaptive agent will operate on. Poor abstraction limits how finely the agent can distinguish between opponent types. Also feeds **Contribution #3 (Evaluation Methodology)**: the exploitability-gap metric from this step becomes a standard evaluation measure. The Pareto frontier framework (abstraction size vs strategy quality) provides a template for evaluating tradeoffs in the thesis evaluation chapter.
-
----
-
 ## Exit Checklist
 
 - [ ] Lossless abstraction (suit isomorphism) produces identical Nash on Leduc
@@ -412,4 +395,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)**: the abstr
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–3 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
-

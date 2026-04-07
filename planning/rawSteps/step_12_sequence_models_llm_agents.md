@@ -3,33 +3,24 @@
 **Duration:** 10 days (Tier 3)  
 **Dependencies:** Step 5 (Neural Equilibrium Approximation), Step 7 (Opponent Modeling)  
 **Phase:** F — Data-Driven Approaches  
-**Freshness Note:**  
-- ArXiv search: "Decision Transformer offline reinforcement learning game" sorted by date (Jun 2026) — 9 results. Key finds:  
-  - Tang, Marques, Kamalaruban & Bogunovic (Jul 2024, NeurIPS 2024) "Adversarially Robust Decision Transformer" (arXiv:2407.18414) — **directly relevant.** Proposes ARDT: worst-case-aware offline RL via minimax expectile regression on returns-to-go. In sequential games with full data coverage, ARDT recovers Nash Equilibrium strategies. *Core — the first DT variant explicitly designed for adversarial/game settings. Bridges Decision Transformer to game-theoretic equilibrium.*  
-  - Tatematsu & Wachi (Mar 2025) "Target Return Optimizer for Multi-Game Decision Transformer" (arXiv:2503.02311) — target return optimization for generalist agents across diverse games. *Supplementary — multi-game DT relevant for generalization.*  
-  - Paster, McIlraith & Ba (May 2022) "You Can't Count on Luck: Why Decision Transformers and RvS Fail in Stochastic Environments" (arXiv:2205.15967) — *Critical warning paper.* Shows DT struggles in stochastic environments because conditioning on high returns selects for lucky trajectories, not skilled ones. Poker/card games are stochastic by nature. *Core — must understand this limitation before applying DT to poker.*  
-  - Lee et al. (May 2022, NeurIPS 2022) "Multi-Game Decision Transformers" (arXiv:2205.15241) — trains single DT across 46 Atari games. *Supplementary — proof of concept for generalist agents.*  
-  - Batth et al. (Apr 2025) "Do We Need Transformers to Play FPS Video Games?" (arXiv:2504.17891) — compares DT architectures for FPS games. *Tangential — note for awareness.*  
-- ArXiv search: "TextArena language game" (Jun 2026) — 3 results:  
-  - Guertler, Cheng, Yu, Liu, Choshen & Tan (Apr 2025) "TextArena" (arXiv:2504.11442) — **the benchmark.** 57+ competitive text-based games for LLM agent evaluation: negotiation, deception, theory of mind. TrueSkill scoring. *Core — this is the plan's designated LLM game testbed.*  
-  - Zhang et al. (May 2025) "Divide-Fuse-Conquer: Eliciting 'Aha Moments' in Multi-Scenario Games" (arXiv:2505.16401) — RL fine-tuning of LLMs across 18 TextArena games. Qwen2.5-32B reaches Claude 3.5-level via divide-train-fuse strategy. *Supplementary — state-of-the-art on LLM game training as of 2025.*  
-  - Lou et al. (Feb 2026) "AutoHarness: Improving LLM Agents by Automatically Synthesizing a Code Harness" (arXiv:2603.03329) — synthesizes code harnesses for LLM agents in game environments. *Supplementary — practical tool for LLM agent development.*  
-- Known foundational papers (not found via keyword search):  
-  - Chen et al. (Jun 2021, NeurIPS 2021) "Decision Transformer: Reinforcement Learning via Sequence Modeling" (arXiv:2106.01345) — the seminal DT paper. *Core.*  
-  - Janner, Li & Levine (Jun 2021, NeurIPS 2021) "Offline Reinforcement Learning as One Big Sequence Modeling Problem" (arXiv:2106.02039) — Trajectory Transformer. *Core.*  
-  - Kumar, Zhou, Tucker & Levine (Jun 2020, NeurIPS 2020) "Conservative Q-Learning for Offline Reinforcement Learning" (arXiv:2006.04779) — CQL baseline. *Supplementary — the value-based alternative to sequence modeling.*  
-  - Meta AI (Nov 2022) "Human-Level Play in the Game of Diplomacy by Combining Language Models with Strategic Reasoning" (CICERO). Science, 378(6624). — LLM + strategic planning. *Already covered in Step 11; reference for continuity.*  
-  - Maugin & Cazenave (Sep 2025, ACG 2025) "SpinGPT: A Large-Language-Model Approach to Playing Poker Correctly" — LLM + CFR hybrid for poker. *Logged from Step 5 freshness scan. Supplementary.*  
-  - Guo et al. (Sep 2023) "Suspicion-Agent: Playing Imperfect Information Games with Theory of Mind Aware GPT-4" (arXiv:2309.17277) — GPT-4 with theory-of-mind planning for Werewolf and Avalon. *Supplementary.*  
-- Cross-reference from Step 11: CICERO, Welfare Diplomacy (Mukobi et al., 2023) as LLM+strategy prior art. Step 11 freshness note flagged SpinGPT for this step.  
-- Cross-reference from Step 5: SpinGPT was logged in Step 5's freshness scan as "reserve for Step 12."  
-- Field assessment: **Sequence models for strategic decision-making = established (DT, 2021) but with known stochasticity gaps (Paster et al., 2022). LLM agents in games = extremely young field (TextArena Apr 2025, Divide-Fuse-Conquer May 2025). The plan architecture correctly assessed Tier 3: survey-dominant, the field is too young for more than a focused implementation exercise + literature mapping.**
+
+### PhD Connection
+
+This step bridges the thesis's FORMAL tools (Steps 2–8: CFR, equilibrium, exploitation) to the DATA-DRIVEN paradigm:
+
+- **Contribution #1 (Behavioral Adaptation):** The state tensor encoding (cards, position, pot, stacks, betting history) designed here carries directly to the Playtech behavioral analysis pipeline (Step 13). The encoding IS the foundation of the behavioral adaptation framework — how you represent game state determines what behavioral patterns you can detect. This step prototypes the encoding on small games; Step 13 scales it to real data.
+
+- **Contribution #2 (Multi-Agent Safe Exploitation):** ARDT demonstrates that safe (minimax) strategies can emerge from offline data without explicit game-theoretic computation. This opens a path for Contribution #2: instead of computing Nash equilibria for N-player games (intractable, as shown in Step 11), learn safe strategies directly from behavioral data. The minimax conditioning on return-to-go is the offline analog of safe exploitation.
+
+- **Contribution #3 (Evaluation Methodology):** The comparison table (CFR vs DT vs ARDT vs BC vs LLM on Kuhn Poker) is a microcosm of the evaluation framework: multiple agent architectures, same game, standardized metrics (exploitability, behavioral statistics). This prototype scales to the full evaluation framework in Step 14.
+
+- **Bridge to Step 13:** Everything in this step's implementation — the state tensor encoding, the trajectory dataset format, the DT training pipeline — transfers to Playtech's anonymized hand history data. Step 12 builds the prototype on synthetic Kuhn/Leduc data; Step 13 applies it to real poker data.
+
+- **LLM angle for job market:** 3/10 target job postings mention LLM skills. This step demonstrates fluency with the LLM paradigm, positioning you for both the AI researcher path (combining formal methods with LLMs) and the fraud/risk path (LLM-based anomaly description and reasoning).
 
 ---
 
 > **Phase Overview:** The preceding phases developed methods entirely within synthetic, self-play environments. Phase F will bridge the gap between theoretical methods and real-world behavioral data. Step 12 introduces sequence models (Decision Transformers) and assesses large language model agents in strategic settings. Step 13 applies the resulting pipeline to anonymized real-world poker hand histories, constructing player embeddings, behavioral classification systems, and a collusion detection module.
->
-> **Contribution Alignment:** This step will study the Decision Transformer architecture and its adversarially robust variant (ARDT), which recovers near-Nash strategies from offline data — a potential alternative path for Contribution 2 that bypasses intractable equilibrium computation in N-player settings.
 
 
 ## Table of Contents
@@ -54,7 +45,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
   - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -518,22 +508,6 @@ https://arxiv.org/abs/2106.02039
     - [Step 7→12] Bayesian opponent model (Step 7) is precise but requires explicit state representation and prior specification. LLM opponent model (Step 12) is flexible but imprecise and uncontrollable. Is there a principled way to COMBINE them? (e.g., LLM generates hypotheses, Bayesian model evaluates them) → OPEN (potentially novel contribution)
     - [Step 5→12] Deep CFR iterates to equilibrium via self-play. ARDT reaches equilibrium from offline data without self-play. When would you prefer one over the other? → PARTIALLY ADDRESSED (ARDT needs offline data, Deep CFR needs a simulator. For real-world domains like Playtech where you HAVE data but NOT a perfect simulator, ARDT may be preferred.)
 
-### PhD Connection
-
-This step bridges the thesis's FORMAL tools (Steps 2–8: CFR, equilibrium, exploitation) to the DATA-DRIVEN paradigm:
-
-- **Contribution #1 (Behavioral Adaptation):** The state tensor encoding (cards, position, pot, stacks, betting history) designed here carries directly to the Playtech behavioral analysis pipeline (Step 13). The encoding IS the foundation of the behavioral adaptation framework — how you represent game state determines what behavioral patterns you can detect. This step prototypes the encoding on small games; Step 13 scales it to real data.
-
-- **Contribution #2 (Multi-Agent Safe Exploitation):** ARDT demonstrates that safe (minimax) strategies can emerge from offline data without explicit game-theoretic computation. This opens a path for Contribution #2: instead of computing Nash equilibria for N-player games (intractable, as shown in Step 11), learn safe strategies directly from behavioral data. The minimax conditioning on return-to-go is the offline analog of safe exploitation.
-
-- **Contribution #3 (Evaluation Methodology):** The comparison table (CFR vs DT vs ARDT vs BC vs LLM on Kuhn Poker) is a microcosm of the evaluation framework: multiple agent architectures, same game, standardized metrics (exploitability, behavioral statistics). This prototype scales to the full evaluation framework in Step 14.
-
-- **Bridge to Step 13:** Everything in this step's implementation — the state tensor encoding, the trajectory dataset format, the DT training pipeline — transfers to Playtech's anonymized hand history data. Step 12 builds the prototype on synthetic Kuhn/Leduc data; Step 13 applies it to real poker data.
-
-- **LLM angle for job market:** 3/10 target job postings mention LLM skills. This step demonstrates fluency with the LLM paradigm, positioning you for both the AI researcher path (combining formal methods with LLMs) and the fraud/risk path (LLM-based anomaly description and reasoning).
-
----
-
 ## Exit Checklist
 
 - [ ] Decision Transformer trained on Kuhn Poker offline data with return conditioning validated
@@ -553,4 +527,3 @@ This step bridges the thesis's FORMAL tools (Steps 2–8: CFR, equilibrium, expl
 - [ ] Learning Log updated (connections from Steps 2–11 + new confusions + PhD bridge notes)
 - [ ] PhD connection documented (state encoding → Step 13, ARDT → Contribution #2 offline path, comparison table → Contribution #3 prototype)
 - [ ] Step notes committed to repo
-

@@ -3,39 +3,28 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 8 (Safe Exploitation), Step 11 (Dynamic Coalition Formation), Step 13 (Behavioral Analysis Pipelines)  
 **Phase:** G — Integration  
-**Freshness Note:**  
-- ArXiv search: '"approximate exploitability" game' (Mar 2026) — 2 results:  
-  - Timbers, Bard, Lockhart, Lanctot, Schmid, Burch, Schrittwieser, Hubert & Bowling (2020/2022) "Approximate Exploitability: Learning a Best Response in Large Games" (arXiv:2004.09677) — **core reference.** Introduces ISMCTS-BR, a scalable search-based deep RL algorithm for learning approximate best responses, thereby approximating worst-case performance. Tested against AlphaZero-based agents in two-player zero-sum games. *The definitive paper on scaling exploitability computation beyond small games.*  
-  - Martin & Sandholm (2023/2024, AAMAS 2025) "ApproxED: Approximate Exploitability Descent via Learned Best Responses" (arXiv:2301.08830) — proposes ApproxED: two methods for minimizing approximate exploitability in continuous-action games using learned best-response functions. A strategy profile and best-response network are trained simultaneously (adversarial). Evaluated on continuous games and GAN training. *Supplementary — relevant for the continuous-action formulation and the adversarial training approach to exploitability minimization.*  
-- ArXiv search: "game theoretic evaluation agent Elo Nash ranking" (Mar 2026) — 3 results:  
-  - **Lanctot, Larson, Bachrach, Marris, Li, Bhoopchand, Anthony, Tanner & Koop (2023, revised Jun 2025) "Evaluating Agents using Social Choice Theory" (arXiv:2312.03121)** — **critical new discovery.** Introduces VasE (Voting-as-Evaluation): frames multi-agent evaluation through social choice theory. Each task = a voter, agents = candidates. Uses ordinal rankings instead of cardinal scores. Identifies "maximal lotteries" as satisfying key consistency axioms. Shown to be MORE ROBUST than Elo and Nash averaging, discovers intransitive cycles, and predicts outcomes better than Elo in a 7-player game. Computationally efficient (polynomial). *Core — the freshest and most principled approach to multi-agent evaluation. Directly relevant to Contribution #3. The social choice framing is novel and the axioms provide justification the thesis needs.*  
-  - Yan, Duan, Shi, Zhong, Marden & Bullo (2020) "Policy Evaluation and Seeking for Multi-Agent Reinforcement Learning via Best Response" (arXiv:2006.09585) — introduces cycle-based and memory-based metrics grounded on sink equilibrium for MARL evaluation. *Supplementary.*  
-  - Rowland, Omidshafiei, Tuyls, Perolat, Valko, Piliouras & Munos (2019) "Multiagent Evaluation under Incomplete Information" (arXiv:1909.09849) — investigates evaluation with noisy game outcomes using α-Rank. Derives sample complexity for confident ranking. Adaptive algorithms with correctness guarantees. Tested on Kuhn poker. *Core — addresses exactly the noise problem: real evaluation data is noisy, α-Rank needs uncertainty quantification.*  
-- ArXiv search: '"Nash averaging" evaluation agent game' (Mar 2026) — 1 result: same Lanctot VasE paper.  
-- ArXiv search: '"alpha-rank" multi agent evaluation ranking' (Mar 2026) — 1 result: same Yan et al. (2020) paper.  
-- ArXiv search: "OpenSpiel evaluation benchmark game" (Mar 2026) — 1 result:  
-  - Cipolina-Kun, Nezhurina & Jitsev (Aug 2025) "Game Reasoning Arena: A Framework and Benchmark for Assessing Reasoning Capabilities of Large Language Models via Game Play" (arXiv:2508.03368) — *Supplementary — LLM evaluation through games, connects to Step 12's LLM agent assessment.*  
-- ArXiv search: "AIVAT variance reduction poker" (Mar 2026) — rate-limited, no results extracted. Known reference: Burch, Johanson & Bowling (2019, AAAI) "AIVAT: A New Variance Reduction Technique for Agent Evaluation in Imperfect Information Games." *Will use from existing knowledge.*  
-- ArXiv search: "exploitability imperfect information game evaluation" (Mar 2026) — failed to extract. Known core reference: Johanson et al. (2011) "Accelerating Best Response Calculation in Large Extensive Games."  
-- **Known core references (not found via keyword search — well-established):**  
-  - Omidshafiei, Papadimitriou, Piliouras, Tuyls et al. (2019, Nature Sci. Reports) "α-Rank: Multi-Agent Evaluation by Evolution" — original α-Rank paper. Uses Markov-Conley chains from evolutionary dynamics for game-theoretic ranking. *Core — the standard for multi-agent evaluation beyond Elo.*  
-  - Balduzzi, Tuyls et al. (2019) "Re-evaluating Evaluation" (NeurIPS) — spinning top decomposition. Payoff matrix = transitive + cyclic components. *Already studied in Step 10. Core for evaluation diagnostics.*  
-  - Burch, Johanson & Bowling (2019, AAAI) "AIVAT: A New Variance Reduction Technique for Agent Evaluation in Imperfect Information Games" — unbiased, low-variance estimator for agent performance in poker/imperfect-information games. *Core — essential for Step 13's Playtech data evaluation.*  
-  - Johanson et al. (2011) "Accelerating Best Response Calculation in Large Extensive Games" — foundational for exploitability computation efficiency.  
-  - Tuyls et al. (2018) "A Generalised Method for Empirical Game Theoretic Analysis" (AAMAS) — EGTA framework. *Already studied in Step 10. Core for population evaluation.*  
-  - Lanctot et al. (2019) "OpenSpiel: A Framework for Reinforcement Learning in Games" — the standard library. *Already used throughout.*  
-- **Cross-references from prior steps:**  
-  - Step 8: Exploitability computation (exact) for Kuhn/Leduc, adaptation safety (Ge 2024), safety checker module, tournament framework prototype.  
-  - Step 10: EGTA analysis of PBT league, spinning top decomposition, meta-Nash of population, Elo tracking, diversity metrics.  
-  - Step 11: Coalition detector (help/harm matrices), SLS evaluation (win rates, coalition formation frequency, betrayal timing).  
-  - Step 13: Playtech behavioral pipeline (player stats, BC accuracy, player2vec embeddings, style classification, collusion detection scores).  
-- **Field assessment:** Multi-agent evaluation is an ACTIVE and well-studied field — far more developed than poker behavioral analysis (Step 13). The landscape has three layers: (1) **single-agent metrics** (exploitability, best-response value), (2) **population-level metrics** (Elo, α-Rank, Nash averaging, VasE), and (3) **variance-reduction methods** (AIVAT for noisy games). The freshest significant work is Lanctot et al.'s VasE (2023/2025), which argues that social choice theory provides axiomatically grounded evaluation — potentially displacing both Elo and α-Rank. The Timbers ISMCTS-BR paper (2020/2022) remains the standard for scaling exploitability computation. This step's thesis contribution value: INTEGRATING these layers into a unified framework applied across multiple game types (Kuhn, Leduc, SLS, Playtech data) — no existing paper combines all three layers on diverse game types.
+
+### PhD Connection
+
+This step IS Contribution #3. The mapping:
+
+- **Contribution #3 (Evaluation Methodology):** The three-layer evaluation framework:
+  - **Layer 1 (Exploitability):** How vulnerable is the agent to worst-case adversaries? Applicable to 2-player games directly, extended to N-player via marginal exploitability. Methods: exact (Step 3), approximate (Timbers et al.), adaptation safety (Ge et al.).
+  - **Layer 2 (Population Ranking):** How does the agent perform relative to a diverse population? Methods: Elo (baseline), α-Rank (evolutionary dynamics), VasE (social choice theory), meta-Nash (EGTA). Diagnostic: spinning top decomposition reveals transitive vs cyclic structure.
+  - **Layer 3 (Statistical Confidence):** How confident are these measurements? Methods: AIVAT (poker-specific variance reduction), confidence intervals (Rowland et al. sample complexity), bootstrapping.
+  - **Cross-game validation:** Applied consistently to Kuhn, Leduc, SLS, and Playtech data → domain-agnostic evidence that the framework generalizes.
+
+- **Contribution #1 (Behavioral Adaptation):** The evaluation framework MEASURES whether the behavioral adaptation from Steps 7–8 works. Does the adapting agent's exploitability decrease over time? Does its ranking in the population improve? Does the improvement hold up with statistical confidence?
+
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The N-player evaluation extension (marginal exploitability, coalition-aware metrics) tests whether safe exploitation generalizes from 2-player to N-player. If the Step 8 agent is "safe" in 2-player but not in N-player, the evaluation framework detects this — and the gap IS the thesis contribution.
+
+- **Bridge to Step 15:** Step 15 maps the entire PhD research frontier. Step 14's evaluation framework determines what CAN be rigorously evaluated → what CAN be claimed as a thesis contribution. The evaluation framework is the basis for ALL experimental claims in the dissertation.
+
+- **November publication strengthening:** If the evaluation framework is combined with Step 13's Playtech data paper, the result is: "Behavioral Analysis and Evaluation of Poker Agents: A Three-Layer Framework Applied to Real-World Data." This is a stronger paper than either step alone — it has both methodology (evaluation framework) and application (Playtech data).
 
 ---
 
 > **Phase Overview:** Phase G will synthesize the preceding work into two integrative deliverables. Step 14 constructs a unified evaluation framework validated across all game types encountered in the study plan — constituting the core of Contribution 3 (Evaluation Methodology). Step 15 maps the research frontier, designs the experimental program, produces a Chapter I outline for the dissertation, and establishes the publication pipeline.
->
-> **Contribution Alignment:** This step will constitute the core of Contribution 3 directly. The planned three-layer evaluation framework will integrate exploitability computation, population-level ranking (Elo, α-Rank, VasE), and statistical confidence quantification (AIVAT variance reduction).
 
 
 ## Table of Contents
@@ -60,7 +49,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
   - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -842,26 +830,6 @@ https://arxiv.org/abs/1909.09849
     - [Step 8→14] Adaptation safety is defined relative to a baseline. In Step 14's framework, which baseline? The Nash/CFR agent? The heuristic agent? The choice of baseline changes the evaluation outcome. → OPEN (thesis should propose a principled baseline selection method)
     - [Step 11→14] Marginal exploitability in N-player games depends on what the other N-1 players do. In SLS, the "opponents" are sometimes allies and sometimes enemies (coalition dynamics). Fixed-opponent exploitability doesn't capture this dynamic. → OPEN (potential Contribution #3 extension: coalition-aware exploitability)
 
-### PhD Connection
-
-This step IS Contribution #3. The mapping:
-
-- **Contribution #3 (Evaluation Methodology):** The three-layer evaluation framework:
-  - **Layer 1 (Exploitability):** How vulnerable is the agent to worst-case adversaries? Applicable to 2-player games directly, extended to N-player via marginal exploitability. Methods: exact (Step 3), approximate (Timbers et al.), adaptation safety (Ge et al.).
-  - **Layer 2 (Population Ranking):** How does the agent perform relative to a diverse population? Methods: Elo (baseline), α-Rank (evolutionary dynamics), VasE (social choice theory), meta-Nash (EGTA). Diagnostic: spinning top decomposition reveals transitive vs cyclic structure.
-  - **Layer 3 (Statistical Confidence):** How confident are these measurements? Methods: AIVAT (poker-specific variance reduction), confidence intervals (Rowland et al. sample complexity), bootstrapping.
-  - **Cross-game validation:** Applied consistently to Kuhn, Leduc, SLS, and Playtech data → domain-agnostic evidence that the framework generalizes.
-
-- **Contribution #1 (Behavioral Adaptation):** The evaluation framework MEASURES whether the behavioral adaptation from Steps 7–8 works. Does the adapting agent's exploitability decrease over time? Does its ranking in the population improve? Does the improvement hold up with statistical confidence?
-
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The N-player evaluation extension (marginal exploitability, coalition-aware metrics) tests whether safe exploitation generalizes from 2-player to N-player. If the Step 8 agent is "safe" in 2-player but not in N-player, the evaluation framework detects this — and the gap IS the thesis contribution.
-
-- **Bridge to Step 15:** Step 15 maps the entire PhD research frontier. Step 14's evaluation framework determines what CAN be rigorously evaluated → what CAN be claimed as a thesis contribution. The evaluation framework is the basis for ALL experimental claims in the dissertation.
-
-- **November publication strengthening:** If the evaluation framework is combined with Step 13's Playtech data paper, the result is: "Behavioral Analysis and Evaluation of Poker Agents: A Three-Layer Framework Applied to Real-World Data." This is a stronger paper than either step alone — it has both methodology (evaluation framework) and application (Playtech data).
-
----
-
 ## Exit Checklist
 
 - [ ] Evaluation framework API working with three-layer architecture
@@ -891,4 +859,3 @@ This step IS Contribution #3. The mapping:
 - [ ] Step notes committed to repo
 
 > **[P4*] Prove Evaluation Failure Modes (cautious):** Add explicit “evaluation failure mode” experiments to objectives: identify specific scenarios where Elo mis-ranks adaptive agents in non-transitive populations, or where single-metric evaluation misses safety violations. Frame as: “existing evaluation is broken in these N-player/adaptive settings, here’s what fixes it.” The spinning top decomposition (Step 10) already provides the diagnostic — reframe as a *finding*. Proceed cautiously — don’t over-engineer.
-

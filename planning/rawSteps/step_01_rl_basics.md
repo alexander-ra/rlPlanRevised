@@ -3,18 +3,14 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** None (entry point)  
 **Phase:** A — Foundation  
-**Freshness Note:**  
-- ArXiv search: "reinforcement learning introduction survey" sorted by date, checked 2024–2026 (Jul 2026)  
-- Semantic Scholar: unavailable at scan time (server error 400)  
-- Notable find: Santana (Dec 2025) "An Introduction to Deep Reinforcement and Imitation Learning" (arXiv:2512.08052) — a fresh self-contained introduction covering MDP → REINFORCE → PPO. Added as optional supplementary reading.  
-- Core resources unchanged: Sutton & Barto (2018), OpenAI Spinning Up, DQN (Mnih 2015), PPO (Schulman 2017) remain the gold standard.  
-- No superseded content detected.
+
+### PhD Connection
+
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)** indirectly: the agent architecture patterns (value networks, policy networks, experience replay) will be reused when building the adaptive opponent model. More directly, this step provides the RL vocabulary and implementation skills needed for every subsequent step.
 
 ---
 
 > **Phase Overview:** This phase covers the foundational material required for all subsequent work: reinforcement learning basics (value estimation, policy optimization, experience replay) and game-theoretic fundamentals (extensive-form games, Nash equilibrium computation, and exploitability measurement). A solid command of both domains is essential before proceeding to the more specialized topics of later phases.
->
-> **Contribution Alignment:** The reinforcement learning methods studied in this step — value estimation, policy gradients, and experience replay — will recur throughout the thesis, particularly in the opponent modeling and adaptive exploitation components of the planned contributions.
 
 
 ## Table of Contents
@@ -38,7 +34,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
   - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -313,12 +308,6 @@ No mandatory pen-and-paper proofs for Step 1. The algorithms (Q-learning, REINFO
     - "When would you choose DQN over PPO, or vice versa?"
     - "How does experience replay interact with on-policy vs off-policy?"
 
-### PhD Connection
-
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)** indirectly: the agent architecture patterns (value networks, policy networks, experience replay) will be reused when building the adaptive opponent model. More directly, this step provides the RL vocabulary and implementation skills needed for every subsequent step.
-
----
-
 ## Exit Checklist
 
 - [ ] DQN solving CartPole-v1 (mean reward ≥ 475) — validated against SB3
@@ -331,4 +320,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** indirectly
 - [ ] One-pager written and committed
 - [ ] Learning Log initialized (connections + confusions)
 - [ ] Step notes committed to repo
-

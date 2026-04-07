@@ -3,36 +3,6 @@
 **Duration:** 10 days (Tier 3)  
 **Dependencies:** ALL prior steps (Steps 1–14)  
 **Phase:** G — Integration (capstone)  
-**Freshness Note:**  
-- ArXiv search: '"research agenda" "multi-agent" "imperfect information"' (Mar 2026) — 0 results. *No existing research agenda paper directly targets the thesis intersection.*  
-- ArXiv search: '"safe opponent exploitation" 2024 2025' (Mar 2026) — 0 results. *Confirms the safe exploitation frontier remains open — no new follow-up to OX-Search.*  
-- ArXiv search: '"behavioral adaptation" opponent strategy imperfect information' (Mar 2026) — 0 results. *The phrasing is novel enough that no prior work uses this exact framing.* 
-- ArXiv search: '"opponent modeling" survey game 2024' (Mar 2026) — 0 results. *No recent survey-level treatment found under this phrasing.*  
-- ArXiv search: 'adaptive strategy opponent exploitation multi-agent imperfect information' (Mar 2026) — 0 results. *The thesis intersection is genuinely underexplored.*  
-- ArXiv search: 'multiplayer poker equilibrium 2024' (Mar 2026) — **2 results:**  
-  - **Ge, Wang, Li & Jin (Jun 2024, revised Oct 2024) "Securing Equal Share: A Principled Approach for Learning Multiplayer Symmetric Games" (arXiv:2406.04201)** — **Critical new discovery for Contribution #2.** In N-player symmetric constant-sum games (poker, Mahjong, board games), equilibria are NEITHER unique NOR non-exploitable. Proposes "equal share" (C/n) as the natural safety objective. Designs no-regret-inspired algorithms that provably attain approximate equal share. Shows prior meta-algorithms (Pluribus-style) FAIL to secure equal share. *This is possibly the single most important paper for the thesis: it provides the formal objective function for what "safe" means in N-player games. Note: Jiawei Ge is co-author of BOTH this paper and OX-Search (Step 8) — direct intellectual lineage.*  
-  - **Babyak, Buck, Dichter, Jiang & Zumbrun (Dec 2024) "Synchronous vs. Asynchronous Coalitions in Multiplayer Games, with Applications to Guts Poker" (arXiv:2412.19855)** — Studies coalition communication levels (full vs. partial) in multiplayer games. Three distinct values: symmetric Nash, optimal asynchronous, optimal synchronous. *Asynchronous coalition optimization is a NONCONVEX problem.* Answers open question from Buck et al. for 3-player guts poker. *Supplementary but directly relevant: formalizes the gap between coalition types that Step 11 explored empirically in SLS.*  
-- ArXiv search: '"equal share" multiplayer game exploitation' (Mar 2026) — same Ge et al. paper. *Only one paper formalizes this objective.*  
-- ArXiv search: 'collusion detection poker machine learning' (Mar 2026) — 0 results. *Poker collusion detection in ML remains unstudied on ArXiv — strong publication opportunity.*  
-- ArXiv search: '"open problems" multi-agent reinforcement learning game survey' (Mar 2026) — 1 result:  
-  - Hao et al. (2021/2023, TNNLS) "Exploration in Deep Reinforcement Learning: From Single-Agent to Multiagent Domain" (arXiv:2109.06668) — *General MARL exploration survey. Not directly relevant to thesis frontier — included for completeness.*  
-- **Key observation from all freshness scans across Steps 1–15:** The thesis title "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments" occupies a genuine gap. No single paper or thesis combines: (1) opponent strategy inference from behavioral sequences, (2) safe exploitation with N-player guarantees, and (3) domain-agnostic evaluation methodology. The three contributions are individually supported by strong groups (CMU for safe exploitation, DeepMind for evaluation, Meta FAIR for Diplomacy), but the INTERSECTION is unoccupied.  
-- **Cross-references to all prior step freshness finds (aggregated for frontier mapping):**  
-  - Step 3: Schmid et al. (2024) "Student of Games" — unified search for perfect+imperfect info  
-  - Step 5: Steinberger et al. (2019/2020) DREAM — variance reduction for Deep CFR training  
-  - Step 6: Brown & Sandholm (2019) Pluribus — first superhuman 6-player poker AI  
-  - Step 7: Southey et al. (2005) Bayesian opponent model → Wang et al. (2024) player2vec  
-  - Step 8: Ge, Kovařík & Lisý (2024) OX-Search → Milec et al. (2025) ABD algorithm  
-  - Step 10: Balduzzi et al. (2019) spinning top, Hill (2025) "Co-Evolving Complexity"  
-  - Step 11: Sharan & Adak (2024) SLS RL framework  
-  - Step 12: Paster et al. (2022) DT fails in stochastic envs — Chen et al. (2021) Decision Transformer  
-  - Step 13: Wang et al. (2024) player2vec — behavioral embeddings from game histories  
-  - Step 14: Lanctot et al. (2023/2025) VasE, Timbers et al. (2020/2022) ISMCTS-BR, Martin & Sandholm (2023/2025) ApproxED  
-  - **Step 15 (new):** Ge et al. (2024) "Equal Share" — N-player safety objective; Babyak et al. (2024) — coalition communication levels  
-
----
-
-> **Contribution Alignment:** This step will complete the learning phase and design the research phase. The deliverables will include a research frontier map for each contribution, formal contribution design documents, experimental specifications, a Chapter I outline (25–30 pages), and a publication pipeline through to defense.
 
 
 ## Table of Contents
@@ -763,4 +733,3 @@ Summarize your readiness across the three contribution areas:
 - [ ] Can answer: "What is the riskiest part of your thesis?" (→ Formal safety guarantees for Contribution #2)
 - [ ] Can answer: "What is your fallback if the formal proofs don't work?" (→ Empirical validation with piKL; Contributions #1 and #3 are lower-risk)
 - [ ] Can answer: "Why should the committee approve this PhD?" (→ Three validated gaps, working code infrastructure, realistic publication pipeline, direct career applicability)
-

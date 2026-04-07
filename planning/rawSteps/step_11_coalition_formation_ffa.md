@@ -3,29 +3,19 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 7 (Opponent Modeling), Step 9 (Multi-Agent RL), Step 10 (PBT + Evolutionary Game Theory)  
 **Phase:** E — Multi-Agent Dynamics  
-**Freshness Note:**  
-- ArXiv search: "coalition formation reinforcement learning game" sorted by date (Mar 2026) — 5 results. Relevant:  
-  - Sharan & Adak (Nov 2024, v2 Oct 2025) "Reinforcing Competitive Multi-Agents for Playing 'So Long Sucker'" (arXiv:2411.11057) — **the primary benchmark.** First computational framework for SLS with DQN/DDQN/Dueling DQN. Agents achieve ~50% of max reward, outperform random baselines, but need ~2000 games and still commit occasional illegal moves. *This confirms the plan's choice — SLS is the right testbed and nearly untouched by RL.*  
-  - De Carufel & Jerade (Mar 2024, v2 Oct 2025) "So Long Sucker: Endgame Analysis" (arXiv:2403.17302) — 51-page combinatorial analysis of the 2-player SLS endgame. Characterizes Blue's winning scenarios. *Important for understanding endgame theory and verifying implementation.*  
-  - Remaining 3 results: telecom/IoT coalition papers — NOT relevant.  
-- ArXiv search: '"So Long Sucker" game' — 2 results: same two papers above. Confirms the field is extremely sparse.  
-- ArXiv search: "Shapley value credit assignment multi agent reinforcement learning" — 7 results. Key:  
-  - Wang, Li, Kaski, Lawry (Jun 2025) "Shapley Machine: A Game-Theoretic Framework for N-Agent Ad Hoc Teamwork" (arXiv:2506.11285) — Shapley-based framework for ad hoc teamwork in N-agent settings. *Supplementary — interesting connection: ad hoc teamwork IS implicit coalition formation.*  
-  - Li et al. (Jun 2021, KDD 2021) "Shapley Counterfactual Credits for Multi-Agent Reinforcement Learning" (arXiv:2106.00285) — Shapley-based credit assignment in CTDE cooperative MARL. *Core — the Shapley credit mechanism adapted for MARL.*  
-  - Wang, Zhang, Kim, Gu (Jul 2019, AAAI 2020) "Shapley Q-value: A Local Reward Approach to Solve Global Reward Games" (arXiv:1907.05707) — Decomposes team reward into individual Shapley values. *Core — the foundational Shapley-Q paper.*  
-  - Ding et al. (Nov 2025) "A Historical Interaction-Enhanced Shapley Policy Gradient Algorithm for Multi-Agent Credit Assignment" (arXiv:2511.07778) — builds on Shapley PG with historical interaction graph. *Supplementary.*  
-- ArXiv search: "diplomacy game AI human level" — 1 result:  
-  - Bakhtin, Wu, Lerer, Gray, Jacob, Farina, Miller, Brown (Oct 2022) "Mastering the Game of No-Press Diplomacy via Human-Regularized Reinforcement Learning and Planning" (arXiv:2210.05492) — Meta AI's no-press Diplomacy agent. 7-player game with implicit coalition dynamics. *Core — the closest large-scale FFA+coalition work to SLS.*  
-- Additional known work not found in search (published in Science, not indexed by keyword):  
-  - Meta AI CICERO (Science, Nov 2022) — full-press Diplomacy with language model + planning. Created human-level Diplomacy play. *Supplementary — instructive but far too large to replicate. Read for architecture insights.*  
-  - Mukobi et al. (2023) "Welfare Diplomacy: Benchmarking Language Model Cooperation" — LLM agents playing Diplomacy variants. *Supplementary — Step 12 bridge.*  
-- Cross-reference from Step 10: Balduzzi (2019) spinning top decomposition predicted that FFA coalition games will have large cyclic component. Step 10's EGTA framework carries forward as evaluation tool.  
-- Field assessment: **Dynamic coalition formation in competitive FFA settings is nearly unstudied.** Only 2 papers exist on SLS, and the RL paper (Sharan & Adak) uses basic DQN without any coalition-aware mechanisms. This confirms the plan architecture's assessment: Step 11 covers a frontier topic and a direct PhD differentiator.
+
+### PhD Connection
+
+This step is the THESIS FRONTIER. Everything from Steps 2–10 was building existing tools. Step 11 enters unstudied territory:
+
+- **Contribution #1 (Behavioral Adaptation):** The coalition detector extends opponent modeling from "what kind of player is this?" to "who is allied with whom?" This is the multi-agent generalization of behavioral adaptation: instead of adapting to one opponent's style, you adapt to the SOCIAL STRUCTURE of the game.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The central thesis gap crystallizes here:
+  - In 2-player games: safe exploitation = bounded deviation from Nash. Well-studied.
+  - In N-player FFA games: Nash is intractable AND strategically useless (ignores coalitions). The "safe baseline" must be something else — Bakhtin et al.'s piKL suggests a BEHAVIORAL prior, Step 10's population mechanisms suggest a POPULATION-LEVEL baseline. Your thesis contribution: define and prove safety guarantees for N-player FFA settings, likely using a behavioral or population-based safety notion instead of an equilibrium one.
+  - SLS is the TESTBED for this contribution. It's small enough to analyze exhaustively (4 players, finite state space) but rich enough to exhibit real coalition dynamics.
+- **Contribution #3 (Evaluation Methodology):** Standard exploitability doesn't work in N-player games (no clear "best response" against a coalition). The EGTA meta-game over agent populations + Shapley credit decomposition provides the alternative evaluation framework. SLS is where you prototype and validate this framework.
 
 ---
-
-> **Contribution Alignment:** This step crystallizes the central theoretical gap of the thesis. In two-player games, safe exploitation uses Nash equilibrium as the safety baseline (Step 8). In N-player free-for-all games, Nash equilibrium is both computationally intractable and strategically insufficient — it ignores coalition structures.
-
 
 ## Table of Contents
 - [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
@@ -49,7 +39,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
   - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -613,19 +602,6 @@ Starting point: Sharan & Adak's SLS implementation + your Step 9 MARL infrastruc
     - [Step 8→11] Step 8 proved: safe exploitation is optimal in 2-player zero-sum games (deviate from Nash only against exploitable opponents). In 4-player SLS: (a) Nash is intractable, (b) game is not zero-sum pairwise (coalitions create positive-sum subgames between allies). What IS the "safe" strategy? → OPEN (THIS IS THE CORE OF CONTRIBUTION #2)
     - [Step 10→11] The spinning top decomposition on the projected 2D payoff matrix may lose information about 3-player and 4-player coalition effects. Is there a proper multi-player spinning top decomposition? → OPEN (potentially novel contribution)
 
-### PhD Connection
-
-This step is the THESIS FRONTIER. Everything from Steps 2–10 was building existing tools. Step 11 enters unstudied territory:
-
-- **Contribution #1 (Behavioral Adaptation):** The coalition detector extends opponent modeling from "what kind of player is this?" to "who is allied with whom?" This is the multi-agent generalization of behavioral adaptation: instead of adapting to one opponent's style, you adapt to the SOCIAL STRUCTURE of the game.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The central thesis gap crystallizes here:
-  - In 2-player games: safe exploitation = bounded deviation from Nash. Well-studied.
-  - In N-player FFA games: Nash is intractable AND strategically useless (ignores coalitions). The "safe baseline" must be something else — Bakhtin et al.'s piKL suggests a BEHAVIORAL prior, Step 10's population mechanisms suggest a POPULATION-LEVEL baseline. Your thesis contribution: define and prove safety guarantees for N-player FFA settings, likely using a behavioral or population-based safety notion instead of an equilibrium one.
-  - SLS is the TESTBED for this contribution. It's small enough to analyze exhaustively (4 players, finite state space) but rich enough to exhibit real coalition dynamics.
-- **Contribution #3 (Evaluation Methodology):** Standard exploitability doesn't work in N-player games (no clear "best response" against a coalition). The EGTA meta-game over agent populations + Shapley credit decomposition provides the alternative evaluation framework. SLS is where you prototype and validate this framework.
-
----
-
 ## Exit Checklist
 
 - [ ] SLS environment working and verified against formal rules + endgame analysis
@@ -651,4 +627,3 @@ This step is the THESIS FRONTIER. Everything from Steps 2–10 was building exis
 > - (c) Simplified custom 4-player game
 
 > **[P3] Contribution #2 scope narrowing (echo from Step 8):** Contribution #2 is **tractable heuristics + empirical validation on small N-player games**, not a general N-player safety theorem. Adjust PhD Connection accordingly.
-
