@@ -3,24 +3,15 @@
 **Duration:** 21 days (Tier 1)  
 **Dependencies:** Step 3 (CFR Variants + MC Methods), Step 4 (Game Abstraction + Scaling), Step 5 (Neural Equilibrium Approximation)  
 **Phase:** C — Neural Methods for Games  
-**Freshness Note:**  
-- ArXiv search: "deep counterfactual regret minimization" sorted by date (Mar 2026) — cross-referenced with Step 5 scan  
-- ArXiv search: "depth-limited search imperfect information" (Mar 2026) — 5 results  
-- ArXiv search: "student of games imperfect information" (Mar 2026) — 1 result (original paper only)  
-- Notable recent papers:  
-  - Milec, Kovařík & Lisý (Jan 2025) "Adapting Beyond the Depth Limit: Counter Strategies in Large Imperfect Information Games" — studies opponent adaptation beyond the depth limit in large IIGs. *Directly relevant to Step 6's depth-limited solving + bridge to Step 8 (safe exploitation).*  
-  - Kubíček & Lisý (Dec 2023, updated Jan 2025) "Look-ahead Search on Top of Policy Networks in Imperfect Information Games" — learned-model search that partially replaces hand-crafted search. *Relevant to the search component of architectures.*  
-  - Zhang et al. "Faster Game Solving via Hyperparameter Schedules" — accepted AAAI 2026. *Optimization of the solving process. Add as supplementary.*  
-  - Xu et al. (Nov 2025) "Deep Predictive Discounted CFR" — AAAI 2026. *Carried from Step 5 scan, relevant to neural CFR component of architectures.*  
-  - Kubíček & Lisý (Oct 2025) "Look-ahead Reasoning with Learned Model for IIG" — *flagged in Step 4. Add as supplementary.*  
-- Core references unchanged: DeepStack (2017), Libratus (2017), Pluribus (2019), ReBeL (2020), Student of Games (2021/2023) remain the canonical architecture progression.  
-- Brown & Sandholm (2018) "Depth-Limited Solving for Imperfect-Information Games" confirmed as essential theoretical foundation.  
-- No superseded content for Step 6 scope — these architectures form a clear historical progression.
+
+### PhD Connection
+
+This step is the **architectural foundation** for the entire thesis. Every subsequent step (7–15) builds on the systems studied here:
+- **Contribution #1 (Behavioral Adaptation Framework):** ReBeL's PBS representation provides the starting point. Your thesis extends PBS to include beliefs about opponent strategy types, creating a richer state representation for adaptive play. DeepStack's continual re-solving provides the template for real-time strategy adjustment.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** Pluribus demonstrates that Nash-based approaches work empirically for N-player games but provides NO safety guarantee. This gap is your thesis contribution. The theoretical tools from Steps 4 (subgame solving safety) and 6 (depth-limited solving bounds) provide the starting point for developing N-player guarantees.
+- **Contribution #3 (Evaluation Methodology):** The exploitability metric used across ALL five systems is the evaluation backbone. Student of Games' unified framework for perfect + imperfect info provides the template for a domain-agnostic evaluation framework.
 
 ---
-
-> **Contribution Alignment:** This step will survey five landmark game-solving systems that define the current state of the art. ReBeL's public belief state framework is of particular relevance to the planned belief-based opponent modeling (Contribution 1). Pluribus demonstrates empirical success in multiplayer poker without formal safety guarantees — highlighting the theoretical gap that Contribution 2 will seek to address.
-
 
 ## Table of Contents
 - [Phase 1: Intuition (2 days)](#phase-1-intuition-2-days)
@@ -48,7 +39,6 @@
   - [Day 1 — Book Chapter Skim + Supplementary Papers](#day-1-book-chapter-skim-supplementary-papers)
   - [Day 2 — Architecture Synthesis + PhD Mapping](#day-2-architecture-synthesis-phd-mapping)
   - [Day 3 — One-Pager + Learning Log](#day-3-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (2 days)
@@ -589,15 +579,6 @@ Starting point: Your Leduc engine (Step 3) + Deep CFR (Step 5) + abstraction pip
     - [Step 5→6] My Step 5 confusion about why Deep CFR trains from scratch each iteration: ReBeL also alternates training and data collection but FINE-TUNES the network. What's different? → PARTIALLY RESOLVED (hypothesis: ReBeL's PBS-based data is more stable because it conditions on public history, while Deep CFR's info-state data shifts as the strategy changes)
     - [Step 3→6] Pluribus uses Linear CFR for the blueprint. This was Xu et al.'s starting point for Predictive Discounted CFR (AAAI 2026). Is LCFR provably better than DCFR for blueprints? → OPEN (minor, check if papers address this)
 
-### PhD Connection
-
-This step is the **architectural foundation** for the entire thesis. Every subsequent step (7–15) builds on the systems studied here:
-- **Contribution #1 (Behavioral Adaptation Framework):** ReBeL's PBS representation provides the starting point. Your thesis extends PBS to include beliefs about opponent strategy types, creating a richer state representation for adaptive play. DeepStack's continual re-solving provides the template for real-time strategy adjustment.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** Pluribus demonstrates that Nash-based approaches work empirically for N-player games but provides NO safety guarantee. This gap is your thesis contribution. The theoretical tools from Steps 4 (subgame solving safety) and 6 (depth-limited solving bounds) provide the starting point for developing N-player guarantees.
-- **Contribution #3 (Evaluation Methodology):** The exploitability metric used across ALL five systems is the evaluation backbone. Student of Games' unified framework for perfect + imperfect info provides the template for a domain-agnostic evaluation framework.
-
----
-
 ## Exit Checklist
 
 - [ ] Can draw architecture diagrams for all 5 systems from memory (DeepStack, Libratus, Pluribus, ReBeL, Student of Games)
@@ -615,4 +596,3 @@ This step is the **architectural foundation** for the entire thesis. Every subse
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–5 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
-

@@ -3,26 +3,16 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 7 (Opponent Modeling), Step 8 (Safe Exploitation), Step 9 (Multi-Agent RL)  
 **Phase:** E — Multi-Agent Dynamics  
-**Freshness Note:**  
-- ArXiv search: "population based training evolutionary game theory reinforcement learning" sorted by date (Mar 2026) — 1 result:  
-  - Li, Schultz, Hennes & Lanctot (Feb 2026) "Discovering Multiagent Learning Algorithms with Large Language Models" (arXiv:2602.16928) — uses LLMs to discover novel MARL algorithms. *Supplementary — interesting intersection of meta-learning + MARL. Also appeared in PSRO search.*  
-- ArXiv search: "evolutionary dynamics multi agent learning games" sorted by date (Mar 2026) — 25 results. Key papers:  
-  - Hill (Sep 2025, NeurIPS 2025 workshop) "Co-Evolving Complexity: An Adversarial Framework for Automatic MARL Curricula" (arXiv:2509.03771) — auto-curriculum via co-evolution. *Directly relevant to this step — population diversity and automatic difficulty progression.*  
-  - Geng et al. (Jan 2026) "Dynamics of Multi-Agent Actor-Critic Learning in Stochastic Games" (arXiv:2601.07142) — analyzes convergence dynamics of multi-agent actor-critic methods through the lens of dynamical systems. *Connection between MARL learning dynamics and evolutionary game theory.*  
-  - GEMS: Sharma et al. (Sep 2025, TMLR 2026) "Generative Evolutionary Meta-Solver" (arXiv:2509.23462) — scalable surrogate-free MARL using evolutionary methods. *Relevant PBT variation.*  
-  - Tuyls, Pérolat, Lanctot et al. (2018) "A Generalised Method for Empirical Game Theoretic Analysis" (arXiv:1803.06376, AAMAS 2018) — foundational for empirical game theory. *Core reference.*  
-  - De La Fuente et al. (Dec 2024) "Game Theory and MARL: From Nash Equilibria to Evolutionary Dynamics" (arXiv:2412.20523) — 22-page survey connecting GT with evolutionary MARL. *Good Phase 3 survey read.*  
-  - Xu et al. (Oct 2025, NeurIPS 2025) "Heterogeneous Adversarial Play in Interactive Environments" (arXiv:2510.18407) — diversity through heterogeneous adversarial self-play. *Relevant to population diversity mechanisms.*  
-- ArXiv search: "PSRO policy space response oracle multi agent" (Mar 2026) — cross-referenced with Step 9 scan:  
-  - Hennes et al. (Mar 2026, AAMAS 2026) "Code-Space Response Oracles" — LLM-generated policies in PSRO. *Supplementary.*  
-  - Yao et al. (Jun 2023, Nov 2023) "Policy Space Diversity for Non-Transitive Games" (arXiv:2306.16884) — addresses PSRO diversity collapse in non-transitive games via diversity regularization. *Directly relevant to PBT diversity problem.*  
-- Core references confirmed and unchanged: Jaderberg et al. (2017 PBT), Jaderberg et al. (2019 FTW/CTF), Vinyals et al. (2019 AlphaStar), Balduzzi et al. (2019 spinning tops), Hofbauer & Sigmund (1998/2003 evolutionary dynamics).  
-- No superseded content for Step 10 scope.
+
+### PhD Connection
+
+This step provides the EVOLUTIONARY MACHINERY for the thesis. The connection to each contribution:
+
+- **Contribution #1 (Behavioral Adaptation):** PBT's exploiter mechanism is automated opponent modeling at scale. The main exploiter finds weaknesses in the main agent — exactly what your Step 7 opponent model does, but embedded in the training loop. Your thesis combines EXPLICIT modeling (Step 7's Bayesian model) with IMPLICIT modeling (Step 10's exploiter agents).
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The key gap: AlphaStar's league provides HEURISTIC safety (exploiters keep main agents honest) but NO FORMAL SAFETY GUARANTEE. Your thesis contribution is to formalize this: what does "safe exploitation in a population" MEAN mathematically? The spinning top decomposition tells you that the cyclic component is where safety is hardest (because improvement is illusory). Can you define safety as "never losing to the transitive component" while accepting cycling in the cyclic component? This is a concrete thesis hypothesis.
+- **Contribution #3 (Evaluation Methodology):** EGTA provides the evaluation framework: measure the meta-Nash of the agent population as the multi-agent generalization of exploitability. The spinning top decomposition provides a diagnostic: how much of the competitive structure is "real skill" vs "rock-paper-scissors dynamics"?
 
 ---
-
-> **Contribution Alignment:** Population-based training and the AlphaStar league architecture will be studied as examples of implicit opponent modeling at population scale, complementing the explicit Bayesian modeling of Step 7. The spinning top decomposition — distinguishing genuine skill improvement from non-transitive cycling — will be adopted into the evaluation methodology (Contribution 3).
-
 
 ## Table of Contents
 - [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
@@ -46,7 +36,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Survey Skim + Supplementary Papers](#day-1-survey-skim-supplementary-papers)
   - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -541,16 +530,6 @@ Starting point: Your PSRO from Step 9 + your Nash solver from Step 2 + your Deep
     - [Step 10] The spinning top decomposition requires computing the FULL payoff matrix between all agents. For large populations, this is O(n²) games. Is there an efficient approximation? → OPEN (relevant for Step 14 scaling)
     - [Step 8→10] Step 8 proved safe exploitation for 2-player. The AlphaStar exploiter mechanism provides safety pressure in a POPULATION. But is there a formal guarantee? AlphaStar exploiters are heuristic — there's no theorem saying "main agents can't become exploitable." → OPEN (this IS the Contribution #2 gap: formalizing population-level safety)
 
-### PhD Connection
-
-This step provides the EVOLUTIONARY MACHINERY for the thesis. The connection to each contribution:
-
-- **Contribution #1 (Behavioral Adaptation):** PBT's exploiter mechanism is automated opponent modeling at scale. The main exploiter finds weaknesses in the main agent — exactly what your Step 7 opponent model does, but embedded in the training loop. Your thesis combines EXPLICIT modeling (Step 7's Bayesian model) with IMPLICIT modeling (Step 10's exploiter agents).
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The key gap: AlphaStar's league provides HEURISTIC safety (exploiters keep main agents honest) but NO FORMAL SAFETY GUARANTEE. Your thesis contribution is to formalize this: what does "safe exploitation in a population" MEAN mathematically? The spinning top decomposition tells you that the cyclic component is where safety is hardest (because improvement is illusory). Can you define safety as "never losing to the transitive component" while accepting cycling in the cyclic component? This is a concrete thesis hypothesis.
-- **Contribution #3 (Evaluation Methodology):** EGTA provides the evaluation framework: measure the meta-Nash of the agent population as the multi-agent generalization of exploitability. The spinning top decomposition provides a diagnostic: how much of the competitive structure is "real skill" vs "rock-paper-scissors dynamics"?
-
----
-
 ## Exit Checklist
 
 - [ ] Replicator dynamics working on all matrix games with verified convergence/cycling
@@ -569,4 +548,3 @@ This step provides the EVOLUTIONARY MACHINERY for the thesis. The connection to 
 - [ ] Learning Log updated (connections from Steps 2–9 + new confusions + resolved confusions)
 - [ ] PhD connection documented (PBT as automated opponent modeling, population safety gap, EGTA as evaluation framework)
 - [ ] Step notes committed to repo
-

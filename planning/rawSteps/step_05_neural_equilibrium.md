@@ -6,22 +6,14 @@
 
 > **Know-How First compression:** Implementation phase cut from 6d to 3d. Get Deep CFR running on Leduc with correct exploitability convergence. Understand DREAM conceptually (reading + exploration). Defer full DREAM implementation and head-to-head Deep CFR vs. DREAM benchmark to implementation phase post-November. All reading and intuition phases unchanged.
 > Phase allocation: Intuition 1d | Exploration 2d | Reading 3d | Implementation **3d** | Consolidation 2d  
-**Freshness Note:**  
-- ArXiv search: "deep counterfactual regret minimization" sorted by date (Mar 2026) — 19 results total  
-- ArXiv search: "neural fictitious self play imperfect information" (Mar 2026) — 4 results total  
-- Notable recent papers:  
-  - Xu et al. (Nov 2025) "Deep (Predictive) Discounted Counterfactual Regret Minimization" — accepted AAAI 2026. Combines discounted regret weights with predictive neural networks for faster convergence. *Add as supplementary — directly extends Deep CFR.*  
-  - Rudolph et al. (Feb 2025) "Reevaluating Policy Gradient Methods for Imperfect-Information Games" — challenges the assumption that naive self-play DRL fails in adversarial IIGs. *Add as supplementary — bridges Step 1 RL to Step 5 game solving, important perspective.*  
-  - SpinGPT (Maugin & Cazenave, Sep 2025) "A Large-Language-Model Approach to Playing Poker Correctly" — LLM + CFR hybrid, ACG 2025. *Log for Step 12 (LLM agents).*  
-  - Chen et al. (May 2023, updated Nov 2025) "Hierarchical Deep Counterfactual Regret Minimization" — hierarchical state abstraction for Deep CFR. *Log as optional supplementary.*  
-- Core resources unchanged: Brown et al. (2019) Deep CFR, Steinberger (2019) Single Deep CFR / DREAM, Heinrich & Silver (2016) NFSP remain the canonical references.  
-- No superseded content for Step 5 scope.
+
+### PhD Connection
+
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: Deep CFR's advantage networks are the technical mechanism for computing baseline strategies in games too large for tabular CFR. The information state encoding designed here (tensor representation of game state) becomes the foundation for the opponent modeling input in Step 7. NFSP's anticipatory parameter η foreshadows the exploitation-safety tradeoff central to Step 8 and the thesis.
 
 ---
 
 > **Phase Overview:** Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree enumeration.
->
-> **Contribution Alignment:** Deep CFR and NFSP will be studied as methods for computing equilibrium strategies in games too large for tabular solvers — a capability needed for the planned behavioral adaptation work. NFSP's anticipatory parameter, which interpolates between equilibrium and exploitative play, foreshadows the exploitation–safety tradeoff central to the thesis.
 
 
 ## Table of Contents
@@ -47,7 +39,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
   - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -494,12 +485,6 @@ Starting point: Your Leduc Hold'em engine from Step 3. Your MCCFR from Step 3 pr
     - [Step 5] NFSP's anticipatory parameter η = 0.1 works for Leduc. Would the same η work for larger games? How to tune it? → OPEN (check in Step 6 when analyzing Pluribus/ReBeL)
     - [Step 3→5] Deep CFR uses external sampling (traverse all own actions, sample opponent). DREAM uses outcome sampling. My Step 3 confusion about external vs outcome sampling tradeoffs now has a concrete answer: in the NEURAL setting, outcome sampling is better because the network generalizes across unvisited states. → PARTIALLY RESOLVED by Step 5
 
-### PhD Connection
-
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: Deep CFR's advantage networks are the technical mechanism for computing baseline strategies in games too large for tabular CFR. The information state encoding designed here (tensor representation of game state) becomes the foundation for the opponent modeling input in Step 7. NFSP's anticipatory parameter η foreshadows the exploitation-safety tradeoff central to Step 8 and the thesis.
-
----
-
 ## Exit Checklist
 
 - [ ] Deep CFR implementation working and producing convergent strategies on Leduc
@@ -515,4 +500,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–4 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
-

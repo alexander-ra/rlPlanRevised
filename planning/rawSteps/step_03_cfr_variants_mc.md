@@ -6,19 +6,14 @@
 
 > **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one MC-CFR variant (External Sampling) to working correctness on Kuhn and Leduc. Defer polished multi-variant comparison (Outcome Sampling, Robust Sampling) to implementation phase post-November. All reading and intuition phases unchanged.
 > Phase allocation: Intuition 1d | Exploration 1d | Reading 3d | Implementation **3d** | Consolidation 2d  
-**Freshness Note:**  
-- ArXiv search: "counterfactual regret minimization" sorted by date (Mar 2026) — 99 results total  
-- ArXiv search: "monte carlo sampling regret extensive games" (Mar 2026)  
-- Core resources unchanged: Lanctot et al. (2009) MCCFR, Tammelin et al. (2015) CFR+ remain the standard references  
-- Notable recent papers logged but belong to later steps: Xu et al. "Deep Predictive Discounted CFR" (AAAI 2026, → Step 5), Zhang et al. "Faster Game Solving via Hyperparameter Schedules" (AAAI 2026, → Step 5/6), Li et al. "RL-CFR" (Mar 2024, → Step 4 action abstraction)  
-- VR-MCCFR (Schmid et al., 2018) added as supplementary — variance reduction for MCCFR, bridges to Deep CFR in Step 5  
-- No superseded content for Step 3 scope
+
+### PhD Connection
+
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: MCCFR is the algorithm that will compute the baseline Nash strategy (the "play it safe" anchor) from which the adaptive agent will deviate based on opponent observations. CFR+ is the tool that makes this computation tractable for real-sized games. The Leduc implementation also establishes the intermediate benchmark game used in Steps 5–8 before scaling to full poker.
 
 ---
 
 > **Phase Overview:** Phase A established a working CFR solver on the minimal Kuhn Poker benchmark, but vanilla CFR requires a full traversal of the game tree on every iteration — an approach that becomes infeasible as games grow. This phase will introduce two complementary scaling mechanisms: Monte Carlo sampling methods that reduce per-iteration cost, and game abstraction techniques that reduce the game tree itself. These tools are needed to bridge the gap between toy benchmarks and the medium-scale games on which later thesis work will be developed.
->
-> **Contribution Alignment:** Monte Carlo CFR variants will provide the computationally tractable equilibrium computation needed for medium-scale games, which will underpin the empirical work in later contributions. CFR+ accelerates convergence, enabling equilibrium computation for games beyond the reach of vanilla CFR.
 
 
 ## Table of Contents
@@ -43,7 +38,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
   - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -356,12 +350,6 @@ https://arxiv.org/abs/0709.2092
     - [Step 3] CFR+ has O(1/T) convergence empirically but no formal proof. Is this a problem for the thesis? → OPEN (check if proofs exist by Step 6)
     - [Step 2→3] My Step 2 confusion about "average vs current strategy" — I now see current strategy in MCCFR is used for SAMPLING (opponents play it), while average strategy is the output. The current strategy is the exploration mechanism. → RESOLVED by Step 3
 
-### PhD Connection
-
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: MCCFR is the algorithm that will compute the baseline Nash strategy (the "play it safe" anchor) from which the adaptive agent will deviate based on opponent observations. CFR+ is the tool that makes this computation tractable for real-sized games. The Leduc implementation also establishes the intermediate benchmark game used in Steps 5–8 before scaling to full poker.
-
----
-
 ## Exit Checklist
 
 - [ ] Leduc Hold'em game engine working and tested
@@ -377,4 +365,3 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Steps 1–2 + new confusions + resolved confusions)
 - [ ] Step notes committed to repo
-

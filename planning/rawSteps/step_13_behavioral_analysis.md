@@ -3,32 +3,35 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 7 (Opponent Modeling), Step 12 (Sequence Models + LLM Agents)  
 **Phase:** F — Data-Driven Approaches  
-**Freshness Note:**  
-- ArXiv search: '"behavioral cloning" poker player modeling' (Mar 2026) — 0 results. Confirms the field remains niche; most poker behavioral work is in industry, not academic preprints.  
-- ArXiv search: "collusion detection online poker" (Mar 2026) — 0 results. Collusion detection in poker is almost entirely industry-internal (Playtech, PokerStars, etc.) with very few public papers.  
-- ArXiv search: "poker player style classification machine learning" (Mar 2026) — 0 results.  
-- ArXiv search: "collusion detection multiplayer game anomaly" (Mar 2026) — 0 results.  
-- ArXiv search: "fraud detection online gaming behavioral anomaly" (Mar 2026) — 0 results.  
-- ArXiv search: "player modeling game behavior representation learning" (Mar 2026) — 9 results. Relevant:  
-  - Wang et al. (Apr 2024) "player2vec: A Language Modeling Approach to Understand Player Behavior in Games" (arXiv:2404.04234) — **directly relevant.** Extends a long-range Transformer to player behavior data. In-game events treated as words in sentences → self-supervised player representation learning. Learns embeddings that capture behavioral patterns. *Core — the closest published work to what this step builds for poker.*  
-  - Kim et al. (Jan 2025, ICPR 2024) "A Framework for Mining Collectively-Behaving Bots in MMORPGs" (arXiv:2501.10461) — Trajectory representation learning + DBSCAN clustering to detect bot collectives. *Supplementary — relevant methodology for detecting coordinated (colluding) players in poker, same principle: learn embeddings → cluster → flag anomalous groups.*  
-- ArXiv search: "offline reinforcement learning behavioral data imitation game" (Mar 2026) — 4 results. Relevant:  
-  - Kumar, Hong, Singh & Levine (Apr 2022, ICLR 2022) "When Should We Prefer Offline Reinforcement Learning Over Behavioral Cloning?" (arXiv:2204.05618) — **critical for this step.** Characterizes when offline RL outperforms BC: sparse rewards, noisy data, long horizons. Poker has all three. *Core — directly answers the design question: should the Playtech pipeline use BC or offline RL?*  
-- Known foundational papers (not found via keyword search — most are domain-specific or conference proceedings):  
-  - DeLong & Bhatt (2020) "Towards Collusion Detection in Poker" — pattern-based collusion detection. *Referenced in oldSources/docPlan_EN.md.*  
-  - Yan & Browne (2016) "Collusion Detection in Online Poker" — statistical approaches. *Referenced in oldSources/docPlan_EN.md.*  
-  - Johanson et al. (2009) "Data-Biased Robust Counter Strategies" — exploiting behavioral data. *Already covered in Step 7.*  
-  - Southey et al. (2005) "Bayes' Bluff: Opponent Modelling in Poker" — Bayesian player modeling. *Already covered in Step 7.*  
-  - Ganzfried & Sun (2016/2018) "Bayesian Opponent Exploitation in Imperfect-Information Games" — *Already covered in Step 7; referenced for continuity.*  
-- Cross-reference from Step 12: Poker state tensor encoding (cards, position, pot, stacks, betting history) prototyped on Kuhn/Leduc data → this step applies it to Playtech data. Paster et al. (2022) stochasticity warning → must condition on decision EV, not raw outcomes.  
-- Cross-reference from Step 11: Coalition detector (help/harm matrices) as collusion detection prototype. Prediction logged in Step 11's Learning Log: the same behavioral inference principle transfers to real poker data.  
-- Cross-reference from Step 7: Bayesian opponent model (hand range inference from actions) provides the methodological foundation for player behavior modeling.  
-- Field assessment: **Behavioral analysis of real poker data is overwhelmingly industry-internal. The academic literature on poker player modeling is sparse (Southey 2005, Ganzfried 2016, a few others) and the collusion detection literature is nearly nonexistent publicly. The biggest recent development is player2vec (Wang et al., 2024: representation learning from game behavior data via Transformers) which directly validates this step's approach. The Kumar et al. (2022) BC vs offline RL paper provides critical guidance for pipeline design. This step's Playtech data work has PhD NOVELTY potential — very few public demonstrations of ML on real poker behavioral data exist.**
+
+### PhD Connection
+
+This step is the PRACTICAL CORE of the thesis — it connects all theoretical work to real-world application:
+
+- **Contribution #1 (Behavioral Adaptation Framework):** The pipeline IS the framework:
+  - State tensor encoding → behavioral representation
+  - player2vec embeddings → style discovery (unsupervised)
+  - Bayesian player modeling (from Step 7) → online style refinement
+  - BC model → action prediction baseline
+  - Temporal analysis → style shift detection (future extension)
+  - Together: a complete framework for representing, classifying, and tracking player behavior from raw game data. This is directly publishable as a pipeline paper + Playtech case study.
+
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The real-world data establishes the empirical basis:
+  - The gap between real player behavior and GTO play (measured here) is the EXPLOITATION OPPORTUNITY.
+  - Step 8's safe exploitation theory + Step 13's behavioral pipeline = a complete SYSTEM: detect opponent weakness from data → exploit it safely.
+  - In the N-player setting (6-max tables): the multi-player modeling challenges from Steps 9–11 meet real data.
+
+- **Contribution #3 (Evaluation Methodology):** The collusion detection module is a direct contribution:
+  - Collusion detection in online poker is an OPEN PROBLEM with very few published solutions.
+  - Your approach (co-occurrence analysis + chip dumping + soft play + player2vec-based anomaly detection) combines techniques from Steps 7, 11, and 12 into a novel detection pipeline.
+  - This is directly relevant to the fraud/risk career path (5/5 fraud job postings map to Steps 7, 8, 13).
+  - Playtech co-authorship potential: if the detection pipeline finds real anomalies in Playtech data, the resulting paper has both academic and industry value.
+
+- **Bridge to Step 14:** The evaluation metrics developed here (action prediction accuracy, style classification accuracy, collusion detection precision/recall) feed into the formal evaluation framework of Step 14. Step 14 asks "how do we evaluate agents?" — Step 13 provides the real-world data benchmark.
+
+- **November publication target:** Step 13's pipeline + Playtech case study is the STRONGEST candidate for the first publication. It combines: (a) novel methodology (player2vec for poker + collusion detection), (b) real-world data (Playtech), (c) practical value (iGaming industry), (d) accessible framing (fraud detection). A paper titled "Behavioral Analysis and Collusion Detection in Online Poker via Transformer-Based Player Embeddings" would be suitable for IEEE Transactions on Games, AAAI Workshop on AI for Social Good, or a similar venue.
 
 ---
-
-> **Contribution Alignment:** This step will apply the behavioral adaptation methodology from Steps 7, 8, and 12 to anonymized industry data, providing practical validation for Contribution 1. The behavioral deviation from equilibrium play measured on real player data will quantify exploitation opportunities relevant to Contribution 2.
-
 
 ## Table of Contents
 - [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
@@ -52,7 +55,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Survey Skim + Cross-References](#day-1-survey-skim-cross-references)
   - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -795,35 +797,6 @@ https://arxiv.org/abs/2204.05618
     - [Step 11→13] The SLS coalition detector uses a simple threshold on help/harm net scores. The poker collusion detector uses a weighted composite of co-occurrence, chip dumping, and soft play. Is there a principled way to SET the threshold/weights? (If too aggressive → false positives; too conservative → misses real collusion.) → OPEN (ROC analysis on synthetic collusion can help, but real-world calibration needs Playtech feedback)
     - [Step 12→13] ARDT (adversarially robust) on real poker data: the poker environment is MUCH more complex than Kuhn. Does ARDT still produce meaningful strategies when data coverage is sparse? (Real players don't visit all information sets equally.) → OPEN (tested briefly in Day 6, but needs deeper investigation)
 
-### PhD Connection
-
-This step is the PRACTICAL CORE of the thesis — it connects all theoretical work to real-world application:
-
-- **Contribution #1 (Behavioral Adaptation Framework):** The pipeline IS the framework:
-  - State tensor encoding → behavioral representation
-  - player2vec embeddings → style discovery (unsupervised)
-  - Bayesian player modeling (from Step 7) → online style refinement
-  - BC model → action prediction baseline
-  - Temporal analysis → style shift detection (future extension)
-  - Together: a complete framework for representing, classifying, and tracking player behavior from raw game data. This is directly publishable as a pipeline paper + Playtech case study.
-
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The real-world data establishes the empirical basis:
-  - The gap between real player behavior and GTO play (measured here) is the EXPLOITATION OPPORTUNITY.
-  - Step 8's safe exploitation theory + Step 13's behavioral pipeline = a complete SYSTEM: detect opponent weakness from data → exploit it safely.
-  - In the N-player setting (6-max tables): the multi-player modeling challenges from Steps 9–11 meet real data.
-
-- **Contribution #3 (Evaluation Methodology):** The collusion detection module is a direct contribution:
-  - Collusion detection in online poker is an OPEN PROBLEM with very few published solutions.
-  - Your approach (co-occurrence analysis + chip dumping + soft play + player2vec-based anomaly detection) combines techniques from Steps 7, 11, and 12 into a novel detection pipeline.
-  - This is directly relevant to the fraud/risk career path (5/5 fraud job postings map to Steps 7, 8, 13).
-  - Playtech co-authorship potential: if the detection pipeline finds real anomalies in Playtech data, the resulting paper has both academic and industry value.
-
-- **Bridge to Step 14:** The evaluation metrics developed here (action prediction accuracy, style classification accuracy, collusion detection precision/recall) feed into the formal evaluation framework of Step 14. Step 14 asks "how do we evaluate agents?" — Step 13 provides the real-world data benchmark.
-
-- **November publication target:** Step 13's pipeline + Playtech case study is the STRONGEST candidate for the first publication. It combines: (a) novel methodology (player2vec for poker + collusion detection), (b) real-world data (Playtech), (c) practical value (iGaming industry), (d) accessible framing (fraud detection). A paper titled "Behavioral Analysis and Collusion Detection in Online Poker via Transformer-Based Player Embeddings" would be suitable for IEEE Transactions on Games, AAAI Workshop on AI for Social Good, or a similar venue.
-
----
-
 ## Exit Checklist
 
 - [ ] Playtech hand history parser robust and validated (100% parse rate on well-formed hands)
@@ -853,4 +826,3 @@ This step is the PRACTICAL CORE of the thesis — it connects all theoretical wo
 > **[P8] Change-Point Detection for collusion:** Add Bayesian online changepoint detection (Adams & MacKay 2007) as a signal in the collusion detection composite score. Same algorithm from Step 7 applied to detect collusion onset / bot behavior changes in player timelines. ~0.5d absorbed within 14d allocation.
 
 > **[P10] GAIL/IRL Fallback:** If behavioral cloning accuracy < 55% on action prediction, explore **IQ-Learn** (Garg et al., 2021) as an inverse RL alternative. IQ-Learn is already in supplementary references — this promotes it to documented Plan B.
-

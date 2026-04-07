@@ -3,27 +3,20 @@
 **Duration:** 21 days (Tier 1)  
 **Dependencies:** Step 2 (Game Theory + CFR Basics), Step 6 (End-to-End Game AI Architectures)  
 **Phase:** D — Opponent Modeling + Exploitation  
-**Freshness Note:**  
-- ArXiv search: "opponent modeling imperfect information games" sorted by date (Mar 2026) — 23 results total  
-- ArXiv search: "bayesian opponent modeling extensive form games" sorted by date (Mar 2026) — 0 results (niche phrasing)  
-- Semantic Scholar cross-check on top-cited works in opponent modeling for games  
-- **Newly discovered papers (not in original plan):**  
-  - Ganzfried (Aug 2025, revised Jan 2026) "Consistent Opponent Modeling in Imperfect-Information Games" (arXiv:2508.17671) — develops a new algorithm guaranteed to converge to opponent's true strategy via sequence-form projected gradient descent. **Critical addition to this step — the freshest opponent modeling paper available.**  
-  - Milec, Kovařík & Lisý (Jan 2025) "Adapting Beyond the Depth Limit: Counter Strategies in Large Imperfect Information Games" (arXiv:2501.10464) — proposes ABD (Adapting Beyond Depth-limit) using strategy-portfolio approach for depth-limited search. **Bridges Step 7 → Step 8. Assign primarily to Step 8 but reference here.**  
-  - Li, Lanctot et al. (Feb 2023, accepted IJCAI 2025) "Combining Tree-Search, Generative Models, and Nash Bargaining Concepts in Game-Theoretic RL" (arXiv:2302.00797) — uses generative opponent models + tree search. **Log for Step 9/10.**  
-  - Zhou et al. (Jan 2022, revised May 2024) "DecisionHoldem: Safe Depth-Limited Solving With Diverse Opponents" (arXiv:2201.11580) — depth-limited solving with diverse opponent models. **Secondary reference for this step.**  
-- Core references confirmed and unchanged:  
-  - Southey et al. (2005) "Bayes' Bluff" remains the foundational Bayesian opponent modeling paper for poker  
-  - Bard et al. (2013) "Online Implicit Agent Modelling" remains the standard for implicit modeling  
-  - Ganzfried & Sun (2016/2018) "Bayesian Opponent Exploitation" remains the bridge between modeling and exploitation  
-  - Ganzfried, Wang & Chiswick (2022/2024) "Opponent Modeling in Multiplayer Imperfect-Information Games" remains the multiplayer extension  
-- No superseded content for Step 7 scope
+
+### PhD Connection
+
+This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework). The opponent model is the "sensor" that takes raw behavioral data (observed actions, revealed hands at showdown) and produces a structured estimate of the opponent's strategy. Without this sensor, the agent cannot adapt — it can only play Nash (safe but unexploitative).
+
+**What this step provides for the thesis:**
+- Three concrete opponent modeling approaches with empirical comparisons
+- Understanding of when each approach is appropriate
+- A clear open question: handling non-stationarity (the thesis's novel contribution opportunity)
+- Demonstration that opponent modeling WORKS on toy games — now must scale (via Steps 8 + 11)
 
 ---
 
 > **Phase Overview:** This phase addresses the central research question: how should an agent adapt its play to a specific opponent? The preceding phases built the algorithmic toolbox — equilibrium solvers, abstraction, and neural approximation — but did not yet tackle opponent-aware play. Step 7 will introduce inference mechanisms that convert observed action sequences into beliefs about opponent behavior. Step 8 will cover algorithms that translate those beliefs into profitable yet safe strategy adjustments.
->
-> **Contribution Alignment:** Bayesian opponent modeling will serve as the inference component of the planned Behavioral Adaptation Framework (Contribution 1). Three modeling paradigms will be studied — type-based models, continuous parametric models, and consistent convergent estimators — each offering different tradeoffs between assumptions, convergence speed, and robustness.
 
 
 ## Table of Contents
@@ -51,7 +44,6 @@
   - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
   - [Day 2 — Deep Comparison + Thesis Connection](#day-2-deep-comparison-thesis-connection)
   - [Day 3 — One-Pager + Learning Log](#day-3-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (2 days)
@@ -523,18 +515,6 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
     - [Step 7] In Leduc, partial observability significantly slows convergence. In NLHE (10^161 states), how many hands would you need? → OPEN (this is why abstraction from Step 4 matters — model in the abstract space, not the full space)
     - [Step 4→7] Prediction confirmed: opponent model DOES need "map unseen behavior to known types" logic, exactly like action translation. The parallels are deep.
 
-### PhD Connection
-
-This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework). The opponent model is the "sensor" that takes raw behavioral data (observed actions, revealed hands at showdown) and produces a structured estimate of the opponent's strategy. Without this sensor, the agent cannot adapt — it can only play Nash (safe but unexploitative).
-
-**What this step provides for the thesis:**
-- Three concrete opponent modeling approaches with empirical comparisons
-- Understanding of when each approach is appropriate
-- A clear open question: handling non-stationarity (the thesis's novel contribution opportunity)
-- Demonstration that opponent modeling WORKS on toy games — now must scale (via Steps 8 + 11)
-
----
-
 ## Exit Checklist
 
 - [ ] All three opponent models working and validated on Kuhn and Leduc
@@ -562,4 +542,3 @@ This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework)
 > **[P8] Bayesian Online Changepoint Detection merge:** Add Adams & MacKay (2007) changepoint detection to the non-stationarity experiment in Phase 4. Instead of ad-hoc “observe what happens when opponent switches type,” detect the switch point statistically, then trigger re-modeling. ~0.5d absorbed within 21d allocation.
 
 > **[P11*] Meta-Learning Baseline (optional):** If Step 7 completes ahead of schedule, run one off-the-shelf meta-learning method (e.g., MAML or contextual bandit) as a comparison baseline against the Bayesian opponent model. No tuning. Preempts reviewer question “why not just meta-learn?”
-

@@ -3,19 +3,17 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 1 (RL Basics)  
 **Phase:** A — Foundation  
-**Freshness Note:**  
-- ArXiv search: "counterfactual regret minimization" sorted by date, checked 2024–2026 (Mar 2026)  
-- ArXiv search: "game theory extensive form introduction tutorial" (Mar 2026)  
-- Semantic Scholar: unavailable at scan time (server error)  
-- 99 CFR papers found on arXiv total, ~20 from 2024–2026 — all are advanced variants (Predictive CFR+, GPU-accelerated CFR, Deep Discounted CFR, scale-invariant regret matching). These belong to Steps 3–6, not Step 2.  
-- Notable 2024–2026 papers logged for later steps: Xu et al. "Deep Predictive Discounted CFR" (AAAI 2026), Zhang et al. "Faster Game Solving via Hyperparameter Schedules" (AAAI 2026), Rudolph et al. "Reevaluating Policy Gradient Methods for IIGs" (Feb 2025)  
-- Core resources unchanged: Neller & Lanctot (2013) remains THE standard CFR tutorial. Shoham & Leyton-Brown remains the best multiagent systems textbook for game theory foundations.  
-- No superseded content detected for Step 2 scope.
+
+### PhD Connection
+
+This step feeds **all three thesis contributions** at the foundational level:
+- **Contribution #1 (Behavioral Adaptation Framework):** CFR's information-set decomposition is the basis for computing counter-strategies against observed behavior.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** Safe exploitation (Step 8) is defined as deviation from Nash equilibrium — you must first understand Nash computation via CFR to understand what you're deviating FROM.
+- **Contribution #3 (Evaluation Methodology):** Exploitability (computed via best response) is the primary evaluation metric for your thesis. You implemented it from scratch in this step.
+
+> **[P6] Sequence-form reading pointer:** When reviewing Step 2 material during Step 8, revisit Shoham & Leyton-Brown Chapter 4 on sequence-form representation. The sequence-form is the mathematical backbone of all LP-based equilibrium and exploitation computation used in Step 8.
 
 ---
-
-> **Contribution Alignment:** The extensive-form game representation and CFR algorithm introduced here will provide the formal framework and baseline equilibrium computation used throughout the thesis. Exploitability, defined and implemented in this step, will serve as the primary quantitative metric across all three contributions.
-
 
 ## Table of Contents
 - [Phase 1: Intuition (1 day)](#phase-1-intuition-1-day)
@@ -37,7 +35,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Reference Skim + Gap Fill](#day-1-reference-skim-gap-fill)
   - [Day 2 — One-Pager + Learning Log](#day-2-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -392,17 +389,6 @@ https://arxiv.org/abs/0709.2092
     - "CFR is proven for 2-player zero-sum — what happens in N-player or general-sum games?" → Flag for Step 9/11
     - "How does CFR handle games much larger than Kuhn where you can't traverse the full tree?" → This is exactly Step 3 (MCCFR)
 
-### PhD Connection
-
-This step feeds **all three thesis contributions** at the foundational level:
-- **Contribution #1 (Behavioral Adaptation Framework):** CFR's information-set decomposition is the basis for computing counter-strategies against observed behavior.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** Safe exploitation (Step 8) is defined as deviation from Nash equilibrium — you must first understand Nash computation via CFR to understand what you're deviating FROM.
-- **Contribution #3 (Evaluation Methodology):** Exploitability (computed via best response) is the primary evaluation metric for your thesis. You implemented it from scratch in this step.
-
-> **[P6] Sequence-form reading pointer:** When reviewing Step 2 material during Step 8, revisit Shoham & Leyton-Brown Chapter 4 on sequence-form representation. The sequence-form is the mathematical backbone of all LP-based equilibrium and exploitation computation used in Step 8.
-
----
-
 ## Exit Checklist
 
 - [ ] Vanilla CFR solving Kuhn Poker — strategies match known Nash equilibrium (P1 J-bet ≈ 0.333, K-bet ≈ 1.0, Q-bet ≈ 0.0)
@@ -417,4 +403,3 @@ This step feeds **all three thesis contributions** at the foundational level:
 - [ ] One-pager written and committed
 - [ ] Learning Log updated (connections from Step 1 + new confusions)
 - [ ] Step notes committed to repo
-

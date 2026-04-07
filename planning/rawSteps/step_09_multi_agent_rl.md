@@ -3,28 +3,18 @@
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 1 (RL Basics), Step 6 (End-to-End Game AI Architectures)  
 **Phase:** E — Multi-Agent Dynamics  
-**Freshness Note:**  
-- ArXiv search: "multi agent reinforcement learning communication cooperation" sorted by date (Mar 2026) — 351 results total, scanned top 50. Dominated by telecom/UAV/robotics applications. Relevant MARL-theory papers:  
-  - Wittner (Jan 2026) "Communication Methods in Multi-Agent Reinforcement Learning" (arXiv:2601.12886) — 12-page survey of MARL communication methods. *Useful reference for Phase 3.*  
-  - HCPO: Liu et al. (Nov 2025) "Hierarchical Conductor-Based Policy Optimization in MARL" (AAAI 2026). *New cooperative MARL architecture.*  
-  - Samvelyan (Dec 2025) "Robust Agents in Open-Ended Worlds" (arXiv:2512.08139) — PhD thesis on open-ended MARL. *Survey reference for Phase 5.*  
-  - Hill et al. (Aug 2025) "Communicating Plans, Not Percepts: Scalable Multi-Agent Coordination with Embodied World Models" — NeurIPS 2025 workshop. *Interesting communication approach.*  
-- ArXiv search: "PSRO policy space response oracle multi agent" sorted by date (Mar 2026) — 9 results:  
-  - Hennes, Li, Schultz & Lanctot (Mar 2026) "Code-Space Response Oracles: Generating Interpretable Multi-Agent Policies with LLMs" (AAMAS 2026) — LLM-generated PSRO policies. *Supplementary, interesting for Step 12 bridge.*  
-  - Li, Schultz, Hennes & Lanctot (Feb 2026) "Discovering Multiagent Learning Algorithms with Large Language Models" (arXiv:2602.16928) — meta-discovery of MARL algorithms via LLMs. *Supplementary.*  
-  - Bighashdel, Simão & Oliehoek (Feb 2026) "Sample-Efficient PSRO with Joint Experience Best Response" (AAMAS 2026) — improves PSRO sample efficiency. *Relevant supplementary.*  
-  - GEMS: Sharma et al. (Sep 2025, TMLR 2026) "Generative Evolutionary Meta-Solver" — scalable surrogate-free MARL. *Relevant to Step 10.*  
-- ArXiv search: "QMIX MAPPO cooperative multi agent reinforcement learning" (Mar 2026) — 8 results:  
-  - Zhong et al. (Apr 2023, Dec 2023) "Heterogeneous-Agent Reinforcement Learning (HARL)" (arXiv:2304.09870) — unified framework for heterogeneous cooperative MARL. *Important foundational recent work.*  
-  - Amato (May 2024, updated May 2025) "An Initial Introduction to Cooperative MARL" (arXiv:2405.06161) — pedagogical survey. *Good Phase 1/3 reference.*  
-- Core references unchanged: Lowe et al. (2017 MADDPG), Rashid et al. (2018 QMIX), Yu et al. (2022 MAPPO), Foerster et al. (2016 CommNet / 2018 LOLA), Sukhbaatar et al. (2016 CommNet), Lanctot et al. (2017 PSRO).  
-- No superseded content for Step 9 scope — the CTDE paradigm and foundational MARL algorithms remain canonical.
+
+### PhD Connection
+
+This step transitions the thesis from 2-player zero-sum game theory (Steps 2–8) to the multi-agent world. The key thesis-relevant insights:
+
+- **Contribution #1 (Behavioral Adaptation):** LOLA's "learning-aware" gradient provides a new angle on opponent modeling. Your Step 7 model detects WHAT the opponent is doing; LOLA anticipates what they WILL do. Combining both — a belief model that predicts both current and future strategies — is a potential thesis contribution.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The fundamental gap: Step 8's safety guarantees assume 2-player zero-sum. In the multi-agent world, there's no minimax theorem. PSRO provides the framework: can you define "safe exploitation in a population" where the safety guarantee is against the meta-Nash of the POPULATION? This is the bridge to Steps 10 and 11.
+- **Contribution #3 (Evaluation Methodology):** PSRO's meta-game analysis provides an evaluation framework for multi-agent systems. Instead of just measuring exploitability (which is 2-player), you can measure the meta-Nash distance — how far is the learned policy population from the meta-Nash equilibrium?
 
 ---
 
 > **Phase Overview:** The preceding phases focused on two-player imperfect-information games. Phase E will transition the study to multi-agent settings, where new challenges arise: non-stationarity from simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions. Step 9 introduces multi-agent RL paradigms (CTDE, PSRO), Step 10 scales to population-based training and evolutionary game theory, and Step 11 applies these tools to coalition formation in free-for-all games.
->
-> **Contribution Alignment:** This step will provide the algorithmic vocabulary for extending the thesis from two-player to multi-agent settings. The CTDE paradigm introduces the architectural pattern — centralized training, decentralized execution — used throughout the remainder of the thesis. PSRO provides a population-based framework relevant to defining safety in multi-agent populations.
 
 
 ## Table of Contents
@@ -50,7 +40,6 @@
 - [Phase 5: Consolidation (2 days)](#phase-5-consolidation-2-days)
   - [Day 1 — Survey Skim + Supplementary Papers](#day-1-survey-skim-supplementary-papers)
   - [Day 2 — PhD Mapping + One-Pager + Learning Log](#day-2-phd-mapping-one-pager-learning-log)
-  - [PhD Connection](#phd-connection)
 - [Exit Checklist](#exit-checklist)
 
 ## Phase 1: Intuition (1 day)
@@ -506,16 +495,6 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
     - [Step 9] CommNet uses MEAN aggregation of messages. This throws away information about WHO sent what message. In competitive settings, knowing the source matters (you treat an opponent's message differently from an ally's). Is there a principal-agent communication framework? → OPEN (check TarMAC, IC3Net for targeted communication)
     - [Step 7→9] Step 7's Bayesian opponent model assumes the opponent's strategy is drawn from a fixed prior. LOLA assumes the opponent is a learner with a known learning rule. In reality, opponents are somewhere in between. How to model an opponent whose learning rule is UNKNOWN? → OPEN (relevant to Contribution #1)
 
-### PhD Connection
-
-This step transitions the thesis from 2-player zero-sum game theory (Steps 2–8) to the multi-agent world. The key thesis-relevant insights:
-
-- **Contribution #1 (Behavioral Adaptation):** LOLA's "learning-aware" gradient provides a new angle on opponent modeling. Your Step 7 model detects WHAT the opponent is doing; LOLA anticipates what they WILL do. Combining both — a belief model that predicts both current and future strategies — is a potential thesis contribution.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The fundamental gap: Step 8's safety guarantees assume 2-player zero-sum. In the multi-agent world, there's no minimax theorem. PSRO provides the framework: can you define "safe exploitation in a population" where the safety guarantee is against the meta-Nash of the POPULATION? This is the bridge to Steps 10 and 11.
-- **Contribution #3 (Evaluation Methodology):** PSRO's meta-game analysis provides an evaluation framework for multi-agent systems. Instead of just measuring exploitability (which is 2-player), you can measure the meta-Nash distance — how far is the learned policy population from the meta-Nash equilibrium?
-
----
-
 ## Exit Checklist
 
 - [ ] Matrix game testbed working with correct Nash equilibria verified
@@ -537,4 +516,3 @@ This step transitions the thesis from 2-player zero-sum game theory (Steps 2–8
 - [ ] Step notes committed to repo
 
 > **[P9] Markov-Games Bridge:** Add a short formal bridge on Markov games (stochastic games) to Phase 1 (Orientation), before jumping into CTDE/PSRO/LOLA. ~Half-page of notation connecting EFG-style reasoning (game trees, information sets, counterfactual values) to MARL-style reasoning (joint policies, centralized critics, decentralized execution). Explains what is preserved (sequential decisions, partial observability) and what is lost (exact game tree structure, regret-based convergence guarantees). ~0.5d absorbed within 14d allocation.
-
