@@ -29,9 +29,9 @@
 **Suggestion:** Give them distinct styling — e.g., a colored background tint matching the step's phase, a left icon (compass for Phase Overview, target for Contribution Alignment), and slightly larger font. The JS already has the phase color available. Detection can use the `**Phase Overview:**` / `**Contribution Alignment:**` bold markers that are consistent across all 15 steps.
 
 ### 1.3 Too much emojis
-**Problem:** Too much emojis are used all across the website
+**Problem:** Too many emojis are used all across the website — phase headings had emojis programmatically injected, status indicators used emoji, the theme toggle used emoji, and the homepage title used 📚.
 
-**Suggestion:** Remove emojis from headers. the ones in the .md keep - they are fine. dots and etc emojis that are used as status replace with cutstom style elements
+**Suggestion:** Remove emojis from headers. The ones in the `.md` source keep — they are fine. Status indicators (done/active/upcoming) replace with CSS-styled dots. Theme toggle replaces with SVG sun/moon icons. Phase headings get a numbered CSS badge instead of emoji.
 
 
 ### 1.4 No visual differentiation between the 5 learning phases within a step
@@ -294,36 +294,37 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 
 ## Priority Matrix
 
-| # | Improvement | Impact | Effort | Quick Win? |
-|---|---|---|---|---|
-| 3.3 | Code block copy button | High | Low | Yes |
-| 1.3 | Emojis | High | Low | Yes |
-| 2.1 | Reading progress bar | High | Low | Yes |
-| 5.2 | Theme toggle in topbar | Medium | Low | Yes |
-| 1.1 | Step metadata info card | High | Medium | |
-| 1.4 | Phase section tinting | Medium | Medium | |
-| 2.5 | Step transition animation | Medium | Low | Yes |
-| 3.4 | Admonition/callout boxes | Medium | Medium | |
-| 4.4 | Overall progress visualization | Medium | Medium | |
-| 3.2 | Styled reading guides (READ/SKIM/SKIP) | Medium | Medium | |
-| 1.2 | Distinct Phase Overview / Contribution blockquotes | Medium | Low | Yes |
-| 2.2 | Better FAB icon | Low | Low | Yes |
-| 5.3 | Nav item status indicators | Low | Low | Yes |
-| 5.4 | Collapsible phase groups | Low | Medium | |
-| 4.3 | Full calendar view | Low | Medium | |
-| 3.1 | YouTube card metadata (duration/instructor) | Low | Medium | |
-| 7.1 | YouTube link syntax audit | Low | Low | Yes (MD edit) |
-| 7.2 | Standardize exit checklists | Medium | Medium | MD edit |
-| 7.4 | Math formatting audit | Low | Medium | MD edit |
-| 9.1 | Lazy rendering / cache | Low | Low | Yes |
-| 9.2 | Service worker | Low | Medium | |
-| 2.3 | Breadcrumb navigation | Low | Medium | |
-| 3.5 | Table row hover | Low | Low | Yes |
-| 3.6 | Inline figures/diagrams | High | High | |
-| 6.1 | Richer mobile bottom bar | Low | Low | |
-| 6.2 | Simplified mobile timeline | Low | Medium | |
-| 8.1 | Enhanced loading screen | Low | Low | |
-| 8.3 | Richer print stylesheet | Low | Medium | |
-| 2.6 | Clean up topbar section tracker | Low | Medium | |
-| 4.2 | Less dense homepage step cards | Medium | Low | Yes |
-| 9.3 | Inline critical CDN resources | Low | Medium | |
+| # | Improvement | Impact | Effort | Quick Win? | Status |
+|---|---|---|---|---|---|
+| 3.3 | Code block copy button | High | Low | Yes | ✅ Done |
+| 1.3 | Emojis — remove from headers, CSS badges for phases, SVG icons for theme toggle | High | Low | Yes | ✅ Done |
+| 2.1 | Reading progress bar | High | Low | Yes | ✅ Done |
+| 5.2 | Theme toggle in topbar | Medium | Low | Yes | ✅ Done |
+| 1.1 | Step metadata info card | High | Medium | | ✅ Done |
+| 1.2 | Distinct Phase Overview blockquote | Medium | Low | Yes | ✅ Done |
+| 1.4 | Phase section tinting | Medium | Medium | | ✅ Done |
+| 1.5 | Heading hierarchy contrast (H1/H2/H3) | Medium | Low | Yes | ✅ Done |
+| 2.5 | Step transition animation | Medium | Low | Yes | |
+| 3.4 | Admonition/callout boxes | Medium | Medium | | |
+| 4.4 | Overall progress visualization | Medium | Medium | | |
+| 3.2 | Styled reading guides (READ/SKIM/SKIP) | Medium | Medium | | |
+| 2.2 | Better FAB icon | Low | Low | Yes | |
+| 5.3 | Nav item status indicators | Low | Low | Yes | |
+| 5.4 | Collapsible phase groups | Low | Medium | | |
+| 4.3 | Full calendar view | Low | Medium | | |
+| 3.1 | YouTube card metadata (duration/instructor) | Low | Medium | | |
+| 7.1 | YouTube link syntax audit | Low | Low | Yes (MD edit) | |
+| 7.2 | Standardize exit checklists | Medium | Medium | MD edit | |
+| 7.4 | Math formatting audit | Low | Medium | MD edit | |
+| 9.1 | Lazy rendering / cache | Low | Low | Yes | |
+| 9.2 | Service worker | Low | Medium | | |
+| 2.3 | Breadcrumb navigation | Low | Medium | | |
+| 3.5 | Table row hover | Low | Low | Yes | |
+| 3.6 | Inline figures/diagrams | High | High | | |
+| 6.1 | Richer mobile bottom bar | Low | Low | | |
+| 6.2 | Simplified mobile timeline | Low | Medium | | |
+| 8.1 | Enhanced loading screen | Low | Low | | |
+| 8.3 | Richer print stylesheet | Low | Medium | | |
+| 2.6 | Clean up topbar section tracker | Low | Medium | | |
+| 4.2 | Less dense homepage step cards | Medium | Low | Yes | |
+| 9.3 | Inline critical CDN resources | Low | Medium | | |
