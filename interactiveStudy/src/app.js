@@ -330,6 +330,31 @@ function embedYouTubeThumbnails() {
 
     // Replace the original anchor entirely
     a.parentNode.replaceChild(card, a);
+
+    // Extract Duration / Channel / Instructor from next sibling text node
+    let node = card.nextSibling;
+    for (let i = 0; i < 6 && node; i++, node = node.nextSibling) {
+      if (node.nodeType === 3) {
+        const text = node.textContent.replace(/\s+/g, ' ').trim();
+        if (text.startsWith('Duration:')) {
+          const durM = text.match(/Duration:\s*([^|]+)/);
+          const chanM = text.match(/(?:Channel|Instructor):\s*(.+)/);
+          if (durM) {
+            const dur = document.createElement('span');
+            dur.className = 'yt-duration';
+            dur.textContent = durM[1].trim();
+            thumbWrap.appendChild(dur);
+          }
+          if (chanM) {
+            const chan = document.createElement('div');
+            chan.className = 'yt-channel';
+            chan.textContent = chanM[1].trim();
+            card.appendChild(chan);
+          }
+          break;
+        }
+      }
+    }
   });
 }
 
@@ -517,6 +542,9 @@ function renderStep(stepId) {
     if (h1) h1.insertAdjacentElement('afterend', metaCard);
     else contentEl.insertBefore(metaCard, contentEl.firstChild);
   }
+
+  // Transform reading guide code blocks BEFORE hljs so they aren't syntax-highlighted
+  transformReadingGuides();
 
   // Syntax-highlight code blocks
   contentEl.querySelectorAll('pre code').forEach(block => {
@@ -1087,6 +1115,66 @@ function addCopyButtons() {
   });
 }
 
+/* ===== Reading Guide Transformer (3.2 — styled READ/SKIM/SKIP/MATH/KEY INSIGHT) ===== */
+const RG_BADGE_CLASS = {
+  'READ': 'rg-read', 'SKIM': 'rg-skim', 'SKIP': 'rg-skip',
+  'MATH': 'rg-math', 'KEY INSIGHT': 'rg-insight',
+};
+const RG_BADGE_LABEL = {
+  'READ': 'READ', 'SKIM': 'SKIM', 'SKIP': 'SKIP',
+  'MATH': 'MATH', 'KEY INSIGHT': '★ KEY',
+};
+
+function transformReadingGuides() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  contentEl.querySelectorAll('pre > code').forEach(code => {
+    if (!/[├└]──/.test(code.textContent)) return;
+
+    const lines = code.textContent.split('\n');
+    const items = [];
+    let cur = null;
+
+    for (const line of lines) {
+      if (/^[├└]──/.test(line)) {
+        if (cur) items.push(cur);
+        const rest = line.replace(/^[├└]──\s*/, '');
+        const m = rest.match(/^(KEY INSIGHT|READ|SKIM|SKIP|MATH):\s*([\s\S]*)/);
+        cur = m
+          ? { action: m[1], content: m[2].replace(/^["']/, '').trim() }
+          : { action: null, content: rest };
+      } else if (cur && (line.startsWith('│') || /^\s{3,}\S/.test(line))) {
+        const cont = line.replace(/^[│\s]+/, '').replace(/["']$/, '').trim();
+        if (cont) cur.content += ' ' + cont;
+      }
+    }
+    if (cur) items.push(cur);
+    if (items.length === 0) return;
+
+    const guide = document.createElement('div');
+    guide.className = 'reading-guide';
+
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'rg-row';
+
+      const badge = document.createElement('span');
+      badge.className = 'rg-badge ' + (RG_BADGE_CLASS[item.action] || 'rg-skip');
+      badge.textContent = RG_BADGE_LABEL[item.action] || (item.action || '—');
+
+      const content = document.createElement('span');
+      content.className = 'rg-content';
+      content.textContent = item.content.replace(/["']\s*$/, '').trim();
+
+      row.appendChild(badge);
+      row.appendChild(content);
+      guide.appendChild(row);
+    });
+
+    code.closest('pre').replaceWith(guide);
+  });
+}
+
 /* ===== Phase Number Badges (replaces emoji icons — academic style) ===== */
 function addPhaseLabels() {
   const contentEl = document.getElementById('content');
@@ -1107,7 +1195,7 @@ function addPhaseLabels() {
   });
 }
 
-/* ===== Special Blockquote Styling (Phase Overview) ===== */
+/* ===== Special Blockquote Styling (callouts — 3.4) ===== */
 function styleSpecialBlockquotes() {
   const contentEl = document.getElementById('content');
   if (!contentEl) return;
@@ -1115,7 +1203,15 @@ function styleSpecialBlockquotes() {
     const strong = bq.querySelector('strong');
     if (!strong) return;
     const label = strong.textContent.trim().replace(/:$/, '');
-    if (label === 'Phase Overview') bq.classList.add('bq-phase-overview');
+    if (label === 'Phase Overview') {
+      bq.classList.add('bq-phase-overview');
+    } else if (label === 'Know-How First compression') {
+      bq.classList.add('bq-planning');
+    } else if (/^\[P\d/.test(label)) {
+      bq.classList.add('bq-plan-decision');
+    } else if (label === 'Why this section exists' || label === 'Before the papers') {
+      bq.classList.add('bq-context');
+    }
   });
 }
 
