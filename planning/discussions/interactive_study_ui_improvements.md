@@ -293,10 +293,10 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 | 3.2 | Styled reading guides (READ/SKIM/SKIP) | Medium | Medium | | ✅ Done |
 | 3.5 | Table row hover | Low | Low | Yes | ✅ Done |
 | 3.1 | YouTube card metadata (duration/instructor) | Low | Medium | | ✅ Done |
-| 4.4 | Overall progress visualization | Medium | Medium | | |
+| 4.4 | Overall progress visualization | Medium | Medium | | ✅ Done |
 | 5.3 | Nav item status indicators | Low | Low | Yes | |
 | 5.4 | Collapsible phase groups | Low | Medium | | |
-| 4.3 | Full calendar view | Low | Medium | | |
+| 4.3 | Full calendar view | Low | Medium | | ✅ Done |
 | 7.1 | YouTube link syntax audit | Low | Low | Yes (MD edit) | |
 | 7.2 | Standardize exit checklists | Medium | Medium | MD edit | |
 | 7.4 | Math formatting audit | Low | Medium | MD edit | |
@@ -307,5 +307,5 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 | 6.2 | Simplified mobile timeline | Low | Medium | | |
 | 8.1 | Enhanced loading screen | Low | Low | | |
 | 8.3 | Richer print stylesheet | Low | Medium | | |
-| 4.2 | Less dense homepage step cards | Medium | Low | Yes | |
+| 4.2 | Less dense homepage step cards | Medium | Low | Yes | ✅ Done |
 | 9.3 | Inline critical CDN resources | Low | Medium | | |
