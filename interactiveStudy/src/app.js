@@ -66,6 +66,7 @@ let scheduleAdjust = 0; // days to delay plan start (shifts all dates forward)
 let isHomepage = false;
 let calendarMonth = new Date().getMonth();
 let calendarYear = new Date().getFullYear();
+let calendarFull = false;
 
 /* ===== JSONBin.io Cloud Storage ===== */
 const JSONBIN_API_KEY = '$2a$10$k1FLc/sztnYxUeK/9hzPROI8cAJxmQJHZX1CDs.YZbIJL.l2Wi6d6';
@@ -895,7 +896,23 @@ function changeCalMonth(delta) {
 }
 window.changeCalMonth = changeCalMonth;
 
+window.toggleCalendarFull = function() {
+  calendarFull = !calendarFull;
+  if (isHomepage) navigateHome();
+};
+
 function buildCalendar() {
+  if (calendarFull) {
+    return `<div class="cal-wrap cal-wrap--full">
+      <div class="cal-header">
+        <span class="cal-month-label">Mar &ndash; Oct 2026</span>
+        <button class="cal-view-toggle" onclick="window.toggleCalendarFull()">Month View</button>
+      </div>
+      ${buildAllMonthsView()}
+      ${buildCalendarLegend()}
+    </div>`;
+  }
+
   const planStart = addDays(PLAN_START, scheduleAdjust);
   const minM = planStart.getMonth(), minY = planStart.getFullYear();
   const atMin = calendarYear === minY && calendarMonth === minM;
@@ -905,11 +922,22 @@ function buildCalendar() {
     <button class="cal-nav-btn${atMin ? ' disabled' : ''}" onclick="changeCalMonth(-1)" aria-label="Previous month" ${atMin ? 'disabled' : ''}>\u2039</button>
     <span class="cal-month-label">${MONTH_NAMES[calendarMonth]} ${calendarYear}</span>
     <button class="cal-nav-btn${atMax ? ' disabled' : ''}" onclick="changeCalMonth(1)" aria-label="Next month" ${atMax ? 'disabled' : ''}>\u203A</button>
+    <button class="cal-view-toggle" onclick="window.toggleCalendarFull()">Full View</button>
   </div>`;
 
   const grid = buildCalendarMonth(calendarYear, calendarMonth);
   const legend = buildCalendarLegend();
   return `<div class="cal-wrap">${header}${grid}${legend}</div>`;
+}
+
+function buildAllMonthsView() {
+  const FULL_MONTHS = [[2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],[2026,8],[2026,9]];
+  return `<div class="cal-full-grid">${FULL_MONTHS.map(([y,m]) =>
+    `<div class="cal-full-month">
+      <div class="cal-full-month-hdr">${MONTH_NAMES[m]}</div>
+      ${buildCalendarMonth(y, m)}
+    </div>`
+  ).join('')}</div>`;
 }
 
 function buildCalendarMonth(year, month) {
@@ -988,6 +1016,8 @@ function buildCalendarLegend() {
 
 function buildStepSummaries() {
   let html = '';
+  let currentPhase = null;
+
   STEP_META.forEach((step, i) => {
     const rng = getStepDateRange(i);
     const st = getStepStatus(i);
@@ -1017,8 +1047,16 @@ function buildStepSummaries() {
         <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
         <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
       </div>` : '';
+
+    // Phase group header
+    if (step.phase !== currentPhase) {
+      if (currentPhase !== null) html += '</div>';
+      currentPhase = step.phase;
+      html += `<div class="sc-phase-group"><div class="sc-phase-header" style="border-bottom-color:${c.border}"><span class="sc-phase-badge" style="background:${c.bg};color:${c.text};border-color:${c.border}">${step.phase}</span><span class="sc-phase-name">${step.phaseLabel}</span></div>`;
+    }
+
     html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
-      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-badges">${reportBadge}<span class="sc-phase" style="background:${c.bg};color:${c.text}">${step.phaseLabel}</span></span></div>
+      <div class="sc-top"><span class="sc-num">${icon} Step ${step.num}</span><span class="sc-badges">${reportBadge}</span></div>
       <div class="sc-title">${step.title}</div>
       <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}d \u00b7 ${tier}</span></div>
       ${progressHtml}
@@ -1026,7 +1064,113 @@ function buildStepSummaries() {
       ${dlHtml}
     </div>`;
   });
+
+  if (currentPhase !== null) html += '</div>';
   return html;
+}
+
+/* ===== Homepage Hero Section (4.1) ===== */
+function buildHeroSection() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const planStart = addDays(PLAN_START, scheduleAdjust);
+  const planEnd = addDays(planStart, BASE_TOTAL_DAYS - 1);
+  const daysElapsed = Math.max(0, Math.min(BASE_TOTAL_DAYS, Math.round((today - planStart) / 86400000) + 1));
+  const daysLeft = Math.max(0, Math.round((planEnd - today) / 86400000));
+
+  let stepsCompleted = 0;
+  let activeStepMeta = null;
+  STEP_META.forEach((step, i) => {
+    const st = getStepStatus(i);
+    if (st === 'done') stepsCompleted++;
+    if (st === 'active' && !activeStepMeta) activeStepMeta = step;
+  });
+
+  // SVG donut ring — r=38, circumference = 2*PI*38 ≈ 238.76
+  const circum = 238.76;
+  const ringDash = ((stepsCompleted / 15) * circum).toFixed(1);
+  const activeText = activeStepMeta
+    ? `Step ${activeStepMeta.num}: ${activeStepMeta.title}`
+    : (stepsCompleted === 15 ? 'All complete' : 'Not started');
+
+  const contributions = [
+    { id: 'C1', title: 'Behavioral Adaptation', desc: 'Real-time opponent strategy inference' },
+    { id: 'C2', title: 'Safe Exploitation', desc: 'KL-regularized multi-agent exploitation' },
+    { id: 'C3', title: 'Evaluation Methodology', desc: 'Domain-agnostic adaptability framework' },
+  ];
+  const contribHtml = contributions.map(c =>
+    `<div class="hp-contribution">
+      <span class="hp-contrib-id">${c.id}</span>
+      <div><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
+    </div>`
+  ).join('');
+
+  return `<div class="hp-hero">
+    <div class="hp-hero-main">
+      <div class="hp-hero-copy">
+        <h1 class="hp-hero-title">PhD Research Plan</h1>
+        <p class="hp-hero-sub">AI in Computer Games &mdash; Adaptive Strategy in Multi-Agent Imperfect-Information Environments</p>
+        <div class="hp-stats-row">
+          <div class="hp-stat"><span class="hp-stat-val">${stepsCompleted}/15</span><span class="hp-stat-label">Steps done</span></div>
+          <div class="hp-stat"><span class="hp-stat-val">${daysElapsed}</span><span class="hp-stat-label">Days in</span></div>
+          <div class="hp-stat"><span class="hp-stat-val">${daysLeft}</span><span class="hp-stat-label">Days left</span></div>
+          <div class="hp-stat hp-stat--current"><span class="hp-stat-val hp-stat-val--sm">${activeText}</span><span class="hp-stat-label">Current step</span></div>
+        </div>
+      </div>
+      <div class="hp-hero-ring" aria-label="${stepsCompleted} of 15 steps completed">
+        <svg viewBox="0 0 100 100" width="110" height="110" overflow="visible">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="9"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="9"
+            stroke-dasharray="${ringDash} ${circum}" stroke-linecap="round"
+            transform="rotate(-90 50 50)"/>
+          <text x="50" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="white">${stepsCompleted}</text>
+          <text x="50" y="62" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.65)">of 15</text>
+        </svg>
+      </div>
+    </div>
+    <div class="hp-contributions">${contribHtml}</div>
+  </div>`;
+}
+
+/* ===== Overall Progress Visualization (4.4) ===== */
+function buildProgressViz() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const planStart = addDays(PLAN_START, scheduleAdjust);
+  const daysElapsed = Math.max(0, Math.min(BASE_TOTAL_DAYS, Math.round((today - planStart) / 86400000) + 1));
+
+  let stepsCompleted = 0, totalChecked = 0, totalCB = 0;
+  STEP_META.forEach((step, i) => {
+    if (getStepStatus(i) === 'done') stepsCompleted++;
+    const cnt = getStepCheckboxCounts(step.id);
+    totalChecked += cnt.checked;
+    totalCB += cnt.total;
+  });
+
+  let segments = '';
+  STEP_META.forEach((step, i) => {
+    const c = getPhaseColors(step.phase);
+    const st = getStepStatus(i);
+    const widthPct = (step.days / BASE_TOTAL_DAYS * 100).toFixed(3);
+    segments += `<div class="hp-seg hp-seg--${st}" style="width:${widthPct}%;background:${c.border}" onclick="navigateTo('${step.id}')" title="Step ${step.num}: ${step.title} (${step.days}d)"></div>`;
+  });
+
+  const todayPct = Math.min(100, (daysElapsed / BASE_TOTAL_DAYS) * 100).toFixed(3);
+
+  let labels = '';
+  STEP_META.forEach(step => {
+    const widthPct = (step.days / BASE_TOTAL_DAYS * 100).toFixed(3);
+    labels += `<div class="hp-gantt-label" style="width:${widthPct}%">${step.num}</div>`;
+  });
+
+  const cbText = totalCB > 0 ? `${totalChecked}/${totalCB} checkboxes` : '';
+  const parts = [`${stepsCompleted}/15 steps completed`, `${daysElapsed}/${BASE_TOTAL_DAYS} days elapsed`, cbText].filter(Boolean);
+
+  return `<div class="hp-progress-viz">
+    <div class="hp-progress-stats">${parts.join(' &middot; ')}</div>
+    <div class="hp-step-bar-wrap">
+      <div class="hp-step-bar">${segments}<div class="hp-today-line" style="left:${todayPct}%" title="Today"></div></div>
+      <div class="hp-gantt-labels">${labels}</div>
+    </div>
+  </div>`;
 }
 
 function navigateHome() {
@@ -1046,10 +1190,9 @@ function navigateHome() {
 
     contentEl.innerHTML =
       `<div class="hp">
-        <div class="hp-hdr"><h1>PhD Research Plan</h1>
-          <p>AI in Computer Games &mdash; Adaptive Strategy in Multi-Agent Imperfect-Information Environments</p>
-          <p class="hp-meta">15 steps &middot; 7 phases &middot; ${BASE_TOTAL_DAYS} days &middot; Mar&ndash;Oct 2026</p>
-        </div>
+        ${buildHeroSection()}
+        <h2 class="hp-sec">Overall Progress</h2>
+        ${buildProgressViz()}
         <h2 class="hp-sec">Timeline</h2>
         ${buildGanttCalendar()}
         <h2 class="hp-sec">Steps</h2>

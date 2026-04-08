@@ -3,7 +3,11 @@
     "allow": [
       "Bash(systemctl is-active:*)",
       "Bash(ip route:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(/home/alexanderandreev/.local/bin/gh pr create --base master --title 'feat: Section 2 navigation — FAB icon, topbar breadcrumb, step transition animation' --body ':*)",
+      "Bash(git -C /home/alexanderandreev/rlProjects/rlPlanRevised checkout -b ui/section3-content-components)",
+      "Bash(git -C /home/alexanderandreev/rlProjects/rlPlanRevised add interactiveStudy/src/app.js interactiveStudy/src/styles.css docs/index.html planning/discussions/interactive_study_ui_improvements.md)",
+      "Bash(git -C /home/alexanderandreev/rlProjects/rlPlanRevised commit -m ':*)"
     ]
   }
 }
