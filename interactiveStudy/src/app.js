@@ -460,8 +460,8 @@ function updateScheduleUI() {
 
 /* ===== Sidebar Navigation Builder ===== */
 
-/* Returns 'done' | 'active' | 'upcoming' for a step (5.3) */
-function getStepStatus(stepId) {
+/* Returns 'done' | 'active' | 'upcoming' for a step's nav dot (5.3) */
+function getNavDotStatus(stepId) {
   const progress = getStepCheckboxCounts(stepId);
   if (progress.total > 0 && progress.checked >= progress.total) return 'done';
   if (!isHomepage && STEP_META[currentStepIndex] && STEP_META[currentStepIndex].id === stepId) return 'active';
@@ -524,7 +524,7 @@ function buildNav() {
 
     // Status dot (5.3)
     const dot = document.createElement('span');
-    dot.className = 'nav-status-dot nav-status-dot--' + getStepStatus(step.id);
+    dot.className = 'nav-status-dot nav-status-dot--' + getNavDotStatus(step.id);
     dot.id = 'nav-dot-' + step.id;
     btn.insertBefore(dot, btn.firstChild);
 
@@ -559,7 +559,7 @@ function updateNavProgress(stepId) {
   }
   // Update status dot (5.3)
   const dot = document.getElementById('nav-dot-' + stepId);
-  if (dot) dot.className = 'nav-status-dot nav-status-dot--' + getStepStatus(stepId);
+  if (dot) dot.className = 'nav-status-dot nav-status-dot--' + getNavDotStatus(stepId);
 }
 
 function updateActiveNav() {
@@ -570,7 +570,7 @@ function updateActiveNav() {
   // Update status dots (5.3)
   STEP_META.forEach(step => {
     const dot = document.getElementById('nav-dot-' + step.id);
-    if (dot) dot.className = 'nav-status-dot nav-status-dot--' + getStepStatus(step.id);
+    if (dot) dot.className = 'nav-status-dot nav-status-dot--' + getNavDotStatus(step.id);
   });
 }
 
