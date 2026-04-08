@@ -43,13 +43,16 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
 
 ### Talks and Overviews
 
-- [**Stanford CS224R — Lecture 1: Class Intro + MDPs (Spring 2025)**](https://www.youtube.com/watch?v=EvHRQhMX7_w)
+- [**Stanford CS224R — Lecture 1: Class Intro + MDPs (Spring 2025)**](https://www.youtube.com/watch?v=EvHRQhMX7_w)  
+  ⏱ ~53m · Instructor: Chelsea Finn (Stanford)  
   *"Why study deep RL?" — a field overview of where deep reinforcement learning stands today, what problems remain open, and the landscape of current research directions.*
 
-- [**Stanford CS230 — Lecture 1: Introduction to Deep Learning (Autumn 2025)**](https://www.youtube.com/watch?v=_NLHFoVNlbg)
+- [**Stanford CS230 — Lecture 1: Introduction to Deep Learning (Autumn 2025)**](https://www.youtube.com/watch?v=_NLHFoVNlbg)  
+  ⏱ ~1h · Instructor: Andrew Ng (Stanford)  
   *Andrew Ng's perspective on where deep learning is heading: current capabilities, limitations, and frontier research directions. Broad context for positioning the thesis within the AI landscape.*
 
-- [**Parables on the Power of Planning in AI: From Poker to Diplomacy**](https://www.youtube.com/watch?v=eaAonE58sLU)
+- [**Parables on the Power of Planning in AI: From Poker to Diplomacy**](https://www.youtube.com/watch?v=eaAonE58sLU)  
+  ⏱ ~57m · Speaker: Noam Brown (OpenAI) | Channel: Paul G. Allen School  
   *The broadest game AI overview available: the full trajectory from poker to Go to Diplomacy. Brown identifies open problems including N-player safety, opponent modeling, and real-time adaptation — directly adjacent to all three thesis contributions.*
 
 ### Blog Posts / Accessible Reads

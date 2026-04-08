@@ -43,19 +43,24 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Videos
 
-- [**Stanford CS221 — Lecture 10: Games I (Autumn 2025)**](https://www.youtube.com/watch?v=SMOD_GiRzb8)
+- [**Stanford CS221 — Lecture 10: Games I (Autumn 2025)**](https://www.youtube.com/watch?v=SMOD_GiRzb8)  
+  ⏱ ~1h13m · Instructor: Percy Liang (Stanford)  
   *Why search explodes: game trees, minimax, evaluation functions, alpha-beta pruning. The motivation for why abstraction is needed — games are too large to solve exactly.*
 
-- [**Monte Carlo Tree Search — Computerphile**](https://www.youtube.com/watch?v=BEFY7IHs0HM)
+- [**Monte Carlo Tree Search — Computerphile**](https://www.youtube.com/watch?v=BEFY7IHs0HM)  
+  ⏱ ~33m · Speaker: Nick Hawes (Oxford) | Channel: Computerphile  
   *Why brute-force fails and how sampling-based search (MCTS) provides an alternative to full enumeration. The conceptual bridge from "traverse everything" to "sample intelligently."*
 
-- [**NIPS 2017 Best Paper — Safe & Nested Subgame Solving for Imperfect-Information Games**](https://www.youtube.com/watch?v=tRiaGahlyy4)
+- [**NIPS 2017 Best Paper — Safe & Nested Subgame Solving for Imperfect-Information Games**](https://www.youtube.com/watch?v=tRiaGahlyy4)  
+  ⏱ ~16m · Channel: The Artificial Intelligence Channel  
   *Accessible walkthrough of how subgame solving fixes abstraction errors in real-time during play. The key idea: solve a coarse abstract game first, then refine specific subgames.*
 
-- [**AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**](https://www.youtube.com/watch?v=McV4a6umbAY)
+- [**AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**](https://www.youtube.com/watch?v=McV4a6umbAY)  
+  ⏱ ~1h · Speaker: Noam Brown | Channel: Microsoft Research  
   *Full deep-dive into the Libratus architecture: how card abstraction groups similar hands, how action abstraction restricts bet sizes, how strategies are translated back, and how subgame solving patches errors.*
 
-- [**Stanford CS234 — Lecture 15: Value Alignment (Spring 2024)**](https://www.youtube.com/watch?v=FOlPpjNbHjE)
+- [**Stanford CS234 — Lecture 15: Value Alignment (Spring 2024)**](https://www.youtube.com/watch?v=FOlPpjNbHjE)  
+  ⏱ ~1h14m · Instructor: Emma Brunskill + Dan Webber (Stanford)  
   *Covers MCTS and AlphaZero — the search methods used inside modern game AI when doing depth-limited solving at the game tree's frontier, exactly where abstraction matters most.*
 
 ### Blog Posts / Accessible Reads

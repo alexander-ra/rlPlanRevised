@@ -59,16 +59,20 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
 
 ### Videos
 
-- [**Stanford CS25: Decision Transformer: RL via Sequence Modeling**](https://www.youtube.com/watch?v=qndXrHcV1sM)
+- [**Stanford CS25: Decision Transformer: RL via Sequence Modeling**](https://www.youtube.com/watch?v=qndXrHcV1sM)  
+  ⏱ ~1h21m · Channel: Stanford Online  
   *Aditya Grover presents the Decision Transformer: how return-to-go conditioning works, the GPT-2 backbone adaptation for RL, and comparison with traditional RL approaches.*
 
-- [**Decision Transformer: RL via Sequence Modeling (Research Paper Explained)**](https://www.youtube.com/watch?v=-buULmf7dec)
+- [**Decision Transformer: RL via Sequence Modeling (Research Paper Explained)**](https://www.youtube.com/watch?v=-buULmf7dec)  
+  ⏱ ~57m · Channel: Yannic Kilcher  
   *Detailed paper walkthrough of the Decision Transformer architecture: tokenization of (return, state, action) triples, conditioning on desired returns, and key experimental results.*
 
-- [**Stanford CS224R — Lecture 9: RL for LLMs — Preference Optimization (Spring 2025)**](https://www.youtube.com/watch?v=XKLGuwvSKvI)
+- [**Stanford CS224R — Lecture 9: RL for LLMs — Preference Optimization (Spring 2025)**](https://www.youtube.com/watch?v=XKLGuwvSKvI)  
+  ⏱ ~1h3m · Speaker: Archit Sharma (Gemini team, lead DPO author) | Stanford  
   *Guest lecture covering how RL is applied to large language models via preference optimization (DPO). The bridge between sequence models and strategic reasoning.*
 
-- [**Stanford CS224R — Lecture 10: RL for LLM Reasoning (Spring 2025)**](https://www.youtube.com/watch?v=O2VpNnwB4lM)
+- [**Stanford CS224R — Lecture 10: RL for LLM Reasoning (Spring 2025)**](https://www.youtube.com/watch?v=O2VpNnwB4lM)  
+  ⏱ ~1h11m · Speaker: Aviral Kumar (CMU) | Stanford  
   *How reinforcement learning improves LLM reasoning capabilities. Directly relevant to understanding how LLM agents might learn strategic reasoning in games.*
 
 ### Blog Posts / Accessible Reads

@@ -52,15 +52,18 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 ### Day 1: The Problem & Classical Approaches
 
-- [**Bayes theorem, the geometry of changing beliefs**](https://www.youtube.com/watch?v=HZGCoVF3YvM)
+- [**Bayes theorem, the geometry of changing beliefs**](https://www.youtube.com/watch?v=HZGCoVF3YvM)  
+  ⏱ ~15m · Channel: 3Blue1Brown  
   *Essential refresher on Bayesian inference — the mathematical backbone of all opponent modeling. Prior beliefs updated by evidence to form posterior beliefs.*
 
-- [**Stanford CS224R — Lecture 2: Imitation Learning (Spring 2025)**](https://www.youtube.com/watch?v=WxRDyObrm_M)
+- [**Stanford CS224R — Lecture 2: Imitation Learning (Spring 2025)**](https://www.youtube.com/watch?v=WxRDyObrm_M)  
+  ⏱ ~1h7m · Instructor: Chelsea Finn (Stanford)  
   *Learning from observing others' behavior: behavioral cloning, DAgger, and expressive policy distributions. The same paradigm used for inferring opponent strategies from their actions.*
 
 ### Day 2: Modern Approaches & the Exploitation Tradeoff
 
-- [**AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**](https://www.youtube.com/watch?v=McV4a6umbAY)
+- [**AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**](https://www.youtube.com/watch?v=McV4a6umbAY)  
+  ⏱ ~1h · Speaker: Noam Brown | Channel: Microsoft Research  
   *Covers Libratus's self-improvement module: how the system detects opponent patterns during play and patches its own weaknesses overnight. The practical side of opponent adaptation.*
 
 ### Blog Posts / Accessible Reads

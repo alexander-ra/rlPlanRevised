@@ -51,30 +51,26 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 
 **Neural Network Mechanics (~1.5 hours):**
 
-- **[3Blue1Brown — "But what is a Neural Network?" (Chapter 1)](https://www.youtube.com/watch?v=aircAruvnKk)**
-  Website: https://www.3blue1brown.com/lessons/neural-networks
-  Duration: ~19m | Creator: Grant Sanderson
+- [**3Blue1Brown — "But what is a Neural Network?" (Chapter 1)**](https://www.youtube.com/watch?v=aircAruvnKk)  
+  ⏱ ~19m · Creator: Grant Sanderson · [3blue1brown.com](https://www.3blue1brown.com/lessons/neural-networks)  
   *Start here. What neurons, weights, biases, and activations actually ARE — introduced through handwritten digit recognition. This grounds the abstract "neural network" concept you've seen in DQN/PPO code (q_network.py's Linear layers, ReLU activations) in concrete visual intuition.*
 
-- **[3Blue1Brown — "Gradient descent, how neural networks learn" (Chapter 2)](https://www.youtube.com/watch?v=IHZwWFHWa-w)**
-  Website: https://www.3blue1brown.com/lessons/gradient-descent
-  Duration: ~21m | Creator: Grant Sanderson
+- [**3Blue1Brown — "Gradient descent, how neural networks learn" (Chapter 2)**](https://www.youtube.com/watch?v=IHZwWFHWa-w)  
+  ⏱ ~21m · Creator: Grant Sanderson · [3blue1brown.com](https://www.3blue1brown.com/lessons/gradient-descent)  
   *How the cost function works and why gradient descent finds good weights. After watching: you'll understand what loss.backward() and optimizer.step() in your DQN train_step actually do — they compute the gradient of the loss and nudge all 33,000+ weights downhill.*
 
-- **[3Blue1Brown — "What is backpropagation really doing?" (Chapter 4)](https://www.youtube.com/watch?v=Ilg3gGewQ5U)**
-  Website: https://www.3blue1brown.com/lessons/backpropagation
-  Duration: ~14m | Creator: Grant Sanderson
+- [**3Blue1Brown — "What is backpropagation really doing?" (Chapter 4)**](https://www.youtube.com/watch?v=Ilg3gGewQ5U)  
+  ⏱ ~14m · Creator: Grant Sanderson · [3blue1brown.com](https://www.3blue1brown.com/lessons/backpropagation)  
   *The intuition behind backpropagation — how each training example "wants" to nudge the weights, and how averaging these desires across a mini-batch gives the gradient. This is exactly what happens inside your DQN's train_step when PyTorch calls .backward().*
 
-- **[3Blue1Brown — "Backpropagation calculus" (Chapter 5)](https://www.youtube.com/watch?v=tIeHLnjs5U8)**
-  Website: https://www.3blue1brown.com/lessons/backpropagation-calculus
-  Duration: ~10m | Creator: Grant Sanderson
+- [**3Blue1Brown — "Backpropagation calculus" (Chapter 5)**](https://www.youtube.com/watch?v=tIeHLnjs5U8)  
+  ⏱ ~10m · Creator: Grant Sanderson · [3blue1brown.com](https://www.3blue1brown.com/lessons/backpropagation-calculus)  
   *Optional but recommended: the chain rule math behind backpropagation. If the previous video gave you the intuition, this one gives you the equations. Skip if you're comfortable with the conceptual version.*
 
 **Function Approximation in RL (~1.5 hours):**
 
-- [**David Silver — Lecture 6: Value Function Approximation**](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ)
-  Duration: ~1h20m | Instructor: David Silver (DeepMind / UCL)
+- [**David Silver — Lecture 6: Value Function Approximation**](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ)  
+  ⏱ ~1h20m · Instructor: David Silver (DeepMind / UCL) · [Slides (PDF)](https://davidstarsilver.wordpress.com/wp-content/uploads/2025/04/lecture-6-value-function-approximation-.pdf)  
   *THE bridge lecture. Covers: why tables fail in large state spaces, linear function approximation, neural network approximation, convergence guarantees (and when they break), the deadly triad (function approximation + bootstrapping + off-policy = instability). After watching: you'll understand WHY DQN needs target networks and experience replay — they're engineering patches for the deadly triad. This directly explains the design decisions in your Step 1 implementation.*
 
 **🔗 Connection to Step 1:** After watching these, revisit your DQN code mentally:
@@ -86,16 +82,20 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 
 ### Videos
 
-- [**Stanford CS234 — Lecture 4: Q-learning and Function Approximation (Spring 2024)**](https://www.youtube.com/watch?v=b_wvosA70f8)
+- [**Stanford CS234 — Lecture 4: Q-learning and Function Approximation (Spring 2024)**](https://www.youtube.com/watch?v=b_wvosA70f8)  
+  ⏱ ~1h19m · Instructor: Emma Brunskill (Stanford)  
   *The bridge from tabular to neural: Q-learning, SARSA, and why function approximation is needed when state spaces are too large for tables. The foundational concept that Deep CFR builds on.*
 
-- [**Stanford CS224R — Lecture 6: Q-Learning (Spring 2025)**](https://www.youtube.com/watch?v=-7kv6jf0isQ)
+- [**Stanford CS224R — Lecture 6: Q-Learning (Spring 2025)**](https://www.youtube.com/watch?v=-7kv6jf0isQ)  
+  ⏱ ~1h2m · Instructor: Chelsea Finn (Stanford)  
   *DQN, target networks, experience replay buffers — the practical deep RL building blocks. Covers how to stabilize Q-learning in practice with neural networks.*
 
-- [**ReBeL — Combining Deep RL and Search for Imperfect-Information Games (Explained)**](https://www.youtube.com/watch?v=BhUWvQmLzSk)
+- [**ReBeL — Combining Deep RL and Search for Imperfect-Information Games (Explained)**](https://www.youtube.com/watch?v=BhUWvQmLzSk)  
+  ⏱ ~1h12m · Channel: Yannic Kilcher  
   *Detailed paper explanation covering how neural networks replace tabular CFR: from counterfactual values to learned value functions, public belief states, and the transition from tabular to neural game solving.*
 
-- [**Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**](https://www.youtube.com/watch?v=U0mxx7AoNz0)
+- [**Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**](https://www.youtube.com/watch?v=U0mxx7AoNz0)  
+  ⏱ ~54m · Channel: Yannic Kilcher  
   *Interview with the author covering how Student of Games unifies Deep CFR-style neural methods for both perfect and imperfect information games (chess, Go, poker, Scotland Yard).*
 
 ### Blog Posts

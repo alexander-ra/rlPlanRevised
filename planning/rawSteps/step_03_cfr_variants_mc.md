@@ -46,22 +46,28 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
 
 ### Videos
 
-- [**The Strange Math That Predicts (Almost) Anything**](https://www.youtube.com/watch?v=KZeIEiBrT_w)
+- [**The Strange Math That Predicts (Almost) Anything**](https://www.youtube.com/watch?v=KZeIEiBrT_w)  
+  ⏱ ~32m · Channel: Veritasium  
   *The origins of Monte Carlo methods and Markov chains: from a 19th-century feud between Russian mathematicians to nuclear physics at Los Alamos, then Google's PageRank. Story-driven introduction to the randomized sampling paradigm that underlies MCCFR.*
 
-- [**Monte Carlo Tree Search — Computerphile**](https://www.youtube.com/watch?v=BEFY7IHs0HM)
+- [**Monte Carlo Tree Search — Computerphile**](https://www.youtube.com/watch?v=BEFY7IHs0HM)  
+  ⏱ ~33m · Speaker: Nick Hawes (Oxford) | Channel: Computerphile  
   *University-level walkthrough of MCTS: Select-Expand-Simulate-Backpropagate. Explains why random sampling works for huge game trees, and the connection to AlphaZero.*
 
-- [**Monte Carlo Tree Search (MCTS) Tutorial**](https://www.youtube.com/watch?v=Fbs4lnGLS8M)
+- [**Monte Carlo Tree Search (MCTS) Tutorial**](https://www.youtube.com/watch?v=Fbs4lnGLS8M)  
+  ⏱ ~13m · Channel: Fullstack Academy  
   *Compact practical tutorial comparing MCTS vs Minimax, explaining why brute-force fails for Go-sized games, and walking through how the asymmetric stats tree is built.*
 
-- [**Stanford CS234 — Lecture 3: Policy Evaluation (Spring 2024)**](https://www.youtube.com/watch?v=jjq51TRNVvk)
+- [**Stanford CS234 — Lecture 3: Policy Evaluation (Spring 2024)**](https://www.youtube.com/watch?v=jjq51TRNVvk)  
+  ⏱ ~1h20m · Instructor: Emma Brunskill (Stanford)  
   *Covers Monte Carlo policy evaluation and TD learning — the foundational sampling methods that MCCFR adapts for game tree traversal.*
 
-- [**Poker AI Algorithm: MCCFR**](https://www.youtube.com/watch?v=iU14jOue9Dk)
+- [**Poker AI Algorithm: MCCFR**](https://www.youtube.com/watch?v=iU14jOue9Dk)  
+  ⏱ ~17m · Channel: StackWild  
   *Step-by-step walkthrough of external-sampling MCCFR pseudocode. Maps the formal algorithm to Python code on a toy poker game.*
 
-- [**ReBeL — Combining Deep RL and Search for Imperfect-Information Games (Explained)**](https://www.youtube.com/watch?v=BhUWvQmLzSk)
+- [**ReBeL — Combining Deep RL and Search for Imperfect-Information Games (Explained)**](https://www.youtube.com/watch?v=BhUWvQmLzSk)  
+  ⏱ ~1h12m · Channel: Yannic Kilcher  
   *Deep paper walkthrough covering CFR within the ReBeL framework, public belief states, and why Monte Carlo variants matter for scaling.*
 
 ### Blog Posts

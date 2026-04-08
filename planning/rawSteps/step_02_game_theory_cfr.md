@@ -43,19 +43,24 @@ The goal: understand what game theory IS, why Nash equilibrium matters, what an 
 
 ### Videos
 
-- [**Game Theory 101 (#1): Introduction**](https://www.youtube.com/watch?v=NSVmOC_5zrE)
+- [**Game Theory 101 (#1): Introduction**](https://www.youtube.com/watch?v=NSVmOC_5zrE)  
+  ⏱ ~7m · Channel: William Spaniel  
   *Clean primer on normal-form games, dominant strategies, Nash equilibrium. Perfect starting point if game theory is new.*
 
-- [**The Prisoner's Dilemma**](https://www.youtube.com/watch?v=t9Lo2fgxWHw)
+- [**The Prisoner's Dilemma**](https://www.youtube.com/watch?v=t9Lo2fgxWHw)  
+  ⏱ ~6m · Channel: This Place  
   *The classic game theory example. Builds intuition for why rational agents can end up at suboptimal outcomes — and why equilibrium concepts matter.*
 
-- [**Stanford CS221 — Lecture 10: Games I (Autumn 2025)**](https://www.youtube.com/watch?v=SMOD_GiRzb8)
+- [**Stanford CS221 — Lecture 10: Games I (Autumn 2025)**](https://www.youtube.com/watch?v=SMOD_GiRzb8)  
+  ⏱ ~1h13m · Instructor: Percy Liang (Stanford)  
   *University lecture covering game trees, minimax, alpha-beta pruning, and evaluation functions. The formal framework for two-player games that CFR operates on.*
 
-- [**Poker AI: Libratus and an Introduction to Counterfactual Regret Minimization**](https://www.youtube.com/watch?v=htRtfyab-Ns)
+- [**Poker AI: Libratus and an Introduction to Counterfactual Regret Minimization**](https://www.youtube.com/watch?v=htRtfyab-Ns)  
+  ⏱ ~12m · Channel: Fullstack Academy  
   *Concise intro to CFR with a Rock-Paper-Scissors worked example. Explains regret matching, convergence to Nash equilibrium, and how Libratus used CFR to beat top poker pros.*
 
-- [**Noam Brown — AI for Imperfect-Information Games: Poker and Beyond**](https://www.youtube.com/watch?v=cn8Sld4xQjg)
+- [**Noam Brown — AI for Imperfect-Information Games: Poker and Beyond**](https://www.youtube.com/watch?v=cn8Sld4xQjg)  
+  ⏱ ~1h1m · Channel: London Machine Learning Meetup  
   *Comprehensive talk covering the journey from game theory basics to superhuman poker AI. Covers CFR, abstraction, subgame solving, and why imperfect information is fundamentally harder than chess/Go.*
 
 ### Blog Posts

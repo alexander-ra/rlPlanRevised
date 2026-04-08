@@ -48,19 +48,24 @@ The goal: understand WHY multi-agent RL is fundamentally different from single-a
 
 End of day: you should be able to explain to a non-expert: "In single-agent RL, the agent learns by trial and error in a fixed world. In multi-agent RL, every agent IS the 'world' for every other agent — so the 'world' keeps changing as agents learn. It's like learning to dance with a partner who is also learning to dance — you keep stepping on each other's toes until you accidentally synchronize."
 
-- [**Introduction to Multi-Agent Reinforcement Learning**](https://www.youtube.com/watch?v=qgb0gyrpiGk)
+- [**Introduction to Multi-Agent Reinforcement Learning**](https://www.youtube.com/watch?v=qgb0gyrpiGk)  
+  ⏱ ~15m · Channel: MATLAB  
   *Accessible grid-world example: what multi-agent systems are, cooperative vs adversarial agents, decentralized vs centralized learning, and the non-stationarity problem explained with robot vacuums.*
 
-- [**Stanford CS224R — Lecture 4: Actor-Critic Methods (Spring 2025)**](https://www.youtube.com/watch?v=oejFZShW9hU)
+- [**Stanford CS224R — Lecture 4: Actor-Critic Methods (Spring 2025)**](https://www.youtube.com/watch?v=oejFZShW9hU)  
+  ⏱ ~1h4m · Instructor: Chelsea Finn (Stanford)  
   *How to estimate state-action values and use them for efficient RL. The actor-critic architecture is the building block of MADDPG and all CTDE methods.*
 
-- [**Can AI Learn to Cooperate? Multi-Agent DDPG (MADDPG) in PyTorch**](https://www.youtube.com/watch?v=tZTQ6S9PfkE)
+- [**Can AI Learn to Cooperate? Multi-Agent DDPG (MADDPG) in PyTorch**](https://www.youtube.com/watch?v=tZTQ6S9PfkE)  
+  ⏱ ~2h · Channel: Machine Learning with Phil  
   *Detailed walkthrough of the MADDPG paper with full PyTorch implementation. Covers centralized training with decentralized execution (CTDE) in cooperative-competitive environments.*
 
-- [**Self-Play**](https://www.youtube.com/watch?v=EY9iHSe82Hc)
+- [**Self-Play**](https://www.youtube.com/watch?v=EY9iHSe82Hc)  
+  ⏱ ~56m · Speaker: Noam Brown | Cooperative AI Summer School 2024  
   *Covers self-play methodology in competitive and cooperative settings, including PSRO and population-based approaches for multi-agent systems.*
 
-- [**[ITSC 2024 Tutorial] Multi-agent Reinforcement Learning**](https://www.youtube.com/watch?v=AjghzFf6PY8)
+- [**[ITSC 2024 Tutorial] Multi-agent Reinforcement Learning**](https://www.youtube.com/watch?v=AjghzFf6PY8)  
+  ⏱ varies · Speaker: Maximilian Schiffer  
   *Comprehensive tutorial covering MARL foundations, cooperative MARL (QMIX, MAPPO), competitive MARL, and communication between agents.*
 
 ### Blog Posts / Accessible Reads

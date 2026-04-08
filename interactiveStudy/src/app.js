@@ -356,24 +356,44 @@ function embedYouTubeThumbnails() {
     // Replace the original anchor entirely
     a.parentNode.replaceChild(card, a);
 
-    // Extract Duration / Channel / Instructor from next sibling text node
+    // Extract metadata from next sibling text node
+    // Handles both new format "⏱ ~12m · Channel: Name" and legacy "Duration: ~12m | Channel: Name"
     let node = card.nextSibling;
     for (let i = 0; i < 6 && node; i++, node = node.nextSibling) {
       if (node.nodeType === 3) {
         const text = node.textContent.replace(/\s+/g, ' ').trim();
-        if (text.startsWith('Duration:')) {
+        let durText = null, chanText = null;
+
+        if (text.startsWith('⏱')) {
+          // New format: "⏱ ~12m · Channel: CrashCourse" or "⏱ ~12m · Instructor: Name"
+          const parts = text.replace(/^⏱\s*/, '').split(/\s*·\s*/);
+          durText = parts[0] ? parts[0].trim() : null;
+          // First part that contains a role keyword is the channel
+          for (let p = 1; p < parts.length; p++) {
+            if (/^(?:Channel|Instructor|Creator):/i.test(parts[p])) {
+              chanText = parts[p].replace(/^(?:Channel|Instructor|Creator):\s*/i, '').trim();
+              break;
+            }
+          }
+        } else if (text.startsWith('Duration:')) {
+          // Legacy format: "Duration: ~12m | Channel: Name"
           const durM = text.match(/Duration:\s*([^|]+)/);
-          const chanM = text.match(/(?:Channel|Instructor):\s*(.+)/);
-          if (durM) {
+          const chanM = text.match(/(?:Channel|Instructor|Creator):\s*(.+)/);
+          durText  = durM  ? durM[1].trim()  : null;
+          chanText = chanM ? chanM[1].trim() : null;
+        }
+
+        if (durText || chanText) {
+          if (durText) {
             const dur = document.createElement('span');
             dur.className = 'yt-duration';
-            dur.textContent = durM[1].trim();
+            dur.textContent = durText;
             thumbWrap.appendChild(dur);
           }
-          if (chanM) {
+          if (chanText) {
             const chan = document.createElement('div');
             chan.className = 'yt-channel';
-            chan.textContent = chanM[1].trim();
+            chan.textContent = chanText;
             card.appendChild(chan);
           }
           break;
