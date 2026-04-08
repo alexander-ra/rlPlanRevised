@@ -387,13 +387,27 @@ function embedYouTubeThumbnails() {
 function getStepCheckboxCounts(stepId) {
   const md = typeof STEPS_CONTENT !== 'undefined' ? STEPS_CONTENT[stepId] : null;
   if (!md) return { total: 0, checked: 0 };
+
+  // Count markdown checkboxes
   const allMatches = md.match(/- \[[ x]\]/g);
-  const total = allMatches ? allMatches.length : 0;
-  let checked = 0;
-  for (let i = 0; i < total; i++) {
-    if (cloudData.checkboxes[`cb_${stepId}_${i}`] === '1') checked++;
+  const mdTotal = allMatches ? allMatches.length : 0;
+  let mdChecked = 0;
+  for (let i = 0; i < mdTotal; i++) {
+    if (cloudData.checkboxes[`cb_${stepId}_${i}`] === '1') mdChecked++;
   }
-  return { total, checked };
+
+  // Count per-phase checkpoints
+  let pchkTotal = 0, pchkChecked = 0;
+  for (let phase = 1; phase <= 5; phase++) {
+    const texts = PHASE_CHECKPOINTS[phase];
+    if (!texts) continue;
+    pchkTotal += texts.length;
+    texts.forEach((_, idx) => {
+      if (cloudData.checkboxes[`pchk_${stepId}_${phase}_${idx}`] === '1') pchkChecked++;
+    });
+  }
+
+  return { total: mdTotal + pchkTotal, checked: mdChecked + pchkChecked };
 }
 
 /* ===== Checkbox Persistence (Cloud) ===== */
@@ -514,6 +528,9 @@ function updateActiveNav() {
 }
 
 /* ===== Markdown Rendering ===== */
+/* ===== Lazy Render Cache (9.1) ===== */
+const _parsedCache = new Map();
+
 function renderStep(stepId) {
   const md = STEPS_CONTENT[stepId];
   if (!md) return;
@@ -528,8 +545,14 @@ function renderStep(stepId) {
   const stepMeta = STEP_META[currentStepIndex];
   const { cleanMd, metaFields, freshnessLines: metaFreshLines } = extractAndStripMeta(md);
 
-  // Parse markdown to HTML
-  const html = marked.parse(cleanMd);
+  // Parse markdown to HTML — use cache to avoid re-parsing on revisit
+  let html;
+  if (_parsedCache.has(stepId)) {
+    html = _parsedCache.get(stepId);
+  } else {
+    html = marked.parse(cleanMd);
+    _parsedCache.set(stepId, html);
+  }
 
   // Insert into DOM
   const contentEl = document.getElementById('content');
@@ -821,7 +844,13 @@ function closeSidebar() {
 /* ===== Initialization ===== */
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
+  // Update loading text with step count before the cloud call
+  const loadingTextEl = document.getElementById('loading-text');
+  if (loadingTextEl) {
+    loadingTextEl.textContent = `Loading ${STEP_META.length} steps…`;
+  }
   await initCloudStorage();
+  if (loadingTextEl) loadingTextEl.textContent = 'Building navigation…';
   buildNav();
 
   // Dismiss loading overlay
@@ -1171,7 +1200,8 @@ function _updatePchkCount(cb) {
   // key: pchk_{stepId}_{phaseNum}_{idx}
   const m = key.match(/^pchk_(.+)_(\d+)_\d+$/);
   if (!m) return;
-  const countEl = document.getElementById('pchk-count-' + m[1] + '-' + m[2]);
+  const stepId = m[1];
+  const countEl = document.getElementById('pchk-count-' + stepId + '-' + m[2]);
   if (!countEl) return;
   const card = cb.closest('.phase-checkpoint');
   if (!card) return;
@@ -1179,6 +1209,8 @@ function _updatePchkCount(cb) {
   const done = Array.from(all).filter(c => c.checked).length;
   countEl.textContent = done + '/' + all.length;
   card.classList.toggle('phase-checkpoint--done', done === all.length && all.length > 0);
+  // Propagate to sidebar nav and homepage step card progress
+  updateNavProgress(stepId);
 }
 
 /* ===== Homepage Hero Section (4.1) ===== */

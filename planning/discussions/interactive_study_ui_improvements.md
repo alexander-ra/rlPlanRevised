@@ -264,6 +264,8 @@ Stored in cloud with the `pchk_{stepId}_{phaseNum}_{idx}` key prefix. Count badg
 
 **Suggestion:** Show step count or a deterministic progress bar: "Loading 15 steps... (cloud sync)". Since the build is a single file, loading is fast — but on slow connections or with cloud sync delays, feedback helps.
 
+**Done:** Text updates to "Loading 15 steps…" immediately on DOMContentLoaded (before cloud call), then to "Building navigation…" after cloud sync completes.
+
 ### 8.2 No favicon feedback for active step
 **Problem:** The brain emoji (🧠) favicon is static.
 
@@ -286,6 +288,8 @@ Stored in cloud with the `pchk_{stepId}_{phaseNum}_{idx}` key prefix. Count badg
 **Problem:** Currently, `renderStep()` calls `marked.parse()` on every navigation. For 15 steps, this is fine, but the parsing is repeated on every visit to the same step.
 
 **Suggestion:** Cache the parsed HTML for each step after first render. Store in a Map: `parsedCache.set(stepId, html)`. Invalidation is unnecessary since content doesn't change at runtime.
+
+**Done:** `_parsedCache` Map added; `marked.parse()` is now called only on first visit. Subsequent visits reuse cached HTML.
 
 ---
 
@@ -318,12 +322,12 @@ Stored in cloud with the `pchk_{stepId}_{phaseNum}_{idx}` key prefix. Count badg
 | 7.3 | Collapsible planning notes | Medium | Low | Yes | ✅ Done |
 | 7.4 | Math formatting audit | Low | Medium | MD edit | |
 | 7.5 | Per-phase checkpoint cards | High | Low | Yes | ✅ Done |
-| 9.1 | Lazy rendering / cache | Low | Low | Yes | |
+| 9.1 | Lazy rendering / cache | Low | Low | Yes | ✅ Done |
 | 9.2 | Service worker | Low | Medium | | |
 | 3.6 | Inline figures/diagrams | High | High | | Deferred |
 | 6.1 | Richer mobile bottom bar | Low | Low | | ✅ Done |
 | 6.2 | Simplified mobile timeline | Low | Medium | | |
-| 8.1 | Enhanced loading screen | Low | Low | | |
-| 8.3 | Richer print stylesheet | Low | Medium | | |
+| 8.1 | Enhanced loading screen | Low | Low | | ✅ Done |
+| 8.3 | Richer print stylesheet | Low | Medium | | ✅ Done |
 | 4.2 | Less dense homepage step cards | Medium | Low | Yes | ✅ Done |
 | 9.3 | Inline critical CDN resources | Low | Medium | | |

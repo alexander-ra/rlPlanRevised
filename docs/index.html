@@ -478,9 +478,28 @@ body {
 
 /* ===== Print ===== */
 @media print {
-  .sidebar, .topbar, .bottombar, .overlay, .section-nav, .timeline-bar { display: none !important; }
+  .sidebar, .topbar, .bottombar, .overlay, .section-nav, .timeline-bar,
+  .dl-cards, .reading-progress, .step-meta-card, .copy-btn,
+  .phase-checkpoint, .bq-planning-toggle { display: none !important; }
   .main { margin-left: 0 !important; }
-  .content { max-width: 100%; padding: 0; }
+  .content { max-width: 100%; padding: 0.5rem 1rem; font-size: 10pt; }
+  .content h1 { font-size: 16pt; margin-top: 0; page-break-after: avoid; }
+  .content h2 {
+    font-size: 13pt; page-break-after: avoid;
+    border-top: 2px solid #aaa; padding-top: 0.4rem; margin-top: 1rem;
+  }
+  .content h3 { font-size: 11pt; page-break-after: avoid; }
+  .content a { color: #000; text-decoration: underline; }
+  .content a[href^="http"]:after { content: " (" attr(href) ")"; font-size: 8pt; color: #555; }
+  .content pre { border: 1px solid #ccc; padding: 0.5rem; font-size: 8pt; white-space: pre-wrap; overflow: visible; }
+  .content blockquote { border-left: 3px solid #999; background: transparent; color: #333; }
+  .phase-section { border: 1px solid #ccc; border-radius: 0; background: transparent !important; margin: 0.5rem 0; page-break-inside: avoid; }
+  .phase-section > h2 { font-size: 12pt; }
+  /* Print page breaks between major H2 sections */
+  .phase-section + .phase-section { page-break-before: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 8pt; }
+  th, td { border: 1px solid #999; padding: 3px 6px; }
+  .bq-planning-body { display: block !important; }
 }
 
 /* ===== Timeline Bar ===== */
@@ -1233,7 +1252,7 @@ body {
   <!-- LOADING OVERLAY -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Loading study plan…</div>
+    <div id="loading-text" class="loading-text">Loading study plan…</div>
   </div>
 
   <!-- OVERLAY BACKDROP (mobile nav) -->
@@ -1705,13 +1724,27 @@ function embedYouTubeThumbnails() {
 function getStepCheckboxCounts(stepId) {
   const md = typeof STEPS_CONTENT !== 'undefined' ? STEPS_CONTENT[stepId] : null;
   if (!md) return { total: 0, checked: 0 };
+
+  // Count markdown checkboxes
   const allMatches = md.match(/- \[[ x]\]/g);
-  const total = allMatches ? allMatches.length : 0;
-  let checked = 0;
-  for (let i = 0; i < total; i++) {
-    if (cloudData.checkboxes[`cb_${stepId}_${i}`] === '1') checked++;
+  const mdTotal = allMatches ? allMatches.length : 0;
+  let mdChecked = 0;
+  for (let i = 0; i < mdTotal; i++) {
+    if (cloudData.checkboxes[`cb_${stepId}_${i}`] === '1') mdChecked++;
   }
-  return { total, checked };
+
+  // Count per-phase checkpoints
+  let pchkTotal = 0, pchkChecked = 0;
+  for (let phase = 1; phase <= 5; phase++) {
+    const texts = PHASE_CHECKPOINTS[phase];
+    if (!texts) continue;
+    pchkTotal += texts.length;
+    texts.forEach((_, idx) => {
+      if (cloudData.checkboxes[`pchk_${stepId}_${phase}_${idx}`] === '1') pchkChecked++;
+    });
+  }
+
+  return { total: mdTotal + pchkTotal, checked: mdChecked + pchkChecked };
 }
 
 /* ===== Checkbox Persistence (Cloud) ===== */
@@ -1832,6 +1865,9 @@ function updateActiveNav() {
 }
 
 /* ===== Markdown Rendering ===== */
+/* ===== Lazy Render Cache (9.1) ===== */
+const _parsedCache = new Map();
+
 function renderStep(stepId) {
   const md = STEPS_CONTENT[stepId];
   if (!md) return;
@@ -1846,8 +1882,14 @@ function renderStep(stepId) {
   const stepMeta = STEP_META[currentStepIndex];
   const { cleanMd, metaFields, freshnessLines: metaFreshLines } = extractAndStripMeta(md);
 
-  // Parse markdown to HTML
-  const html = marked.parse(cleanMd);
+  // Parse markdown to HTML — use cache to avoid re-parsing on revisit
+  let html;
+  if (_parsedCache.has(stepId)) {
+    html = _parsedCache.get(stepId);
+  } else {
+    html = marked.parse(cleanMd);
+    _parsedCache.set(stepId, html);
+  }
 
   // Insert into DOM
   const contentEl = document.getElementById('content');
@@ -2139,7 +2181,13 @@ function closeSidebar() {
 /* ===== Initialization ===== */
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
+  // Update loading text with step count before the cloud call
+  const loadingTextEl = document.getElementById('loading-text');
+  if (loadingTextEl) {
+    loadingTextEl.textContent = `Loading ${STEP_META.length} steps…`;
+  }
   await initCloudStorage();
+  if (loadingTextEl) loadingTextEl.textContent = 'Building navigation…';
   buildNav();
 
   // Dismiss loading overlay
@@ -2489,7 +2537,8 @@ function _updatePchkCount(cb) {
   // key: pchk_{stepId}_{phaseNum}_{idx}
   const m = key.match(/^pchk_(.+)_(\d+)_\d+$/);
   if (!m) return;
-  const countEl = document.getElementById('pchk-count-' + m[1] + '-' + m[2]);
+  const stepId = m[1];
+  const countEl = document.getElementById('pchk-count-' + stepId + '-' + m[2]);
   if (!countEl) return;
   const card = cb.closest('.phase-checkpoint');
   if (!card) return;
@@ -2497,6 +2546,8 @@ function _updatePchkCount(cb) {
   const done = Array.from(all).filter(c => c.checked).length;
   countEl.textContent = done + '/' + all.length;
   card.classList.toggle('phase-checkpoint--done', done === all.length && all.length > 0);
+  // Propagate to sidebar nav and homepage step card progress
+  updateNavProgress(stepId);
 }
 
 /* ===== Homepage Hero Section (4.1) ===== */
