@@ -69,6 +69,42 @@ def generate_content_script(steps: dict[str, str]) -> str:
     return f"<script>\n{js_obj}\n</script>"
 
 
+def write_service_worker(dist_dir: Path) -> None:
+    """Write docs/sw.js — network-first with cache fallback for offline use (9.2)."""
+    sw_content = """\
+const CACHE_NAME = 'rl-study-v1';
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.add('./'))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      }).catch(() => caches.match('./'))
+    );
+  }
+});
+"""
+    (dist_dir / "sw.js").write_text(sw_content, encoding="utf-8")
+
+
 def build():
     """Main build: inline CSS, JS, and content into shell.html → dist/interactiveStudy.html."""
     # Read source files
@@ -96,6 +132,9 @@ def build():
 
     # .nojekyll prevents GitHub Pages from running Jekyll on our built HTML
     (DIST_DIR / ".nojekyll").touch()
+
+    # Service worker
+    write_service_worker(DIST_DIR)
 
     size_kb = out_path.stat().st_size / 1024
     print(f"Built {out_path} ({size_kb:.0f} KB)")

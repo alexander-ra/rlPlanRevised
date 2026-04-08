@@ -59,24 +59,16 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 
 ### Videos
 
-- **The Chess ELO Rating System Explained**  
-  https://www.youtube.com/watch?v=GtAilcl5md0  
-  Duration: ~1.5m | Channel: Norway Chess  
+- [**The Chess ELO Rating System Explained**](https://www.youtube.com/watch?v=GtAilcl5md0)
   *Quick accessible intro to Elo ratings: how they work, what the numbers mean, and why they're the baseline evaluation method this step critiques and improves upon.*
 
-- **OpenSpiel Tutorial @ KU Leuven**  
-  https://www.youtube.com/watch?v=8NCPqtPwlFQ  
-  Duration: ~1h | Speaker: Marc Lanctot (DeepMind)  
+- [**OpenSpiel Tutorial @ KU Leuven**](https://www.youtube.com/watch?v=8NCPqtPwlFQ)
   *Hands-on tutorial by the co-author of alpha-Rank and OpenSpiel. Covers exploitability computation, game-theoretic evaluation tools, and how the research community evaluates agents in practice.*
 
-- **Stanford CS234 — Lecture 12: Exploration 2 (Spring 2024)**  
-  https://www.youtube.com/watch?v=gFJNsfg_35E  
-  Duration: ~1h10m | Instructor: Emma Brunskill (Stanford)  
+- [**Stanford CS234 — Lecture 12: Exploration 2 (Spring 2024)**](https://www.youtube.com/watch?v=gFJNsfg_35E)
   *Exploration strategies and how to evaluate whether agents explore effectively. Covers bandits, Thompson sampling, and the theoretical foundations for measuring agent quality.*
 
-- **Self-Play**  
-  https://www.youtube.com/watch?v=EY9iHSe82Hc  
-  Duration: ~56m | Speaker: Noam Brown | Cooperative AI Summer School 2024  
+- [**Self-Play**](https://www.youtube.com/watch?v=EY9iHSe82Hc)
   *Evaluation challenges in self-play settings: when does self-play converge, how to measure improvement, and the role of population-level metrics vs single-agent exploitability.*
 
 ### Blog Posts / Accessible Reads

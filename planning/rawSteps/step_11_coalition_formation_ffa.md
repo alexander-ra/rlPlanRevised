@@ -47,19 +47,13 @@ The goal: understand WHY coalition formation is hard (and interesting). Key insi
 
 End of day: you should be able to explain to a non-expert: "In a poker game with 6 players, two players might secretly work together — sharing information about their hands, or one folding to let the other win a big pot. This is a COALITION. But coalitions in competitive games are unstable — eventually, one member will betray the other when it's profitable. Learning WHEN to form, MAINTAIN, and BREAK coalitions is an unsolved problem in AI. Traditional game theory (Nash equilibrium) can't tell you much about this because Nash treats each player independently. Cooperative game theory (Shapley value, the core) provides tools to analyze WHO should be in a coalition and HOW to divide the gains — but it assumes coalitions are stable. The real challenge is when coalitions are DYNAMIC."
 
-- **"The mathematics behind Shapley Values" by A Data Odyssey**  
-  https://www.youtube.com/watch?v=UJeu29wq7d0  
-  Duration: ~12m | Channel: A Data Odyssey  
+- [**"The mathematics behind Shapley Values" by A Data Odyssey**](https://www.youtube.com/watch?v=UJeu29wq7d0)
   *Clear visual explanation of how to fairly divide gains among cooperating players. Builds the intuition for coalition value and credit assignment used in So Long Sucker.*
 
-- **"CICERO: An AI agent that negotiates, persuades, and cooperates with people" (Meta AI)**  
-  https://www.youtube.com/watch?v=ciNMc0Czmfc  
-  Speaker: Meta AI  
+- [**"CICERO: An AI agent that negotiates, persuades, and cooperates with people" (Meta AI)**](https://www.youtube.com/watch?v=ciNMc0Czmfc)
   *State-of-the-art multi-player game AI with coalition dynamics. Shows how CICERO combines language models with strategic planning to form alliances, negotiate, and betray in 7-player Diplomacy.*
 
-- **"Parables on the Power of Planning in AI: From Poker to Diplomacy" by Noam Brown (OpenAI)**  
-  https://www.youtube.com/watch?v=eaAonE58sLU  
-  Duration: ~57m | Speaker: Noam Brown (OpenAI)  
+- [**"Parables on the Power of Planning in AI: From Poker to Diplomacy" by Noam Brown (OpenAI)**](https://www.youtube.com/watch?v=eaAonE58sLU)
   *Distinguished lecture covering the full journey from poker to Diplomacy. Focus on the Diplomacy sections: how does the system decide whom to ally with, when to betray, and how to balance short-term alliance utility vs long-term strategic independence.*
 
 ### Blog Posts / Accessible Reads

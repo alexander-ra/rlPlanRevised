@@ -54,31 +54,21 @@ End of phase: you should be able to draw the architecture diagram of each system
 
 ### Day 1: The Poker AI Progression (DeepStack → Libratus → Pluribus)
 
-- **How DeepMind Conquered Go With Deep Learning (AlphaGo) — Two Minute Papers #42**  
-  https://www.youtube.com/watch?v=IFmj5M5Q5jg  
-  Duration: ~3m | Channel: Two Minute Papers  
+- [**How DeepMind Conquered Go With Deep Learning (AlphaGo) — Two Minute Papers #42**](https://www.youtube.com/watch?v=IFmj5M5Q5jg)
   *Quick accessible intro to the AlphaGo paradigm: deep learning + Monte Carlo tree search. The perfect-information template that ReBeL and Student of Games later extend to imperfect information.*
 
-- **AlphaZero: Shedding new light on the grand games of chess, shogi and Go**  
-  https://www.youtube.com/watch?v=7L2sUGcOgh0  
-  Duration: ~5m | Channel: DeepMind  
+- [**AlphaZero: Shedding new light on the grand games of chess, shogi and Go**](https://www.youtube.com/watch?v=7L2sUGcOgh0)
   *Short overview of AlphaZero's self-play paradigm: learning from scratch, no human knowledge, mastering chess/shogi/Go in hours. The architecture all poker AI systems build upon.*
 
-- **AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**  
-  https://www.youtube.com/watch?v=McV4a6umbAY  
-  Duration: ~1h | Speaker: Noam Brown | Channel: Microsoft Research  
+- [**AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**](https://www.youtube.com/watch?v=McV4a6umbAY)
   *Full Libratus/DeepStack/Pluribus architecture walkthrough: blueprint computation, abstraction, subgame solving, and the three-module system that beat top professionals.*
 
 ### Day 2: The Unification Progression (ReBeL → Student of Games)
 
-- **Combining Deep Reinforcement Learning and Search for Imperfect-Information Games (ReBeL)**  
-  https://www.youtube.com/watch?v=mCldyXOYNok  
-  Duration: ~35m | Speaker: Noam Brown  
+- [**Combining Deep Reinforcement Learning and Search for Imperfect-Information Games (ReBeL)**](https://www.youtube.com/watch?v=mCldyXOYNok)
   *Brown presents ReBeL: the first algorithm that treats imperfect-info game solving like AlphaZero treats chess. Public belief states + CFR at leaf nodes + learned value network.*
 
-- **Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**  
-  https://www.youtube.com/watch?v=U0mxx7AoNz0  
-  Duration: ~54m | Channel: Yannic Kilcher  
+- [**Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**](https://www.youtube.com/watch?v=U0mxx7AoNz0)
   *Interview with the Student of Games author. Covers how one algorithm handles both perfect-info (Go, chess) AND imperfect-info (poker, Scotland Yard) games.*
 
 ### Blog Posts / Accessible Reads

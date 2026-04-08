@@ -44,29 +44,19 @@ The goal: understand WHY population-based training exists (self-play against ONE
 
 End of day: you should be able to explain to a non-expert: "Instead of training one AI against itself (self-play), we train a POPULATION of different AIs against each other. The strong ones survive, the weak ones get replaced. This is like evolution — but instead of biological organisms, we're evolving AI strategies. The result is more robust AIs because they've been tested against many different opponents, not just one. Evolutionary game theory is the math that tells us what this population converges to."
 
-- **Evolution of aggression and sharing: the replicator dynamics with the Hawk Dove Game**  
-  https://www.youtube.com/watch?v=tDTVRvfaaQo  
-  Duration: ~11m | Channel: Vincent Knight  
+- [**Evolution of aggression and sharing: the replicator dynamics with the Hawk Dove Game**](https://www.youtube.com/watch?v=tDTVRvfaaQo)
   *Visual walkthrough of evolutionary game theory: the Hawk-Dove game, replicator dynamics differential equations, and how populations reach mixed equilibrium. The mathematical foundation for understanding population evolution.*
 
-- **Human-level in first-person multiplayer games with population-based deep RL**  
-  https://www.youtube.com/watch?v=dltN4MxV1RI  
-  Duration: ~8m | Channel: Max Jaderberg (DeepMind)  
+- [**Human-level in first-person multiplayer games with population-based deep RL**](https://www.youtube.com/watch?v=dltN4MxV1RI)
   *Supplementary video showing PBT applied to Capture the Flag. Agents learn to cooperate with teammates and compete against opponents through population-based training.*
 
-- **Game highlights of AlphaStar versus Team Liquid's TLO and MaNa**  
-  https://www.youtube.com/watch?v=6EQAsrfUIyo  
-  Duration: ~13m | Channel: DeepMind  
+- [**Game highlights of AlphaStar versus Team Liquid's TLO and MaNa**](https://www.youtube.com/watch?v=6EQAsrfUIyo)
   *Commentary and analysis of AlphaStar matches with Artosis, RotterdaM, Oriol Vinyals and David Silver. Shows the result of population-based league training — diverse strategies emerging from the AlphaStar League.*
 
-- **Stanford CS234 — Lecture 15: Value Alignment (Spring 2024)**  
-  https://www.youtube.com/watch?v=FOlPpjNbHjE  
-  Duration: ~1h14m | Instructor: Emma Brunskill + Dan Webber (Stanford)  
+- [**Stanford CS234 — Lecture 15: Value Alignment (Spring 2024)**](https://www.youtube.com/watch?v=FOlPpjNbHjE)
   *Covers MCTS, AlphaZero, DPO, and RLHF. The AlphaZero section is relevant for understanding how self-play within a population produces superhuman performance.*
 
-- **Self-Play**  
-  https://www.youtube.com/watch?v=EY9iHSe82Hc  
-  Duration: ~56m | Speaker: Noam Brown | Cooperative AI Summer School 2024  
+- [**Self-Play**](https://www.youtube.com/watch?v=EY9iHSe82Hc)
   *Covers population-based methods in depth, including the relationship between PSRO, evolutionary dynamics, and the AlphaStar league design.*
 
 ### Blog Posts / Accessible Reads
