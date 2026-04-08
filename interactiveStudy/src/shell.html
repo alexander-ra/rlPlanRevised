@@ -68,7 +68,10 @@
     <!-- TOP BAR -->
     <header class="topbar">
       <button id="hamburger" class="icon-btn" aria-label="Open menu">&#9776;</button>
-      <span id="topbar-title" class="topbar-title">Step 1</span>
+      <div class="topbar-title-wrap">
+        <span id="topbar-title" class="topbar-title">Step 1</span>
+        <span id="topbar-section" class="topbar-section" role="button" tabindex="0" aria-label="Scroll to top" title="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})" onkeydown="if(event.key==='Enter')window.scrollTo({top:0,behavior:'smooth'})"></span>
+      </div>
       <div class="topbar-nav">
         <button id="prev-btn" class="nav-btn" aria-label="Previous step">&larr; Prev</button>
         <button id="next-btn" class="nav-btn" aria-label="Next step">Next &rarr;</button>
@@ -94,7 +97,7 @@
   <!-- SECTION JUMP (floating action button) -->
   <div id="section-nav" class="section-nav">
     <div id="section-dropdown" class="section-dropdown"></div>
-    <button id="section-fab" class="section-fab" aria-label="Jump to section">&#x2630;</button>
+    <button id="section-fab" class="section-fab" aria-label="Jump to section"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16" aria-hidden="true"><line x1="2" y1="4" x2="16" y2="4"/><line x1="5" y1="8" x2="16" y2="8"/><line x1="5" y1="12" x2="16" y2="12"/><line x1="2" y1="16" x2="16" y2="16"/></svg></button>
   </div>
 
   <!-- INLINE_CONTENT -->
