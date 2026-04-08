@@ -63,22 +63,22 @@ The JS can detect `## Phase N:` headings (consistent pattern across all steps) a
 ### 2.2 The section jump FAB icon is confusable with the sidebar hamburger
 **Problem:** The FAB uses `☰` (trigram / hamburger icon) which is the same icon concept as the mobile sidebar hamburger. Two "hamburger" buttons in the same viewport is confusing.
 
-**Suggestion:** Change the FAB icon to something more specific to "sections" — e.g., `§`, `#`, or a list/outline icon. The current `&#x2630;` is too generic. Alternatively, use a small "TOC" label or a bookmark icon.
+**Suggestion:** Replace with an SVG "structured list / TOC outline" icon — horizontal lines of different indentation levels, clearly meaning "outline" not "menu". Distinct from the hamburger and relevant to "jump to section" semantics.
 
 ### 2.3 No breadcrumb or location context beyond topbar title
 **Problem:** When reading a step, the topbar shows "Step 5: Neural Equilibrium" but doesn't show which phase of the plan you're in (Phase C — Neural Methods) or where in the 5-phase learning cycle you are within the step. The intersection observer updates the title with the current section, but it's a single line of text.
 
-**Suggestion:** Add a subtle breadcrumb under the topbar or in the content area: "Phase C > Step 5 > Phase 3: Targeted Reading > Paper 1". This helps users maintain context in long steps. Can be minimal — just small text.
+**Suggestion:** Add a dedicated subtitle row inside the topbar (below the main title). It shows: `Phase C — Neural Methods · §current-section` — combining plan phase context with the live section tracker. Clicking it scrolls to top. This replaces the hacked inline span approach from 2.5.
 
 ### 2.4 No step transition animation
 **Problem:** Switching between steps is an instant content swap — the old content disappears, the new content appears. This feels abrupt, especially when navigating with arrow keys.
 
-**Suggestion:** Add a subtle fade transition (200-300ms) or a slide effect when switching steps. CSS `opacity` + `transform` transition on the content area would suffice.
+**Suggestion:** Add a CSS fade + subtle upward-translate exit animation (150ms), then a fade + downward-translate enter animation (200ms). Uses `@keyframes` classes added/removed by JS — avoids transition reversal issues on class removal.
 
 ### 2.5 The topbar section tracker (IntersectionObserver) has rough UX
 **Problem:** The current section indicator in the topbar (e.g., "Step 5: Neural Equilibrium > Phase 3: Reading") uses inline styles, hardcoded emoji (❯), and a small "▲" click-to-top button embedded in the title text. It's functional but feels hacky — the clickable area is small, and mixing interaction into a title string is fragile.
 
-**Suggestion:** Move the section indicator to a separate element below the topbar title (or make it a proper breadcrumb). Make the "scroll to top" action a dedicated button (or double-click on the topbar).
+**Suggestion:** Replaced by the 2.3 implementation: a proper `#topbar-section` element as a second line inside the topbar, updated by the IntersectionObserver. The whole subtitle row is a clickable scroll-to-top target. Clean separation from the title string.
 
 ---
 
@@ -304,11 +304,13 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 | 1.2 | Distinct Phase Overview blockquote | Medium | Low | Yes | ✅ Done |
 | 1.4 | Phase section tinting | Medium | Medium | | ✅ Done |
 | 1.5 | Heading hierarchy contrast (H1/H2/H3) | Medium | Low | Yes | ✅ Done |
-| 2.5 | Step transition animation | Medium | Low | Yes | |
+| 2.4 | Step transition animation | Medium | Low | Yes | ✅ Done |
+| 2.2 | Better FAB icon | Low | Low | Yes | ✅ Done |
+| 2.3 | Breadcrumb navigation | Low | Medium | | ✅ Done |
+| 2.6 | Clean up topbar section tracker | Low | Medium | | ✅ Done |
 | 3.4 | Admonition/callout boxes | Medium | Medium | | |
 | 4.4 | Overall progress visualization | Medium | Medium | | |
 | 3.2 | Styled reading guides (READ/SKIM/SKIP) | Medium | Medium | | |
-| 2.2 | Better FAB icon | Low | Low | Yes | |
 | 5.3 | Nav item status indicators | Low | Low | Yes | |
 | 5.4 | Collapsible phase groups | Low | Medium | | |
 | 4.3 | Full calendar view | Low | Medium | | |
@@ -318,13 +320,11 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 | 7.4 | Math formatting audit | Low | Medium | MD edit | |
 | 9.1 | Lazy rendering / cache | Low | Low | Yes | |
 | 9.2 | Service worker | Low | Medium | | |
-| 2.3 | Breadcrumb navigation | Low | Medium | | |
 | 3.5 | Table row hover | Low | Low | Yes | |
 | 3.6 | Inline figures/diagrams | High | High | | |
 | 6.1 | Richer mobile bottom bar | Low | Low | | |
 | 6.2 | Simplified mobile timeline | Low | Medium | | |
 | 8.1 | Enhanced loading screen | Low | Low | | |
 | 8.3 | Richer print stylesheet | Low | Medium | | |
-| 2.6 | Clean up topbar section tracker | Low | Medium | | |
 | 4.2 | Less dense homepage step cards | Medium | Low | Yes | |
 | 9.3 | Inline critical CDN resources | Low | Medium | | |

@@ -613,20 +613,16 @@ function renderStep(stepId) {
        return rect.top <= window.innerHeight * 0.4 && rect.bottom >= -window.innerHeight;
     });
     
-    if(visibleHeaders.length > 0) {
-      // get the last one that passed the threshold
+    const sectionEl = document.getElementById('topbar-section');
+    const stepMeta = window.STEP_META[window.currentStepIndex];
+    if (!stepMeta || !sectionEl) return;
+    if (visibleHeaders.length > 0) {
       const h = visibleHeaders[visibleHeaders.length - 1];
-      let txt = (h.dataset.sectionTitle || h.textContent).replace('▶', '').replace('▼', '').replace('Table of Contents', 'Overview').trim();
-      
-      let titleEl = document.getElementById('topbar-title');
-      let stepMeta = window.STEP_META[window.currentStepIndex];
-      if (!stepMeta) return;
-      titleEl.innerHTML = `Step ${stepMeta.num}: ${stepMeta.title} <span class="sub-header" style="opacity:0.6;font-size:0.8em;margin-left:10px;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">❯ ${txt} <span style="font-size:0.8em;">▲</span></span>`;
+      const txt = (h.dataset.sectionTitle || h.textContent)
+        .replace('▶', '').replace('▼', '').replace('Table of Contents', 'Overview').trim();
+      sectionEl.textContent = `${stepMeta.phaseLabel} · ${txt}`;
     } else if (window.scrollY < 100) {
-      let titleEl = document.getElementById('topbar-title');
-      let stepMeta = window.STEP_META[window.currentStepIndex];
-      if (!stepMeta) return;
-      titleEl.innerHTML = `Step ${stepMeta.num}: ${stepMeta.title}`;
+      sectionEl.textContent = stepMeta.phaseLabel;
     }
   }, { rootMargin: '-10px 0px -80% 0px', threshold: [0, 1] });
 
@@ -667,24 +663,36 @@ function renderStep(stepId) {
 function navigateTo(stepId) {
   if (stepId === 'home') { navigateHome(); return; }
 
-  isHomepage = false;
-  document.getElementById('timeline-bar').style.display = '';
-  document.getElementById('section-nav').style.display = '';
+  const contentEl = document.getElementById('content');
 
-  const idx = STEP_META.findIndex(s => s.id === stepId);
-  if (idx === -1) return;
-  currentStepIndex = idx;
+  const doRender = () => {
+    isHomepage = false;
+    document.getElementById('timeline-bar').style.display = '';
+    document.getElementById('section-nav').style.display = '';
 
-  renderStep(stepId);
-  updateActiveNav();
+    const idx = STEP_META.findIndex(s => s.id === stepId);
+    if (idx === -1) return;
+    currentStepIndex = idx;
 
-  const meta = STEP_META[idx];
-  document.getElementById('topbar-title').innerHTML = 'Step ' + meta.num + ': ' + meta.title;
+    renderStep(stepId);
+    updateActiveNav();
 
-  history.replaceState(null, '', '#' + stepId);
-  updateNavButtons();
-  renderTimeline();
-  closeSidebar();
+    const meta = STEP_META[idx];
+    document.getElementById('topbar-title').textContent = 'Step ' + meta.num + ': ' + meta.title;
+    const sectionEl = document.getElementById('topbar-section');
+    if (sectionEl) sectionEl.textContent = meta.phaseLabel;
+
+    history.replaceState(null, '', '#' + stepId);
+    updateNavButtons();
+    renderTimeline();
+    closeSidebar();
+
+    contentEl.classList.add('content-enter');
+    contentEl.addEventListener('animationend', () => contentEl.classList.remove('content-enter'), { once: true });
+  };
+
+  contentEl.classList.add('content-exit');
+  setTimeout(() => { contentEl.classList.remove('content-exit'); doRender(); }, 150);
 }
 
 function goNext() {
@@ -994,29 +1002,41 @@ function buildStepSummaries() {
 }
 
 function navigateHome() {
-  isHomepage = true;
-  currentStepIndex = -1;
-  document.getElementById('topbar-title').textContent = 'RL Study Plan';
-  document.getElementById('timeline-bar').style.display = 'none';
-  document.getElementById('section-nav').style.display = 'none';
-  updateNavButtons();
-  updateActiveNav();
-  history.replaceState(null, '', '#home');
+  const contentEl = document.getElementById('content');
 
-  document.getElementById('content').innerHTML =
-    `<div class="hp">
-      <div class="hp-hdr"><h1>📚 PhD Research Plan</h1>
-        <p>AI in Computer Games &mdash; Adaptive Strategy in Multi-Agent Imperfect-Information Environments</p>
-        <p class="hp-meta">15 steps &middot; 7 phases &middot; ${BASE_TOTAL_DAYS} days &middot; Mar&ndash;Oct 2026</p>
-      </div>
-      <h2 class="hp-sec">Timeline</h2>
-      ${buildGanttCalendar()}
-      <h2 class="hp-sec">Steps</h2>
-      <div class="sc-list">${buildStepSummaries()}</div>
-    </div>`;
-  window.scrollTo(0, 0);
-  updateReadingProgress();
-  closeSidebar();
+  const doRender = () => {
+    isHomepage = true;
+    currentStepIndex = -1;
+    document.getElementById('topbar-title').textContent = 'RL Study Plan';
+    const sectionEl = document.getElementById('topbar-section');
+    if (sectionEl) sectionEl.textContent = '';
+    document.getElementById('timeline-bar').style.display = 'none';
+    document.getElementById('section-nav').style.display = 'none';
+    updateNavButtons();
+    updateActiveNav();
+    history.replaceState(null, '', '#home');
+
+    contentEl.innerHTML =
+      `<div class="hp">
+        <div class="hp-hdr"><h1>PhD Research Plan</h1>
+          <p>AI in Computer Games &mdash; Adaptive Strategy in Multi-Agent Imperfect-Information Environments</p>
+          <p class="hp-meta">15 steps &middot; 7 phases &middot; ${BASE_TOTAL_DAYS} days &middot; Mar&ndash;Oct 2026</p>
+        </div>
+        <h2 class="hp-sec">Timeline</h2>
+        ${buildGanttCalendar()}
+        <h2 class="hp-sec">Steps</h2>
+        <div class="sc-list">${buildStepSummaries()}</div>
+      </div>`;
+    window.scrollTo(0, 0);
+    updateReadingProgress();
+    closeSidebar();
+
+    contentEl.classList.add('content-enter');
+    contentEl.addEventListener('animationend', () => contentEl.classList.remove('content-enter'), { once: true });
+  };
+
+  contentEl.classList.add('content-exit');
+  setTimeout(() => { contentEl.classList.remove('content-exit'); doRender(); }, 150);
 }
 
 /* ===== Reading Progress Bar ===== */
