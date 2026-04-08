@@ -85,57 +85,38 @@ The JS can detect `## Phase N:` headings (consistent pattern across all steps) a
 ## 3. Content Components
 
 ### 3.1 YouTube cards could show duration and instructor
-**Problem:** YouTube links are converted to nice thumbnail cards, but they only show the link text as a title. The markdown already contains duration and instructor info in the surrounding text, but it's not extracted.
+**Problem:** YouTube links are converted to nice thumbnail cards, but they only show the link text as a title. The markdown already contains duration and instructor info on the line after each URL (`Duration: ~19m | Channel: DeepMind`), but it's not extracted.
 
-**Suggestion:** If the YouTube link is followed by a line like `Duration: ~19m | Channel: DeepMind`, capture that metadata and display it on the card (e.g., a small "19m" badge on the thumbnail, instructor name under the title). This would require either a markdown convention or smarter JS parsing.
+**Suggestion:** After `embedYouTubeThumbnails()` replaces an `<a>` with a card, scan next sibling text nodes for a `Duration:` line. Parse out duration and `Channel:` / `Instructor:` fields. Render duration as a small dark badge bottom-right on the thumbnail; channel/instructor as a small subtitle line below the card title.
 
 ### 3.2 Paper reading guides (tree syntax) look raw
-**Problem:** Steps use a tree syntax for structured reading guides:
-```
-├── §1 Introduction (2p) — READ
-├── §2 Background (3p) — SKIM
-├── §3 Algorithm (5p) — READ + MATH
-└── §4 Experiments (4p) — SKIP tables, READ analysis
-```
-These render as plain monospace code blocks. The information is valuable but the presentation is utilitarian.
+**Problem:** Steps use a tree syntax for structured reading guides (READ/SKIM/SKIP/MATH/KEY INSIGHT). These render as plain monospace code blocks.
 
-**Suggestion:** Convert these to styled HTML during post-processing. Each line becomes a row with:
-- A colored badge for the action (READ = green, SKIM = yellow, SKIP = gray, MATH = blue)
-- The section name and page count
-- Optional notes
-
-This turns dense code blocks into scannable, visually weighted lists. Detection: look for code blocks containing `├──` or `└──` patterns with READ/SKIM/SKIP tags.
+**Suggestion:** Post-process any `<pre><code>` block whose content contains `├──` or `└──`. Parse each tree-prefix line into action type + content. Multi-line items continued with `│` or 4-space indent are joined. Render as a `.reading-guide` div: each item is a row with a color-coded badge (READ=green, SKIM=amber, SKIP=gray, MATH=blue, KEY INSIGHT=violet). Run BEFORE hljs so the original code block is replaced before syntax highlighting.
 
 ### 3.3 No code block copy button
-**Problem:** Code blocks (Python, Bash, YAML) have syntax highlighting but no copy-to-clipboard button. Users must manually select and copy code.
+**Problem:** Code blocks had no copy-to-clipboard button.
 
-**Suggestion:** Add a small "Copy" button in the top-right corner of every `<pre>` block. This is standard on documentation sites. 10 lines of JS + minimal CSS.
+**Done:** Copy button now appears on hover in the top-right corner of every `<pre>` block.
 
 ### 3.4 No admonition/callout boxes
-**Problem:** The markdown uses bold text, blockquotes, and plain formatting for warnings, tips, and important notes. There's no visual distinction between "this is context" vs "this is critical" vs "this is optional".
+**Problem:** The markdown uses blockquotes with bold labels for planning notes, context, and cross-references. They all look the same visually.
 
-**Suggestion:** Support a callout/admonition syntax. Options:
-- Use existing blockquote markers: `> **Warning:**`, `> **Tip:**`, `> **Important:**` → detect and style differently (different left-border color + icon)
-- Use GitHub-style alerts: `> [!WARNING]`, `> [!TIP]`, etc.
-- Use HTML: `<div class="callout warning">...</div>`
-
-The first option is most natural and requires only JS post-processing. Many steps already use `> **Note:**` or `> **Why this section exists:**` patterns.
+**Suggestion:** Extend `styleSpecialBlockquotes()` to detect the real patterns in the rawSteps:
+- `Know-How First compression` → amber/planning callout (planning artifact)
+- `[Pn] ...` (plan decision labels) → neutral/dim, smaller font (cross-reference note)
+- `Why this section exists`, `Before the papers` → teal/context (prereq/rationale)
+- `Phase Overview` → already done
 
 ### 3.5 Tables lack interactivity
-**Problem:** Tables are responsive (scrollable wrapper) but otherwise static. Some steps have comparison tables (e.g., "DQN vs PPO") that would benefit from row highlighting on hover or sortable columns.
+**Problem:** Tables are static — no visual feedback when hovering rows.
 
-**Suggestion:** At minimum, add row hover highlighting (CSS only: `tr:hover { background: ... }`). For advanced tables, consider making columns sortable (click header to sort) — but this might be overengineering for the content.
+**Suggestion:** CSS-only `tbody tr:hover` with `surface-variant` background.
 
 ### 3.6 Image/figure support
-**Problem:** The markdown steps are text-heavy with no diagrams or figures. The reports have figures in `deliverables/reports/stepXX/figures/`, but these aren't referenced in the rawSteps markdown.
+**Problem:** Steps are text-only with no inline diagrams.
 
-**Suggestion:** Where relevant, embed figures from the reports or create simple diagrams (using mermaid.js or SVG) to break up walls of text. Key candidates:
-- Step 1: MDP diagram, DQN architecture
-- Step 2: Kuhn Poker game tree, CFR iteration visualization
-- Step 5: Deep CFR architecture diagram
-- Step 9: Multi-agent interaction diagram
-
-This requires adding image references to the markdown files and potentially a mermaid.js CDN include.
+**Deferred:** Requires content-level edits to rawSteps markdown (adding image refs or mermaid diagrams). Not a pure UI task — deferred to a future content pass.
 
 ---
 
@@ -308,20 +289,20 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 | 2.2 | Better FAB icon | Low | Low | Yes | ✅ Done |
 | 2.3 | Breadcrumb navigation | Low | Medium | | ✅ Done |
 | 2.6 | Clean up topbar section tracker | Low | Medium | | ✅ Done |
-| 3.4 | Admonition/callout boxes | Medium | Medium | | |
+| 3.4 | Admonition/callout boxes | Medium | Medium | | ✅ Done |
+| 3.2 | Styled reading guides (READ/SKIM/SKIP) | Medium | Medium | | ✅ Done |
+| 3.5 | Table row hover | Low | Low | Yes | ✅ Done |
+| 3.1 | YouTube card metadata (duration/instructor) | Low | Medium | | ✅ Done |
 | 4.4 | Overall progress visualization | Medium | Medium | | |
-| 3.2 | Styled reading guides (READ/SKIM/SKIP) | Medium | Medium | | |
 | 5.3 | Nav item status indicators | Low | Low | Yes | |
 | 5.4 | Collapsible phase groups | Low | Medium | | |
 | 4.3 | Full calendar view | Low | Medium | | |
-| 3.1 | YouTube card metadata (duration/instructor) | Low | Medium | | |
 | 7.1 | YouTube link syntax audit | Low | Low | Yes (MD edit) | |
 | 7.2 | Standardize exit checklists | Medium | Medium | MD edit | |
 | 7.4 | Math formatting audit | Low | Medium | MD edit | |
 | 9.1 | Lazy rendering / cache | Low | Low | Yes | |
 | 9.2 | Service worker | Low | Medium | | |
-| 3.5 | Table row hover | Low | Low | Yes | |
-| 3.6 | Inline figures/diagrams | High | High | | |
+| 3.6 | Inline figures/diagrams | High | High | | Deferred |
 | 6.1 | Richer mobile bottom bar | Low | Low | | |
 | 6.2 | Simplified mobile timeline | Low | Medium | | |
 | 8.1 | Enhanced loading screen | Low | Low | | |
