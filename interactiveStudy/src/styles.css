@@ -280,9 +280,9 @@ body {
 }
 
 /* Markdown rendered content */
-.content h1 { font-size: 1.6rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--on-surface); }
-.content h2 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.6rem; padding-top: 1.25rem; border-top: 1px solid var(--divider); color: var(--on-surface); }
-.content h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--on-surface-medium); }
+.content h1 { font-size: 1.8rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--on-surface); }
+.content h2 { font-size: 1.35rem; font-weight: 700; margin: 2rem 0 0.6rem; padding-top: 1.25rem; border-top: 2px solid var(--outline-variant); color: var(--on-surface); }
+.content h3 { font-size: 1.12rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--on-surface); }
 .content h1:first-child { margin-top: 0; }
 .content h2:first-child { border-top: none; padding-top: 0; }
 
@@ -624,7 +624,12 @@ body {
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .sc-badges { display: flex; align-items: center; gap: 0.35rem; }
-.sc-report-badge { font-size: 0.78rem; }
+.sc-report-badge {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 1px 5px; border-radius: 4px; text-transform: uppercase;
+  background: var(--primary-container); color: var(--on-primary-container);
+  border: 1px solid var(--primary);
+}
 
 /* ===== Step Card Download Row ===== */
 .sc-dl-row {
@@ -763,7 +768,7 @@ body {
 }
 
 /* ===== Topbar Theme Button ===== */
-.topbar-theme-btn { font-size: 1rem; padding: 0.3rem 0.45rem; }
+.topbar-theme-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.3rem 0.45rem; }
 
 /* ===== Step Metadata Info Card ===== */
 .step-meta-card {
@@ -789,3 +794,67 @@ body {
 
 /* Dark mode override for hljs backgrounds */
 [data-theme="dark"] .hljs { background: var(--pre-bg) !important; color: var(--on-surface) !important; }
+
+/* ===== Phase Number Badges (Learning Phases 1–5) ===== */
+.phase-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5em; height: 1.5em; border-radius: 50%;
+  font-size: 0.72em; font-weight: 700; line-height: 1;
+  margin-right: 0.4em; vertical-align: middle;
+  flex-shrink: 0; font-style: normal;
+}
+.phase-badge--1 { background: #dbeafe; color: #1e40af; }
+.phase-badge--2 { background: #dcfce7; color: #065f46; }
+.phase-badge--3 { background: #fef3c7; color: #92400e; }
+.phase-badge--4 { background: #ffe4e6; color: #be123c; }
+.phase-badge--5 { background: #ede9fe; color: #4c1d95; }
+[data-theme="dark"] .phase-badge--1 { background: #1e3a5f; color: #93c5fd; }
+[data-theme="dark"] .phase-badge--2 { background: #14432a; color: #6ee7b7; }
+[data-theme="dark"] .phase-badge--3 { background: #44310a; color: #fde68a; }
+[data-theme="dark"] .phase-badge--4 { background: #4a1a2e; color: #fda4af; }
+[data-theme="dark"] .phase-badge--5 { background: #2a1555; color: #c4b5fd; }
+
+/* ===== Step Status Dots (Homepage step cards) ===== */
+.step-status {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 0.7em; height: 0.7em; border-radius: 50%;
+  vertical-align: middle; margin-right: 0.3em; flex-shrink: 0;
+}
+.step-status--done { background: #059669; }
+.step-status--active {
+  background: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-container);
+  animation: status-pulse 2s ease-in-out infinite;
+}
+.step-status--upcoming { background: transparent; border: 2px solid var(--on-surface-faint); }
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--primary-container); }
+  50%       { box-shadow: 0 0 0 4px var(--primary-container); }
+}
+
+/* ===== Phase Overview Blockquote ===== */
+.bq-phase-overview {
+  border-left-color: var(--primary);
+  border-left-width: 4px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+/* ===== Phase Section Tinting (Learning Phases 1–5) ===== */
+.phase-section {
+  border-radius: 10px;
+  margin: 1.5rem 0;
+  padding: 1rem 1rem 0.5rem;
+  border-left: 3px solid transparent;
+}
+.phase-section--1 { background: rgba(219,234,254,0.3);  border-left-color: rgba(37,99,235,0.3);  }
+.phase-section--2 { background: rgba(220,252,231,0.3);  border-left-color: rgba(5,150,105,0.3);  }
+.phase-section--3 { background: rgba(254,243,199,0.3);  border-left-color: rgba(217,119,6,0.3);  }
+.phase-section--4 { background: rgba(255,228,230,0.3);  border-left-color: rgba(244,63,94,0.3);  }
+.phase-section--5 { background: rgba(237,233,254,0.3);  border-left-color: rgba(124,58,237,0.3); }
+[data-theme="dark"] .phase-section--1 { background: rgba(30,58,95,0.25);  border-left-color: rgba(96,165,250,0.35);  }
+[data-theme="dark"] .phase-section--2 { background: rgba(20,67,42,0.25);  border-left-color: rgba(52,211,153,0.35);  }
+[data-theme="dark"] .phase-section--3 { background: rgba(68,49,10,0.25);  border-left-color: rgba(251,191,36,0.35);  }
+[data-theme="dark"] .phase-section--4 { background: rgba(74,26,46,0.25);  border-left-color: rgba(251,113,133,0.35); }
+[data-theme="dark"] .phase-section--5 { background: rgba(42,21,85,0.25);  border-left-color: rgba(167,139,250,0.35); }
+.phase-section > h2 { border-top: none; padding-top: 0; margin-top: 0; }

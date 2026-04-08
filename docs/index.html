@@ -312,9 +312,9 @@ body {
 }
 
 /* Markdown rendered content */
-.content h1 { font-size: 1.6rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--on-surface); }
-.content h2 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.6rem; padding-top: 1.25rem; border-top: 1px solid var(--divider); color: var(--on-surface); }
-.content h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--on-surface-medium); }
+.content h1 { font-size: 1.8rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--on-surface); }
+.content h2 { font-size: 1.35rem; font-weight: 700; margin: 2rem 0 0.6rem; padding-top: 1.25rem; border-top: 2px solid var(--outline-variant); color: var(--on-surface); }
+.content h3 { font-size: 1.12rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--on-surface); }
 .content h1:first-child { margin-top: 0; }
 .content h2:first-child { border-top: none; padding-top: 0; }
 
@@ -656,7 +656,12 @@ body {
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .sc-badges { display: flex; align-items: center; gap: 0.35rem; }
-.sc-report-badge { font-size: 0.78rem; }
+.sc-report-badge {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 1px 5px; border-radius: 4px; text-transform: uppercase;
+  background: var(--primary-container); color: var(--on-primary-container);
+  border: 1px solid var(--primary);
+}
 
 /* ===== Step Card Download Row ===== */
 .sc-dl-row {
@@ -795,7 +800,7 @@ body {
 }
 
 /* ===== Topbar Theme Button ===== */
-.topbar-theme-btn { font-size: 1rem; padding: 0.3rem 0.45rem; }
+.topbar-theme-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.3rem 0.45rem; }
 
 /* ===== Step Metadata Info Card ===== */
 .step-meta-card {
@@ -821,6 +826,70 @@ body {
 
 /* Dark mode override for hljs backgrounds */
 [data-theme="dark"] .hljs { background: var(--pre-bg) !important; color: var(--on-surface) !important; }
+
+/* ===== Phase Number Badges (Learning Phases 1–5) ===== */
+.phase-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5em; height: 1.5em; border-radius: 50%;
+  font-size: 0.72em; font-weight: 700; line-height: 1;
+  margin-right: 0.4em; vertical-align: middle;
+  flex-shrink: 0; font-style: normal;
+}
+.phase-badge--1 { background: #dbeafe; color: #1e40af; }
+.phase-badge--2 { background: #dcfce7; color: #065f46; }
+.phase-badge--3 { background: #fef3c7; color: #92400e; }
+.phase-badge--4 { background: #ffe4e6; color: #be123c; }
+.phase-badge--5 { background: #ede9fe; color: #4c1d95; }
+[data-theme="dark"] .phase-badge--1 { background: #1e3a5f; color: #93c5fd; }
+[data-theme="dark"] .phase-badge--2 { background: #14432a; color: #6ee7b7; }
+[data-theme="dark"] .phase-badge--3 { background: #44310a; color: #fde68a; }
+[data-theme="dark"] .phase-badge--4 { background: #4a1a2e; color: #fda4af; }
+[data-theme="dark"] .phase-badge--5 { background: #2a1555; color: #c4b5fd; }
+
+/* ===== Step Status Dots (Homepage step cards) ===== */
+.step-status {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 0.7em; height: 0.7em; border-radius: 50%;
+  vertical-align: middle; margin-right: 0.3em; flex-shrink: 0;
+}
+.step-status--done { background: #059669; }
+.step-status--active {
+  background: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-container);
+  animation: status-pulse 2s ease-in-out infinite;
+}
+.step-status--upcoming { background: transparent; border: 2px solid var(--on-surface-faint); }
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--primary-container); }
+  50%       { box-shadow: 0 0 0 4px var(--primary-container); }
+}
+
+/* ===== Phase Overview Blockquote ===== */
+.bq-phase-overview {
+  border-left-color: var(--primary);
+  border-left-width: 4px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+/* ===== Phase Section Tinting (Learning Phases 1–5) ===== */
+.phase-section {
+  border-radius: 10px;
+  margin: 1.5rem 0;
+  padding: 1rem 1rem 0.5rem;
+  border-left: 3px solid transparent;
+}
+.phase-section--1 { background: rgba(219,234,254,0.3);  border-left-color: rgba(37,99,235,0.3);  }
+.phase-section--2 { background: rgba(220,252,231,0.3);  border-left-color: rgba(5,150,105,0.3);  }
+.phase-section--3 { background: rgba(254,243,199,0.3);  border-left-color: rgba(217,119,6,0.3);  }
+.phase-section--4 { background: rgba(255,228,230,0.3);  border-left-color: rgba(244,63,94,0.3);  }
+.phase-section--5 { background: rgba(237,233,254,0.3);  border-left-color: rgba(124,58,237,0.3); }
+[data-theme="dark"] .phase-section--1 { background: rgba(30,58,95,0.25);  border-left-color: rgba(96,165,250,0.35);  }
+[data-theme="dark"] .phase-section--2 { background: rgba(20,67,42,0.25);  border-left-color: rgba(52,211,153,0.35);  }
+[data-theme="dark"] .phase-section--3 { background: rgba(68,49,10,0.25);  border-left-color: rgba(251,191,36,0.35);  }
+[data-theme="dark"] .phase-section--4 { background: rgba(74,26,46,0.25);  border-left-color: rgba(251,113,133,0.35); }
+[data-theme="dark"] .phase-section--5 { background: rgba(42,21,85,0.25);  border-left-color: rgba(167,139,250,0.35); }
+.phase-section > h2 { border-top: none; padding-top: 0; margin-top: 0; }
 
 </style>
 </head>
@@ -866,7 +935,7 @@ body {
         <button id="prev-btn" class="nav-btn" aria-label="Previous step">&larr; Prev</button>
         <button id="next-btn" class="nav-btn" aria-label="Next step">Next &rarr;</button>
       </div>
-      <button id="theme-toggle-top" class="icon-btn topbar-theme-btn" aria-label="Toggle theme">☀️</button>
+      <button id="theme-toggle-top" class="icon-btn topbar-theme-btn" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
     </header>
 
     <!-- TIMELINE BAR -->
@@ -1404,7 +1473,7 @@ function renderStep(stepId) {
     wrap.className = 'dl-cards';
     wrap.innerHTML = `
       <div class="dl-card dl-card--summary">
-        <div class="dl-card-title">📖 Study Summary</div>
+        <div class="dl-card-title">Study Summary</div>
         <div class="dl-card-desc">Detailed theoretical narrative covering key concepts and learning notes for the step</div>
         <div class="dl-btns">
           <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">🇬🇧</span> EN ↓</a>
@@ -1412,7 +1481,7 @@ function renderStep(stepId) {
         </div>
       </div>
       <div class="dl-card dl-card--report">
-        <div class="dl-card-title">📊 Implementation Report</div>
+        <div class="dl-card-title">Implementation Report</div>
         <div class="dl-card-desc">Implementation results, experiment graphs, metrics, and minimal commentary</div>
         <div class="dl-btns">
           <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">🇬🇧</span> EN ↓</a>
@@ -1460,8 +1529,10 @@ function renderStep(stepId) {
     }
   });
 
-  // Phase emoji icons (injected after IDs are set to avoid corrupting anchors)
-  addPhaseEmojis();
+  // Phase number badges + blockquote styling + section tinting (run after IDs are set)
+  addPhaseLabels();
+  styleSpecialBlockquotes();
+  wrapPhaseSections();
 
   // Smooth scroll for internal links
   contentEl.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -1526,7 +1597,7 @@ function renderStep(stepId) {
     if(visibleHeaders.length > 0) {
       // get the last one that passed the threshold
       const h = visibleHeaders[visibleHeaders.length - 1];
-      let txt = h.textContent.replace('▶', '').replace('▼', '').replace('Table of Contents', 'Overview').trim();
+      let txt = (h.dataset.sectionTitle || h.textContent).replace('▶', '').replace('▼', '').replace('Table of Contents', 'Overview').trim();
       
       let titleEl = document.getElementById('topbar-title');
       let stepMeta = window.STEP_META[window.currentStepIndex];
@@ -1633,7 +1704,7 @@ function buildSectionNav() {
     if (!h.id) h.id = 'section-' + i;
     const item = document.createElement('button');
     item.className = 'section-item' + (h.tagName === 'H3' ? ' indent' : '');
-    item.textContent = h.textContent;
+    item.textContent = h.dataset.sectionTitle || h.textContent;
     item.addEventListener('click', () => {
       h.scrollIntoView({ behavior: 'smooth', block: 'start' });
       closeSectionNav();
@@ -1868,10 +1939,14 @@ function buildStepSummaries() {
     const c = getPhaseColors(step.phase);
     const tier = getStepTier(step.num);
     const summary = extractStepSummary(step.id);
-    const icon = st === 'done' ? '&#x2705;' : st === 'active' ? '&#x1F535;' : '&#x2B1C;';
+    const icon = st === 'done'
+      ? '<span class="step-status step-status--done" title="Completed"></span>'
+      : st === 'active'
+      ? '<span class="step-status step-status--active" title="Active"></span>'
+      : '<span class="step-status step-status--upcoming" title="Upcoming"></span>';
     const hasReport = !!STEP_REPORTS[step.id];
     const reportFolder = STEP_REPORTS[step.id];
-    const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report & summary available">\uD83D\uDCD6</span>' : '';
+    const reportBadge = hasReport ? '<span class="sc-report-badge" title="Report &amp; summary available">PDF</span>' : '';
     const progress = getStepCheckboxCounts(step.id);
     const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
     const progressHtml = progress.total > 0
@@ -1879,11 +1954,11 @@ function buildStepSummaries() {
       : '';
     const dlHtml = reportFolder ? `
       <div class="sc-dl-row" onclick="event.stopPropagation()">
-        <span class="sc-dl-label">\uD83D\uDCD6 Summary:</span>
+        <span class="sc-dl-label">Summary:</span>
         <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
         <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
         <span class="sc-dl-sep">|</span>
-        <span class="sc-dl-label">\uD83D\uDCCA Report:</span>
+        <span class="sc-dl-label">Report:</span>
         <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
         <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
       </div>` : '';
@@ -1902,7 +1977,7 @@ function buildStepSummaries() {
 function navigateHome() {
   isHomepage = true;
   currentStepIndex = -1;
-  document.getElementById('topbar-title').textContent = '📚 RL Study Plan';
+  document.getElementById('topbar-title').textContent = 'RL Study Plan';
   document.getElementById('timeline-bar').style.display = 'none';
   document.getElementById('section-nav').style.display = 'none';
   updateNavButtons();
@@ -1936,11 +2011,14 @@ function updateReadingProgress() {
 }
 window.addEventListener('scroll', updateReadingProgress, { passive: true });
 
-/* ===== Topbar Theme Icon ===== */
+/* ===== Topbar Theme Icon (SVG sun/moon) ===== */
+const SUN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const MOON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
 function updateTopbarThemeIcon() {
   const btn = document.getElementById('theme-toggle-top');
   if (!btn) return;
-  btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '☀️';
+  btn.innerHTML = document.documentElement.getAttribute('data-theme') === 'dark' ? MOON_SVG : SUN_SVG;
 }
 
 /* ===== Code Block Copy Buttons ===== */
@@ -1970,18 +2048,62 @@ function addCopyButtons() {
   });
 }
 
-/* ===== Phase Emoji Icons ===== */
-const PHASE_EMOJIS = { 1: '💡', 2: '🔍', 3: '📖', 4: '🛠️', 5: '🔗' };
-function addPhaseEmojis() {
+/* ===== Phase Number Badges (replaces emoji icons — academic style) ===== */
+function addPhaseLabels() {
   const contentEl = document.getElementById('content');
   if (!contentEl) return;
   contentEl.querySelectorAll('h2').forEach(h => {
-    if (h.dataset.emojiAdded) return;
+    if (h.dataset.phaseLabelAdded) return;
     const m = h.textContent.trim().match(/^Phase (\d+)[:\s]/);
-    if (m && PHASE_EMOJIS[+m[1]]) {
-      h.prepend(PHASE_EMOJIS[+m[1]] + ' ');
-      h.dataset.emojiAdded = '1';
+    if (m) {
+      h.dataset.sectionTitle = h.textContent.trim(); // save clean title before DOM modification
+      const n = +m[1];
+      const badge = document.createElement('span');
+      badge.className = `phase-badge phase-badge--${n}`;
+      badge.setAttribute('aria-hidden', 'true');
+      badge.textContent = n;
+      h.insertBefore(badge, h.firstChild);
+      h.dataset.phaseLabelAdded = '1';
     }
+  });
+}
+
+/* ===== Special Blockquote Styling (Phase Overview) ===== */
+function styleSpecialBlockquotes() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  contentEl.querySelectorAll('blockquote').forEach(bq => {
+    const strong = bq.querySelector('strong');
+    if (!strong) return;
+    const label = strong.textContent.trim().replace(/:$/, '');
+    if (label === 'Phase Overview') bq.classList.add('bq-phase-overview');
+  });
+}
+
+/* ===== Phase Section Tinting (wraps Phase 1–5 content blocks) ===== */
+function wrapPhaseSections() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  const phaseH2s = Array.from(contentEl.querySelectorAll('h2')).filter(h =>
+    /^Phase \d+[:\s]/.test(h.textContent.trim()) || h.dataset.sectionTitle && /^Phase \d+[:\s]/.test(h.dataset.sectionTitle)
+  );
+  phaseH2s.forEach(h2 => {
+    if (h2.closest('.phase-section')) return;
+    const raw = h2.dataset.sectionTitle || h2.textContent;
+    const m = raw.trim().match(/^Phase (\d+)[:\s]/);
+    if (!m) return;
+    const n = +m[1];
+    const toMove = [h2];
+    let el = h2.nextSibling;
+    while (el) {
+      if (el.nodeType === 1 && /^H[12]$/.test(el.tagName)) break;
+      toMove.push(el);
+      el = el.nextSibling;
+    }
+    const wrapper = document.createElement('div');
+    wrapper.className = `phase-section phase-section--${n}`;
+    h2.parentNode.insertBefore(wrapper, h2);
+    toMove.forEach(node => wrapper.appendChild(node));
   });
 }
 
