@@ -437,8 +437,11 @@ body {
 @media (min-width: 768px) {
   .section-nav { bottom: 24px; right: 24px; }
 }
-@media (max-width: 767px) and (orientation: landscape) {
-  .section-nav { bottom: 58px; }
+/* On mobile: hide FAB, anchor dropdown above bottom bar, centered */
+@media (max-width: 767px) {
+  .section-fab { display: none !important; }
+  .section-nav { bottom: 56px; left: 50%; right: auto; transform: translateX(-50%); align-items: center; }
+  .section-dropdown { width: min(92vw, 320px); }
 }
 
 /* ===== Print ===== */
@@ -1102,3 +1105,89 @@ body {
 .cal-full-month .cal-dh  { font-size: 0.52rem; padding: 0.1rem 0; }
 @media (max-width: 900px)  { .cal-full-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 480px)  { .cal-full-grid { grid-template-columns: 1fr; } }
+
+/* ===== 6.1 — Mobile Bottom Bar Center Button ===== */
+.bottombar { justify-content: space-between; }
+.bottombar-center-btn {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--primary); color: var(--on-primary);
+  border: none; cursor: pointer; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-2);
+  transition: background 0.15s, transform 0.12s;
+}
+.bottombar-center-btn:hover { background: var(--primary-hover); }
+.bottombar-center-btn:active { transform: scale(0.9); }
+
+/* ===== 7.3 — Collapsible Planning Note ===== */
+.bq-planning { padding: 0; overflow: hidden; }
+.bq-planning-toggle {
+  width: 100%; padding: 0.5rem 1.1rem;
+  background: transparent; border: none;
+  color: inherit; font-size: 0.82rem; font-weight: 600;
+  text-align: left; cursor: pointer;
+  display: flex; align-items: center; gap: 0.35rem;
+  border-radius: 0 8px 0 0;
+  transition: background 0.12s;
+}
+.bq-planning-toggle:hover { background: rgba(0,0,0,0.06); }
+[data-theme="dark"] .bq-planning-toggle:hover { background: rgba(255,255,255,0.06); }
+.bq-planning-chevron {
+  font-size: 1.15rem; line-height: 1;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.bq-planning--open .bq-planning-chevron { transform: rotate(90deg); }
+.bq-planning-body { display: none; padding: 0 1.1rem 0.65rem; }
+.bq-planning--open .bq-planning-body { display: block; }
+
+/* ===== 7.5 — Per-Phase Checkpoint Cards ===== */
+.phase-checkpoint {
+  margin: 0.75rem 0 0;
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px; overflow: hidden;
+  background: var(--surface);
+  font-size: 0.82rem;
+}
+.phase-checkpoint-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.4rem 0.8rem;
+  background: var(--surface-dim);
+  border-bottom: 1px solid var(--outline-variant);
+}
+.phase-checkpoint-title {
+  font-weight: 700; font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--on-surface-medium);
+}
+.phase-checkpoint-count {
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--on-surface-faint);
+  font-variant-numeric: tabular-nums;
+}
+.phase-checkpoint-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.42rem 0.8rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--outline-variant);
+  transition: background 0.12s;
+}
+.phase-checkpoint-item:last-child { border-bottom: none; }
+.phase-checkpoint-item:hover { background: var(--surface-variant); }
+.phase-checkpoint-item input[type="checkbox"] { flex-shrink: 0; margin: 0; }
+.phase-checkpoint-item span { color: var(--on-surface-medium); line-height: 1.4; }
+/* Phase-tinted header strip */
+.phase-section--1 .phase-checkpoint-hdr { background: rgba(219,234,254,0.55); border-color: rgba(37,99,235,0.2); }
+.phase-section--2 .phase-checkpoint-hdr { background: rgba(220,252,231,0.55); border-color: rgba(5,150,105,0.2); }
+.phase-section--3 .phase-checkpoint-hdr { background: rgba(254,243,199,0.55); border-color: rgba(217,119,6,0.2); }
+.phase-section--4 .phase-checkpoint-hdr { background: rgba(255,228,230,0.55); border-color: rgba(244,63,94,0.2); }
+.phase-section--5 .phase-checkpoint-hdr { background: rgba(237,233,254,0.55); border-color: rgba(124,58,237,0.2); }
+[data-theme="dark"] .phase-section--1 .phase-checkpoint-hdr { background: rgba(30,58,95,0.45); }
+[data-theme="dark"] .phase-section--2 .phase-checkpoint-hdr { background: rgba(20,67,42,0.45); }
+[data-theme="dark"] .phase-section--3 .phase-checkpoint-hdr { background: rgba(68,49,10,0.45); }
+[data-theme="dark"] .phase-section--4 .phase-checkpoint-hdr { background: rgba(74,26,46,0.45); }
+[data-theme="dark"] .phase-section--5 .phase-checkpoint-hdr { background: rgba(42,21,85,0.45); }
+/* All-done state */
+.phase-checkpoint--done .phase-checkpoint-hdr { background: var(--phase-e-bg); border-color: var(--phase-e-border); }
+.phase-checkpoint--done .phase-checkpoint-title,
+.phase-checkpoint--done .phase-checkpoint-count { color: var(--phase-e-text); }

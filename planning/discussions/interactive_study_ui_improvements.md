@@ -234,10 +234,26 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 **Suggestion:** 
 - Style them as a collapsible "Planning Note" admonition so they don't dominate the top of the step
 
+**Done:** Rendered as a collapsed `Planning Note` toggle with a chevron. Body hidden by default; click to expand. Uses the amber bq-planning color.
+
 ### 7.4 Math equation formatting inconsistency
 **Problem:** Some steps use `$$...$$` for display math, others use `\[...\]`. Some inline math uses `$...$` (skipped by KaTeX config to avoid false positives), requiring `\(...\)` instead.
 
 **Suggestion:** Standardize on `$$...$$` for display and `\(...\)` for inline. Audit all steps. Consider enabling single `$` delimiters in KaTeX if false positive rate is low.
+
+### 7.5 No per-phase checkpoint milestones
+**Problem:** All existing checkboxes are end-of-step deliverables (knowledge gates, implementation gates). During a step that takes 10–21 days, there's nothing to check off day-to-day. The 5 learning phases (Intuition, Exploration, Reading, Implementation, Consolidation) each have their own natural completion signal, but it's currently invisible in the UI.
+
+**Suggestion:** Inject 2–3 lightweight checkpoints at the bottom of each phase section (auto-generated, not stored in the markdown). Examples:
+- Phase 1 (Intuition): "Watched / read all Intuition resources" / "Can explain the core concept in one sentence"
+- Phase 2 (Exploration): "Explored all listed tools and references" / "Identified 2–3 focus areas for Phase 3"
+- Phase 3 (Reading): "Completed all READ items" / "Can recall the key algorithm without notes"
+- Phase 4 (Implementation): "Code runs and produces expected output" / "Results pass sanity checks"
+- Phase 5 (Consolidation): "Summary / learning-log entry written" / "Can connect this step to the thesis"
+
+Stored in cloud with the `pchk_{stepId}_{phaseNum}_{idx}` key prefix. Count badge turns green when all done.
+
+**Done:** Checkpoint cards injected at bottom of each `.phase-section` div. Phase-tinted header strip, cloud-persisted, all-done state turns the header green.
 
 ---
 
@@ -299,11 +315,13 @@ This gives the card a proper human-readable title. Audit all 15 steps for consis
 | 4.3 | Full calendar view | Low | Medium | | ✅ Done |
 | 7.1 | YouTube link syntax audit | Low | Low | Yes (MD edit) | |
 | 7.2 | Standardize exit checklists | Medium | Medium | MD edit | |
+| 7.3 | Collapsible planning notes | Medium | Low | Yes | ✅ Done |
 | 7.4 | Math formatting audit | Low | Medium | MD edit | |
+| 7.5 | Per-phase checkpoint cards | High | Low | Yes | ✅ Done |
 | 9.1 | Lazy rendering / cache | Low | Low | Yes | |
 | 9.2 | Service worker | Low | Medium | | |
 | 3.6 | Inline figures/diagrams | High | High | | Deferred |
-| 6.1 | Richer mobile bottom bar | Low | Low | | |
+| 6.1 | Richer mobile bottom bar | Low | Low | | ✅ Done |
 | 6.2 | Simplified mobile timeline | Low | Medium | | |
 | 8.1 | Enhanced loading screen | Low | Low | | |
 | 8.3 | Richer print stylesheet | Low | Medium | | |

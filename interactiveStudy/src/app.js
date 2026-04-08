@@ -20,6 +20,30 @@ const STEP_META = [
 const PLAN_START = new Date(2026, 2, 9); // March 8, 2026 (0-based month)
 const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 
+/* ===== Per-Phase Checkpoint Texts (7.5) ===== */
+const PHASE_CHECKPOINTS = {
+  1: [
+    'Watched / read all Intuition resources',
+    'Can explain the core concept in one sentence',
+  ],
+  2: [
+    'Explored all listed tools and references for this phase',
+    'Identified 2–3 focus areas to dig deeper in Phase 3',
+  ],
+  3: [
+    'Completed all READ items in the reading guide',
+    'Can recall the key algorithm or result without notes',
+  ],
+  4: [
+    'Implementation runs and produces expected output',
+    'Results match the expected range or pass sanity checks',
+  ],
+  5: [
+    'Summary / learning-log entry written',
+    'Can explain how this step connects to the thesis',
+  ],
+};
+
 /* ===== Report Availability (stepId → reports folder name) ===== */
 const STEP_REPORTS = { step_01: 'step01', step_02: 'step02' };
 const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
@@ -376,7 +400,7 @@ function getStepCheckboxCounts(stepId) {
 function setupCheckboxes() {
   const contentEl = document.getElementById('content');
   const stepId = STEP_META[currentStepIndex].id;
-  const checkboxes = contentEl.querySelectorAll('input[type="checkbox"]');
+  const checkboxes = contentEl.querySelectorAll('input[type="checkbox"]:not([data-pchk])');
   checkboxes.forEach((cb, idx) => {
     cb.disabled = false;
     cb.removeAttribute('disabled');
@@ -581,6 +605,7 @@ function renderStep(stepId) {
   addPhaseLabels();
   styleSpecialBlockquotes();
   wrapPhaseSections();
+  injectPhaseCheckpoints();
 
   // Smooth scroll for internal links
   contentEl.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -686,6 +711,9 @@ function renderStep(stepId) {
 
   // Checkbox persistence
   setupCheckboxes();
+
+  // Phase checkpoint persistence
+  setupPhaseCheckpoints();
 }
 
 /* ===== Navigation Logic ===== */
@@ -810,6 +838,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('next-btn-bottom').addEventListener('click', goNext);
 
   document.getElementById('section-fab').addEventListener('click', toggleSectionNav);
+  document.getElementById('sections-btn-bottom').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSectionNav();
+  });
   document.addEventListener('click', (e) => {
     const nav = document.getElementById('section-nav');
     if (!nav.contains(e.target)) closeSectionNav();
@@ -1067,6 +1099,86 @@ function buildStepSummaries() {
 
   if (currentPhase !== null) html += '</div>';
   return html;
+}
+
+/* ===== Phase Checkpoint Injection (7.5) ===== */
+function injectPhaseCheckpoints() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl || currentStepIndex < 0) return;
+  const stepId = STEP_META[currentStepIndex].id;
+
+  contentEl.querySelectorAll('.phase-section').forEach(section => {
+    const m = section.className.match(/phase-section--(\d)/);
+    if (!m) return;
+    const n = +m[1];
+    const texts = PHASE_CHECKPOINTS[n];
+    if (!texts || !texts.length) return;
+    if (section.querySelector('.phase-checkpoint')) return; // guard against double-inject
+
+    const card = document.createElement('div');
+    card.className = 'phase-checkpoint';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'phase-checkpoint-hdr';
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'phase-checkpoint-title';
+    titleSpan.textContent = 'Phase ' + n + ' checkpoints';
+    const countSpan = document.createElement('span');
+    countSpan.className = 'phase-checkpoint-count';
+    countSpan.id = 'pchk-count-' + stepId + '-' + n;
+    countSpan.textContent = '0/' + texts.length;
+    hdr.appendChild(titleSpan);
+    hdr.appendChild(countSpan);
+    card.appendChild(hdr);
+
+    texts.forEach((text, idx) => {
+      const key = 'pchk_' + stepId + '_' + n + '_' + idx;
+      const labelEl = document.createElement('label');
+      labelEl.className = 'phase-checkpoint-item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.setAttribute('data-pchk', key);
+      cb.removeAttribute('disabled');
+      const span = document.createElement('span');
+      span.textContent = text;
+      labelEl.appendChild(cb);
+      labelEl.appendChild(span);
+      card.appendChild(labelEl);
+    });
+
+    section.appendChild(card);
+  });
+}
+
+function setupPhaseCheckpoints() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+
+  contentEl.querySelectorAll('input[data-pchk]').forEach(cb => {
+    const key = cb.getAttribute('data-pchk');
+    if (cloudData.checkboxes[key] === '1') cb.checked = true;
+    _updatePchkCount(cb);
+    cb.addEventListener('change', () => {
+      cloudData.checkboxes[key] = cb.checked ? '1' : '0';
+      syncToCloud();
+      _updatePchkCount(cb);
+    });
+  });
+}
+
+function _updatePchkCount(cb) {
+  const key = cb.getAttribute('data-pchk');
+  // key: pchk_{stepId}_{phaseNum}_{idx}
+  const m = key.match(/^pchk_(.+)_(\d+)_\d+$/);
+  if (!m) return;
+  const countEl = document.getElementById('pchk-count-' + m[1] + '-' + m[2]);
+  if (!countEl) return;
+  const card = cb.closest('.phase-checkpoint');
+  if (!card) return;
+  const all = card.querySelectorAll('input[data-pchk]');
+  const done = Array.from(all).filter(c => c.checked).length;
+  countEl.textContent = done + '/' + all.length;
+  card.classList.toggle('phase-checkpoint--done', done === all.length && all.length > 0);
 }
 
 /* ===== Homepage Hero Section (4.1) ===== */
@@ -1350,6 +1462,21 @@ function styleSpecialBlockquotes() {
       bq.classList.add('bq-phase-overview');
     } else if (label === 'Know-How First compression') {
       bq.classList.add('bq-planning');
+      if (!bq.querySelector('.bq-planning-toggle')) {
+        const body = document.createElement('div');
+        body.className = 'bq-planning-body';
+        while (bq.firstChild) body.appendChild(bq.firstChild);
+        const toggle = document.createElement('button');
+        toggle.className = 'bq-planning-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.innerHTML = '<span class="bq-planning-chevron" aria-hidden="true">›</span> Planning Note';
+        toggle.addEventListener('click', () => {
+          const open = bq.classList.toggle('bq-planning--open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        bq.appendChild(toggle);
+        bq.appendChild(body);
+      }
     } else if (/^\[P\d/.test(label)) {
       bq.classList.add('bq-plan-decision');
     } else if (label === 'Why this section exists' || label === 'Before the papers') {
