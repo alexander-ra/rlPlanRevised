@@ -179,6 +179,7 @@ function initTheme() {
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   try { localStorage.setItem('theme', theme); } catch(e) {}
+  updateTopbarThemeIcon();
 }
 
 function toggleTheme() {
@@ -473,8 +474,12 @@ function renderStep(stepId) {
     breaks: false,
   });
 
+  // Pre-process: extract and strip metadata block before parsing
+  const stepMeta = STEP_META[currentStepIndex];
+  const { cleanMd, metaFields, freshnessLines: metaFreshLines } = extractAndStripMeta(md);
+
   // Parse markdown to HTML
-  const html = marked.parse(md);
+  const html = marked.parse(cleanMd);
 
   // Insert into DOM
   const contentEl = document.getElementById('content');
@@ -503,6 +508,14 @@ function renderStep(stepId) {
         </div>
       </div>`;
     contentEl.insertBefore(wrap, contentEl.firstChild);
+  }
+
+  // Step metadata info card
+  if (metaFields && Object.keys(metaFields).length > 0) {
+    const metaCard = buildMetaCard(metaFields, metaFreshLines, stepMeta);
+    const h1 = contentEl.querySelector('h1');
+    if (h1) h1.insertAdjacentElement('afterend', metaCard);
+    else contentEl.insertBefore(metaCard, contentEl.firstChild);
   }
 
   // Syntax-highlight code blocks
@@ -534,6 +547,9 @@ function renderStep(stepId) {
       h.id = anchor;
     }
   });
+
+  // Phase emoji icons (injected after IDs are set to avoid corrupting anchors)
+  addPhaseEmojis();
 
   // Smooth scroll for internal links
   contentEl.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -634,6 +650,12 @@ function renderStep(stepId) {
 
   // YouTube thumbnails
   embedYouTubeThumbnails();
+
+  // Copy buttons for code blocks
+  addCopyButtons();
+
+  // Reset reading progress to top
+  updateReadingProgress();
 
   // Checkbox persistence
   setupCheckboxes();
@@ -757,7 +779,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initScheduleAdjust();
   document.getElementById('sched-minus').addEventListener('click', () => adjustSchedule(-1));
   document.getElementById('sched-plus').addEventListener('click', () => adjustSchedule(1));
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+  document.getElementById('theme-toggle-top').addEventListener('click', toggleTheme);
 
   // Determine initial view: hash > homepage
   const hash = window.location.hash.replace('#', '');
@@ -987,5 +1009,111 @@ function navigateHome() {
       <div class="sc-list">${buildStepSummaries()}</div>
     </div>`;
   window.scrollTo(0, 0);
+  updateReadingProgress();
   closeSidebar();
+}
+
+/* ===== Reading Progress Bar ===== */
+function updateReadingProgress() {
+  const fill = document.getElementById('reading-progress-fill');
+  if (!fill) return;
+  if (isHomepage) { fill.style.width = '0'; return; }
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  fill.style.width = (docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0) + '%';
+}
+window.addEventListener('scroll', updateReadingProgress, { passive: true });
+
+/* ===== Topbar Theme Icon ===== */
+function updateTopbarThemeIcon() {
+  const btn = document.getElementById('theme-toggle-top');
+  if (!btn) return;
+  btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '☀️';
+}
+
+/* ===== Code Block Copy Buttons ===== */
+function addCopyButtons() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  contentEl.querySelectorAll('pre').forEach(pre => {
+    if (pre.querySelector('.copy-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => {
+        btn.textContent = 'Failed';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.style.position = 'relative';
+    pre.appendChild(btn);
+  });
+}
+
+/* ===== Phase Emoji Icons ===== */
+const PHASE_EMOJIS = { 1: '💡', 2: '🔍', 3: '📖', 4: '🛠️', 5: '🔗' };
+function addPhaseEmojis() {
+  const contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  contentEl.querySelectorAll('h2').forEach(h => {
+    if (h.dataset.emojiAdded) return;
+    const m = h.textContent.trim().match(/^Phase (\d+)[:\s]/);
+    if (m && PHASE_EMOJIS[+m[1]]) {
+      h.prepend(PHASE_EMOJIS[+m[1]] + ' ');
+      h.dataset.emojiAdded = '1';
+    }
+  });
+}
+
+/* ===== Step Metadata Card ===== */
+function extractAndStripMeta(md) {
+  const lines = md.split('\n');
+  let h1Seen = false, foundAny = false;
+  const toStrip = new Set();
+  const metaFields = {};
+
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (!h1Seen) { if (l.startsWith('# ')) h1Seen = true; continue; }
+    if (l.trim() === '---') break; // stop at first content separator
+    const m = l.match(/^\*\*([^*:]+):\*\*\s*(.*)/);
+    if (m) {
+      const key = m[1].trim();
+      const val = m[2].replace(/\s{2,}$/, '').trim();
+      if (['Duration', 'Dependencies', 'Phase'].includes(key)) {
+        metaFields[key] = val; toStrip.add(i); foundAny = true;
+      }
+    }
+  }
+
+  if (!foundAny) return { cleanMd: md, metaFields: null, freshnessLines: [] };
+  const cleanMd = lines.filter((_, i) => !toStrip.has(i)).join('\n');
+  return { cleanMd, metaFields, freshnessLines: [] };
+}
+
+function buildMetaCard(metaFields, _freshnessLines, stepMeta) {
+  const c = getPhaseColors(stepMeta.phase);
+  const card = document.createElement('div');
+  card.className = 'step-meta-card';
+  card.style.borderLeftColor = c.border;
+
+  for (const [key, val] of Object.entries(metaFields)) {
+    const k = document.createElement('span');
+    k.className = 'step-meta-key';
+    k.textContent = key + ':';
+    card.appendChild(k);
+    const v = document.createElement('span');
+    v.className = 'step-meta-val';
+    v.textContent = val;
+    card.appendChild(v);
+  }
+  return card;
 }

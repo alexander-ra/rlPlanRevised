@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(systemctl is-active:*)",
+      "Bash(ip route:*)",
+      "Bash(node:*)"
+    ]
+  }
+}

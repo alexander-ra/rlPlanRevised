@@ -32,6 +32,9 @@
   <!-- INLINE_CSS -->
 </head>
 <body>
+  <!-- READING PROGRESS BAR -->
+  <div id="reading-progress" class="reading-progress"><div id="reading-progress-fill" class="reading-progress-fill"></div></div>
+
   <!-- LOADING OVERLAY -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-spinner"></div>
@@ -57,10 +60,6 @@
         <span id="sched-value" class="sched-value">0/0</span>
         <button id="sched-plus" class="sched-btn" aria-label="Add day">+</button>
       </div>
-      <div class="theme-toggle-row">
-        <span class="theme-toggle-label">Theme</span>
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme"></button>
-      </div>
     </div>
   </nav>
 
@@ -74,6 +73,7 @@
         <button id="prev-btn" class="nav-btn" aria-label="Previous step">&larr; Prev</button>
         <button id="next-btn" class="nav-btn" aria-label="Next step">Next &rarr;</button>
       </div>
+      <button id="theme-toggle-top" class="icon-btn topbar-theme-btn" aria-label="Toggle theme">☀️</button>
     </header>
 
     <!-- TIMELINE BAR -->

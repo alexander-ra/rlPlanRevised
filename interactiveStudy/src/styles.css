@@ -557,38 +557,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Theme toggle row */
-.theme-toggle-row {
-  display: flex; align-items: center; gap: 0.5rem;
-}
-.theme-toggle-label {
-  font-size: 0.72rem; color: var(--sidebar-text-dim);
-  text-transform: uppercase; letter-spacing: 0.06em;
-  flex: 1;
-}
-.theme-toggle-btn {
-  width: 48px; height: 26px; border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  cursor: pointer; position: relative;
-  transition: background 0.25s;
-  padding: 0;
-}
-.theme-toggle-btn::after {
-  content: '☀️';
-  position: absolute; top: 2px; left: 3px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.65rem; line-height: 1;
-  transition: transform 0.25s ease, background 0.25s;
-}
-[data-theme="dark"] .theme-toggle-btn { background: rgba(165,153,255,0.25); border-color: rgba(165,153,255,0.4); }
-[data-theme="dark"] .theme-toggle-btn::after {
-  content: '🌙';
-  transform: translateX(21px);
-  background: #2a2a3a;
-}
+
 
 /* ===== Report Badge (Sidebar) ===== */
 .report-badge {
@@ -762,6 +731,56 @@ body {
   .cal-legend { gap: 0.35rem 0.6rem; }
   .cal-legend-item { font-size: 0.58rem; }
 }
+
+/* ===== Reading Progress Bar ===== */
+.reading-progress {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 3px; background: transparent; pointer-events: none;
+}
+@media (min-width: 768px) {
+  .reading-progress { left: 280px; }
+}
+.reading-progress-fill {
+  height: 100%; width: 0;
+  background: var(--primary);
+  transition: width 0.1s linear;
+}
+
+/* ===== Copy Button (code blocks) ===== */
+.copy-btn {
+  position: absolute; top: 0.4rem; right: 0.4rem;
+  padding: 0.18rem 0.5rem;
+  font-size: 0.72rem; font-weight: 500; font-family: inherit;
+  background: var(--surface-variant); color: var(--on-surface-low);
+  border: 1px solid var(--outline-variant); border-radius: 5px;
+  cursor: pointer; opacity: 0; line-height: 1.3;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+}
+.content pre:hover .copy-btn, .copy-btn:focus { opacity: 1; }
+.copy-btn.copied {
+  background: var(--phase-e-bg); color: var(--phase-e-text);
+  border-color: var(--phase-e-border); opacity: 1;
+}
+
+/* ===== Topbar Theme Button ===== */
+.topbar-theme-btn { font-size: 1rem; padding: 0.3rem 0.45rem; }
+
+/* ===== Step Metadata Info Card ===== */
+.step-meta-card {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.75rem;
+  background: var(--surface); border: 1px solid var(--outline-variant);
+  border-left: 4px solid var(--primary);
+  border-radius: 10px; padding: 0.75rem 1rem;
+  margin: 0.75rem 0 1.25rem;
+  box-shadow: var(--shadow-1);
+  font-size: 0.83rem;
+}
+.step-meta-key {
+  font-weight: 600; color: var(--on-surface-medium);
+  white-space: nowrap; padding: 0.05rem 0;
+}
+.step-meta-val { color: var(--on-surface); padding: 0.05rem 0; }
 
 /* ===== hljs theme toggling (managed by JS) ===== */
 .hljs-dark { display: none; }
