@@ -105,21 +105,22 @@ function navigateTo(stepId) {
 }
 
 function goNext() {
+  if (isHomepage) { navigateTo(STEP_META[0].id); return; }
   if (currentStepIndex < STEP_META.length - 1) {
     navigateTo(STEP_META[currentStepIndex + 1].id);
   }
 }
 
 function goPrev() {
+  if (currentStepIndex === 0) { navigateHome(); return; }
   if (currentStepIndex > 0) {
     navigateTo(STEP_META[currentStepIndex - 1].id);
   }
 }
 
 function updateNavButtons() {
-  const atStart = isHomepage || currentStepIndex <= 0;
-  const atEnd = isHomepage || currentStepIndex === STEP_META.length - 1;
-  document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = atStart);
+  const atEnd = !isHomepage && currentStepIndex === STEP_META.length - 1;
+  document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = isHomepage);
   document.querySelectorAll('[id^="next-btn"]').forEach(b => b.disabled = atEnd);
 }
 
