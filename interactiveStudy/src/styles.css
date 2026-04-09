@@ -860,6 +860,50 @@ body {
 [data-theme="dark"] .lang-btn:hover { background: rgba(255,255,255,0.1); }
 [data-theme="dark"] .lang-btn.active { background: rgba(255,255,255,0.1); }
 
+/* ===== Homepage Intro Text ===== */
+.hp-intro-text {
+  padding: 0.25rem 1rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--on-surface-medium);
+}
+.hp-intro-text h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--on-surface);
+  margin: 1.25rem 0 0.4rem;
+}
+.hp-intro-text p { margin: 0 0 0.65rem; }
+.hp-intro-text p:last-child { margin-bottom: 0; }
+.hp-intro-text strong { color: var(--on-surface); font-weight: 600; }
+.hp-intro-text em { font-style: italic; }
+.hp-intro-text sup { font-size: 0.68em; vertical-align: super; }
+.hp-intro-text a { color: var(--primary); text-decoration: none; }
+.hp-intro-text a:hover { text-decoration: underline; }
+.hp-intro-text--after { margin-top: 0.75rem; }
+@media (min-width: 768px) {
+  .hp-intro-text { padding: 0.25rem 1.5rem 0.5rem; }
+}
+
+/* ===== Interleaved Phase Blocks ===== */
+.hp-phases-interleaved { padding: 0; }
+.hp-phase-block { margin-bottom: 1.25rem; }
+.hp-phase-desc {
+  padding: 0.65rem 1rem;
+  margin: 0 0 0.5rem;
+  background: var(--surface-variant);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.hp-phase-desc p { margin: 0; color: var(--on-surface-medium); }
+.hp-phase-desc strong { color: var(--on-surface); font-weight: 600; }
+.hp-phase-desc em { font-style: italic; color: var(--on-surface-low); }
+@media (min-width: 768px) {
+  .hp-phases-interleaved { padding: 0 0.25rem; }
+}
+
 /* ===== Lock Mode ===== */
 /* Unlocked state: green tint so it's obvious */
 .section-fab.fab-unlocked { color: #16a34a; }

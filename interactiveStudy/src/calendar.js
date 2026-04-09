@@ -166,59 +166,105 @@ function buildCalendarLegend() {
   return `<div class="cal-legend">${items}</div>`;
 }
 
-/* ===== Step Summary Cards ===== */
+/* ===== Step Card (shared helper) ===== */
+function buildStepCard(step, i) {
+  const rng = getStepDateRange(i);
+  const st = getStepStatus(i);
+  const c = getPhaseColors(step.phase);
+  const tier = getStepTier(step.num);
+  const summary = extractStepSummary(step.id);
+  const icon = st === 'done'
+    ? `<span class="step-status step-status--done" title="${t('status_completed')}"></span>`
+    : st === 'active'
+    ? `<span class="step-status step-status--active" title="${t('status_active')}"></span>`
+    : `<span class="step-status step-status--upcoming" title="${t('status_upcoming')}"></span>`;
+  const hasReport = !!STEP_REPORTS[step.id];
+  const reportFolder = STEP_REPORTS[step.id];
+  const reportBadge = hasReport ? `<span class="sc-report-badge" title="${t('report_badge_title')}">PDF</span>` : '';
+  const progress = getStepCheckboxCounts(step.id);
+  const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
+  const progressHtml = progress.total > 0
+    ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
+    : '';
+  const dlHtml = reportFolder ? `
+    <div class="sc-dl-row" onclick="event.stopPropagation()">
+      <span class="sc-dl-label">${t('sc_summary_label')}</span>
+      <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
+      <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
+      <span class="sc-dl-sep">|</span>
+      <span class="sc-dl-label">${t('sc_report_label')}</span>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
+      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
+    </div>` : '';
+  return `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
+    <div class="sc-top"><span class="sc-num">${icon} ${t('step_prefix')} ${step.num}</span><span class="sc-badges">${reportBadge}</span></div>
+    <div class="sc-title">${getStepTitle(step)}</div>
+    <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}${t('days_suffix')} \u00b7 ${tier}</span></div>
+    ${progressHtml}
+    ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
+    ${dlHtml}
+  </div>`;
+}
+
+/* ===== Step Summary Cards (grouped by phase, used elsewhere if needed) ===== */
 function buildStepSummaries() {
-  let html = '';
-  let currentPhase = null;
-
+  let html = '', currentPhase = null;
   STEP_META.forEach((step, i) => {
-    const rng = getStepDateRange(i);
-    const st = getStepStatus(i);
     const c = getPhaseColors(step.phase);
-    const tier = getStepTier(step.num);
-    const summary = extractStepSummary(step.id);
-    const icon = st === 'done'
-      ? `<span class="step-status step-status--done" title="${t('status_completed')}"></span>`
-      : st === 'active'
-      ? `<span class="step-status step-status--active" title="${t('status_active')}"></span>`
-      : `<span class="step-status step-status--upcoming" title="${t('status_upcoming')}"></span>`;
-    const hasReport = !!STEP_REPORTS[step.id];
-    const reportFolder = STEP_REPORTS[step.id];
-    const reportBadge = hasReport ? `<span class="sc-report-badge" title="${t('report_badge_title')}">PDF</span>` : '';
-    const progress = getStepCheckboxCounts(step.id);
-    const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
-    const progressHtml = progress.total > 0
-      ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
-      : '';
-    const dlHtml = reportFolder ? `
-      <div class="sc-dl-row" onclick="event.stopPropagation()">
-        <span class="sc-dl-label">${t('sc_summary_label')}</span>
-        <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
-        <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
-        <span class="sc-dl-sep">|</span>
-        <span class="sc-dl-label">${t('sc_report_label')}</span>
-        <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
-        <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
-      </div>` : '';
-
     if (step.phase !== currentPhase) {
       if (currentPhase !== null) html += '</div>';
       currentPhase = step.phase;
       html += `<div class="sc-phase-group"><div class="sc-phase-header" style="border-bottom-color:${c.border}"><span class="sc-phase-badge" style="background:${c.bg};color:${c.text};border-color:${c.border}">${step.phase}</span><span class="sc-phase-name">${getPhaseLabel(step.phase)}</span></div>`;
     }
-
-    html += `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
-      <div class="sc-top"><span class="sc-num">${icon} ${t('step_prefix')} ${step.num}</span><span class="sc-badges">${reportBadge}</span></div>
-      <div class="sc-title">${getStepTitle(step)}</div>
-      <div class="sc-meta"><span>${formatDayShort(rng.start)} \u2013 ${formatDayShort(rng.end)}</span><span>${step.days}${t('days_suffix')} \u00b7 ${tier}</span></div>
-      ${progressHtml}
-      ${summary ? `<div class="sc-desc">${summary}</div>` : ''}
-      ${dlHtml}
-    </div>`;
+    html += buildStepCard(step, i);
   });
-
   if (currentPhase !== null) html += '</div>';
   return html;
+}
+
+/* ===== Steps for one phase (no phase header — intro text provides context) ===== */
+function buildPhaseSteps(phaseKey) {
+  let html = '';
+  STEP_META.forEach((step, i) => {
+    if (step.phase === phaseKey) html += buildStepCard(step, i);
+  });
+  return html;
+}
+
+/* ===== Intro MD helpers ===== */
+function mdToHtmlForIntro(md) {
+  if (!md || !md.trim()) return '';
+  // Convert ^N^ superscript notation to HTML (glossary refs)
+  const processed = md.replace(/\^(\w+)\^/g, '<sup>$1</sup>');
+  return marked.parse(processed);
+}
+
+function parseIntroSections(md) {
+  const lines = md.split('\n');
+  const before = [], phases = [], after = [];
+  let state = 'header'; // header → before → phases → after
+
+  for (const line of lines) {
+    switch (state) {
+      case 'header':
+        // Skip document title block; start at first ### heading
+        if (line.startsWith('### ')) { state = 'before'; before.push(line); }
+        break;
+      case 'before':
+        if (/^- \*\*(?:Phase|Етап) [A-G]/.test(line)) { state = 'phases'; phases.push(line); }
+        else { before.push(line); }
+        break;
+      case 'phases':
+        if (/^- \*\*(?:Phase|Етап) [A-G]/.test(line)) { phases.push(line); }
+        else if (line.trim() !== '') { state = 'after'; after.push(line); }
+        // blank lines after phase list are skipped (transition separator)
+        break;
+      default:
+        after.push(line);
+    }
+  }
+
+  return { before: before.join('\n').trim(), phases, after: after.join('\n').trim() };
 }
 
 /* ===== Hero Section ===== */
@@ -344,16 +390,31 @@ function navigateHome() {
     updateActiveNav();
     history.replaceState(null, '', '#home');
 
-    contentEl.innerHTML =
-      `<div class="hp">
-        ${buildHeroSection()}
-        <h2 class="hp-sec">${t('overall_progress')}</h2>
-        ${buildProgressViz()}
-        <h2 class="hp-sec">${t('timeline_label')}</h2>
-        ${buildCalendar()}
-        <h2 class="hp-sec">${t('steps_label')}</h2>
-        <div class="sc-list">${buildStepSummaries()}</div>
+    const { before, phases, after } = parseIntroSections(
+      currentLang === 'bg' ? INTRO_MD_BG : INTRO_MD_EN
+    );
+
+    // Build phase blocks: each phase bullet from the intro + its step cards
+    const phaseBlocksHtml = PHASE_ORDER.map((phaseKey, i) => {
+      const phaseLine = phases[i];
+      if (!phaseLine) return '';
+      const c = getPhaseColors(phaseKey);
+      const phaseHtml = mdToHtmlForIntro(phaseLine.replace(/^-\s+/, ''));
+      return `<div class="hp-phase-block">
+        <div class="hp-phase-desc" style="border-left-color:${c.border}">${phaseHtml}</div>
+        <div class="sc-list">${buildPhaseSteps(phaseKey)}</div>
       </div>`;
+    }).join('');
+
+    contentEl.innerHTML = `<div class="hp">
+      ${buildHeroSection()}
+      <div class="hp-intro-text">${mdToHtmlForIntro(before)}</div>
+      ${buildProgressViz()}
+      <div class="hp-phases-interleaved">${phaseBlocksHtml}</div>
+      <div class="hp-intro-text hp-intro-text--after">${mdToHtmlForIntro(after)}</div>
+      <h2 class="hp-sec">${t('timeline_label')}</h2>
+      ${buildCalendar()}
+    </div>`;
     window.scrollTo(0, 0);
     updateReadingProgress();
     closeSidebar();

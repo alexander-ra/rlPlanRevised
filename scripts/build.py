@@ -21,6 +21,8 @@ SRC_DIR           = REPO_ROOT / "interactiveStudy" / "src"
 DIST_DIR          = REPO_ROOT / "docs"    # served by GitHub Pages
 RAW_STEPS_DIR_EN  = REPO_ROOT / "planning" / "rawSteps"
 RAW_STEPS_DIR_BG  = REPO_ROOT / "planning" / "rawStepsBg"
+INTRO_MD_EN       = REPO_ROOT / "deliverables" / "studyPlan" / "en" / "01_introduction.md"
+INTRO_MD_BG       = REPO_ROOT / "deliverables" / "studyPlan" / "bg" / "01_introduction.md"
 
 # Step file list (order matters)
 STEP_FILES = [
@@ -103,17 +105,31 @@ def read_translations() -> dict:
     return translations
 
 
-def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict) -> str:
+def read_intro_md() -> tuple[str, str]:
+    """Read bilingual intro markdown files."""
+    en = INTRO_MD_EN.read_text(encoding="utf-8") if INTRO_MD_EN.exists() else ""
+    bg = INTRO_MD_BG.read_text(encoding="utf-8") if INTRO_MD_BG.exists() else ""
+    if not en:
+        print(f"WARNING: Intro EN not found: {INTRO_MD_EN}", file=sys.stderr)
+    if not bg:
+        print(f"WARNING: Intro BG not found: {INTRO_MD_BG}", file=sys.stderr)
+    return en, bg
+
+
+def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
+                             intro_en: str, intro_bg: str) -> str:
     """Generate a <script> block embedding EN/BG content and translations."""
     def dict_to_js(d: dict, var_name: str) -> str:
         pairs = [f"  {json.dumps(k)}: {json.dumps(v)}" for k, v in d.items()]
         return f"const {var_name} = {{\n" + ",\n".join(pairs) + "\n};"
 
-    en_js    = dict_to_js(steps_en, "STEPS_CONTENT_EN")
-    bg_js    = dict_to_js(steps_bg, "STEPS_CONTENT_BG")
-    trans_js = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
+    en_js       = dict_to_js(steps_en, "STEPS_CONTENT_EN")
+    bg_js       = dict_to_js(steps_bg, "STEPS_CONTENT_BG")
+    trans_js    = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
+    intro_en_js = f"const INTRO_MD_EN = {json.dumps(intro_en)};"
+    intro_bg_js = f"const INTRO_MD_BG = {json.dumps(intro_bg)};"
 
-    return f"<script>\n{en_js}\n\n{bg_js}\n\n{trans_js}\n</script>"
+    return f"<script>\n{en_js}\n\n{bg_js}\n\n{trans_js}\n\n{intro_en_js}\n{intro_bg_js}\n</script>"
 
 
 def write_service_worker(dist_dir: Path) -> None:
@@ -171,8 +187,11 @@ def build():
     # Read translations
     translations = read_translations()
 
+    # Read bilingual intro markdown
+    intro_en, intro_bg = read_intro_md()
+
     # Generate combined content + translations script
-    content_script = generate_content_script(steps_en, steps_bg, translations)
+    content_script = generate_content_script(steps_en, steps_bg, translations, intro_en, intro_bg)
 
     # Replace placeholders
     output = shell_html
