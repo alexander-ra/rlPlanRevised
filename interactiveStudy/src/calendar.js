@@ -235,7 +235,10 @@ function buildPhaseSteps(phaseKey) {
 function mdToHtmlForIntro(md) {
   if (!md || !md.trim()) return '';
   // Convert ^N^ superscript notation to HTML (glossary refs)
-  const processed = md.replace(/\^(\w+)\^/g, '<sup>$1</sup>');
+  // Strip numeric section prefixes from headings, e.g. "### 1.1 Title" → "### Title"
+  const processed = md
+    .replace(/\^(\w+)\^/g, '<sup>$1</sup>')
+    .replace(/^(#{1,6})\s+\d+\.\d+\s+/gm, '$1 ');
   return marked.parse(processed);
 }
 
@@ -289,17 +292,24 @@ function buildHeroSection() {
     ? `${t('step_prefix')} ${activeStepMeta.num}: ${getStepTitle(activeStepMeta)}`
     : (stepsCompleted === 15 ? t('all_complete') : t('not_started'));
 
-  const contributions = [
-    { id: 'C1', title: t('c1_title'), desc: t('c1_desc') },
-    { id: 'C2', title: t('c2_title'), desc: t('c2_desc') },
-    { id: 'C3', title: t('c3_title'), desc: t('c3_desc') },
+  const contribIcons = [
+    typeof CONTRIB_ONE_SVG !== 'undefined' ? CONTRIB_ONE_SVG : '',
+    typeof CONTRIB_TWO_SVG !== 'undefined' ? CONTRIB_TWO_SVG : '',
+    typeof CONTRIB_THREE_SVG !== 'undefined' ? CONTRIB_THREE_SVG : '',
   ];
-  const contribHtml = contributions.map(c =>
+  const contributions = [
+    { title: t('c1_title'), desc: t('c1_desc') },
+    { title: t('c2_title'), desc: t('c2_desc') },
+    { title: t('c3_title'), desc: t('c3_desc') },
+  ];
+  const contribHtml = contributions.map((c, i) =>
     `<div class="hp-contribution">
-      <span class="hp-contrib-id">${c.id}</span>
+      <div class="hp-contrib-icon">${contribIcons[i]}</div>
       <div><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
     </div>`
   ).join('');
+
+  const mainLogoHtml = typeof MAIN_LOGO_SVG !== 'undefined' ? MAIN_LOGO_SVG : '';
 
   return `<div class="hp-hero">
     <div class="hp-hero-main">
@@ -313,16 +323,7 @@ function buildHeroSection() {
           <div class="hp-stat hp-stat--current"><span class="hp-stat-val hp-stat-val--sm">${activeText}</span><span class="hp-stat-label">${t('current_step')}</span></div>
         </div>
       </div>
-      <div class="hp-hero-ring" aria-label="${stepsCompleted} ${t('of_15')} ${t('steps_completed_stat')}">
-        <svg viewBox="0 0 100 100" width="110" height="110" overflow="visible">
-          <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="9"/>
-          <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="9"
-            stroke-dasharray="${ringDash} ${circum}" stroke-linecap="round"
-            transform="rotate(-90 50 50)"/>
-          <text x="50" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="white">${stepsCompleted}</text>
-          <text x="50" y="62" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.65)">${t('of_15')}</text>
-        </svg>
-      </div>
+      <div class="hp-hero-logo" aria-hidden="true">${mainLogoHtml}</div>
     </div>
     <div class="hp-contributions">${contribHtml}</div>
   </div>`;
@@ -374,6 +375,51 @@ function buildProgressViz() {
   </div>`;
 }
 
+/* ===== Contribution Detail Cards ===== */
+function buildContributionDetailCards(afterMd) {
+  if (!afterMd || !afterMd.trim()) return '';
+
+  const icons = [
+    typeof CONTRIB_ONE_SVG   !== 'undefined' ? CONTRIB_ONE_SVG   : '',
+    typeof CONTRIB_TWO_SVG   !== 'undefined' ? CONTRIB_TWO_SVG   : '',
+    typeof CONTRIB_THREE_SVG !== 'undefined' ? CONTRIB_THREE_SVG : '',
+  ];
+
+  // Split on blank lines, separate contribution paragraphs from the rest
+  const paragraphs = afterMd.split(/\n\n+/);
+  const nonContribs = [];
+  const contribs = [];
+
+  for (const para of paragraphs) {
+    const trimmed = para.trim();
+    if (!trimmed) continue;
+    const m = trimmed.match(/^\*\*(?:Contribution|Принос)\s+(\d+)/);
+    if (m) {
+      contribs.push({ n: parseInt(m[1], 10), text: trimmed });
+    } else {
+      nonContribs.push(trimmed);
+    }
+  }
+
+  const cardsHtml = contribs.map(c => {
+    const icon = icons[c.n - 1] || '';
+    const bodyHtml = mdToHtmlForIntro(c.text);
+    return `<div class="hp-contrib-detail">
+      <div class="hp-contrib-detail-icon">${icon}</div>
+      <div class="hp-contrib-detail-body">${bodyHtml}</div>
+    </div>`;
+  }).join('');
+
+  const introHtml = nonContribs.length > 0
+    ? `<div class="hp-intro-card hp-intro-card--after">${mdToHtmlForIntro(nonContribs.join('\n\n'))}</div>`
+    : '';
+  const detailsHtml = contribs.length > 0
+    ? `<div class="hp-contrib-details">${cardsHtml}</div>`
+    : '';
+
+  return introHtml + detailsHtml;
+}
+
 /* ===== Homepage ===== */
 function navigateHome() {
   const contentEl = document.getElementById('content');
@@ -408,10 +454,10 @@ function navigateHome() {
 
     contentEl.innerHTML = `<div class="hp">
       ${buildHeroSection()}
-      <div class="hp-intro-text">${mdToHtmlForIntro(before)}</div>
+      <div class="hp-intro-card">${mdToHtmlForIntro(before)}</div>
       ${buildProgressViz()}
       <div class="hp-phases-interleaved">${phaseBlocksHtml}</div>
-      <div class="hp-intro-text hp-intro-text--after">${mdToHtmlForIntro(after)}</div>
+      ${buildContributionDetailCards(after)}
       <h2 class="hp-sec">${t('timeline_label')}</h2>
       ${buildCalendar()}
     </div>`;

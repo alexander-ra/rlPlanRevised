@@ -2,7 +2,7 @@
 // TRANSLATIONS is injected by build.py before this script runs
 
 let currentLang = (() => {
-  try { return localStorage.getItem('rl_lang') || 'en'; } catch(e) { return 'en'; }
+  try { return localStorage.getItem('rl_lang') || 'bg'; } catch(e) { return 'bg'; }
 })();
 
 function t(key, vars) {
