@@ -21,6 +21,7 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   applyTheme(next);
+  if (isCalendarPage) { navigateCalendar(); return; }
   if (isHomepage) navigateHome();
 }
 

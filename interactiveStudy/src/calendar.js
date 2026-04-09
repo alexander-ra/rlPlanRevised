@@ -45,12 +45,14 @@ function changeCalMonth(delta) {
   const minM = planStart.getMonth(), minY = planStart.getFullYear();
   if (calendarYear < minY || (calendarYear === minY && calendarMonth < minM)) { calendarYear = minY; calendarMonth = minM; }
   if (calendarYear > 2026 || (calendarYear === 2026 && calendarMonth > 9)) { calendarYear = 2026; calendarMonth = 9; }
+  if (isCalendarPage) { navigateCalendar(); return; }
   if (isHomepage) navigateHome();
 }
 window.changeCalMonth = changeCalMonth;
 
 window.toggleCalendarFull = function() {
   calendarFull = !calendarFull;
+  if (isCalendarPage) { navigateCalendar(); return; }
   if (isHomepage) navigateHome();
 };
 
@@ -468,6 +470,40 @@ function navigateHome() {
       ${buildProgressViz()}
       <div class="hp-phases-interleaved">${phaseBlocksHtml}</div>
       ${buildContributionDetailCards(after)}
+      <h2 class="hp-sec">${t('timeline_label')}</h2>
+      ${buildCalendar()}
+    </div>`;
+    window.scrollTo(0, 0);
+    updateReadingProgress();
+    closeSidebar();
+
+    contentEl.classList.add('content-enter');
+    contentEl.addEventListener('animationend', () => contentEl.classList.remove('content-enter'), { once: true });
+  };
+
+  contentEl.classList.add('content-exit');
+  setTimeout(() => { contentEl.classList.remove('content-exit'); doRender(); }, 150);
+}
+
+/* ===== Calendar Page ===== */
+function navigateCalendar() {
+  const contentEl = document.getElementById('content');
+
+  const doRender = () => {
+    isHomepage = false;
+    isCalendarPage = true;
+    currentStepIndex = -1;
+    document.getElementById('topbar-title').textContent = t('calendar_btn');
+    const sectionEl = document.getElementById('topbar-section');
+    if (sectionEl) sectionEl.textContent = '';
+    document.getElementById('timeline-bar').style.display = 'none';
+    updateNavButtons();
+    updateFab();
+    updateActiveNav();
+    history.replaceState(null, '', '#calendar');
+
+    contentEl.innerHTML = `<div class="hp">
+      ${buildProgressViz()}
       <h2 class="hp-sec">${t('timeline_label')}</h2>
       ${buildCalendar()}
     </div>`;

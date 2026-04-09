@@ -233,7 +233,7 @@ function renderStep(stepId) {
 
   // Section observer for topbar subtitle
   if (window.__sectionObserver) window.__sectionObserver.disconnect();
-  if (isHomepage || currentStepIndex < 0) return;
+  if (isHomepage || isCalendarPage || currentStepIndex < 0) return;
 
   const headers = Array.from(document.querySelectorAll('#content h1, #content h2'));
   const observer = new IntersectionObserver((entries) => {

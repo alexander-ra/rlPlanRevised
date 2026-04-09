@@ -53,7 +53,9 @@ function setLang(lang) {
   const navList = document.getElementById('nav-list');
   if (navList) { navList.innerHTML = ''; buildNav(); }
   // Re-render current view
-  if (isHomepage) {
+  if (isCalendarPage) {
+    navigateCalendar();
+  } else if (isHomepage) {
     navigateHome();
   } else if (currentStepIndex >= 0) {
     navigateTo(STEP_META[currentStepIndex].id);

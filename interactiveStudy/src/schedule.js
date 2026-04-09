@@ -28,7 +28,7 @@ function getMaxAdjust() {
 /* ===== Timeline Bar ===== */
 function renderTimeline() {
   const bar = document.getElementById('timeline-bar');
-  if (!bar || isHomepage) return;
+  if (!bar || isHomepage || isCalendarPage) return;
 
   const range = getStepDateRange(currentStepIndex);
   const windowBefore = 7;
@@ -93,7 +93,8 @@ function adjustSchedule(delta) {
   cloudData.scheduleAdjust = scheduleAdjust;
   syncToCloud();
   updateScheduleUI();
-  if (isHomepage) navigateHome();
+  if (isCalendarPage) navigateCalendar();
+  else if (isHomepage) navigateHome();
   else renderTimeline();
 }
 

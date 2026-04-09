@@ -1574,6 +1574,7 @@ const TRANSLATIONS = {
     "sched_remove_day": "Remove day",
     "sched_add_day": "Add day",
     "home_btn": "☂ Overview",
+    "calendar_btn": "📅 Calendar",
     "report_badge_title": "Report & summary available",
     "open_menu": "Open menu",
     "prev_btn": "← Prev",
@@ -1707,6 +1708,7 @@ const TRANSLATIONS = {
     "sched_remove_day": "Премахни ден",
     "sched_add_day": "Добави ден",
     "home_btn": "☂ Преглед",
+    "calendar_btn": "📅 Календар",
     "report_badge_title": "Наличен доклад и резюме",
     "open_menu": "Отвори менюто",
     "prev_btn": "← Назад",
@@ -1915,6 +1917,7 @@ function getPhaseColors(phase) {
 let currentStepIndex = 0;
 let scheduleAdjust = 0;
 let isHomepage = false;
+let isCalendarPage = false;
 let calendarMonth = new Date().getMonth();
 let calendarYear = new Date().getFullYear();
 let calendarFull = false;
@@ -1976,7 +1979,9 @@ function setLang(lang) {
   const navList = document.getElementById('nav-list');
   if (navList) { navList.innerHTML = ''; buildNav(); }
   // Re-render current view
-  if (isHomepage) {
+  if (isCalendarPage) {
+    navigateCalendar();
+  } else if (isHomepage) {
     navigateHome();
   } else if (currentStepIndex >= 0) {
     navigateTo(STEP_META[currentStepIndex].id);
@@ -2050,7 +2055,7 @@ function updateFab() {
   const btnBtm = document.getElementById('sections-btn-bottom');
   if (!fab) return;
 
-  if (isHomepage) {
+  if (isHomepage || isCalendarPage) {
     const icon  = isLocked ? LOCK_SVG : UNLOCK_SVG;
     const label = isLocked 
       ? (currentLang === 'bg' ? 'Заключи' : 'Lock')
@@ -2184,6 +2189,7 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   applyTheme(next);
+  if (isCalendarPage) { navigateCalendar(); return; }
   if (isHomepage) navigateHome();
 }
 
@@ -2225,7 +2231,7 @@ function getMaxAdjust() {
 /* ===== Timeline Bar ===== */
 function renderTimeline() {
   const bar = document.getElementById('timeline-bar');
-  if (!bar || isHomepage) return;
+  if (!bar || isHomepage || isCalendarPage) return;
 
   const range = getStepDateRange(currentStepIndex);
   const windowBefore = 7;
@@ -2290,7 +2296,8 @@ function adjustSchedule(delta) {
   cloudData.scheduleAdjust = scheduleAdjust;
   syncToCloud();
   updateScheduleUI();
-  if (isHomepage) navigateHome();
+  if (isCalendarPage) navigateCalendar();
+  else if (isHomepage) navigateHome();
   else renderTimeline();
 }
 
@@ -2936,7 +2943,7 @@ function renderStep(stepId) {
 
   // Section observer for topbar subtitle
   if (window.__sectionObserver) window.__sectionObserver.disconnect();
-  if (isHomepage || currentStepIndex < 0) return;
+  if (isHomepage || isCalendarPage || currentStepIndex < 0) return;
 
   const headers = Array.from(document.querySelectorAll('#content h1, #content h2'));
   const observer = new IntersectionObserver((entries) => {
@@ -3028,12 +3035,14 @@ function changeCalMonth(delta) {
   const minM = planStart.getMonth(), minY = planStart.getFullYear();
   if (calendarYear < minY || (calendarYear === minY && calendarMonth < minM)) { calendarYear = minY; calendarMonth = minM; }
   if (calendarYear > 2026 || (calendarYear === 2026 && calendarMonth > 9)) { calendarYear = 2026; calendarMonth = 9; }
+  if (isCalendarPage) { navigateCalendar(); return; }
   if (isHomepage) navigateHome();
 }
 window.changeCalMonth = changeCalMonth;
 
 window.toggleCalendarFull = function() {
   calendarFull = !calendarFull;
+  if (isCalendarPage) { navigateCalendar(); return; }
   if (isHomepage) navigateHome();
 };
 
@@ -3466,6 +3475,40 @@ function navigateHome() {
   setTimeout(() => { contentEl.classList.remove('content-exit'); doRender(); }, 150);
 }
 
+/* ===== Calendar Page ===== */
+function navigateCalendar() {
+  const contentEl = document.getElementById('content');
+
+  const doRender = () => {
+    isHomepage = false;
+    isCalendarPage = true;
+    currentStepIndex = -1;
+    document.getElementById('topbar-title').textContent = t('calendar_btn');
+    const sectionEl = document.getElementById('topbar-section');
+    if (sectionEl) sectionEl.textContent = '';
+    document.getElementById('timeline-bar').style.display = 'none';
+    updateNavButtons();
+    updateFab();
+    updateActiveNav();
+    history.replaceState(null, '', '#calendar');
+
+    contentEl.innerHTML = `<div class="hp">
+      ${buildProgressViz()}
+      <h2 class="hp-sec">${t('timeline_label')}</h2>
+      ${buildCalendar()}
+    </div>`;
+    window.scrollTo(0, 0);
+    updateReadingProgress();
+    closeSidebar();
+
+    contentEl.classList.add('content-enter');
+    contentEl.addEventListener('animationend', () => contentEl.classList.remove('content-enter'), { once: true });
+  };
+
+  contentEl.classList.add('content-exit');
+  setTimeout(() => { contentEl.classList.remove('content-exit'); doRender(); }, 150);
+}
+
 
 /* === nav.js === */
 /* ===== Sidebar Navigation Builder ===== */
@@ -3479,6 +3522,13 @@ function buildNav() {
   homeBtn.textContent = t('home_btn');
   homeBtn.addEventListener('click', () => navigateHome());
   navList.appendChild(homeBtn);
+
+  const calBtn = document.createElement('button');
+  calBtn.className = 'nav-item nav-calendar';
+  calBtn.dataset.step = 'calendar';
+  calBtn.textContent = t('calendar_btn');
+  calBtn.addEventListener('click', () => navigateCalendar());
+  navList.appendChild(calBtn);
 
   let currentPhase = null;
 
@@ -3530,7 +3580,7 @@ function updateNavProgress(stepId) {
 }
 
 function updateActiveNav() {
-  const activeId = isHomepage ? 'home' : STEP_META[currentStepIndex].id;
+  const activeId = isHomepage ? 'home' : isCalendarPage ? 'calendar' : STEP_META[currentStepIndex].id;
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.step === activeId);
   });
@@ -3539,11 +3589,13 @@ function updateActiveNav() {
 /* ===== Step Navigation ===== */
 function navigateTo(stepId) {
   if (stepId === 'home') { navigateHome(); return; }
+  if (stepId === 'calendar') { navigateCalendar(); return; }
 
   const contentEl = document.getElementById('content');
 
   const doRender = () => {
     isHomepage = false;
+    isCalendarPage = false;
     document.getElementById('timeline-bar').style.display = '';
     document.getElementById('section-nav').style.display = '';
     updateFab();
@@ -3575,7 +3627,7 @@ function navigateTo(stepId) {
 }
 
 function goNext() {
-  if (isHomepage) { navigateTo(STEP_META[0].id); return; }
+  if (isHomepage || isCalendarPage) { navigateTo(STEP_META[0].id); return; }
   if (currentStepIndex < STEP_META.length - 1) {
     navigateTo(STEP_META[currentStepIndex + 1].id);
   }
@@ -3589,8 +3641,8 @@ function goPrev() {
 }
 
 function updateNavButtons() {
-  const atEnd = !isHomepage && currentStepIndex === STEP_META.length - 1;
-  document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = isHomepage);
+  const atEnd = !isHomepage && !isCalendarPage && currentStepIndex === STEP_META.length - 1;
+  document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = isHomepage || isCalendarPage);
   document.querySelectorAll('[id^="next-btn"]').forEach(b => b.disabled = atEnd);
 }
 
@@ -3620,7 +3672,7 @@ function closeSidebar() {
 function updateReadingProgress() {
   const fill = document.getElementById('reading-progress-fill');
   if (!fill) return;
-  if (isHomepage) { fill.style.width = '0'; return; }
+  if (isHomepage || isCalendarPage) { fill.style.width = '0'; return; }
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   fill.style.width = (docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0) + '%';
@@ -3664,12 +3716,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Section jump / lock toggle (context-dependent)
   document.getElementById('section-fab').addEventListener('click', () => {
-    if (isHomepage) toggleLock();
+    if (isHomepage || isCalendarPage) toggleLock();
     else toggleSectionNav();
   });
   document.getElementById('sections-btn-bottom').addEventListener('click', (e) => {
     e.stopPropagation();
-    if (isHomepage) toggleLock();
+    if (isHomepage || isCalendarPage) toggleLock();
     else toggleSectionNav();
   });
   document.addEventListener('click', (e) => {
@@ -3691,7 +3743,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Initial view from URL hash
   const hash = window.location.hash.replace('#', '');
-  if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
+  if (hash === 'calendar') {
+    navigateCalendar();
+  } else if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
     navigateTo(hash);
   } else {
     navigateHome();
@@ -3700,6 +3754,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.replace('#', '');
     if (h === 'home' || h === '') { navigateHome(); }
+    else if (h === 'calendar') { navigateCalendar(); }
     else if (STEP_META.find(s => s.id === h)) { navigateTo(h); }
   });
 });
