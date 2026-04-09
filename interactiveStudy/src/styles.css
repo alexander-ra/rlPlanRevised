@@ -1181,8 +1181,6 @@ body {
   flex-shrink: 0;
   width: 110px; height: 110px;
   display: flex; align-items: center; justify-content: center;
-  /* Single-color: convert SVG to pure white on dark hero */
-  filter: brightness(0) invert(1);
 }
 .hp-hero-logo svg { width: 110px; height: 110px; }
 .hp-contributions {
@@ -1205,8 +1203,6 @@ body {
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,0.12);
   border-radius: 8px; padding: 5px;
-  /* Single-color: convert SVG to pure white on dark hero */
-  filter: brightness(0) invert(1);
 }
 .hp-contrib-icon svg { width: 36px; height: 36px; }
 .hp-contrib-title { font-size: 0.8rem; font-weight: 600; color: #fff; line-height: 1.3; }
