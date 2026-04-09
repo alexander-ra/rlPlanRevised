@@ -34,9 +34,12 @@ deliverables/
   reports/step{01,02}/           # Step reports (EN/BG markdown + built PDFs + figures)
   summaries/                     # Built summary PDFs
   terminology_EN_BG.md           # Translation dictionary
-interactiveStudy/                # HTML5 viewer for rawSteps (build.py → dist/)
+interactiveStudy/                # HTML5 viewer for rawSteps (build.py → docs/)
+  src/                           # Source: 12 JS modules + translations_en/bg.json + shell.html + styles.css
+  src/app.js                     # Legacy monolith (superseded, kept for reference)
+planning/rawStepsBg/             # Bulgarian versions of all 15 rawSteps
 scripts/                         # Build scripts (build_pdf.py, build_reports.py, etc.)
-docs/                            # GitHub Pages deployment output
+docs/                            # GitHub Pages deployment output (index.html, sw.js)
 oldSources/                      # Prior drafts (reference only)
 ```
 
@@ -55,8 +58,8 @@ python3 scripts/build_reports.py                        # all steps
 python3 scripts/build_reports.py --step step01          # one step
 python3 scripts/build_reports.py --type summary         # summaries only
 
-# Interactive study viewer
-cd interactiveStudy && python3 build.py    # → dist/index.html
+# Interactive study viewer (bilingual EN/BG, outputs to docs/)
+python3 scripts/build.py    # → docs/index.html
 
 # Run implementation code
 cd implementation/step01 && python dqn/train.py
@@ -73,6 +76,18 @@ cd implementation/step02 && python cfr/train.py
 - **Code ownership tags:** 🔴 HAND-CODE / 🟡 AI-ASSISTED / 🟢 AI-GENERATED (see PLAN.md §4.4)
 - **Reports:** Each step produces 4 PDFs: report EN, report BG, summary EN, summary BG
 - **Figures:** Stored in `deliverables/reports/stepXX/figures/` and copied into `summary/` subdirs
+
+## Interactive Study Viewer — Module Structure
+
+`interactiveStudy/src/` contains 12 JS modules (bundled in this order by `scripts/build.py`):
+`config.js` → `i18n.js` → `cloud.js` → `theme.js` → `schedule.js` → `youtube.js` → `reading-guide.js` → `content.js` → `markdown.js` → `calendar.js` → `nav.js` → `main.js`
+
+Translation keys live in `translations_en.json` and `translations_bg.json`. Steps content is embedded as `STEPS_CONTENT_EN` and `STEPS_CONTENT_BG` from `planning/rawSteps/` and `planning/rawStepsBg/`.
+
+BG rendering notes:
+- Phase headers: `## Фаза N:` (regex handles both `Phase` and `Фаза`)
+- Reading guide keywords: `ПРОЧЕТЕТЕ` / `ПРЕГЛЕДАЙТЕ` / `ПРОПУСНЕТЕ` / `МАТЕМАТИКА` / `КЛЮЧОВО ПРОЗРЕНИЕ`
+- Video format: `⏱ ~12m · Channel: X` (middle dot U+00B7 as separator)
 
 ## When Editing Steps
 
