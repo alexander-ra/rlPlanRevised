@@ -1,0 +1,263 @@
+"""
+STEP 03: MCCFR VARIANTS - COMPLETE IMPLEMENTATION GUIDE
+
+This module explores Monte Carlo Counterfactual Regret Minimization (MCCFR)
+and compares two key sampling strategies for game theory algorithms.
+
+═══════════════════════════════════════════════════════════════════════════
+PROJECT CONTEXT
+═══════════════════════════════════════════════════════════════════════════
+
+PhD Research Topic: "Research on the possibilities for applying AI in
+                     computer games"
+
+Time: April 2026 (Step 3 of 15-step plan → April–October 2026)
+Supervisor: Ruse University "Angel Kanchev"
+Timeline: Phase 1 deadline November 2026, Defense April 2029
+
+═══════════════════════════════════════════════════════════════════════════
+WHAT IS MCCFR?
+═══════════════════════════════════════════════════════════════════════════
+
+Standard CFR Algorithm:
+  ❌ Traverses entire game tree every iteration
+  ❌ O(|Tree|) complexity → doesn't scale to large games
+  ✓ Zero variance in regret estimates
+
+Monte Carlo CFR (MCCFR):
+  ✓ Samples ONE history per iteration (stochastic tree walk)
+  ✓ O(Tree Depth) complexity → scales to real poker!
+  ❌ Non-zero variance in regret estimates
+
+This step: COMPARE TWO WAYS TO BALANCE THIS TRADEOFF
+
+═══════════════════════════════════════════════════════════════════════════
+TWO MCCFR SAMPLING STRATEGIES
+═══════════════════════════════════════════════════════════════════════════
+
+1. EXTERNAL SAMPLING MCCFR
+   ─────────────────────────
+   What it samples:  Chance node outcomes only
+   Agent actions:    Deterministic (best response)
+   Variance:         Lower
+   Exploration:      Slower but stable
+   
+   When to use: Kuhn Poker, games with few chance nodes, preference for
+                stability over speed
+
+2. OUTCOME SAMPLING MCCFR
+   ──────────────────────
+   What it samples:  ALL nodes (chance + agent actions)
+   Agent actions:    Stochastic (from current policy)
+   Variance:         Higher but may explore faster
+   Exploration:      Faster but noisier
+   
+   When to use: Large strategy spaces, games with many chance nodes,
+                when fast initial convergence matters
+
+═══════════════════════════════════════════════════════════════════════════
+QUICK START: 3 WAYS TO LEARN
+═══════════════════════════════════════════════════════════════════════════
+
+EASIEST (Interactive Learning):
+  $ bash implementation/step03/quickstart.sh tutorial
+  
+  → Runs both samplers for 5k iterations each
+  → Explains each step
+  → Shows results with interpretation
+  → ~3 min runtime
+
+DETAILED (Full Comparison):
+  $ bash implementation/step03/quickstart.sh compare
+  
+  → Runs 10k iterations per sampler (more accurate)
+  → Saves JSON results for analysis
+  → ~5 min runtime
+
+STATISTICAL (Variance Analysis):
+  $ bash implementation/step03/quickstart.sh analyze
+  
+  → Runs 5 independent trials per method
+  → Measures stability ("coefficient of variation")
+  → Shows computational cost breakdown
+  → ~5 min runtime
+
+COMPLETE (All Experiments):
+  $ bash implementation/step03/quickstart.sh all
+  
+  → Runs all three experiments in sequence
+  → ~15 min total
+
+═══════════════════════════════════════════════════════════════════════════
+FILE STRUCTURE
+═══════════════════════════════════════════════════════════════════════════
+
+step03/
+├── quickstart.sh              ← START HERE for quick demos
+├── tutorial.py                ← 🟢 EDUCATIONAL: Interactive walkthrough
+├── playground.py              ← 🟡 MAIN: Full comparison script
+├── analyze_mccfr.py           ← Advanced variance/cost analysis
+│
+├── mccfr_explanation.md       ← 📖 DEEP DIVE: Algorithm details
+├── config.py                  ← ⚙️  SETTINGS: Hyperparameters
+├── README.md                  ← 📖 DOCUMENTATION: Complete guide
+└── THIS_FILE.txt              ← 📋 OVERVIEW: You are here
+
+OUTPUT FILES (automatically generated):
+├── mccfr_comparison_results.json  ← Convergence curves for both methods
+└── mccfr_detailed_analysis.json   ← Variance statistics & timings
+
+═══════════════════════════════════════════════════════════════════════════
+RECOMMENDED LEARNING PATH
+═══════════════════════════════════════════════════════════════════════════
+
+PHASE 1: UNDERSTAND THE CONCEPTS
+  1. Read this file (overview)
+  2. Read mccfr_explanation.md (algorithm details)
+  3. Run quickstart.sh tutorial (see it in action)
+
+PHASE 2: RUN EXPERIMENTS
+  1. Run quickstart.sh compare (full results)
+  2. Examine mccfr_comparison_results.json output
+  3. Analyze convergence patterns
+
+PHASE 3: DEEP ANALYSIS
+  1. Run quickstart.sh analyze (variance study)
+  2. Review config.py for tweakable parameters
+  3. Run custom experiments by editing playground.py
+
+PHASE 4: WRITING REPORTS
+  1. Use results.json files as data
+  2. Generate convergence plots (log-log analysis)
+  3. Write EN + BG reports comparing both methods
+  4. Target: Show understanding of bias-variance tradeoff
+
+═══════════════════════════════════════════════════════════════════════════
+EXPECTED RESULTS ON KUHN POKER
+═══════════════════════════════════════════════════════════════════════════
+
+After 10,000 iterations, you should see approximately:
+
+External Sampling MCCFR:
+  • Exploitability: ~0.01–0.02 (very good!)
+  • Convergence: Smooth, steady improvement
+  • Characteristics: Low variance, predictable
+
+Outcome Sampling MCCFR:
+  • Exploitability: ~0.05–0.10 (good but noisier)
+  • Convergence: Volatile, faster initial drop then plateau
+  • Characteristics: Higher variance, variable
+
+REFERENCE (Perfect equilibrium):
+  • Exploitability: 0.0 (impossible to beat)
+  • Random strategy: ~0.20 (baseline)
+
+═══════════════════════════════════════════════════════════════════════════
+KEY CONCEPTS YOU'LL LEARN
+═══════════════════════════════════════════════════════════════════════════
+
+✓ Why MCCFR scales to Poker (billions of states)
+✓ Importance weighting in stochastic tree sampling
+✓ Bias-variance tradeoff in algorithm design
+✓ Exploitability as convergence measure
+✓ Regret matching in strategy learning
+✓ Empirical algorithm comparison methodology
+
+TECHNICAL TERMS YOU'LL ENCOUNTER:
+
+• Exploitability = How much an opponent can earn vs. Nash strategy
+• Nash Equilibrium = Strategies where no player can improve by deviating
+• Information Set = Group of states player can't distinguish
+• Counterfactual Value = Utility IF this node is reached
+• Regret Matching = Convert regrets → probability distribution
+• Monte Carlo = Using random samples instead of full enumeration
+
+═══════════════════════════════════════════════════════════════════════════
+CONNECTION TO YOUR DISSERTATION
+═══════════════════════════════════════════════════════════════════════════
+
+Step 2 (Completed): Vanilla CFR on Kuhn Poker
+  → Learned: How standard CFR finds Nash equilibrium
+
+Step 3 (NOW): MCCFR Variants
+  → Goal: Understand sampling strategies that scale to larger games
+  → Bridge: Moving from toy problems to real poker
+
+Step 4 (Next): CFR Variants & Monte Carlo
+  → Expected: Leduc Hold'em, chance sampling, pruning strategies
+
+Step 5+: Neural equilibrium, end-to-end game AI, opponent modeling
+  → All build on CFR foundations you're mastering now
+
+═══════════════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════
+
+Q: ImportError: No module named 'open_spiel'
+A: Ensure OpenSpiel is installed: pip install open_spiel
+   Or follow: github.com/deepmind/open_spiel/blob/master/docs/python_install.md
+
+Q: "pokerkit_wrapper was not importable" warning
+A: This is harmless. OpenSpiel is trying to load an optional extension.
+   (The pokerkit package is not required for this tutorial)
+
+Q: Strange results (exploitability increasing)?
+A: MCCFR has higher variance in early iterations. This is normal.
+   Increase iterations to 20k+ for more stable curves.
+
+Q: How do I modify the experiments?
+A: Edit config.py to change hyperparameters, or manually edit
+   playground.py for custom runs.
+
+═══════════════════════════════════════════════════════════════════════════
+REFERENCES & FURTHER READING
+═══════════════════════════════════════════════════════════════════════════
+
+FOUNDATIONAL (CFR):
+  [1] Zinkevich et al. (2007)
+      "Regret Minimization in Games with Incomplete Information"
+      → Introduces CFR algorithm and convergence guarantee
+
+  [2] Neller & Lanctot (2013)
+      "An Introduction to Counterfactual Regret Minimization"
+      → Accessible tutorial (recommended starting point)
+
+MCCFR PAPERS:
+  [3] Lanctot et al. (2009)
+      "Monte Carlo sampling for regret minimization in extensive games"
+      → External sampling MCCFR
+
+  [4] Burch et al. (2014)
+      "Efficient monte carlo counterfactual regret minimization in games
+       with public information"
+      → Advanced techniques for abstraction
+
+APPLICATIONS (State of the Art):
+  [5] Brown & Sandholm (2018)
+      "Superhuman AI for heads-up no-limit poker: Libratus beats top
+       pros"
+      → Uses CFR variants to beat world champions
+      → Shows practical importance of sampling strategies
+
+═══════════════════════════════════════════════════════════════════════════
+NEXT STEPS AFTER THIS STEP
+═══════════════════════════════════════════════════════════════════════════
+
+✓ After completing step03 experiments:
+  1. Write formal step report (EN + BG)
+  2. Create convergence comparison plots
+  3. Discuss trade-offs between sampling methods
+  4. Document code ownership (hand-code vs AI-assisted)
+  5. Prepare for step04: More sophisticated CFR variants
+
+✓ Deliverables expected:
+  • Working code with both samplers ← YOU HAVE THIS NOW
+  • Experimental results (JSON files) ← AUTO-GENERATED
+  • Technical explanation (markdown) ← IN mccfr_explanation.md
+  • Formal report (EN + BG PDFs) ← USE build scripts in /scripts/
+
+═══════════════════════════════════════════════════════════════════════════
+"""
+
+if __name__ == "__main__":
+    print(__doc__)
