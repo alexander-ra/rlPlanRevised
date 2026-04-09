@@ -417,6 +417,19 @@ function buildContributionDetailCards(afterMd) {
   return introHtml + detailsHtml;
 }
 
+/* ===== Collapsible Research Context Card ===== */
+function buildCollapsibleIntroCard(before) {
+  if (!before || !before.trim()) return '';
+  const headingMatch = before.match(/^###\s+(?:\d+\.\d+\s+)?(.+)$/m);
+  const title = headingMatch ? headingMatch[1].trim()
+    : (currentLang === 'bg' ? 'Изследователски контекст и значимост' : 'Research Context and Significance');
+  const bodyMd = before.replace(/^###[^\n]*\n?/, '').trim();
+  return `<details class="hp-intro-card hp-intro-details">
+    <summary class="hp-intro-summary">${title}</summary>
+    <div class="hp-intro-body">${mdToHtmlForIntro(bodyMd)}</div>
+  </details>`;
+}
+
 /* ===== Homepage ===== */
 function navigateHome() {
   const contentEl = document.getElementById('content');
@@ -451,7 +464,7 @@ function navigateHome() {
 
     contentEl.innerHTML = `<div class="hp">
       ${buildHeroSection()}
-      <div class="hp-intro-card">${mdToHtmlForIntro(before)}</div>
+      ${buildCollapsibleIntroCard(before)}
       ${buildProgressViz()}
       <div class="hp-phases-interleaved">${phaseBlocksHtml}</div>
       ${buildContributionDetailCards(after)}
