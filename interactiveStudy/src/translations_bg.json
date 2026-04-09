@@ -125,5 +125,9 @@
   "month_dec": "Дек",
   "summary_label": "Резюме",
   "extract_target_phase_overview": "Общ преглед на фазата:",
-  "extract_target_contribution": "Принос №"
+  "extract_target_contribution": "Принос №",
+  "lock_prompt": "Въведете парола, за да отключите редактирането.\n\n(Това засяга само вашия личен график и маркирования за завършване — съдържанието на обучението никога не се променя.)",
+  "lock_incorrect": "Неправилна парола.",
+  "unlock_label": "Отключи",
+  "lock_label": "Заключи"
 }

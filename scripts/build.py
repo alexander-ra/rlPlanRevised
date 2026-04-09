@@ -118,62 +118,14 @@ def read_intro_md() -> tuple[str, str]:
     return en, bg
 
 
-# SVG source files and their inline IDs
-SVG_FILES = {
-    "MAIN_LOGO_SVG":    ("mainLogo.svg",            "main-logo"),
-    "CONTRIB_ONE_SVG":  ("contributionOneLogo.svg",  "contrib-one"),
-    "CONTRIB_TWO_SVG":  ("contributionTwoLogo.svg",  "contrib-two"),
-    "CONTRIB_THREE_SVG":("contributionThreeLogo.svg","contrib-three"),
-}
-
-
-def process_svg_for_inline(svg_content: str, svg_id: str) -> str:
-    """Add a unique ID to the SVG root and scope its <style> class selectors
-    to that ID, preventing CSS class-name collisions when multiple SVGs are
-    inlined in the same document."""
-    # Inject id attribute into the root <svg ...> tag
-    svg = re.sub(r'^(<svg\s)', lambda m: m.group(1) + f'id="{svg_id}" ', svg_content, count=1)
-
-    def scope_style_block(m: re.Match) -> str:
-        style = m.group(1)
-        # Prepend each class-selector rule with the SVG id scope
-        style = re.sub(
-            r'(\.(?:[a-zA-Z_-][a-zA-Z0-9_-]*))\s*\{',
-            lambda x: f'#{svg_id} {x.group(1)} {{',
-            style
-        )
-        return f'<style>{style}</style>'
-
-    return re.sub(r'<style>(.*?)</style>', scope_style_block, svg, flags=re.DOTALL)
-
-
-def read_svgs() -> dict[str, str]:
-    """Read and inline-safe process all hero/contribution SVG assets."""
-    svgs: dict[str, str] = {}
-    for js_const, (filename, svg_id) in SVG_FILES.items():
-        path = SRC_DIR / filename
-        if not path.exists():
-            print(f"WARNING: SVG not found: {path}", file=sys.stderr)
-            svgs[js_const] = ""
-            continue
-        raw = path.read_text(encoding="utf-8").strip()
-        svgs[js_const] = process_svg_for_inline(raw, svg_id)
-    return svgs
-
-
 def get_favicon_link() -> str:
-    """Return an SVG favicon <link> tag using the mainLogo.svg as a base64 data URI."""
-    path = SRC_DIR / "mainLogo.svg"
-    if not path.exists():
-        return ''
-    svg_bytes = path.read_text(encoding="utf-8").strip().encode("utf-8")
-    b64 = base64.b64encode(svg_bytes).decode("ascii")
-    return f'<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,{b64}">'
+    """Return a text-based favicon link with 'RL' text."""
+    return '<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2275%22 font-size=%2280%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%231e293b%22>RL</text></svg>">'
 
 
 def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
-                             intro_en: str, intro_bg: str, svgs: dict) -> str:
-    """Generate a <script> block embedding EN/BG content, translations, and SVGs."""
+                             intro_en: str, intro_bg: str) -> str:
+    """Generate a <script> block embedding EN/BG content and translations."""
     def dict_to_js(d: dict, var_name: str) -> str:
         pairs = [f"  {json.dumps(k)}: {json.dumps(v)}" for k, v in d.items()]
         return f"const {var_name} = {{\n" + ",\n".join(pairs) + "\n};"
@@ -183,13 +135,10 @@ def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
     trans_js    = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
     intro_en_js = f"const INTRO_MD_EN = {json.dumps(intro_en)};"
     intro_bg_js = f"const INTRO_MD_BG = {json.dumps(intro_bg)};"
-    svg_js      = "\n".join(
-        f"const {key} = {json.dumps(val)};" for key, val in svgs.items()
-    )
 
     return (
         f"<script>\n{en_js}\n\n{bg_js}\n\n{trans_js}\n\n"
-        f"{intro_en_js}\n{intro_bg_js}\n\n{svg_js}\n</script>"
+        f"{intro_en_js}\n{intro_bg_js}\n</script>"
     )
 
 
@@ -251,11 +200,8 @@ def build():
     # Read bilingual intro markdown
     intro_en, intro_bg = read_intro_md()
 
-    # Read and process SVG assets
-    svgs = read_svgs()
-
-    # Generate combined content + translations + SVGs script
-    content_script = generate_content_script(steps_en, steps_bg, translations, intro_en, intro_bg, svgs)
+    # Generate combined content + translations script
+    content_script = generate_content_script(steps_en, steps_bg, translations, intro_en, intro_bg)
 
     # Build favicon link
     favicon_link = get_favicon_link()

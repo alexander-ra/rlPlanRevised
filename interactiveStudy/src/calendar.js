@@ -292,10 +292,10 @@ function buildHeroSection() {
     ? `${t('step_prefix')} ${activeStepMeta.num}: ${getStepTitle(activeStepMeta)}`
     : (stepsCompleted === 15 ? t('all_complete') : t('not_started'));
 
-  const contribIcons = [
-    typeof CONTRIB_ONE_SVG !== 'undefined' ? CONTRIB_ONE_SVG : '',
-    typeof CONTRIB_TWO_SVG !== 'undefined' ? CONTRIB_TWO_SVG : '',
-    typeof CONTRIB_THREE_SVG !== 'undefined' ? CONTRIB_THREE_SVG : '',
+  const contribBadges = [
+    currentLang === 'bg' ? 'П1' : 'C1',
+    currentLang === 'bg' ? 'П2' : 'C2',
+    currentLang === 'bg' ? 'П3' : 'C3',
   ];
   const contributions = [
     { title: t('c1_title'), desc: t('c1_desc') },
@@ -304,12 +304,10 @@ function buildHeroSection() {
   ];
   const contribHtml = contributions.map((c, i) =>
     `<div class="hp-contribution">
-      <div class="hp-contrib-icon">${contribIcons[i]}</div>
+      <div class="hp-contrib-badge">${contribBadges[i]}</div>
       <div><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
     </div>`
   ).join('');
-
-  const mainLogoHtml = typeof MAIN_LOGO_SVG !== 'undefined' ? MAIN_LOGO_SVG : '';
 
   return `<div class="hp-hero">
     <div class="hp-hero-main">
@@ -323,7 +321,6 @@ function buildHeroSection() {
           <div class="hp-stat hp-stat--current"><span class="hp-stat-val hp-stat-val--sm">${activeText}</span><span class="hp-stat-label">${t('current_step')}</span></div>
         </div>
       </div>
-      <div class="hp-hero-logo" aria-hidden="true">${mainLogoHtml}</div>
     </div>
     <div class="hp-contributions">${contribHtml}</div>
   </div>`;
@@ -379,10 +376,10 @@ function buildProgressViz() {
 function buildContributionDetailCards(afterMd) {
   if (!afterMd || !afterMd.trim()) return '';
 
-  const icons = [
-    typeof CONTRIB_ONE_SVG   !== 'undefined' ? CONTRIB_ONE_SVG   : '',
-    typeof CONTRIB_TWO_SVG   !== 'undefined' ? CONTRIB_TWO_SVG   : '',
-    typeof CONTRIB_THREE_SVG !== 'undefined' ? CONTRIB_THREE_SVG : '',
+  const badges = [
+    currentLang === 'bg' ? 'П1' : 'C1',
+    currentLang === 'bg' ? 'П2' : 'C2',
+    currentLang === 'bg' ? 'П3' : 'C3',
   ];
 
   // Split on blank lines, separate contribution paragraphs from the rest
@@ -402,10 +399,10 @@ function buildContributionDetailCards(afterMd) {
   }
 
   const cardsHtml = contribs.map(c => {
-    const icon = icons[c.n - 1] || '';
+    const badge = badges[c.n - 1] || '';
     const bodyHtml = mdToHtmlForIntro(c.text);
     return `<div class="hp-contrib-detail">
-      <div class="hp-contrib-detail-icon">${icon}</div>
+      <div class="hp-contrib-detail-badge">${badge}</div>
       <div class="hp-contrib-detail-body">${bodyHtml}</div>
     </div>`;
   }).join('');

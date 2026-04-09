@@ -16,7 +16,7 @@ function initLock() {
 
 function toggleLock() {
   if (isLocked) {
-    const pw = prompt('Enter password to unlock:');
+    const pw = prompt(getTranslation('lock_prompt'));
     if (pw === null) return;
     if (pw === LOCK_PASSWORD) {
       isLocked = false;
@@ -24,7 +24,7 @@ function toggleLock() {
       applyLockState();
       updateFab();
     } else {
-      alert('Incorrect password.');
+      alert(getTranslation('lock_incorrect'));
     }
   } else {
     isLocked = true;
@@ -52,7 +52,7 @@ function updateFab() {
 
   if (isHomepage) {
     const icon  = isLocked ? LOCK_SVG : UNLOCK_SVG;
-    const label = isLocked ? 'Unlock' : 'Lock';
+    const label = isLocked ? getTranslation('lock_label') : getTranslation('unlock_label');
     fab.innerHTML = icon;
     fab.setAttribute('aria-label', label);
     fab.title = label;

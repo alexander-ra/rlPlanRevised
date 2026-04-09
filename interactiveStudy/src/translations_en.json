@@ -125,5 +125,9 @@
   "month_dec": "Dec",
   "summary_label": "Summary",
   "extract_target_phase_overview": "Phase Overview:",
-  "extract_target_contribution": "Contribution Alignment:"
+  "extract_target_contribution": "Contribution Alignment:",
+  "lock_prompt": "Enter password to unlock editing.\n\n(This only affects your personal schedule and completion marks — the study content itself is never modified.)",
+  "lock_incorrect": "Incorrect password.",
+  "unlock_label": "Unlock",
+  "lock_label": "Lock"
 }

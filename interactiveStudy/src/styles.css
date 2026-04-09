@@ -945,23 +945,22 @@ body {
   transition: box-shadow 0.15s, transform 0.15s;
 }
 .hp-contrib-detail:hover { box-shadow: var(--shadow-2); transform: translateY(-1px); }
-.hp-contrib-detail-icon {
+.hp-contrib-detail-badge {
   flex-shrink: 0;
   width: 52px; height: 52px;
   display: flex; align-items: center; justify-content: center;
   background: var(--surface-variant);
   border-radius: 10px;
-  padding: 6px;
   margin-top: 0.15rem;
-  /* SVGs at natural color on the light card background — no override needed */
+  font-size: 0.9rem; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--primary);
 }
-.hp-contrib-detail-icon svg { width: 40px; height: 40px; }
 .hp-contrib-detail-body { flex: 1; min-width: 0; font-size: 0.875rem; line-height: 1.65; }
 .hp-contrib-detail-body p { margin: 0; color: var(--on-surface-medium); }
 .hp-contrib-detail-body strong { color: var(--on-surface); font-weight: 700; }
 @media (max-width: 540px) {
   .hp-contrib-detail { flex-direction: column; gap: 0.65rem; }
-  .hp-contrib-detail-icon { width: 44px; height: 44px; }
+  .hp-contrib-detail-badge { width: 44px; height: 44px; }
 }
 
 /* ===== Interleaved Phase Blocks ===== */
@@ -1177,12 +1176,6 @@ body {
   letter-spacing: 0.06em; color: rgba(255,255,255,0.65);
 }
 .hp-stat--current { max-width: 200px; }
-.hp-hero-logo {
-  flex-shrink: 0;
-  width: 110px; height: 110px;
-  display: flex; align-items: center; justify-content: center;
-}
-.hp-hero-logo svg { width: 110px; height: 110px; }
 .hp-contributions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1197,14 +1190,13 @@ body {
   align-items: center;
   gap: 0.65rem;
 }
-.hp-contrib-icon {
+.hp-contrib-badge {
   flex-shrink: 0;
-  width: 46px; height: 46px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.12);
-  border-radius: 8px; padding: 5px;
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; background: rgba(255,255,255,0.25);
+  color: #fff; border-radius: 5px; padding: 4px 8px;
+  min-width: 2.5rem; text-align: center; line-height: 1.4;
 }
-.hp-contrib-icon svg { width: 36px; height: 36px; }
 .hp-contrib-title { font-size: 0.8rem; font-weight: 600; color: #fff; line-height: 1.3; }
 .hp-contrib-desc { font-size: 0.68rem; color: rgba(255,255,255,0.7); line-height: 1.35; margin-top: 2px; }
 @media (max-width: 767px) {
@@ -1212,8 +1204,6 @@ body {
   .hp-hero-main { flex-direction: column-reverse; align-items: center; gap: 1rem; margin-bottom: 1rem; }
   .hp-contributions { grid-template-columns: 1fr; gap: 0.5rem; }
   .hp-stats-row { gap: 0.75rem; }
-  .hp-hero-logo { width: 80px; height: 80px; }
-  .hp-hero-logo svg { width: 80px; height: 80px; }
 }
 
 /* ===== Overall Progress Visualization (4.4) ===== */
