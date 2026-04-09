@@ -925,6 +925,39 @@ body {
   border-left-color: rgba(167,139,250,0.45);
 }
 
+/* ===== Collapsible Intro Card ===== */
+.hp-intro-details { padding: 0; }
+.hp-intro-summary {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--on-surface);
+  cursor: pointer;
+  list-style: none;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  margin: 0;
+}
+.hp-intro-summary::-webkit-details-marker { display: none; }
+.hp-intro-summary::marker { display: none; }
+.hp-intro-summary::after {
+  content: '▾';
+  font-size: 1em;
+  opacity: 0.5;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+.hp-intro-details[open] > .hp-intro-summary::after {
+  transform: rotate(180deg);
+}
+.hp-intro-summary:hover { color: var(--primary); }
+.hp-intro-details > .hp-intro-body {
+  padding: 0 1.25rem 0.75rem;
+}
+
 /* ===== Contribution Detail Cards ===== */
 .hp-contrib-details {
   display: flex;
