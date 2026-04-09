@@ -75,6 +75,7 @@ function getPhaseColors(phase) {
 let currentStepIndex = 0;
 let scheduleAdjust = 0;
 let isHomepage = false;
+let isCalendarPage = false;
 let calendarMonth = new Date().getMonth();
 let calendarYear = new Date().getFullYear();
 let calendarFull = false;

@@ -10,6 +10,13 @@ function buildNav() {
   homeBtn.addEventListener('click', () => navigateHome());
   navList.appendChild(homeBtn);
 
+  const calBtn = document.createElement('button');
+  calBtn.className = 'nav-item nav-calendar';
+  calBtn.dataset.step = 'calendar';
+  calBtn.textContent = t('calendar_btn');
+  calBtn.addEventListener('click', () => navigateCalendar());
+  navList.appendChild(calBtn);
+
   let currentPhase = null;
 
   STEP_META.forEach((step) => {
@@ -60,7 +67,7 @@ function updateNavProgress(stepId) {
 }
 
 function updateActiveNav() {
-  const activeId = isHomepage ? 'home' : STEP_META[currentStepIndex].id;
+  const activeId = isHomepage ? 'home' : isCalendarPage ? 'calendar' : STEP_META[currentStepIndex].id;
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.step === activeId);
   });
@@ -69,11 +76,13 @@ function updateActiveNav() {
 /* ===== Step Navigation ===== */
 function navigateTo(stepId) {
   if (stepId === 'home') { navigateHome(); return; }
+  if (stepId === 'calendar') { navigateCalendar(); return; }
 
   const contentEl = document.getElementById('content');
 
   const doRender = () => {
     isHomepage = false;
+    isCalendarPage = false;
     document.getElementById('timeline-bar').style.display = '';
     document.getElementById('section-nav').style.display = '';
     updateFab();
@@ -105,7 +114,7 @@ function navigateTo(stepId) {
 }
 
 function goNext() {
-  if (isHomepage) { navigateTo(STEP_META[0].id); return; }
+  if (isHomepage || isCalendarPage) { navigateTo(STEP_META[0].id); return; }
   if (currentStepIndex < STEP_META.length - 1) {
     navigateTo(STEP_META[currentStepIndex + 1].id);
   }
@@ -119,8 +128,8 @@ function goPrev() {
 }
 
 function updateNavButtons() {
-  const atEnd = !isHomepage && currentStepIndex === STEP_META.length - 1;
-  document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = isHomepage);
+  const atEnd = !isHomepage && !isCalendarPage && currentStepIndex === STEP_META.length - 1;
+  document.querySelectorAll('[id^="prev-btn"]').forEach(b => b.disabled = isHomepage || isCalendarPage);
   document.querySelectorAll('[id^="next-btn"]').forEach(b => b.disabled = atEnd);
 }
 
@@ -150,7 +159,7 @@ function closeSidebar() {
 function updateReadingProgress() {
   const fill = document.getElementById('reading-progress-fill');
   if (!fill) return;
-  if (isHomepage) { fill.style.width = '0'; return; }
+  if (isHomepage || isCalendarPage) { fill.style.width = '0'; return; }
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   fill.style.width = (docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0) + '%';

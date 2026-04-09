@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Section jump / lock toggle (context-dependent)
   document.getElementById('section-fab').addEventListener('click', () => {
-    if (isHomepage) toggleLock();
+    if (isHomepage || isCalendarPage) toggleLock();
     else toggleSectionNav();
   });
   document.getElementById('sections-btn-bottom').addEventListener('click', (e) => {
     e.stopPropagation();
-    if (isHomepage) toggleLock();
+    if (isHomepage || isCalendarPage) toggleLock();
     else toggleSectionNav();
   });
   document.addEventListener('click', (e) => {
@@ -60,7 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Initial view from URL hash
   const hash = window.location.hash.replace('#', '');
-  if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
+  if (hash === 'calendar') {
+    navigateCalendar();
+  } else if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
     navigateTo(hash);
   } else {
     navigateHome();
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.replace('#', '');
     if (h === 'home' || h === '') { navigateHome(); }
+    else if (h === 'calendar') { navigateCalendar(); }
     else if (STEP_META.find(s => s.id === h)) { navigateTo(h); }
   });
 });
