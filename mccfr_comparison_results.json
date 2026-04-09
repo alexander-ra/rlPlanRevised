@@ -1,0 +1,94 @@
+{
+  "external_sampling": {
+    "final_exploitability": 0.011637705084472982,
+    "time_seconds": 2.4065468311309814,
+    "convergence": [
+      {
+        "iteration": 1000,
+        "exploitability": 0.03243662040477169
+      },
+      {
+        "iteration": 2000,
+        "exploitability": 0.030506549119662107
+      },
+      {
+        "iteration": 3000,
+        "exploitability": 0.04029486965596962
+      },
+      {
+        "iteration": 4000,
+        "exploitability": 0.022521156435878487
+      },
+      {
+        "iteration": 5000,
+        "exploitability": 0.01791325231887425
+      },
+      {
+        "iteration": 6000,
+        "exploitability": 0.009602896922614401
+      },
+      {
+        "iteration": 7000,
+        "exploitability": 0.008828810686544009
+      },
+      {
+        "iteration": 8000,
+        "exploitability": 0.015462351313792644
+      },
+      {
+        "iteration": 9000,
+        "exploitability": 0.013638008574895943
+      },
+      {
+        "iteration": 10000,
+        "exploitability": 0.011637705084472982
+      }
+    ]
+  },
+  "outcome_sampling": {
+    "final_exploitability": 0.0910768364201841,
+    "time_seconds": 2.441556215286255,
+    "convergence": [
+      {
+        "iteration": 1000,
+        "exploitability": 0.2654695645520112
+      },
+      {
+        "iteration": 2000,
+        "exploitability": 0.1089341640278862
+      },
+      {
+        "iteration": 3000,
+        "exploitability": 0.08143807239867085
+      },
+      {
+        "iteration": 4000,
+        "exploitability": 0.08144062654806383
+      },
+      {
+        "iteration": 5000,
+        "exploitability": 0.10505098856362882
+      },
+      {
+        "iteration": 6000,
+        "exploitability": 0.06374071979409812
+      },
+      {
+        "iteration": 7000,
+        "exploitability": 0.041063539984775244
+      },
+      {
+        "iteration": 8000,
+        "exploitability": 0.0673894379287126
+      },
+      {
+        "iteration": 9000,
+        "exploitability": 0.07479644632478766
+      },
+      {
+        "iteration": 10000,
+        "exploitability": 0.0910768364201841
+      }
+    ]
+  }
+}
