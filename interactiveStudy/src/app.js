@@ -356,44 +356,24 @@ function embedYouTubeThumbnails() {
     // Replace the original anchor entirely
     a.parentNode.replaceChild(card, a);
 
-    // Extract metadata from next sibling text node
-    // Handles both new format "⏱ ~12m · Channel: Name" and legacy "Duration: ~12m | Channel: Name"
+    // Extract Duration / Channel / Instructor from next sibling text node
     let node = card.nextSibling;
     for (let i = 0; i < 6 && node; i++, node = node.nextSibling) {
       if (node.nodeType === 3) {
         const text = node.textContent.replace(/\s+/g, ' ').trim();
-        let durText = null, chanText = null;
-
-        if (text.startsWith('⏱')) {
-          // New format: "⏱ ~12m · Channel: CrashCourse" or "⏱ ~12m · Instructor: Name"
-          const parts = text.replace(/^⏱\s*/, '').split(/\s*·\s*/);
-          durText = parts[0] ? parts[0].trim() : null;
-          // First part that contains a role keyword is the channel
-          for (let p = 1; p < parts.length; p++) {
-            if (/^(?:Channel|Instructor|Creator):/i.test(parts[p])) {
-              chanText = parts[p].replace(/^(?:Channel|Instructor|Creator):\s*/i, '').trim();
-              break;
-            }
-          }
-        } else if (text.startsWith('Duration:')) {
-          // Legacy format: "Duration: ~12m | Channel: Name"
+        if (text.startsWith('Duration:')) {
           const durM = text.match(/Duration:\s*([^|]+)/);
-          const chanM = text.match(/(?:Channel|Instructor|Creator):\s*(.+)/);
-          durText  = durM  ? durM[1].trim()  : null;
-          chanText = chanM ? chanM[1].trim() : null;
-        }
-
-        if (durText || chanText) {
-          if (durText) {
+          const chanM = text.match(/(?:Channel|Instructor):\s*(.+)/);
+          if (durM) {
             const dur = document.createElement('span');
             dur.className = 'yt-duration';
-            dur.textContent = durText;
+            dur.textContent = durM[1].trim();
             thumbWrap.appendChild(dur);
           }
-          if (chanText) {
+          if (chanM) {
             const chan = document.createElement('div');
             chan.className = 'yt-channel';
-            chan.textContent = chanText;
+            chan.textContent = chanM[1].trim();
             card.appendChild(chan);
           }
           break;
@@ -479,15 +459,6 @@ function updateScheduleUI() {
 }
 
 /* ===== Sidebar Navigation Builder ===== */
-
-/* Returns 'done' | 'active' | 'upcoming' for a step's nav dot (5.3) */
-function getNavDotStatus(stepId) {
-  const progress = getStepCheckboxCounts(stepId);
-  if (progress.total > 0 && progress.checked >= progress.total) return 'done';
-  if (!isHomepage && STEP_META[currentStepIndex] && STEP_META[currentStepIndex].id === stepId) return 'active';
-  return 'upcoming';
-}
-
 function buildNav() {
   const navList = document.getElementById('nav-list');
 
@@ -500,37 +471,14 @@ function buildNav() {
   navList.appendChild(homeBtn);
 
   let currentPhase = null;
-  let currentGroup = null;
 
   STEP_META.forEach((step) => {
     if (step.phase !== currentPhase) {
       currentPhase = step.phase;
-
-      // Collapsible phase label (5.4)
-      const label = document.createElement('button');
+      const label = document.createElement('div');
       label.className = 'phase-label';
-      label.dataset.phase = currentPhase;
-      let phaseCollapsed = false;
-      try { phaseCollapsed = localStorage.getItem('navPhaseCollapsed_' + currentPhase) === '1'; } catch(e) {}
-      const chevron = document.createElement('span');
-      chevron.className = 'phase-label-chevron';
-      chevron.textContent = phaseCollapsed ? '\u25B6' : '\u25BC';
-      label.appendChild(chevron);
-      label.appendChild(document.createTextNode('\u00A0' + step.phaseLabel));
-
-      const groupItems = document.createElement('div');
-      groupItems.className = 'nav-phase-items';
-      if (phaseCollapsed) groupItems.classList.add('nav-phase-items--collapsed');
-
-      label.addEventListener('click', () => {
-        const nowCollapsed = groupItems.classList.toggle('nav-phase-items--collapsed');
-        try { localStorage.setItem('navPhaseCollapsed_' + currentPhase, nowCollapsed ? '1' : '0'); } catch(e) {}
-        chevron.textContent = nowCollapsed ? '\u25B6' : '\u25BC';
-      });
-
+      label.textContent = step.phaseLabel;
       navList.appendChild(label);
-      navList.appendChild(groupItems);
-      currentGroup = groupItems;
     }
 
     const wrapper = document.createElement('div');
@@ -541,13 +489,6 @@ function buildNav() {
     btn.dataset.step = step.id;
     const hasReport = !!STEP_REPORTS[step.id];
     btn.innerHTML = step.num + '. ' + step.title + (hasReport ? ' <span class="report-badge" title="Report & summary available">\uD83D\uDCD6</span>' : '');
-
-    // Status dot (5.3)
-    const dot = document.createElement('span');
-    dot.className = 'nav-status-dot nav-status-dot--' + getNavDotStatus(step.id);
-    dot.id = 'nav-dot-' + step.id;
-    btn.insertBefore(dot, btn.firstChild);
-
     btn.addEventListener('click', () => navigateTo(step.id));
     wrapper.appendChild(btn);
 
@@ -563,7 +504,7 @@ function buildNav() {
     }
     wrapper.appendChild(bar);
 
-    currentGroup.appendChild(wrapper);
+    navList.appendChild(wrapper);
   });
 }
 
@@ -577,20 +518,12 @@ function updateNavProgress(stepId) {
     const c = getPhaseColors(step.phase);
     bar.innerHTML = `<div class="nav-progress-fill" style="width:${pct}%;background:${c.border}"></div>`;
   }
-  // Update status dot (5.3)
-  const dot = document.getElementById('nav-dot-' + stepId);
-  if (dot) dot.className = 'nav-status-dot nav-status-dot--' + getNavDotStatus(stepId);
 }
 
 function updateActiveNav() {
   const activeId = isHomepage ? 'home' : STEP_META[currentStepIndex].id;
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.step === activeId);
-  });
-  // Update status dots (5.3)
-  STEP_META.forEach(step => {
-    const dot = document.getElementById('nav-dot-' + step.id);
-    if (dot) dot.className = 'nav-status-dot nav-status-dot--' + getNavDotStatus(step.id);
   });
 }
 
@@ -828,7 +761,6 @@ function navigateTo(stepId) {
     document.getElementById('topbar-title').textContent = 'Step ' + meta.num + ': ' + meta.title;
     const sectionEl = document.getElementById('topbar-section');
     if (sectionEl) sectionEl.textContent = meta.phaseLabel;
-    updateFavicon(meta.phase);
 
     history.replaceState(null, '', '#' + stepId);
     updateNavButtons();
@@ -1394,7 +1326,6 @@ function navigateHome() {
     document.getElementById('topbar-title').textContent = 'RL Study Plan';
     const sectionEl = document.getElementById('topbar-section');
     if (sectionEl) sectionEl.textContent = '';
-    updateFavicon(null);
     document.getElementById('timeline-bar').style.display = 'none';
     document.getElementById('section-nav').style.display = 'none';
     updateNavButtons();
@@ -1421,19 +1352,6 @@ function navigateHome() {
 
   contentEl.classList.add('content-exit');
   setTimeout(() => { contentEl.classList.remove('content-exit'); doRender(); }, 150);
-}
-
-/* ===== Dynamic Favicon (8.2) ===== */
-function updateFavicon(phase) {
-  const link = document.querySelector('link[rel="icon"]');
-  if (!link) return;
-  if (!phase) {
-    link.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>\uD83E\uDDE0</text></svg>';
-    return;
-  }
-  const c = getPhaseColors(phase);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="${c.border}"/><text x="16" y="21" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="white">${phase}</text></svg>`;
-  link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
 /* ===== Reading Progress Bar ===== */

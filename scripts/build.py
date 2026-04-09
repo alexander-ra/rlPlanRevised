@@ -3,9 +3,9 @@
 # scripts/build.py
 #
 # PURPOSE: Build the standalone Interactive Study Viewer HTML file.
-#   Reads interactiveStudy/src/{shell.html, styles.css, app.js} and all 15
-#   rawSteps markdown files, inlines everything into a single self-contained
-#   interactiveStudy/dist/interactiveStudy.html.
+#   Reads interactiveStudy/src/{shell.html, styles.css, JS modules} and all 15
+#   rawSteps markdown files (EN + BG), inlines everything into a single
+#   self-contained docs/index.html (GitHub Pages).
 #
 # USAGE (run from repo root):
 #   python3 scripts/build.py
@@ -16,10 +16,11 @@ import sys
 from pathlib import Path
 
 # Paths — all resolved relative to repo root regardless of cwd
-REPO_ROOT     = Path(__file__).parent.parent.resolve()
-SRC_DIR       = REPO_ROOT / "interactiveStudy" / "src"
-DIST_DIR      = REPO_ROOT / "docs"    # served by GitHub Pages (branch → /docs)
-RAW_STEPS_DIR = REPO_ROOT / "planning" / "rawSteps"
+REPO_ROOT         = Path(__file__).parent.parent.resolve()
+SRC_DIR           = REPO_ROOT / "interactiveStudy" / "src"
+DIST_DIR          = REPO_ROOT / "docs"    # served by GitHub Pages
+RAW_STEPS_DIR_EN  = REPO_ROOT / "planning" / "rawSteps"
+RAW_STEPS_DIR_BG  = REPO_ROOT / "planning" / "rawStepsBg"
 
 # Step file list (order matters)
 STEP_FILES = [
@@ -40,16 +41,32 @@ STEP_FILES = [
     "step_15_research_frontier_mapping.md",
 ]
 
+# JS modules in dependency order (concatenated into one bundle)
+JS_MODULES = [
+    "config.js",
+    "i18n.js",
+    "cloud.js",
+    "theme.js",
+    "schedule.js",
+    "youtube.js",
+    "reading-guide.js",
+    "content.js",
+    "markdown.js",
+    "calendar.js",
+    "nav.js",
+    "main.js",
+]
 
-def read_steps() -> dict[str, str]:
+
+def read_steps(steps_dir: Path) -> dict[str, str]:
     """Read all rawSteps markdown files into a dict keyed by short ID."""
-    if not RAW_STEPS_DIR.is_dir():
-        print(f"ERROR: rawSteps directory not found: {RAW_STEPS_DIR}", file=sys.stderr)
-        sys.exit(1)
+    if not steps_dir.is_dir():
+        print(f"WARNING: Steps directory not found: {steps_dir}", file=sys.stderr)
+        return {}
 
     steps: dict[str, str] = {}
     for filename in STEP_FILES:
-        filepath = RAW_STEPS_DIR / filename
+        filepath = steps_dir / filename
         if not filepath.exists():
             print(f"WARNING: Missing step file: {filepath}", file=sys.stderr)
             continue
@@ -60,19 +77,48 @@ def read_steps() -> dict[str, str]:
     return steps
 
 
-def generate_content_script(steps: dict[str, str]) -> str:
-    """Generate a <script> block embedding all step content as JSON."""
-    pairs = []
-    for step_id, content in steps.items():
-        pairs.append(f"  {json.dumps(step_id)}: {json.dumps(content)}")
-    js_obj = "const STEPS_CONTENT = {\n" + ",\n".join(pairs) + "\n};"
-    return f"<script>\n{js_obj}\n</script>"
+def bundle_js() -> str:
+    """Concatenate all JS modules in order into one bundle string."""
+    parts = []
+    for module in JS_MODULES:
+        path = SRC_DIR / module
+        if not path.exists():
+            print(f"WARNING: JS module not found: {path}", file=sys.stderr)
+            continue
+        parts.append(f"/* === {module} === */\n" + path.read_text(encoding="utf-8"))
+    return "\n\n".join(parts)
+
+
+def read_translations() -> dict:
+    """Read both translations JSON files and return combined dict."""
+    translations = {}
+    for lang in ("en", "bg"):
+        path = SRC_DIR / f"translations_{lang}.json"
+        if not path.exists():
+            print(f"WARNING: Translation file not found: {path}", file=sys.stderr)
+            translations[lang] = {}
+        else:
+            translations[lang] = json.loads(path.read_text(encoding="utf-8"))
+    return translations
+
+
+def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict) -> str:
+    """Generate a <script> block embedding EN/BG content and translations."""
+    def dict_to_js(d: dict, var_name: str) -> str:
+        pairs = [f"  {json.dumps(k)}: {json.dumps(v)}" for k, v in d.items()]
+        return f"const {var_name} = {{\n" + ",\n".join(pairs) + "\n};"
+
+    en_js    = dict_to_js(steps_en, "STEPS_CONTENT_EN")
+    bg_js    = dict_to_js(steps_bg, "STEPS_CONTENT_BG")
+    trans_js = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
+
+    return f"<script>\n{en_js}\n\n{bg_js}\n\n{trans_js}\n</script>"
 
 
 def write_service_worker(dist_dir: Path) -> None:
-    """Write docs/sw.js — network-first with cache fallback for offline use (9.2)."""
+    """Write docs/sw.js — network-first with cache fallback for offline use."""
     sw_content = """\
-const CACHE_NAME = 'rl-study-v1';
+const CACHE_NAME = 'rl-study-v2';
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -106,18 +152,26 @@ self.addEventListener('fetch', event => {
 
 
 def build():
-    """Main build: inline CSS, JS, and content into shell.html → dist/interactiveStudy.html."""
+    """Main build: inline CSS, JS modules, translations, and content into shell.html."""
     # Read source files
     shell_html = (SRC_DIR / "shell.html").read_text(encoding="utf-8")
     styles_css = (SRC_DIR / "styles.css").read_text(encoding="utf-8")
-    app_js     = (SRC_DIR / "app.js").read_text(encoding="utf-8")
 
-    # Read step content
-    steps = read_steps()
-    if not steps:
-        print("ERROR: No step files found.", file=sys.stderr)
+    # Bundle all JS modules
+    app_js = bundle_js()
+
+    # Read step content (EN + BG)
+    steps_en = read_steps(RAW_STEPS_DIR_EN)
+    steps_bg = read_steps(RAW_STEPS_DIR_BG)
+    if not steps_en:
+        print("ERROR: No EN step files found.", file=sys.stderr)
         sys.exit(1)
-    content_script = generate_content_script(steps)
+
+    # Read translations
+    translations = read_translations()
+
+    # Generate combined content + translations script
+    content_script = generate_content_script(steps_en, steps_bg, translations)
 
     # Replace placeholders
     output = shell_html
@@ -138,7 +192,9 @@ def build():
 
     size_kb = out_path.stat().st_size / 1024
     print(f"Built {out_path} ({size_kb:.0f} KB)")
-    print(f"Embedded {len(steps)} steps")
+    print(f"  EN steps: {len(steps_en)}, BG steps: {len(steps_bg)}")
+    print(f"  Translations: {list(translations.keys())}")
+    print(f"  JS modules: {len(JS_MODULES)}")
 
 
 if __name__ == "__main__":

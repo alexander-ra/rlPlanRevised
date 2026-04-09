@@ -38,7 +38,7 @@
   <!-- LOADING OVERLAY -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-spinner"></div>
-    <div id="loading-text" class="loading-text">Loading study plan…</div>
+    <div id="loading-text" class="loading-text" data-i18n="loading_text">Loading study plan…</div>
   </div>
 
   <!-- OVERLAY BACKDROP (mobile nav) -->
@@ -47,18 +47,18 @@
   <!-- SIDEBAR NAVIGATION -->
   <nav id="sidebar" class="sidebar">
     <div class="sidebar-header">
-      <h2>Study Steps</h2>
-      <button id="close-sidebar" class="icon-btn" aria-label="Close menu">&#x2715;</button>
+      <h2 data-i18n="sidebar_header">Study Steps</h2>
+      <button id="close-sidebar" class="icon-btn" data-i18n-aria="close_menu" aria-label="Close menu">&#x2715;</button>
     </div>
     <div id="nav-list" class="nav-list">
       <!-- Populated by JS: grouped by phase -->
     </div>
     <div class="sidebar-footer">
       <div class="sched-adjust">
-        <span class="sched-label">Delay (days)</span>
-        <button id="sched-minus" class="sched-btn" aria-label="Remove day">&minus;</button>
+        <span class="sched-label" data-i18n="delay_label">Delay (days)</span>
+        <button id="sched-minus" class="sched-btn" data-i18n-aria="sched_remove_day" aria-label="Remove day">&minus;</button>
         <span id="sched-value" class="sched-value">0/0</span>
-        <button id="sched-plus" class="sched-btn" aria-label="Add day">+</button>
+        <button id="sched-plus" class="sched-btn" data-i18n-aria="sched_add_day" aria-label="Add day">+</button>
       </div>
     </div>
   </nav>
@@ -67,16 +67,24 @@
   <div id="main" class="main">
     <!-- TOP BAR -->
     <header class="topbar">
-      <button id="hamburger" class="icon-btn" aria-label="Open menu">&#9776;</button>
+      <button id="hamburger" class="icon-btn" data-i18n-aria="open_menu" aria-label="Open menu">&#9776;</button>
       <div class="topbar-title-wrap">
         <span id="topbar-title" class="topbar-title">Step 1</span>
-        <span id="topbar-section" class="topbar-section" role="button" tabindex="0" aria-label="Scroll to top" title="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})" onkeydown="if(event.key==='Enter')window.scrollTo({top:0,behavior:'smooth'})"></span>
+        <span id="topbar-section" class="topbar-section" role="button" tabindex="0"
+          data-i18n-aria="scroll_to_top" data-i18n-title="scroll_to_top"
+          aria-label="Scroll to top" title="Scroll to top"
+          onclick="window.scrollTo({top:0,behavior:'smooth'})"
+          onkeydown="if(event.key==='Enter')window.scrollTo({top:0,behavior:'smooth'})"></span>
       </div>
       <div class="topbar-nav">
-        <button id="prev-btn" class="nav-btn" aria-label="Previous step">&larr; Prev</button>
-        <button id="next-btn" class="nav-btn" aria-label="Next step">Next &rarr;</button>
+        <button id="prev-btn" class="nav-btn" data-i18n-aria="prev_btn" aria-label="Previous step">&larr; Prev</button>
+        <button id="next-btn" class="nav-btn" data-i18n-aria="next_btn" aria-label="Next step">Next &rarr;</button>
       </div>
-      <button id="theme-toggle-top" class="icon-btn topbar-theme-btn" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      <button id="theme-toggle-top" class="icon-btn topbar-theme-btn" data-i18n-aria="toggle_theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      <div class="lang-switcher">
+        <button id="lang-en" class="lang-btn active" data-i18n-aria="lang_en_label" aria-label="Switch to English">&#127468;&#127463;</button>
+        <button id="lang-bg" class="lang-btn" data-i18n-aria="lang_bg_label" aria-label="Switch to Bulgarian">&#127463;&#127468;</button>
+      </div>
     </header>
 
     <!-- TIMELINE BAR -->
@@ -89,27 +97,19 @@
 
     <!-- BOTTOM NAV (visible on mobile) -->
     <footer class="bottombar">
-      <button id="prev-btn-bottom" class="nav-btn">&larr; Previous</button>
-      <button id="sections-btn-bottom" class="bottombar-center-btn" aria-label="Jump to section"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="18" height="18" aria-hidden="true"><line x1="2" y1="4" x2="16" y2="4"/><line x1="5" y1="8" x2="16" y2="8"/><line x1="5" y1="12" x2="16" y2="12"/><line x1="2" y1="16" x2="16" y2="16"/></svg></button>
-      <button id="next-btn-bottom" class="nav-btn">Next &rarr;</button>
+      <button id="prev-btn-bottom" class="nav-btn" data-i18n="prev_btn_bottom">&larr; Previous</button>
+      <button id="sections-btn-bottom" class="bottombar-center-btn" data-i18n-aria="jump_to_section" aria-label="Jump to section"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="18" height="18" aria-hidden="true"><line x1="2" y1="4" x2="16" y2="4"/><line x1="5" y1="8" x2="16" y2="8"/><line x1="5" y1="12" x2="16" y2="12"/><line x1="2" y1="16" x2="16" y2="16"/></svg></button>
+      <button id="next-btn-bottom" class="nav-btn" data-i18n="next_btn_bottom">Next &rarr;</button>
     </footer>
   </div>
 
   <!-- SECTION JUMP (floating action button) -->
   <div id="section-nav" class="section-nav">
     <div id="section-dropdown" class="section-dropdown"></div>
-    <button id="section-fab" class="section-fab" aria-label="Jump to section"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16" aria-hidden="true"><line x1="2" y1="4" x2="16" y2="4"/><line x1="5" y1="8" x2="16" y2="8"/><line x1="5" y1="12" x2="16" y2="12"/><line x1="2" y1="16" x2="16" y2="16"/></svg></button>
+    <button id="section-fab" class="section-fab" data-i18n-aria="jump_to_section" aria-label="Jump to section"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16" aria-hidden="true"><line x1="2" y1="4" x2="16" y2="4"/><line x1="5" y1="8" x2="16" y2="8"/><line x1="5" y1="12" x2="16" y2="12"/><line x1="2" y1="16" x2="16" y2="16"/></svg></button>
   </div>
 
   <!-- INLINE_CONTENT -->
   <!-- INLINE_JS -->
-  <!-- Service Worker (9.2) -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      });
-    }
-  </script>
 </body>
 </html>
