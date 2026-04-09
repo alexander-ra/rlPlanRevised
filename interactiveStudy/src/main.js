@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   await initCloudStorage();
+  initLock();
 
   if (loadingTextEl) loadingTextEl.textContent = t('loading_text');
 
@@ -30,11 +31,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('prev-btn-bottom').addEventListener('click', goPrev);
   document.getElementById('next-btn-bottom').addEventListener('click', goNext);
 
-  // Section jump
-  document.getElementById('section-fab').addEventListener('click', toggleSectionNav);
+  // Section jump / lock toggle (context-dependent)
+  document.getElementById('section-fab').addEventListener('click', () => {
+    if (isHomepage) toggleLock();
+    else toggleSectionNav();
+  });
   document.getElementById('sections-btn-bottom').addEventListener('click', (e) => {
     e.stopPropagation();
-    toggleSectionNav();
+    if (isHomepage) toggleLock();
+    else toggleSectionNav();
   });
   document.addEventListener('click', (e) => {
     const nav = document.getElementById('section-nav');

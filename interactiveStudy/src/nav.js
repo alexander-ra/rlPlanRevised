@@ -76,6 +76,7 @@ function navigateTo(stepId) {
     isHomepage = false;
     document.getElementById('timeline-bar').style.display = '';
     document.getElementById('section-nav').style.display = '';
+    updateFab();
 
     const idx = STEP_META.findIndex(s => s.id === stepId);
     if (idx === -1) return;

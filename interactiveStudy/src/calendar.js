@@ -339,8 +339,8 @@ function navigateHome() {
     const sectionEl = document.getElementById('topbar-section');
     if (sectionEl) sectionEl.textContent = '';
     document.getElementById('timeline-bar').style.display = 'none';
-    document.getElementById('section-nav').style.display = 'none';
     updateNavButtons();
+    updateFab();
     updateActiveNav();
     history.replaceState(null, '', '#home');
 

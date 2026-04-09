@@ -44,6 +44,7 @@ STEP_FILES = [
 # JS modules in dependency order (concatenated into one bundle)
 JS_MODULES = [
     "config.js",
+    "lock.js",
     "i18n.js",
     "cloud.js",
     "theme.js",

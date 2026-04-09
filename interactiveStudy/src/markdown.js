@@ -273,4 +273,5 @@ function renderStep(stepId) {
   updateReadingProgress();
   setupCheckboxes();
   setupPhaseCheckpoints();
+  applyLockState();
 }
