@@ -16,7 +16,10 @@ function initLock() {
 
 function toggleLock() {
   if (isLocked) {
-    const pw = prompt(getTranslation('lock_prompt'));
+    const lockPrompt = currentLang === 'bg' 
+      ? "Въведете парола, за да отключите редактирането.\n\n(Това засяга редактиране на график и отчет. Съдържанието остава същото.)"
+      : "Enter password to unlock editing.\n\n(This only affects your personal schedule and completion marks — the study content itself is never modified.)";
+    const pw = prompt(lockPrompt);
     if (pw === null) return;
     if (pw === LOCK_PASSWORD) {
       isLocked = false;
@@ -24,7 +27,8 @@ function toggleLock() {
       applyLockState();
       updateFab();
     } else {
-      alert(getTranslation('lock_incorrect'));
+      const incorrectMsg = currentLang === 'bg' ? "Неправилна парола." : "Incorrect password.";
+      alert(incorrectMsg);
     }
   } else {
     isLocked = true;
@@ -52,7 +56,9 @@ function updateFab() {
 
   if (isHomepage) {
     const icon  = isLocked ? LOCK_SVG : UNLOCK_SVG;
-    const label = isLocked ? getTranslation('lock_label') : getTranslation('unlock_label');
+    const label = isLocked 
+      ? (currentLang === 'bg' ? 'Заключи' : 'Lock')
+      : (currentLang === 'bg' ? 'Отключи' : 'Unlock');
     fab.innerHTML = icon;
     fab.setAttribute('aria-label', label);
     fab.title = label;
