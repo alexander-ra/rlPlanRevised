@@ -1554,7 +1554,7 @@ body {
 .gl-trigger:hover .gl-sup-icon, .gl-trigger.gl-open .gl-sup-icon { background: var(--primary); color: var(--on-primary); transform: scale(1.15); }
 
 /* Popup card */
-.gl-popup { position: absolute; z-index: 200; width: 300px; max-width: calc(100vw - 16px); background: var(--surface); border: 1px solid var(--outline); border-radius: 12px; box-shadow: var(--shadow-3); padding: 0; overflow: hidden; opacity: 0; pointer-events: none; transform: scale(0.95) translateY(4px); transition: opacity 0.15s ease, transform 0.15s ease; }
+.gl-popup { position: absolute; z-index: 200; width: 300px; max-width: calc(100vw - 16px); background: var(--surface); border: 1px solid var(--outline); border-radius: 12px; box-shadow: var(--shadow-3); padding: 0; overflow: hidden; opacity: 0; pointer-events: none; transform: scale(0.95) translateY(4px); transition: opacity 0.15s ease, transform 0.15s ease; white-space: normal; word-wrap: break-word; }
 .gl-popup.gl-popup--on { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
 
 .gl-popup-head { padding: 0.65rem 0.85rem 0.4rem; border-left: 3px solid var(--primary); display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.35rem; }
