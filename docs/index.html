@@ -225,8 +225,14 @@ body {
   transition: transform 0.25s ease;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+  scrollbar-width: thin;
 }
 .sidebar.open { transform: translateX(0); }
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+.sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
 
 .sidebar-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -235,7 +241,12 @@ body {
 }
 .sidebar-header h2 { font-size: 1.1rem; font-weight: 600; color: #fff; }
 
-.nav-list { flex: 1; padding: 0.5rem 0; overflow-y: auto; min-height: 0; }
+.nav-list { flex: 1; padding: 0.5rem 0; overflow-y: auto; min-height: 0;
+  scrollbar-color: rgba(255,255,255,0.2) transparent; scrollbar-width: thin; }
+.nav-list::-webkit-scrollbar { width: 5px; }
+.nav-list::-webkit-scrollbar-track { background: transparent; }
+.nav-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+.nav-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
 
 .phase-label {
   padding: 0.75rem 1rem 0.35rem;
@@ -4796,13 +4807,13 @@ function setupGlossaryTooltips() {
     sup.replaceWith(trigger);
 
     /* Events */
-    trigger.addEventListener('mouseenter', () => glShowPopup(trigger));
+    trigger.addEventListener('mouseenter', () => { glCancelHide(); glShowPopup(trigger); });
     trigger.addEventListener('mouseleave', e => {
-      if (!trigger.contains(e.relatedTarget)) glHidePopup(trigger);
+      if (!trigger.contains(e.relatedTarget)) glScheduleHide(trigger, 250);
     });
     trigger.addEventListener('focus', () => glShowPopup(trigger));
     trigger.addEventListener('blur',  e => {
-      if (!trigger.contains(e.relatedTarget)) glHidePopup(trigger);
+      if (!trigger.contains(e.relatedTarget)) glScheduleHide(trigger, 250);
     });
     trigger.addEventListener('click', e => {
       e.stopPropagation();
@@ -4828,7 +4839,19 @@ function setupGlossaryTooltips() {
   document.addEventListener('click', glCloseAll);
 }
 
+let _glHideTimer = null;
+
+function glCancelHide() {
+  if (_glHideTimer) { clearTimeout(_glHideTimer); _glHideTimer = null; }
+}
+
+function glScheduleHide(trigger, delay) {
+  glCancelHide();
+  _glHideTimer = setTimeout(() => glHidePopup(trigger), delay ?? 250);
+}
+
 function glShowPopup(trigger) {
+  glCancelHide();
   glCloseAll();
   trigger.classList.add('gl-open');
   const popup = trigger.querySelector('.gl-popup');
@@ -4843,6 +4866,7 @@ function glHidePopup(trigger) {
 }
 
 function glCloseAll() {
+  glCancelHide();
   document.querySelectorAll('.gl-trigger.gl-open').forEach(t => glHidePopup(t));
 }
 

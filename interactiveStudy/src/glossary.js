@@ -295,13 +295,13 @@ function setupGlossaryTooltips() {
     sup.replaceWith(trigger);
 
     /* Events */
-    trigger.addEventListener('mouseenter', () => glShowPopup(trigger));
+    trigger.addEventListener('mouseenter', () => { glCancelHide(); glShowPopup(trigger); });
     trigger.addEventListener('mouseleave', e => {
-      if (!trigger.contains(e.relatedTarget)) glHidePopup(trigger);
+      if (!trigger.contains(e.relatedTarget)) glScheduleHide(trigger, 250);
     });
     trigger.addEventListener('focus', () => glShowPopup(trigger));
     trigger.addEventListener('blur',  e => {
-      if (!trigger.contains(e.relatedTarget)) glHidePopup(trigger);
+      if (!trigger.contains(e.relatedTarget)) glScheduleHide(trigger, 250);
     });
     trigger.addEventListener('click', e => {
       e.stopPropagation();
@@ -327,7 +327,19 @@ function setupGlossaryTooltips() {
   document.addEventListener('click', glCloseAll);
 }
 
+let _glHideTimer = null;
+
+function glCancelHide() {
+  if (_glHideTimer) { clearTimeout(_glHideTimer); _glHideTimer = null; }
+}
+
+function glScheduleHide(trigger, delay) {
+  glCancelHide();
+  _glHideTimer = setTimeout(() => glHidePopup(trigger), delay ?? 250);
+}
+
 function glShowPopup(trigger) {
+  glCancelHide();
   glCloseAll();
   trigger.classList.add('gl-open');
   const popup = trigger.querySelector('.gl-popup');
@@ -342,6 +354,7 @@ function glHidePopup(trigger) {
 }
 
 function glCloseAll() {
+  glCancelHide();
   document.querySelectorAll('.gl-trigger.gl-open').forEach(t => glHidePopup(t));
 }
 
