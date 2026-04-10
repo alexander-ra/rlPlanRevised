@@ -132,5 +132,18 @@
   "lock_prompt": "Enter password to unlock editing.\n\n(This only affects your personal schedule and completion marks — the study content itself is never modified.)",
   "lock_incorrect": "Incorrect password.",
   "unlock_label": "Unlock",
-  "lock_label": "Lock"
+  "lock_label": "Lock",
+  "glossary_btn": "📖 Glossary",
+  "gl_domain_rl": "Reinforcement Learning",
+  "gl_domain_gt": "Game Theory",
+  "gl_domain_alg": "Algorithms",
+  "gl_domain_eval": "Evaluation",
+  "gl_terms_count": "terms",
+  "gl_search_placeholder": "Search terms, definitions…",
+  "gl_filter_label": "Filter by domain",
+  "gl_filter_all": "All",
+  "gl_no_results": "No matching terms found.",
+  "gl_unavailable": "Glossary data not available.",
+  "gl_tooltip_aria": "Glossary",
+  "gl_view_in_glossary": "View in glossary"
 }

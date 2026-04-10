@@ -17,6 +17,13 @@ function buildNav() {
   calBtn.addEventListener('click', () => navigateCalendar());
   navList.appendChild(calBtn);
 
+  const glBtn = document.createElement('button');
+  glBtn.className = 'nav-item nav-glossary';
+  glBtn.dataset.step = 'glossary';
+  glBtn.textContent = t('glossary_btn');
+  glBtn.addEventListener('click', () => navigateGlossary());
+  navList.appendChild(glBtn);
+
   let currentPhase = null;
 
   STEP_META.forEach((step) => {
@@ -67,7 +74,10 @@ function updateNavProgress(stepId) {
 }
 
 function updateActiveNav() {
-  const activeId = isHomepage ? 'home' : isCalendarPage ? 'calendar' : STEP_META[currentStepIndex].id;
+  const activeId = isHomepage ? 'home'
+    : isCalendarPage ? 'calendar'
+    : isGlossaryPage ? 'glossary'
+    : STEP_META[currentStepIndex]?.id || '';
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.step === activeId);
   });
@@ -83,6 +93,7 @@ function navigateTo(stepId) {
   const doRender = () => {
     isHomepage = false;
     isCalendarPage = false;
+    isGlossaryPage = false;
     document.getElementById('timeline-bar').style.display = '';
     document.getElementById('section-nav').style.display = '';
     updateFab();

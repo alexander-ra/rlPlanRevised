@@ -1,19 +1,19 @@
-# Step 11 — Dynamic Coalition Formation in Competitive FFA Games
+# Step 11 — Dynamic Coalition<sup class="gl" data-gl="coalition">gl</sup> Formation in Competitive FFA Games
 
 **Duration:** 14 days (Tier 2)  
-**Dependencies:** Step 7 (Opponent Modeling), Step 9 (Multi-Agent RL), Step 10 (PBT + Evolutionary Game Theory)  
+**Dependencies:** Step 7 (Opponent Modeling), Step 9 (Multi-Agent RL), Step 10 (PBT + Evolutionary Game Theory<sup class="gl" data-gl="game_theory">gl</sup>)  
 **Phase:** E — Multi-Agent Dynamics  
 
 ### PhD Connection
 
 This step is the THESIS FRONTIER. Everything from Steps 2–10 was building existing tools. Step 11 enters unstudied territory:
 
-- **Contribution #1 (Behavioral Adaptation):** The coalition detector extends opponent modeling from "what kind of player is this?" to "who is allied with whom?" This is the multi-agent generalization of behavioral adaptation: instead of adapting to one opponent's style, you adapt to the SOCIAL STRUCTURE of the game.
+- **Contribution #1 (Behavioral Adaptation):** The coalition detector extends opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> from "what kind of player is this?" to "who is allied with whom?" This is the multi-agent generalization of behavioral adaptation: instead of adapting to one opponent's style, you adapt to the SOCIAL STRUCTURE of the game.
 - **Contribution #2 (Multi-Agent Safe Exploitation):** The central thesis gap crystallizes here:
-  - In 2-player games: safe exploitation = bounded deviation from Nash. Well-studied.
+  - In 2-player games: safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> = bounded deviation from Nash. Well-studied.
   - In N-player FFA games: Nash is intractable AND strategically useless (ignores coalitions). The "safe baseline" must be something else — Bakhtin et al.'s piKL suggests a BEHAVIORAL prior, Step 10's population mechanisms suggest a POPULATION-LEVEL baseline. Your thesis contribution: define and prove safety guarantees for N-player FFA settings, likely using a behavioral or population-based safety notion instead of an equilibrium one.
   - SLS is the TESTBED for this contribution. It's small enough to analyze exhaustively (4 players, finite state space) but rich enough to exhibit real coalition dynamics.
-- **Contribution #3 (Evaluation Methodology):** Standard exploitability doesn't work in N-player games (no clear "best response" against a coalition). The EGTA meta-game over agent populations + Shapley credit decomposition provides the alternative evaluation framework. SLS is where you prototype and validate this framework.
+- **Contribution #3 (Evaluation Methodology):** Standard exploitability<sup class="gl" data-gl="exploitability">gl</sup> doesn't work in N-player games (no clear "best response" against a coalition). The EGTA meta-game over agent populations + Shapley credit decomposition provides the alternative evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup>. SLS is where you prototype and validate this framework.
 
 ---
 
@@ -45,7 +45,7 @@ This step is the THESIS FRONTIER. Everything from Steps 2–10 was building exis
 
 The goal: understand WHY coalition formation is hard (and interesting). Key insight: in all previous steps, you've worked with 2-player games. The moment you add a third player, something fundamentally changes: **players can form temporary alliances.** In a 2-player game, there's nothing to negotiate — you either cooperate or not. In a 3+ player game, you can say "Let's gang up on Player C" — and then betray your ally later. This dynamic — form coalitions, exploit them, dissolve them, form new ones — is the heart of FFA games and is essentially unstudied in the RL/game AI literature.
 
-End of day: you should be able to explain to a non-expert: "In a poker game with 6 players, two players might secretly work together — sharing information about their hands, or one folding to let the other win a big pot. This is a COALITION. But coalitions in competitive games are unstable — eventually, one member will betray the other when it's profitable. Learning WHEN to form, MAINTAIN, and BREAK coalitions is an unsolved problem in AI. Traditional game theory (Nash equilibrium) can't tell you much about this because Nash treats each player independently. Cooperative game theory (Shapley value, the core) provides tools to analyze WHO should be in a coalition and HOW to divide the gains — but it assumes coalitions are stable. The real challenge is when coalitions are DYNAMIC."
+End of day: you should be able to explain to a non-expert: "In a poker game with 6 players, two players might secretly work together — sharing information about their hands, or one folding to let the other win a big pot. This is a COALITION. But coalitions in competitive games are unstable — eventually, one member will betray the other when it's profitable. Learning WHEN to form, MAINTAIN, and BREAK coalitions is an unsolved problem in AI. Traditional game theory (Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup>) can't tell you much about this because Nash treats each player independently. Cooperative game theory (Shapley value<sup class="gl" data-gl="shapley_value">gl</sup>, the core) provides tools to analyze WHO should be in a coalition and HOW to divide the gains — but it assumes coalitions are stable. The real challenge is when coalitions are DYNAMIC."
 
 - [**"The mathematics behind Shapley Values" by A Data Odyssey**](https://www.youtube.com/watch?v=UJeu29wq7d0)  
   ⏱ ~12m · Channel: A Data Odyssey  
@@ -301,9 +301,9 @@ https://arxiv.org/abs/1907.05707
 
 ### Supplementary References
 
-- **Li, Kuang, Wang, Liu, Chen, Wu & Xiao (2021, KDD) — "Shapley Counterfactual Credits for Multi-Agent Reinforcement Learning"**  
+- **Li, Kuang, Wang, Liu, Chen, Wu & Xiao (2021, KDD) — "Shapley Counterfactual Credits for Multi-Agent Reinforcement Learning<sup class="gl" data-gl="reinforcement_learning">gl</sup><sup class="gl" data-gl="marl">gl</sup>"**  
   https://arxiv.org/abs/2106.00285  
-  *Combines Shapley values with counterfactual baselines (reminiscent of CFR's counterfactual regret). SKIM Section 3 for the counterfactual Shapley mechanism. Connection: your CFR expertise (Steps 2–4) meets cooperative GT here.*
+  *Combines Shapley values with counterfactual baselines (reminiscent of CFR's counterfactual regret<sup class="gl" data-gl="counterfactual_value">gl</sup>). SKIM Section 3 for the counterfactual Shapley mechanism. Connection: your CFR expertise (Steps 2–4) meets cooperative GT here.*
 
 - **Wang, Li, Kaski & Lawry (2025) — "Shapley Machine: A Game-Theoretic Framework for N-Agent Ad Hoc Teamwork"**  
   https://arxiv.org/abs/2506.11285  
@@ -323,7 +323,7 @@ https://arxiv.org/abs/1907.05707
 **WHY:** The Shapley value φ_i(v) = Σ_{S⊆N\{i}} (|S|!(n-|S|-1)!/n!) * [v(S∪{i}) - v(S)] is the central computational tool for this step. It tells you each player's "fair share" of coalition value. In SLS: it tells you how much each chip-placement action helped or hurt each potential coalition. For your thesis (Contribution #2): Shapley values in FFA settings are the replacement for exploitability in the 2-player setting — they measure "how much does coalition membership benefit each agent?"
 
 🔢 **The core (linear programming characterization)** — Must understand the definition.  
-**WHY:** The core of a cooperative game is the set of payoff allocations where no coalition can profitably deviate. If the core is empty, NO coalition structure is stable — every arrangement of players can be "broken" by some subgroup deviating. For SLS: the game almost certainly has an empty core (because the game is zero-sum among 4 players: only 1 wins). This means coalitions are INHERENTLY UNSTABLE — they will always be betrayed eventually. Understanding this instability is key to modeling coalition dynamics.
+**WHY:** The core of a cooperative game is the set of payoff allocations where no coalition can profitably deviate. If the core is empty, NO coalition structure is stable — every arrangement of players can be "broken" by some subgroup deviating. For SLS: the game almost certainly has an empty core (because the game is zero-sum<sup class="gl" data-gl="zero_sum_game">gl</sup> among 4 players: only 1 wins). This means coalitions are INHERENTLY UNSTABLE — they will always be betrayed eventually. Understanding this instability is key to modeling coalition dynamics.
 
 🔢 **piKL regularization (Bakhtin et al., Section 2.2)** — Read the formula.  
 **WHY:** This is the N-player replacement for Nash-based safety from Step 8. Instead of π_safe = Nash, use π_safe = human_prior. The regularized policy search minimizes KL(π, π_human) subject to performance constraints. For your thesis (Contribution #2): this suggests that safe exploitation in N-player FFA games uses a BEHAVIORAL baseline (from population or from human data) instead of an equilibrium baseline.
@@ -344,7 +344,7 @@ Starting point: Sharan & Adak's SLS implementation + your Step 9 MARL infrastruc
 | Coalition detection from action history | 🔴 HAND-CODE | This IS the thesis-relevant mechanism: inferring implicit coalitions from observed actions (who is placing whose chips, who captures whose piles). Directly extends Step 7's opponent modeling to alliance modeling. |
 | Shapley value credit assignment for SLS | 🔴 HAND-CODE | Adapting Shapley Q-value to the FFA setting. Must understand the decomposition deeply: in a 4-player game, each action's credit is distributed among all possible coalitions. |
 | MARL training with coalition-aware rewards | 🔴 HAND-CODE | The core training loop: agents train with Shapley-decomposed rewards instead of sparse winner-takes-all reward. This is the novel training signal that should produce coalition-aware agents. |
-| Spinning top decomposition on SLS meta-game | 🔴 HAND-CODE | Apply Step 10's analytical tool to SLS: how much of the 4-player dynamics are transitive (skill) vs cyclic (coalition rock-paper-scissors)? |
+| Spinning top decomposition<sup class="gl" data-gl="spinning_top">gl</sup> on SLS meta-game | 🔴 HAND-CODE | Apply Step 10's analytical tool to SLS: how much of the 4-player dynamics are transitive (skill) vs cyclic (coalition rock-paper-scissors)? |
 | EGTA evaluation of SLS agent populations | 🔴 HAND-CODE | Apply Step 10's EGTA framework to SLS: compute meta-Nash of the SLS agent population. This is the multi-agent evaluation prototype for Contribution #3. |
 | Baseline agents (random, heuristic, DQN from paper) | 🟡 AI-ASSISTED | Standard baselines for comparison. AI drafts, you verify. |
 | Visualization (coalition graphs, Shapley attribution plots) | 🟢 AI-GENERATED | Standard plotting infrastructure. |
@@ -591,7 +591,7 @@ Starting point: Sharan & Adak's SLS implementation + your Step 9 MARL infrastruc
     - [Step 10] Spinning top decomposition → [Step 11] CONFIRMED: SLS meta-game has large cyclic component (coalition dynamics ARE non-transitive). This validates Step 10's prediction.
     - [Step 10] EGTA → [Step 11] EGTA on the 4-player payoff tensor is the evaluation mechanism. But the tensor dimensionality explosion (payoff_matrix → payoff_tensor) is a challenge.
     - [Step 11] Shapley credit in FFA → prediction: [Step 13] Playtech's multi-table poker data may contain implicit coalitions (chip dumping, soft-play). The coalition detector from Step 11 could be adapted for collusion detection in real poker data. This directly connects to Contribution #3.
-    - [Step 11] Dynamic coalition instability → prediction: [Step 14] The evaluation framework must handle non-stationary opponent populations where coalition structures shift mid-evaluation. Standard exploitability (fixed opponent assumption) breaks down.
+    - [Step 11] Dynamic coalition instability → prediction: [Step 14] The evaluation framework must handle non-stationary<sup class="gl" data-gl="non_stationarity">gl</sup> opponent populations where coalition structures shift mid-evaluation. Standard exploitability (fixed opponent assumption) breaks down.
   - **Confusions:**
     - [Step 11] The Shapley value assumes the grand coalition is optimal and asks "how to divide the gains fairly." But in SLS, the grand coalition makes no sense (only 1 player wins). How should the Shapley decomposition be adapted for purely competitive settings where coalition help is TEMPORARY? → PARTIALLY ADDRESSED (use Shapley for credit, not for payoff division)
     - [Step 11] Coalition detection from action history is noisy — a player might place another's chip for strategic reasons (not alliance). Can the detector distinguish "genuine alliance" from "strategic manipulation"? → OPEN (relates to deception detection, potentially Step 13)

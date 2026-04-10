@@ -18,7 +18,7 @@ This step is the PRACTICAL CORE of the thesis — it connects all theoretical wo
 
 - **Contribution #2 (Multi-Agent Safe Exploitation):** The real-world data establishes the empirical basis:
   - The gap between real player behavior and GTO play (measured here) is the EXPLOITATION OPPORTUNITY.
-  - Step 8's safe exploitation theory + Step 13's behavioral pipeline = a complete SYSTEM: detect opponent weakness from data → exploit it safely.
+  - Step 8's safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> theory + Step 13's behavioral pipeline = a complete SYSTEM: detect opponent weakness from data → exploit it safely.
   - In the N-player setting (6-max tables): the multi-player modeling challenges from Steps 9–11 meet real data.
 
 - **Contribution #3 (Evaluation Methodology):** The collusion detection module is a direct contribution:
@@ -27,7 +27,7 @@ This step is the PRACTICAL CORE of the thesis — it connects all theoretical wo
   - This is directly relevant to the fraud/risk career path (5/5 fraud job postings map to Steps 7, 8, 13).
   - Playtech co-authorship potential: if the detection pipeline finds real anomalies in Playtech data, the resulting paper has both academic and industry value.
 
-- **Bridge to Step 14:** The evaluation metrics developed here (action prediction accuracy, style classification accuracy, collusion detection precision/recall) feed into the formal evaluation framework of Step 14. Step 14 asks "how do we evaluate agents?" — Step 13 provides the real-world data benchmark.
+- **Bridge to Step 14:** The evaluation metrics developed here (action prediction accuracy, style classification accuracy, collusion detection precision/recall) feed into the formal evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup> of Step 14. Step 14 asks "how do we evaluate agents?" — Step 13 provides the real-world data benchmark<sup class="gl" data-gl="benchmark">gl</sup>.
 
 - **November publication target:** Step 13's pipeline + Playtech case study is the STRONGEST candidate for the first publication. It combines: (a) novel methodology (player2vec for poker + collusion detection), (b) real-world data (Playtech), (c) practical value (iGaming industry), (d) accessible framing (fraud detection). A paper titled "Behavioral Analysis and Collusion Detection in Online Poker via Transformer-Based Player Embeddings" would be suitable for IEEE Transactions on Games, AAAI Workshop on AI for Social Good, or a similar venue.
 
@@ -59,7 +59,7 @@ This step is the PRACTICAL CORE of the thesis — it connects all theoretical wo
 
 ## Phase 1: Intuition (1 day)
 
-The goal: understand WHY real-world behavioral data is different from simulated data (and harder), WHAT you can extract from poker hand histories (player styles, anomalies, collusion signals), and HOW this connects everything from Steps 7–12 into a practical pipeline. The key mental shift: in Steps 2–11, you've been building game solvers and opponent models. Now you flip the perspective — instead of computing WHAT the optimal strategy is, you analyze WHAT actual humans DO, and use the gap between their behavior and theory to classify, model, and detect anomalies.
+The goal: understand WHY real-world behavioral data is different from simulated data (and harder), WHAT you can extract from poker hand histories (player styles, anomalies, collusion signals), and HOW this connects everything from Steps 7–12 into a practical pipeline. The key mental shift: in Steps 2–11, you've been building game solvers and opponent models<sup class="gl" data-gl="opponent_modeling">gl</sup>. Now you flip the perspective — instead of computing WHAT the optimal strategy is, you analyze WHAT actual humans DO, and use the gap between their behavior and theory to classify, model, and detect anomalies.
 
 End of day: you should be able to explain to a non-expert: "Online poker sites like Playtech record every hand played — who bet, how much, who folded, who won. That's millions of hands. From this data, we can learn: (1) what kind of player someone is — aggressive vs passive, loose vs tight, predictable vs erratic; (2) whether someone is playing suspiciously — maybe two accounts are controlled by the same person and they're helping each other at the same table (collusion); and (3) whether a bot is playing instead of a human, because bots behave with inhuman consistency. To do all this, we need a DATA PIPELINE that converts raw hand histories into structured tensors, trains models on them, and flags anomalies. That pipeline is what this step builds."
 
@@ -75,7 +75,7 @@ End of day: you should be able to explain to a non-expert: "Online poker sites l
 
 - [**Stanford CS224R — Lecture 2: Imitation Learning (Spring 2025)**](https://www.youtube.com/watch?v=WxRDyObrm_M)  
   ⏱ ~1h7m · Instructor: Chelsea Finn (Stanford)  
-  *Behavioral cloning and learning from demonstrations. The same paradigm used for modeling player behavior from hand histories — predict what the player did from the game state.*
+  *Behavioral cloning<sup class="gl" data-gl="behavioral_cloning">gl</sup> and learning from demonstrations. The same paradigm used for modeling player behavior from hand histories — predict what the player did from the game state.*
 
 - [**Stanford CS224R — Lecture 7: Offline RL (Spring 2025)**](https://www.youtube.com/watch?v=lRDaXnPIzks)  
   ⏱ ~1h8m · Instructor: Chelsea Finn (Stanford)  
@@ -341,7 +341,7 @@ https://arxiv.org/abs/2404.04234
 - **PhD Connection:** This is EXACTLY what you should build for poker data. Your "events" are poker actions (fold/check/call/bet/raise with sizing). Your "sentences" are hands. Your "documents" are player histories. player2vec validates the approach; your poker-specific version creates the behavioral embeddings for style classification and anomaly detection.
 - **Adaptation needed:** player2vec uses general game events (movement, interaction, purchase). Poker events have richer structure: position, street, sizing, relative to pot. Your encoding should be more structured than raw tokenization.
 
-### Paper 2: Kumar, Hong, Singh & Levine — "When Should We Prefer Offline Reinforcement Learning Over Behavioral Cloning?" (2022, ICLR)
+### Paper 2: Kumar, Hong, Singh & Levine — "When Should We Prefer Offline Reinforcement Learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> Over Behavioral Cloning?" (2022, ICLR)
 https://arxiv.org/abs/2204.05618
 
 - **READ:** Sections 1–4 (Introduction, Problem Setup, Theoretical Analysis, Experiments)
@@ -357,7 +357,7 @@ https://arxiv.org/abs/2204.05618
   - Collusion patterns: information sharing, chip dumping, soft play
   - Detection approaches: statistical deviation from expected play, co-occurrence analysis, action correlation between suspected colluders
 - **KEY OBSERVATION:** Collusion detection is fundamentally about finding COORDINATED DEVIATIONS from independent play. Two players who INDEPENDENTLY play strangely are just bad players. Two players who play strangely in a CORRELATED way (always at the same table, always benefiting each other) are potentially colluding.
-- **PhD Connection:** Direct Contribution #3 material. Your coalition detector from Step 11 (help/harm matrices) is the structural analog: in SLS, the coalition is explicit (chip placement). In poker, the coalition is hidden (information sharing). Same detection problem, different observation space.
+- **PhD Connection:** Direct Contribution #3 material. Your coalition<sup class="gl" data-gl="coalition">gl</sup> detector from Step 11 (help/harm matrices) is the structural analog: in SLS, the coalition is explicit (chip placement). In poker, the coalition is hidden (information sharing). Same detection problem, different observation space.
 
 ### Paper 4: Yan & Browne — "Collusion Detection in Online Poker" (2016)
 
@@ -388,7 +388,7 @@ https://arxiv.org/abs/2204.05618
 ### Math Flags:
 
 🔢 **Bayesian posterior update for player type estimation** — Revisit from Step 7. Work through the update for a concrete example: Player X has played 100 hands, 35% VPIP, 25% PFR. Given a prior over 4 archetypes (TAG, LAG, Nit, Fish), compute the posterior. How many hands until the posterior concentrates?  
-**WHY this can't be substituted by algorithmic understanding:** The posterior convergence rate directly determines the minimum data requirement per player. If convergence requires 500 hands, players with fewer hands can't be reliably typed — this constrains your pipeline's coverage.
+**WHY this can't be substituted by algorithmic understanding:** The posterior convergence rate<sup class="gl" data-gl="convergence">gl</sup> directly determines the minimum data requirement per player. If convergence requires 500 hands, players with fewer hands can't be reliably typed — this constrains your pipeline's coverage.
 
 🔢 **player2vec embedding loss function** — Understand the self-supervised training objective (masked event prediction or next-event prediction). How does the loss relate to behavioral consistency? (High-loss players = inconsistent behavior = either adapting or deliberately varying.)  
 **WHY this can't be substituted by algorithmic understanding:** The loss landscape tells you about behavioral CONSISTENCY, which is itself a feature for anomaly detection (bots have unusually low loss = unusually consistent behavior).
@@ -775,11 +775,11 @@ https://arxiv.org/abs/2204.05618
 - **Write the mandatory one-pager** (Section 4.7 format). Commit to repo.
 - **Update the Learning Log** (`learningLog.md`):
   - **Connections:**
-    - [Step 2] Kuhn/Leduc Nash equilibrium → [Step 13] Nash strategy as the "reference point": deviations from Nash-like play are the SIGNAL for player classification. A player who folds 60% preflop deviates from most computed equilibria — that deviation IS the behavioral feature.
+    - [Step 2] Kuhn/Leduc Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> → [Step 13] Nash strategy as the "reference point": deviations from Nash-like play are the SIGNAL for player classification. A player who folds 60% preflop deviates from most computed equilibria — that deviation IS the behavioral feature.
     - [Step 3] CFR agent data → [Step 13] CFR solver produces near-Nash strategies that serve as the DATA GENERATOR for the DT training in Step 12, and as the COMPARISON BASELINE for real player behavior. Real players deviate from CFR solutions — the deviation distribution defines their style.
     - [Step 7] Bayesian opponent model → [Step 13] The Bayesian model (prior over player types → posterior from observed actions) is the THEORY behind player2vec: player2vec automates what Bayes' Bluff did manually by learning the "prior space" from data and computing "posteriors" as embeddings. They're the same function in different mathematical languages.
     - [Step 7] Hand range inference → [Step 13] In Step 7, you inferred what CARDS a player holds from their actions. In Step 13, you infer what TYPE of player they are from their action history. Same Bayesian inference, different target variable.
-    - [Step 8] Safe exploitation → [Step 13] The deviation between real player behavior and GTO play (measured by the BC model's errors, or by the exploitability of the inferred strategy) IS the exploitation opportunity. Safe exploitation theory (Step 8) says: exploit this deviation, but only to the extent that you stay safe. The Playtech pipeline quantifies the deviation — Step 8's theory determines how to respond.
+    - [Step 8] Safe exploitation → [Step 13] The deviation between real player behavior and GTO play (measured by the BC model's errors, or by the exploitability<sup class="gl" data-gl="exploitability">gl</sup> of the inferred strategy) IS the exploitation opportunity. Safe exploitation theory (Step 8) says: exploit this deviation, but only to the extent that you stay safe. The Playtech pipeline quantifies the deviation — Step 8's theory determines how to respond.
     - [Step 11] Coalition detector (SLS) → [Step 13] Collusion detector (poker). Same principle: detect coordinated behavior between agents who should be playing independently. SLS: chip placement patterns. Poker: co-occurrence + chip dumping + soft play. The detector architecture carries directly from SLS to poker — just different input features.
     - [Step 12] State tensor encoding (Kuhn/Leduc) → [Step 13] State tensor encoding (full Hold'em/Playtech). The prototype becomes the real pipeline. Same architectural decisions, larger dimensions.
     - [Step 12] DT stochasticity warning (Paster et al.) → [Step 13] Confirmed on real data: conditioning on outcomes conflates luck and skill. The fix: condition on decision quality metrics or deviation from GTO, not raw chipcount.
@@ -790,7 +790,7 @@ https://arxiv.org/abs/2204.05618
     - [Step 13] Temporal stability of player style: some players CHANGE their style (e.g., tilt → become loose-aggressive after a bad beat). The current pipeline treats each player as a static entity. How to detect style SHIFTS? → OPEN (potential Contribution #1 extension: dynamic behavioral adaptation modeling)
     - [Step 7→13] Bayesian opponent model requires a PRIOR over player types. Where does the prior come from? In Step 7, it was assumed or hand-crafted. In Step 13, the clustering results could DEFINE the prior: the 4 (or N) cluster centroids IS the prior distribution. This closes the loop: data → clusters → prior → Bayesian update → refined model. → PARTIALLY ADDRESSED (architecture identified but not implemented end-to-end)
     - [Step 11→13] The SLS coalition detector uses a simple threshold on help/harm net scores. The poker collusion detector uses a weighted composite of co-occurrence, chip dumping, and soft play. Is there a principled way to SET the threshold/weights? (If too aggressive → false positives; too conservative → misses real collusion.) → OPEN (ROC analysis on synthetic collusion can help, but real-world calibration needs Playtech feedback)
-    - [Step 12→13] ARDT (adversarially robust) on real poker data: the poker environment is MUCH more complex than Kuhn. Does ARDT still produce meaningful strategies when data coverage is sparse? (Real players don't visit all information sets equally.) → OPEN (tested briefly in Day 6, but needs deeper investigation)
+    - [Step 12→13] ARDT (adversarially robust) on real poker data: the poker environment is MUCH more complex than Kuhn. Does ARDT still produce meaningful strategies when data coverage is sparse? (Real players don't visit all information sets<sup class="gl" data-gl="information_set">gl</sup> equally.) → OPEN (tested briefly in Day 6, but needs deeper investigation)
 
 ## Exit Checklist
 

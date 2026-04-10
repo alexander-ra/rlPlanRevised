@@ -1,22 +1,22 @@
-# Step 14 — Evaluation Frameworks + Exploitability Metrics
+# Step 14 — Evaluation Frameworks + Exploitability<sup class="gl" data-gl="exploitability">gl</sup> Metrics
 
 **Duration:** 14 days (Tier 2)  
-**Dependencies:** Step 8 (Safe Exploitation), Step 11 (Dynamic Coalition Formation), Step 13 (Behavioral Analysis Pipelines)  
+**Dependencies:** Step 8 (Safe Exploitation), Step 11 (Dynamic Coalition<sup class="gl" data-gl="coalition">gl</sup> Formation), Step 13 (Behavioral Analysis Pipelines)  
 **Phase:** G — Integration  
 
 ### PhD Connection
 
 This step IS Contribution #3. The mapping:
 
-- **Contribution #3 (Evaluation Methodology):** The three-layer evaluation framework:
+- **Contribution #3 (Evaluation Methodology):** The three-layer evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup>:
   - **Layer 1 (Exploitability):** How vulnerable is the agent to worst-case adversaries? Applicable to 2-player games directly, extended to N-player via marginal exploitability. Methods: exact (Step 3), approximate (Timbers et al.), adaptation safety (Ge et al.).
-  - **Layer 2 (Population Ranking):** How does the agent perform relative to a diverse population? Methods: Elo (baseline), α-Rank (evolutionary dynamics), VasE (social choice theory), meta-Nash (EGTA). Diagnostic: spinning top decomposition reveals transitive vs cyclic structure.
+  - **Layer 2 (Population Ranking):** How does the agent perform relative to a diverse population? Methods: Elo (baseline), α-Rank<sup class="gl" data-gl="alpha_rank">gl</sup> (evolutionary dynamics), VasE (social choice theory), meta-Nash (EGTA). Diagnostic: spinning top decomposition<sup class="gl" data-gl="spinning_top">gl</sup> reveals transitive vs cyclic structure.
   - **Layer 3 (Statistical Confidence):** How confident are these measurements? Methods: AIVAT (poker-specific variance reduction), confidence intervals (Rowland et al. sample complexity), bootstrapping.
   - **Cross-game validation:** Applied consistently to Kuhn, Leduc, SLS, and Playtech data → domain-agnostic evidence that the framework generalizes.
 
 - **Contribution #1 (Behavioral Adaptation):** The evaluation framework MEASURES whether the behavioral adaptation from Steps 7–8 works. Does the adapting agent's exploitability decrease over time? Does its ranking in the population improve? Does the improvement hold up with statistical confidence?
 
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The N-player evaluation extension (marginal exploitability, coalition-aware metrics) tests whether safe exploitation generalizes from 2-player to N-player. If the Step 8 agent is "safe" in 2-player but not in N-player, the evaluation framework detects this — and the gap IS the thesis contribution.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The N-player evaluation extension (marginal exploitability, coalition-aware metrics) tests whether safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> generalizes from 2-player to N-player. If the Step 8 agent is "safe" in 2-player but not in N-player, the evaluation framework detects this — and the gap IS the thesis contribution.
 
 - **Bridge to Step 15:** Step 15 maps the entire PhD research frontier. Step 14's evaluation framework determines what CAN be rigorously evaluated → what CAN be claimed as a thesis contribution. The evaluation framework is the basis for ALL experimental claims in the dissertation.
 
@@ -65,7 +65,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 
 - [**OpenSpiel Tutorial @ KU Leuven**](https://www.youtube.com/watch?v=8NCPqtPwlFQ)  
   ⏱ ~1h · Speaker: Marc Lanctot (DeepMind)  
-  *Hands-on tutorial by the co-author of alpha-Rank and OpenSpiel. Covers exploitability computation, game-theoretic evaluation tools, and how the research community evaluates agents in practice.*
+  *Hands-on tutorial by the co-author of alpha-Rank and OpenSpiel. Covers exploitability computation, game-theoretic<sup class="gl" data-gl="game_theory">gl</sup> evaluation tools, and how the research community evaluates agents in practice.*
 
 - [**Stanford CS234 — Lecture 12: Exploration 2 (Spring 2024)**](https://www.youtube.com/watch?v=gFJNsfg_35E)  
   ⏱ ~1h10m · Instructor: Emma Brunskill (Stanford)  
@@ -144,7 +144,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
             → AIVAT variance reduction, confidence intervals, sample complexity
          
          The framework should work across:
-         - 2-player zero-sum (Kuhn, Leduc, Hold'em)
+         - 2-player zero-sum<sup class="gl" data-gl="zero_sum_game">gl</sup> (Kuhn, Leduc, Hold'em)
          - N-player competitive (SLS)
          - Real-world data (Playtech)
          """
@@ -252,7 +252,7 @@ End of day: you should be able to explain to a non-expert: "If I train an AI pok
 https://arxiv.org/abs/2004.09677
 
 - **READ:** Sections 1–4 (Introduction, Background, ISMCTS-BR Algorithm, Experiments)
-  - KEY INSIGHT: Exploitability = value of best response - Nash value. In small games (Kuhn, Leduc), compute exactly. In large games (Go, StarCraft), you can't enumerate the game tree → train a NEURAL NETWORK to approximate the best response → use its value as an upper bound on exploitability. ISMCTS-BR combines Monte Carlo Tree Search with deep RL to learn this approximate best response.
+  - KEY INSIGHT: Exploitability = value of best response - Nash value. In small games (Kuhn, Leduc), compute exactly. In large games (Go, StarCraft), you can't enumerate the game tree<sup class="gl" data-gl="game_tree">gl</sup> → train a NEURAL NETWORK to approximate the best response → use its value as an upper bound on exploitability. ISMCTS-BR combines Monte Carlo Tree Search with deep RL to learn this approximate best response.
   - Architecture: ISMCTS provides the search structure (handles imperfect info), deep RL trains the value/policy networks within the search, the resulting agent IS the approximate best response.
   - Evaluation: tested against AlphaZero agents in various games. The approximate exploitability tracks the true exploitability in games where truth is computable.
 - **SKIM:** Sections 5–6 (additional experiments, related work)
@@ -282,15 +282,15 @@ https://arxiv.org/abs/1909.09849
 
 - **READ:** Entire paper (likely short, AAAI format)
   - KEY INSIGHT: In poker, evaluation variance is HUGE because of card luck. A good player can still lose many hands in a row. AIVAT removes the luck component by using the game tree structure to compute what WOULD have happened with different cards (counterfactual reasoning). The resulting estimate is unbiased and has dramatically lower variance.
-  - Mechanism: uses a value function over information states (computable from CFR equilibrium) to construct a control variate for variance reduction. Each hand's result is adjusted: actual_result + (counterfactual_value - expected_value) → the luck cancels out.
+  - Mechanism: uses a value function<sup class="gl" data-gl="value_function">gl</sup> over information states (computable from CFR equilibrium) to construct a control variate for variance reduction. Each hand's result is adjusted: actual_result + (counterfactual_value - expected_value) → the luck cancels out.
   - This is why professional poker evaluation uses millions of hands — AIVAT reduces the number needed by 10-100x.
-- **PhD Connection:** ESSENTIAL for Step 13's Playtech data evaluation and for any evaluation involving poker. Without AIVAT, you'd need 1M+ hands to reliably rank two agents. With AIVAT, ~10K hands may suffice. Your evaluation framework MUST include AIVAT for any imperfect-information game evaluation.
+- **PhD Connection:** ESSENTIAL for Step 13's Playtech data evaluation and for any evaluation involving poker. Without AIVAT, you'd need 1M+ hands to reliably rank two agents. With AIVAT, ~10K hands may suffice. Your evaluation framework MUST include AIVAT for any imperfect-information game<sup class="gl" data-gl="imperfect_information">gl</sup> evaluation.
 
 ### Paper 5: Omidshafiei, Papadimitriou, Piliouras, Tuyls et al. — "α-Rank: Multi-Agent Evaluation by Evolution" (2019, Nature Scientific Reports)
 **Source:** Search Google Scholar / Nature for "α-Rank multi-agent evaluation evolution 2019"
 
 - **READ:** Sections 1–4 (Introduction, α-Rank definition, Theoretical Properties, Experiments)
-  - KEY INSIGHT: Traditional evaluation (Elo) assumes transitivity and fails on non-transitive games. Nash equilibrium of the meta-game is NP-hard to compute in general. α-Rank uses a Markov chain (transition probabilities derived from evolutionary dynamics) whose STATIONARY DISTRIBUTION is the ranking. This is polynomial to compute and uniquely defined (unlike Nash which can have multiple equilibria).
+  - KEY INSIGHT: Traditional evaluation (Elo) assumes transitivity and fails on non-transitive games. Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> of the meta-game is NP-hard to compute in general. α-Rank uses a Markov chain (transition probabilities derived from evolutionary dynamics) whose STATIONARY DISTRIBUTION is the ranking. This is polynomial to compute and uniquely defined (unlike Nash which can have multiple equilibria).
   - Connection to Step 10's evolutionary dynamics: the replicator dynamics from Step 10 are the CONTINUOUS analog; α-Rank's Markov chain is the DISCRETE analog. Same foundation, different computational representations.
   - Parameter: α (selection pressure). Higher α → stronger winner-take-all. The ranking can change with α → need sensitivity analysis.
 - **SKIM:** Sections 5–6 (additional games, large-scale evaluation)
@@ -353,7 +353,7 @@ https://arxiv.org/abs/1909.09849
           """Exact exploitability for small games (Kuhn, Leduc).
           
           Traverse full game tree, compute best response value at each 
-          information set.
+          information set<sup class="gl" data-gl="information_set">gl</sup>.
           
           From Step 3/8: already implemented. Refactor into this module.
           """
@@ -398,7 +398,7 @@ https://arxiv.org/abs/1909.09849
           baseline_exp = self.exact_exploitability(baseline_strategy)
           return exploit_exp <= baseline_exp, exploit_exp, baseline_exp
   ```
-- **Validation:** Cross-check with Step 3's exploitability values on Kuhn. Step 3 tracked CFR convergence → exploitability should match to 4 decimal places.
+- **Validation:** Cross-check with Step 3's exploitability values on Kuhn. Step 3 tracked CFR convergence<sup class="gl" data-gl="convergence">gl</sup> → exploitability should match to 4 decimal places.
 - **Test:** Compute exploitability for all bot zoo agents on Kuhn and Leduc. Verify: random agent has high exploitability, Nash/CFR agent has near-zero exploitability.
 
 **Day 2 — Layer 2a: α-Rank Implementation**
@@ -699,7 +699,7 @@ https://arxiv.org/abs/1909.09849
   - Same analysis, larger game → approximate exploitability should still be meaningful
   - Compare Elo vs α-Rank vs VasE: any disagreements? If so, use spinning top to diagnose
 - **Run evaluation bridge to Step 13:**
-  - If Playtech data pipeline from Step 13 is available: apply evaluation framework to behavioral cloning agents
+  - If Playtech data pipeline from Step 13 is available: apply evaluation framework to behavioral cloning<sup class="gl" data-gl="behavioral_cloning">gl</sup> agents
   - Measure: how does the BC model rank against bot zoo agents on Leduc?
 
 **Day 6 — Multi-Agent Extension + Final Comparison**
@@ -792,7 +792,7 @@ https://arxiv.org/abs/1909.09849
 
 - **Reference skim:** Cipolina-Kun et al. (2025) — "Game Reasoning Arena"  
   https://arxiv.org/abs/2508.03368  
-  *Skim for: benchmark design for evaluating reasoning via game play. Connection to Step 12's LLM agent evaluation: could your framework evaluate LLM agents using the same games?*
+  *Skim for: benchmark<sup class="gl" data-gl="benchmark">gl</sup> design for evaluating reasoning via game play. Connection to Step 12's LLM agent evaluation: could your framework evaluate LLM agents using the same games?*
 
 - **Supplementary skim:** Yan et al. (2020) — "Policy Evaluation and Seeking for MARL via Best Response"  
   https://arxiv.org/abs/2006.09585  

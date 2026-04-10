@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Section jump / lock toggle (context-dependent)
   document.getElementById('section-fab').addEventListener('click', () => {
-    if (isHomepage || isCalendarPage) toggleLock();
+    if (isHomepage || isCalendarPage || isGlossaryPage) toggleLock();
     else toggleSectionNav();
   });
   document.getElementById('sections-btn-bottom').addEventListener('click', (e) => {
     e.stopPropagation();
-    if (isHomepage || isCalendarPage) toggleLock();
+    if (isHomepage || isCalendarPage || isGlossaryPage) toggleLock();
     else toggleSectionNav();
   });
   document.addEventListener('click', (e) => {
@@ -62,6 +62,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const hash = window.location.hash.replace('#', '');
   if (hash === 'calendar') {
     navigateCalendar();
+  } else if (hash === 'glossary') {
+    navigateGlossary();
   } else if (hash && hash !== 'home' && STEP_META.find(s => s.id === hash)) {
     navigateTo(hash);
   } else {
@@ -72,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const h = window.location.hash.replace('#', '');
     if (h === 'home' || h === '') { navigateHome(); }
     else if (h === 'calendar') { navigateCalendar(); }
+    else if (h === 'glossary') { navigateGlossary(); }
     else if (STEP_META.find(s => s.id === h)) { navigateTo(h); }
   });
 });
@@ -81,5 +84,5 @@ document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'ArrowLeft') { goPrev(); e.preventDefault(); }
   if (e.key === 'ArrowRight') { goNext(); e.preventDefault(); }
-  if (e.key === 'Escape') { closeSidebar(); }
+  if (e.key === 'Escape') { closeSidebar(); glCloseAll(); }
 });

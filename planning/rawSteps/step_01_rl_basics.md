@@ -1,4 +1,4 @@
-# Step 1 — Reinforcement Learning Basics
+# Step 1 — Reinforcement Learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> Basics
 
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** None (entry point)  
@@ -6,11 +6,11 @@
 
 ### PhD Connection
 
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)** indirectly: the agent architecture patterns (value networks, policy networks, experience replay) will be reused when building the adaptive opponent model. More directly, this step provides the RL vocabulary and implementation skills needed for every subsequent step.
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)** indirectly: the agent architecture patterns (value networks, policy networks, experience replay<sup class="gl" data-gl="experience_replay">gl</sup>) will be reused when building the adaptive opponent model<sup class="gl" data-gl="opponent_modeling">gl</sup>. More directly, this step provides the RL vocabulary and implementation skills needed for every subsequent step.
 
 ---
 
-> **Phase Overview:** This phase covers the foundational material required for all subsequent work: reinforcement learning basics (value estimation, policy optimization, experience replay) and game-theoretic fundamentals (extensive-form games, Nash equilibrium computation, and exploitability measurement). A solid command of both domains is essential before proceeding to the more specialized topics of later phases.
+> **Phase Overview:** This phase covers the foundational material required for all subsequent work: reinforcement learning basics (value estimation, policy optimization, experience replay) and game-theoretic<sup class="gl" data-gl="game_theory">gl</sup> fundamentals (extensive-form games<sup class="gl" data-gl="extensive_form_game">gl</sup>, Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> computation, and exploitability<sup class="gl" data-gl="exploitability">gl</sup> measurement). A solid command of both domains is essential before proceeding to the more specialized topics of later phases.
 
 
 ## Table of Contents
@@ -132,7 +132,7 @@ See the algorithms work (and fail) before reading the theory. No papers yet — 
    tensorboard --logdir ./logs/
    ```
 
-### Day 2: PPO on LunarLander + Hyperparameter Exploration
+### Day 2: PPO on LunarLander + Hyperparameter<sup class="gl" data-gl="hyperparameter">gl</sup> Exploration
 
 1. **Train PPO on LunarLander:**
    ```python
@@ -177,11 +177,11 @@ See the algorithms work (and fail) before reading the theory. No papers yet — 
 **Context — what comes after (Ch 7–17):** Ch 7–8 cover n-step methods and eligibility traces (refinements of TD). Ch 9–11 cover function approximation (the bridge to deep RL — you'll encounter this in Steps 5–6). Ch 14–16 cover psychology/neuroscience connections. Ch 17 covers frontiers. *Chapters 7–8 are useful background but not critical for Step 1; function approximation in Ch 9–11 is where the "deep" in deep RL comes from and will be relevant starting Step 5.*  
 **Reading focus:**
 - **Ch 1–2 (skim, ~1 hr):** Framing and multi-armed bandits. You've seen this in Phase 1 videos. Skim for notation.
-- **Ch 3 (read carefully, ~2 hrs):** MDP formulation. This is the formal language for everything that follows. Make sure you understand: state, action, reward, transition, policy, value function, Bellman equation.
+- **Ch 3 (read carefully, ~2 hrs):** MDP formulation. This is the formal language for everything that follows. Make sure you understand: state, action, reward, transition, policy, value function<sup class="gl" data-gl="value_function">gl</sup>, Bellman equation.
 - **Ch 4 (read 4.1–4.4, skim rest, ~2 hrs):** Dynamic programming. Policy evaluation, policy iteration, value iteration. These are the "if you had the model" solutions.
 - **Ch 5 (read 5.1–5.5, ~2 hrs):** Monte Carlo methods. Model-free learning begins here. First-visit MC, exploring starts.
 - **Ch 6 (read carefully, ~3 hrs):** TD learning — the core of modern RL. TD(0), SARSA, Q-learning. This is the chapter that connects to DQN.
-- **Ch 13 (read 13.1–13.4, ~2 hrs):** Policy gradient methods — REINFORCE algorithm. This connects to PPO.
+- **Ch 13 (read 13.1–13.4, ~2 hrs):** Policy gradient<sup class="gl" data-gl="policy_gradient">gl</sup> methods — REINFORCE algorithm. This connects to PPO.
 
 ### Paper 1: Playing Atari with Deep Reinforcement Learning (Mnih et al., 2013/2015)
 
@@ -198,7 +198,7 @@ https://arxiv.org/abs/1312.5602 (2013 workshop version) / https://arxiv.org/abs/
     tricks are what turned RL from toy problems to Atari."
 ```
 
-### Paper 2: Proximal Policy Optimization Algorithms (Schulman et al., 2017)
+### Paper 2: Proximal Policy Optimization<sup class="gl" data-gl="ppo">gl</sup> Algorithms (Schulman et al., 2017)
 
 https://arxiv.org/abs/1707.06347
 ```
@@ -260,7 +260,7 @@ No mandatory pen-and-paper proofs for Step 1. The algorithms (Q-learning, REINFO
 
 **Days 4–5 — PPO from Scratch:**
 - 🔴 Implement: `PolicyNetwork` (actor) + `ValueNetwork` (critic)
-- 🔴 Implement: GAE (Generalized Advantage Estimation) — Eq. 11 from Schulman et al. (2015) "High-Dimensional Continuous Control Using Generalized Advantage Estimation"
+- 🔴 Implement: GAE (Generalized Advantage Estimation<sup class="gl" data-gl="gae">gl</sup>) — Eq. 11 from Schulman et al. (2015) "High-Dimensional Continuous Control Using Generalized Advantage Estimation"
 - 🔴 Implement: PPO update step (collect rollout → compute advantages → clipped surrogate loss → multiple epochs of minibatch updates)
 - Train on LunarLander-v3. Target: mean reward ≥ 200 over 100 episodes.
 

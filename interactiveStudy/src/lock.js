@@ -54,7 +54,7 @@ function updateFab() {
   const btnBtm = document.getElementById('sections-btn-bottom');
   if (!fab) return;
 
-  if (isHomepage || isCalendarPage) {
+  if (isHomepage || isCalendarPage || isGlossaryPage) {
     const icon  = isLocked ? LOCK_SVG : UNLOCK_SVG;
     const label = isLocked 
       ? (currentLang === 'bg' ? 'Заключи' : 'Lock')

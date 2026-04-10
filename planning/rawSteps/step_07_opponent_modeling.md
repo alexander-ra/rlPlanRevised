@@ -1,17 +1,17 @@
 # Step 7 — Opponent Modeling — Inference from Behavioral Traces
 
 **Duration:** 21 days (Tier 1)  
-**Dependencies:** Step 2 (Game Theory + CFR Basics), Step 6 (End-to-End Game AI Architectures)  
+**Dependencies:** Step 2 (Game Theory<sup class="gl" data-gl="game_theory">gl</sup> + CFR Basics), Step 6 (End-to-End Game AI Architectures)  
 **Phase:** D — Opponent Modeling + Exploitation  
 
 ### PhD Connection
 
-This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework). The opponent model is the "sensor" that takes raw behavioral data (observed actions, revealed hands at showdown) and produces a structured estimate of the opponent's strategy. Without this sensor, the agent cannot adapt — it can only play Nash (safe but unexploitative).
+This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework). The opponent model<sup class="gl" data-gl="opponent_modeling">gl</sup> is the "sensor" that takes raw behavioral data (observed actions, revealed hands at showdown) and produces a structured estimate of the opponent's strategy. Without this sensor, the agent cannot adapt — it can only play Nash (safe but unexploitative).
 
 **What this step provides for the thesis:**
 - Three concrete opponent modeling approaches with empirical comparisons
 - Understanding of when each approach is appropriate
-- A clear open question: handling non-stationarity (the thesis's novel contribution opportunity)
+- A clear open question: handling non-stationarity<sup class="gl" data-gl="non_stationarity">gl</sup> (the thesis's novel contribution opportunity)
 - Demonstration that opponent modeling WORKS on toy games — now must scale (via Steps 8 + 11)
 
 ---
@@ -48,7 +48,7 @@ This step is the FIRST HALF of Contribution #1 (Behavioral Adaptation Framework)
 
 ## Phase 1: Intuition (2 days)
 
-The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opponent weaknesses), what KIND of information you can extract from behavioral traces (action frequencies, timing patterns, deviations from equilibrium), and WHEN it's worth deviating from Nash to exploit a weak opponent. End of days: you should be able to explain to a non-expert: "If your opponent always folds to big bets, a Nash equilibrium strategy doesn't know that — it plays the same regardless. An opponent model DETECTS that pattern and lets you bluff more against that specific player. The hard part is doing this without becoming exploitable yourself."
+The goal: understand WHY opponent modeling matters (Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> ignores opponent weaknesses), what KIND of information you can extract from behavioral traces<sup class="gl" data-gl="behavioral_trace">gl</sup> (action frequencies, timing patterns, deviations from equilibrium), and WHEN it's worth deviating from Nash to exploit a weak opponent. End of days: you should be able to explain to a non-expert: "If your opponent always folds to big bets, a Nash equilibrium strategy doesn't know that — it plays the same regardless. An opponent model DETECTS that pattern and lets you bluff more against that specific player. The hard part is doing this without becoming exploitable yourself."
 
 ### Day 1: The Problem & Classical Approaches
 
@@ -58,7 +58,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
 
 - [**Stanford CS224R — Lecture 2: Imitation Learning (Spring 2025)**](https://www.youtube.com/watch?v=WxRDyObrm_M)  
   ⏱ ~1h7m · Instructor: Chelsea Finn (Stanford)  
-  *Learning from observing others' behavior: behavioral cloning, DAgger, and expressive policy distributions. The same paradigm used for inferring opponent strategies from their actions.*
+  *Learning from observing others' behavior: behavioral cloning<sup class="gl" data-gl="behavioral_cloning">gl</sup>, DAgger, and expressive policy distributions. The same paradigm used for inferring opponent strategies from their actions.*
 
 ### Day 2: Modern Approaches & the Exploitation Tradeoff
 
@@ -125,7 +125,7 @@ The goal: understand WHY opponent modeling matters (Nash equilibrium ignores opp
    # Run against hidden Type 2 (tight-passive) for 50 hands
    # Plot: posterior probability of each type over time
    ```
-   - *Expected result: after ~10-20 hands, the posterior concentrates on the correct type. The speed of convergence depends on how distinctive the opponent's actions are — if they fold with J, that's highly informative.*
+   - *Expected result: after ~10-20 hands, the posterior concentrates on the correct type. The speed of convergence<sup class="gl" data-gl="convergence">gl</sup> depends on how distinctive the opponent's actions are — if they fold with J, that's highly informative.*
 
 2. **Test the limits of type-based modeling:**
    - What happens when the opponent is Type 5 (a mixture of Type 1 and Type 3)?
@@ -302,7 +302,7 @@ https://arxiv.org/abs/2508.17671
 **Link:** http://www.masfoundations.org/download.html (free PDF)  
 **Assigned chapters:** 7 (Learning and Teaching)  
 **Context — what comes before (Ch 1–6):** Game theory foundations (normal form, extensive form, Nash equilibrium, computing equilibria). *You know all of this from Steps 2–4.*  
-**Context — what comes after (Ch 8–end):** Coalitional game theory, social choice, mechanism design. *Relevant for Step 11 (coalition formation) — skip for now.*  
+**Context — what comes after (Ch 8–end):** Coalitional game theory, social choice, mechanism design. *Relevant for Step 11 (coalition formation<sup class="gl" data-gl="coalition">gl</sup>) — skip for now.*  
 **Reading focus:** Section 7.1–7.3 specifically covers opponent modeling as a learning problem in games. Provides the formal framework connecting your papers.
 
 ### Math Flags
@@ -324,7 +324,7 @@ https://arxiv.org/abs/2508.17671
 
 **Language + Framework:** Python 3.10+ / NumPy (core algorithm), PyTorch optional for neural extensions
 
-Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), Nash equilibrium strategies from CFR/MCCFR (Steps 2–3), and game tree infrastructure from Step 6.
+Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), Nash equilibrium strategies from CFR/MCCFR (Steps 2–3), and game tree<sup class="gl" data-gl="game_tree">gl</sup> infrastructure from Step 6.
 
 | Component | AI Tag | Justification |
 |-----------|--------|---------------|
@@ -422,7 +422,7 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
 *Day 9 — Head-to-Head Model Comparison:*
 - Run all three models against all 5 opponent types on both Kuhn and Leduc
 - Measure:
-  | Model | Opponent | Convergence Speed | Final Exploitation Rate | Robustness to Type Switch |
+  | Model | Opponent | Convergence Speed | Final Exploitation Rate | Robustness<sup class="gl" data-gl="robustness">gl</sup> to Type Switch |
   |-------|----------|-------------------|------------------------|--------------------------|
   | Type-Based | TightPassive | ? | ? | ? |
   | Continuous | TightPassive | ? | ? | ? |
@@ -435,7 +435,7 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
   - Consistent model: does it handle non-stationarity? (Likely not without modification — log as open question)
 
 *Day 10 — Cross-Validation + Documentation:*
-- Cross-validate against OpenSpiel's best-response and exploitability tools:
+- Cross-validate against OpenSpiel's best-response and exploitability<sup class="gl" data-gl="exploitability">gl</sup> tools:
   - Compute your model's predicted opponent strategy
   - Have OpenSpiel compute the best response to that strategy
   - Compare OpenSpiel's BR value against your BR value → should match within numerical precision
@@ -461,7 +461,7 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
 - **Type-based model on Kuhn:** Posterior should concentrate on true type within 20 hands (~90% posterior probability). Compare with analytical Bayes update computed by hand.
 - **Continuous model on Kuhn:** Action probability estimates should converge to true opponent strategy within 5% after 500 observations. Compare with true frequencies from 100k-hand simulation.
 - **Consistent model on Kuhn:** Should converge to true strategy in sequence form. Verify that the resulting strategy satisfies sequence-form constraints (realization plan sums correctly).
-- **Exploitation pipeline:** Against a fixed exploitable opponent, cumulative profit should be strictly positive and growing faster than the Nash baseline (which earns 0 in expectation against any strategy in a 2-player zero-sum game).
+- **Exploitation pipeline:** Against a fixed exploitable opponent, cumulative profit should be strictly positive and growing faster than the Nash baseline (which earns 0 in expectation against any strategy in a 2-player zero-sum game<sup class="gl" data-gl="zero_sum_game">gl</sup>).
 - **Cross-validation:** Best-response values must match OpenSpiel's computation to within 0.001 on Kuhn, 0.01 on Leduc.
 
 ---
@@ -492,7 +492,7 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
   - *Which one should the thesis use?* Log this as a research question. Answer likely: "a hybrid that uses structural priors (like types) when data is sparse and converges to the consistent model as data grows."
 
 - **PhD Connection deep dive:**
-  - Contribution #1 (Behavioral Adaptation Framework): this step built the "sensor" — the component that infers opponent behavior from observations. Step 8 builds the "actuator" — the component that translates the model into safe exploitation.
+  - Contribution #1 (Behavioral Adaptation Framework): this step built the "sensor" — the component that infers opponent behavior from observations. Step 8 builds the "actuator" — the component that translates the model into safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup>.
   - The key open question: how do you handle NON-STATIONARY opponents? Your non-stationarity test from Day 9 likely showed that fixed models degrade. The thesis contribution should address this — either windowed estimation, change-point detection, or online learning with forgetting.
   - Log for Step 11: in multi-player games, you need MULTIPLE opponent models running simultaneously. How does computational cost scale? Can you share information across models (e.g., "all opponents are fish" as a joint prior)?
 
@@ -507,8 +507,8 @@ Starting point: Your Kuhn Poker engine (Step 2), Leduc Hold'em engine (Step 3), 
     - [Step 4] Action translation maps unseen bets to known abstractions → [Step 7] Opponent model maps unseen behavior to known types. Same "nearest neighbor in reduced space" logic.
     - [Step 6] Blueprint strategy (from Pluribus/ReBeL) = the Nash baseline → [Step 7] Deviation from blueprint = exploitation. The model determines HOW MUCH to deviate and in WHAT DIRECTION.
   - **Confusions:**
-    - [Step 7] The consistent model (Ganzfried 2025) requires solving a convex optimization per update. In a real-time game, is this fast enough? → OPEN (check computational complexity; may be addressed in Step 8 via subgame solving approximation)
-    - [Step 7] Non-stationary opponents: all three models assume stationarity for convergence guarantees. How badly do they degrade when the opponent adapts? → PARTIALLY ADDRESSED (exponential decay helps empirically) → Need theoretical treatment (possibly Step 14 evaluation framework)
+    - [Step 7] The consistent model (Ganzfried 2025) requires solving a convex optimization per update. In a real-time game, is this fast enough? → OPEN (check computational complexity; may be addressed in Step 8 via subgame solving<sup class="gl" data-gl="subgame_solving">gl</sup> approximation)
+    - [Step 7] Non-stationary opponents: all three models assume stationarity for convergence guarantees. How badly do they degrade when the opponent adapts? → PARTIALLY ADDRESSED (exponential decay helps empirically) → Need theoretical treatment (possibly Step 14 evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup>)
     - [Step 7] In Leduc, partial observability significantly slows convergence. In NLHE (10^161 states), how many hands would you need? → OPEN (this is why abstraction from Step 4 matters — model in the abstract space, not the full space)
     - [Step 4→7] Prediction confirmed: opponent model DOES need "map unseen behavior to known types" logic, exactly like action translation. The parallels are deep.
 

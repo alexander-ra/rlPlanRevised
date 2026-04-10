@@ -282,4 +282,5 @@ function renderStep(stepId) {
   setupCheckboxes();
   setupPhaseCheckpoints();
   applyLockState();
+  setupGlossaryTooltips();
 }

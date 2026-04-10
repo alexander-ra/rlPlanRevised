@@ -1,10 +1,10 @@
 # Step 4 — Game Abstraction + Scaling Imperfect-Information Games
 
 **Duration:** 10 days (Tier 2 — compressed)  
-**Dependencies:** Step 2 (Game Theory + CFR Basics), Step 3 (CFR Variants + MC Methods)  
+**Dependencies:** Step 2 (Game Theory<sup class="gl" data-gl="game_theory">gl</sup> + CFR Basics), Step 3 (CFR Variants + MC Methods)  
 **Phase:** B — Scaling the Toolbox
 
-> **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one working abstraction example (card bucketing on Extended Leduc). Defer full abstraction pipeline (action abstraction, information abstraction comparison) to implementation phase post-November. All reading and intuition phases unchanged.
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one working abstraction example (card bucketing on Extended Leduc). Defer full abstraction pipeline (action abstraction<sup class="gl" data-gl="action_abstraction">gl</sup>, information abstraction comparison) to implementation phase post-November. All reading and intuition phases unchanged.
 > Phase allocation: Intuition 1d | Exploration 1d | Reading 3d | Implementation **3d** | Consolidation 2d  
 
 ### PhD Connection
@@ -45,7 +45,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 - [**Stanford CS221 — Lecture 10: Games I (Autumn 2025)**](https://www.youtube.com/watch?v=SMOD_GiRzb8)  
   ⏱ ~1h13m · Instructor: Percy Liang (Stanford)  
-  *Why search explodes: game trees, minimax, evaluation functions, alpha-beta pruning. The motivation for why abstraction is needed — games are too large to solve exactly.*
+  *Why search explodes: game trees<sup class="gl" data-gl="game_tree">gl</sup>, minimax, evaluation functions, alpha-beta pruning. The motivation for why abstraction is needed — games are too large to solve exactly.*
 
 - [**Monte Carlo Tree Search — Computerphile**](https://www.youtube.com/watch?v=BEFY7IHs0HM)  
   ⏱ ~33m · Speaker: Nick Hawes (Oxford) | Channel: Computerphile  
@@ -53,7 +53,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 - [**NIPS 2017 Best Paper — Safe & Nested Subgame Solving for Imperfect-Information Games**](https://www.youtube.com/watch?v=tRiaGahlyy4)  
   ⏱ ~16m · Channel: The Artificial Intelligence Channel  
-  *Accessible walkthrough of how subgame solving fixes abstraction errors in real-time during play. The key idea: solve a coarse abstract game first, then refine specific subgames.*
+  *Accessible walkthrough of how subgame solving<sup class="gl" data-gl="subgame_solving">gl</sup> fixes abstraction errors in real-time during play. The key idea: solve a coarse abstract game first, then refine specific subgames.*
 
 - [**AI for Imperfect-Information Games: Beating Top Humans in No-Limit Poker**](https://www.youtube.com/watch?v=McV4a6umbAY)  
   ⏱ ~1h · Speaker: Noam Brown | Channel: Microsoft Research  
@@ -83,7 +83,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 
 ### Day 1: Information Abstraction — Card Bucketing in OpenSpiel
 
-1. **Explore Leduc Hold'em information sets from Step 3:**
+1. **Explore Leduc Hold'em information sets<sup class="gl" data-gl="information_set">gl</sup> from Step 3:**
    - From your Step 3 Leduc engine, enumerate all 936 information sets
    - Group them manually by "strategic similarity":
      - Pre-flop with J vs Q vs K (3 groups)
@@ -93,7 +93,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
 2. **Run MCCFR on Leduc with suit isomorphism explicitly applied:**
    - Modify your Step 3 Leduc engine to collapse suit-isomorphic states
    - Run MCCFR on the abstracted game tree
-   - *Expected result: identical Nash equilibrium strategies, fewer info sets to store, faster convergence*
+   - *Expected result: identical Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> strategies, fewer info sets to store, faster convergence<sup class="gl" data-gl="convergence">gl</sup>*
 
 3. **Experiment with a LOSSY information abstraction:**
    - Collapse J and Q into one "low card" bucket, keep K separate
@@ -115,7 +115,7 @@ The goal: understand WHY abstraction is needed (games are too large to represent
    - *Observe: the translated strategy won't be Nash for the full game, but will be "close." How close?*
 
 3. **Measure abstraction quality:**
-   - Compute exploitability of the abstract strategy when deployed in the full game
+   - Compute exploitability<sup class="gl" data-gl="exploitability">gl</sup> of the abstract strategy when deployed in the full game
    - Compare: full-game Nash exploitability (the target) vs abstracted strategy's exploitability
    - *This gap is the "price of abstraction" — the central quantity this step teaches you to manage.*
 
@@ -352,7 +352,7 @@ Starting point: Your Leduc Hold'em engine + MCCFR solver from Step 3.
   *This is a PREVIEW for Step 6 — don't go deep. Just map the architecture components to what you've built in this step.*
 
 - **Reference skim (supplementary):** Li et al. (2024) "RL-CFR" — read abstract + Section 3. Note the idea of using RL to learn abstractions rather than hand-crafting them.  
-  *Forward connection: In your thesis, could the opponent modeling framework (Step 7) inform adaptive abstraction? Log this as a PhD open question.*
+  *Forward connection: In your thesis, could the opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> framework (Step 7) inform adaptive abstraction? Log this as a PhD open question.*
 
 - **Reference skim (supplementary):** Fu et al. (2025) "KrwEmd" — read abstract only. Note the new abstraction metric.  
   *Frontier logging: Could this replace EMD as the standard abstraction quality metric? Log for Step 15.*

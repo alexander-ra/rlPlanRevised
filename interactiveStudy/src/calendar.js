@@ -478,6 +478,7 @@ function navigateHome() {
       <h2 class="hp-sec">${t('timeline_label')}</h2>
       ${buildCalendar()}
     </div>`;
+    setupGlossaryTooltips();
     window.scrollTo(0, 0);
     updateReadingProgress();
     closeSidebar();
