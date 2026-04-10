@@ -1313,14 +1313,19 @@ body {
   font-size: 0.73rem;
   font-weight: 600;
   text-decoration: none;
-  background: rgba(255,255,255,0.18);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.35);
-  transition: background 0.15s, transform 0.1s;
   white-space: nowrap;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
 }
-.hp-hero-dl-btn:hover {
-  background: rgba(255,255,255,0.32);
+/* Higher specificity (0,2,0) to beat .content a (0,1,1) */
+.hp-hero .hp-hero-dl-btn {
+  background: rgba(255,255,255,0.92);
+  color: var(--primary);
+  border: 1px solid rgba(255,255,255,0.7);
+}
+.hp-hero .hp-hero-dl-btn:hover {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   transform: translateY(-1px);
 }
 .hp-contributions {
