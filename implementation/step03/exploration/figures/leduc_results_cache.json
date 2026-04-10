@@ -1,0 +1,182 @@
+{
+  "iterations": [
+    100,
+    150,
+    225,
+    337,
+    505,
+    757,
+    1135,
+    1702,
+    2553,
+    3829
+  ],
+  "es_results": [
+    {
+      "exploitability": 5.623521989360667,
+      "time_elapsed": 0.4784090518951416
+    },
+    {
+      "exploitability": 5.268027982015882,
+      "time_elapsed": 0.822807788848877
+    },
+    {
+      "exploitability": 4.708576397347514,
+      "time_elapsed": 1.1905114650726318
+    },
+    {
+      "exploitability": 3.7299451250661244,
+      "time_elapsed": 1.5896241664886475
+    },
+    {
+      "exploitability": 2.967368233631059,
+      "time_elapsed": 2.014662504196167
+    },
+    {
+      "exploitability": 2.4415558510040296,
+      "time_elapsed": 2.521864891052246
+    },
+    {
+      "exploitability": 2.0053845611025958,
+      "time_elapsed": 3.1729917526245117
+    },
+    {
+      "exploitability": 1.6970439152194714,
+      "time_elapsed": 3.9970057010650635
+    },
+    {
+      "exploitability": 1.4968366829871855,
+      "time_elapsed": 5.164752244949341
+    },
+    {
+      "exploitability": 1.1671024431759336,
+      "time_elapsed": 6.721257925033569
+    }
+  ],
+  "os_results": [
+    {
+      "exploitability": 4.8409801855569725,
+      "time_elapsed": 0.33173561096191406
+    },
+    {
+      "exploitability": 4.873873601394795,
+      "time_elapsed": 0.6369965076446533
+    },
+    {
+      "exploitability": 4.720666822879317,
+      "time_elapsed": 0.9587564468383789
+    },
+    {
+      "exploitability": 4.81699613471785,
+      "time_elapsed": 1.3891918659210205
+    },
+    {
+      "exploitability": 5.002733505160153,
+      "time_elapsed": 1.7706406116485596
+    },
+    {
+      "exploitability": 4.931523404766457,
+      "time_elapsed": 2.197476387023926
+    },
+    {
+      "exploitability": 4.742629038726472,
+      "time_elapsed": 2.6868748664855957
+    },
+    {
+      "exploitability": 4.41402276585493,
+      "time_elapsed": 3.274691581726074
+    },
+    {
+      "exploitability": 3.6791054860899384,
+      "time_elapsed": 4.0296244621276855
+    },
+    {
+      "exploitability": 3.0842924930981397,
+      "time_elapsed": 4.994701623916626
+    }
+  ],
+  "osCFR_results": [
+    {
+      "exploitability": 0.19143270600919524,
+      "time_elapsed": 18.6026873588562
+    },
+    {
+      "exploitability": 0.1253177432718789,
+      "time_elapsed": 27.700960397720337
+    },
+    {
+      "exploitability": 0.09487280361243755,
+      "time_elapsed": 41.09259057044983
+    },
+    {
+      "exploitability": 0.06382150692697838,
+      "time_elapsed": 61.36933088302612
+    },
+    {
+      "exploitability": 0.04129423103305366,
+      "time_elapsed": 91.5295422077179
+    },
+    {
+      "exploitability": 0.02981591418097515,
+      "time_elapsed": 137.16485953330994
+    },
+    {
+      "exploitability": 0.02080091605037465,
+      "time_elapsed": 209.8746473789215
+    },
+    {
+      "exploitability": 0.01655091456128277,
+      "time_elapsed": 321.97437930107117
+    },
+    {
+      "exploitability": 0.010895097216791938,
+      "time_elapsed": 488.256112575531
+    },
+    {
+      "exploitability": 0.007568287726315223,
+      "time_elapsed": 746.8410966396332
+    }
+  ],
+  "osCFRPlus_results": [
+    {
+      "exploitability": 0.02683198994179567,
+      "time_elapsed": 21.81108283996582
+    },
+    {
+      "exploitability": 0.014881174211981818,
+      "time_elapsed": 33.790754556655884
+    },
+    {
+      "exploitability": 0.007432351497200035,
+      "time_elapsed": 50.75328326225281
+    },
+    {
+      "exploitability": 0.0035866676104330253,
+      "time_elapsed": 76.91766452789307
+    },
+    {
+      "exploitability": 0.001761022246458327,
+      "time_elapsed": 114.5041651725769
+    },
+    {
+      "exploitability": 0.0009132068157758633,
+      "time_elapsed": 171.53304624557495
+    },
+    {
+      "exploitability": 0.00044551930992856037,
+      "time_elapsed": 257.93862438201904
+    },
+    {
+      "exploitability": 0.0002230266341759768,
+      "time_elapsed": 384.6756823062897
+    },
+    {
+      "exploitability": 0.00011700868237851658,
+      "time_elapsed": 575.2374813556671
+    },
+    {
+      "exploitability": 5.351180224411056e-05,
+      "time_elapsed": 858.9250738620758
+    }
+  ]
+}
