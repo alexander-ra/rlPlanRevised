@@ -348,6 +348,27 @@ def get_glossary_data() -> dict:
             "bg": {"term": "Поведенчески проследявания",
                    "def": "Записана последователност от наблюдаеми действия на играч по време на игра, използвана за моделиране и анализ."},
         },
+        "kuhn_poker": {
+            "domain": "game_theory",
+            "en": {"term": "Kuhn Poker",
+                   "def": "Minimal two-player imperfect-information poker variant with a 3-card deck (J, Q, K). Has a known analytical Nash equilibrium, making it ideal for verifying CFR implementations."},
+            "bg": {"term": "Kuhn Poker",
+                   "def": "Минимален вариант на покер за двама играчи с несъвършена информация с тесте от 3 карти (J, Q, K). Притежава известно аналитично равновесие на Наш, което го прави идеален за верификация на CFR имплементации."},
+        },
+        "leduc_holdem": {
+            "domain": "game_theory",
+            "en": {"term": "Leduc Hold'em",
+                   "def": "Small two-player poker benchmark with a 6-card deck (two suits of J, Q, K) and two betting rounds. Has ~936 information sets and serves as a standard scalability testbed."},
+            "bg": {"term": "Leduc Hold'em",
+                   "def": "Малък бенчмарк за покер за двама играчи с тесте от 6 карти (два цвята J, Q, K) и два кръга на залагане. Има ~936 информационни множества и е стандартна тестова среда за мащабируемост."},
+        },
+        "so_long_sucker": {
+            "domain": "game_theory",
+            "en": {"term": "So Long Sucker",
+                   "def": "Classic 4-player negotiation and coalition game designed by von Neumann. Involves chip trading with binding deals that can be betrayed, making it a testbed for multi-agent dynamics and coalition stability."},
+            "bg": {"term": "So Long Sucker",
+                   "def": "Класическа игра за четирима играчи с преговори и коалиции, разработена от фон Нойман. Включва търговия с чипове и обвързващи споразумения, чието нарушаване е разрешено — тестова среда за многоагентна динамика и стабилност на коалициите."},
+        },
         # ── Algorithms ──────────────────────────────────────────────────────
         "cfr": {
             "domain": "algorithms",

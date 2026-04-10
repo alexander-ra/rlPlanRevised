@@ -295,8 +295,13 @@ function setupGlossaryTooltips() {
     sup.replaceWith(trigger);
 
     /* Events */
-    trigger.addEventListener('mouseenter', () => { glCancelHide(); glShowPopup(trigger); });
+    trigger.addEventListener('touchstart', () => { _glLastTouch = Date.now(); }, { passive: true });
+    trigger.addEventListener('mouseenter', () => {
+      if (Date.now() - _glLastTouch < 500) return;
+      glCancelHide(); glShowPopup(trigger);
+    });
     trigger.addEventListener('mouseleave', e => {
+      if (Date.now() - _glLastTouch < 500) return;
       if (!trigger.contains(e.relatedTarget)) glScheduleHide(trigger, 250);
     });
     trigger.addEventListener('focus', () => glShowPopup(trigger));
@@ -327,7 +332,8 @@ function setupGlossaryTooltips() {
   document.addEventListener('click', glCloseAll);
 }
 
-let _glHideTimer = null;
+let _glHideTimer  = null;
+let _glLastTouch  = 0;
 
 function glCancelHide() {
   if (_glHideTimer) { clearTimeout(_glHideTimer); _glHideTimer = null; }
