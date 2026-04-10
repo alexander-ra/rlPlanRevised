@@ -1,8 +1,6 @@
 /* ===== Glossary Module ===== */
 // GLOSSARY_DATA is injected by build.py as a const before this script.
-
-/* ── State ── */
-let isGlossaryPage = false;
+// isGlossaryPage state is declared in config.js
 
 /* ── Domain colour map (mirrors CSS phase vars) ── */
 const GL_DOMAIN_COLORS = {
