@@ -602,33 +602,80 @@ body {
   opacity: 0.8; filter: grayscale(0.2);
 }
 
-/* ===== Download Cards (Step View) ===== */
-.dl-cards {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+/* ===== Download Widget (Step View) ===== */
+.dl-widget {
   margin-bottom: 1.25rem;
-}
-.dl-card {
-  background: var(--surface); border: 1px solid var(--outline-variant);
-  border-radius: 12px; padding: 0.85rem 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--outline-variant);
   box-shadow: var(--shadow-1);
-  border-top: 3px solid var(--outline-variant);
 }
-.dl-card--summary { border-top-color: var(--primary); }
-.dl-card--report  { border-top-color: #059669; }
-.dl-card-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 0.3rem; color: var(--on-surface); }
-.dl-card-desc  { font-size: 0.72rem; color: var(--on-surface-medium); margin-bottom: 0.65rem; line-height: 1.4; }
-.dl-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-.dl-btn {
-  display: inline-flex; align-items: center; gap: 0.3rem;
-  padding: 0.35rem 0.8rem; border-radius: 8px;
-  font-size: 0.76rem; font-weight: 600; text-decoration: none;
-  background: var(--on-surface); color: var(--surface);
-  transition: background 0.15s, transform 0.1s;
+.dl-widget-hdr {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.01em;
 }
-.dl-btn:hover { background: var(--on-surface-medium); transform: translateY(-1px); }
-.dl-flag { font-size: 0.88rem; line-height: 1; }
+.dl-widget-hdr-icon { font-size: 0.95rem; line-height: 1; }
+.dl-widget-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--surface);
+}
+.dl-widget-col {
+  padding: 0.8rem 1rem 0.9rem;
+}
+.dl-widget-col + .dl-widget-col {
+  border-left: 1px solid var(--outline-variant);
+}
+.dl-widget-col-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--on-surface);
+  margin-bottom: 0.2rem;
+}
+.dl-widget-col-desc {
+  font-size: 0.7rem;
+  color: var(--on-surface-medium);
+  line-height: 1.4;
+  margin-bottom: 0.6rem;
+}
+.dl-widget-btns {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.dl-widget-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--surface-variant);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.dl-widget-btn:hover {
+  background: var(--btn-color, var(--primary));
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-1px);
+}
 @media (max-width: 540px) {
-  .dl-cards { grid-template-columns: 1fr; }
+  .dl-widget-body { grid-template-columns: 1fr; }
+  .dl-widget-col + .dl-widget-col {
+    border-left: none;
+    border-top: 1px solid var(--outline-variant);
+  }
 }
 
 /* ===== Sidebar Progress Bar ===== */
@@ -1209,6 +1256,41 @@ body {
   letter-spacing: 0.06em; color: rgba(255,255,255,0.65);
 }
 .hp-stat--current { max-width: 200px; }
+.hp-hero-dl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255,255,255,0.25);
+}
+.hp-hero-dl-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-right: 0.15rem;
+  white-space: nowrap;
+}
+.hp-hero-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.35);
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.hp-hero-dl-btn:hover {
+  background: rgba(255,255,255,0.32);
+  transform: translateY(-1px);
+}
 .hp-contributions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
