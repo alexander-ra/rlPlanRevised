@@ -4,16 +4,16 @@
 **Dependencies:** Step 1 (RL Basics), Step 3 (CFR Variants + MC Methods), Step 4 (Game Abstraction + Scaling)  
 **Phase:** C — Neural Methods for Games
 
-> **Know-How First compression:** Implementation phase cut from 6d to 3d. Get Deep CFR running on Leduc with correct exploitability convergence. Understand DREAM conceptually (reading + exploration). Defer full DREAM implementation and head-to-head Deep CFR vs. DREAM benchmark to implementation phase post-November. All reading and intuition phases unchanged.
+> **Know-How First compression:** Implementation phase cut from 6d to 3d. Get Deep CFR running on Leduc with correct exploitability<sup class="gl" data-gl="exploitability">gl</sup> convergence<sup class="gl" data-gl="convergence">gl</sup>. Understand DREAM conceptually (reading + exploration). Defer full DREAM implementation and head-to-head Deep CFR vs. DREAM benchmark<sup class="gl" data-gl="benchmark">gl</sup> to implementation phase post-November. All reading and intuition phases unchanged.
 > Phase allocation: Intuition 1d | Exploration 2d | Reading 3d | Implementation **3d** | Consolidation 2d  
 
 ### PhD Connection
 
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: Deep CFR's advantage networks are the technical mechanism for computing baseline strategies in games too large for tabular CFR. The information state encoding designed here (tensor representation of game state) becomes the foundation for the opponent modeling input in Step 7. NFSP's anticipatory parameter η foreshadows the exploitation-safety tradeoff central to Step 8 and the thesis.
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: Deep CFR's advantage networks are the technical mechanism for computing baseline strategies in games too large for tabular CFR. The information state encoding designed here (tensor representation of game state) becomes the foundation for the opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> input in Step 7. NFSP's anticipatory parameter η foreshadows the exploitation-safety tradeoff central to Step 8 and the thesis.
 
 ---
 
-> **Phase Overview:** Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree enumeration.
+> **Phase Overview:** Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set<sup class="gl" data-gl="information_set">gl</sup> — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree<sup class="gl" data-gl="game_tree">gl</sup> enumeration.
 
 
 ## Table of Contents
@@ -71,7 +71,7 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 
 - [**David Silver — Lecture 6: Value Function Approximation**](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ)  
   ⏱ ~1h20m · Instructor: David Silver (DeepMind / UCL) · [Slides (PDF)](https://davidstarsilver.wordpress.com/wp-content/uploads/2025/04/lecture-6-value-function-approximation-.pdf)  
-  *THE bridge lecture. Covers: why tables fail in large state spaces, linear function approximation, neural network approximation, convergence guarantees (and when they break), the deadly triad (function approximation + bootstrapping + off-policy = instability). After watching: you'll understand WHY DQN needs target networks and experience replay — they're engineering patches for the deadly triad. This directly explains the design decisions in your Step 1 implementation.*
+  *THE bridge lecture. Covers: why tables fail in large state spaces, linear function approximation, neural network approximation, convergence guarantees (and when they break), the deadly triad (function approximation + bootstrapping + off-policy = instability). After watching: you'll understand WHY DQN needs target networks and experience replay<sup class="gl" data-gl="experience_replay">gl</sup> — they're engineering patches for the deadly triad. This directly explains the design decisions in your Step 1 implementation.*
 
 **🔗 Connection to Step 1:** After watching these, revisit your DQN code mentally:
 - `q_network.py` → the MLP architecture (3Blue1Brown Ch 1)
@@ -96,7 +96,7 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
 
 - [**Player of Games: All the games, one algorithm! (w/ author Martin Schmid)**](https://www.youtube.com/watch?v=U0mxx7AoNz0)  
   ⏱ ~54m · Channel: Yannic Kilcher  
-  *Interview with the author covering how Student of Games unifies Deep CFR-style neural methods for both perfect and imperfect information games (chess, Go, poker, Scotland Yard).*
+  *Interview with the author covering how Student of Games unifies Deep CFR-style neural methods for both perfect and imperfect information<sup class="gl" data-gl="imperfect_information">gl</sup> games (chess, Go, poker, Scotland Yard).*
 
 ### Blog Posts
 
@@ -104,7 +104,7 @@ The goal: understand WHY we need neural networks in CFR (tabular CFR can't handl
   https://noambrown.github.io/  
   *Links to all of Brown's major papers with brief descriptions. Scan the Deep CFR entry for a one-paragraph overview.*
 
-- **Papers With Code — "Deep Counterfactual Regret Minimization"**  
+- **Papers With Code — "Deep Counterfactual Regret<sup class="gl" data-gl="counterfactual_value">gl</sup> Minimization<sup class="gl" data-gl="cfr">gl</sup>"**  
   https://paperswithcode.com/paper/deep-counterfactual-regret-minimization  
   *Check for reference implementations and benchmarks. Note: the official implementation is in the Facebook Research repo.*
 
@@ -297,7 +297,7 @@ https://arxiv.org/abs/1901.07621
     implementation, DREAM is likely the better starting point."
 ```
 
-### Paper 3: Heinrich & Silver — "Deep Reinforcement Learning from Self-Play in Imperfect-Information Games" (2016)
+### Paper 3: Heinrich & Silver — "Deep Reinforcement Learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> from Self-Play in Imperfect-Information Games" (2016)
 
 https://arxiv.org/abs/1603.01121
 
@@ -329,9 +329,9 @@ https://arxiv.org/abs/1603.01121
   https://arxiv.org/abs/2511.08174  
   *Combines discounted regret weights (from DCFR) with predictive networks. Claims faster convergence than vanilla Deep CFR. SKIM abstract + Section 3. Log insights for implementation comparison.*
 
-- **Rudolph et al. (2025) — "Reevaluating Policy Gradient Methods for Imperfect-Information Games"**  
+- **Rudolph et al. (2025) — "Reevaluating Policy Gradient<sup class="gl" data-gl="policy_gradient">gl</sup> Methods for Imperfect-Information Games"**  
   https://arxiv.org/abs/2502.08938  
-  *Important perspective: challenges the assumption that naive self-play DRL fails in adversarial IIGs. Shows that with proper hyperparameter tuning, standard policy gradient can perform surprisingly well. SKIM Section 3 (experiments) and Table 1 (comparisons). This reframes the Deep CFR vs RL question.*
+  *Important perspective: challenges the assumption that naive self-play DRL fails in adversarial IIGs. Shows that with proper hyperparameter<sup class="gl" data-gl="hyperparameter">gl</sup> tuning, standard policy gradient can perform surprisingly well. SKIM Section 3 (experiments) and Table 1 (comparisons). This reframes the Deep CFR vs RL question.*
 
 - **Zarick et al. (2020) — "Unlocking the Potential of Deep Counterfactual Value Networks"**  
   https://arxiv.org/abs/2007.10442  

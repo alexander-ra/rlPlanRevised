@@ -10,9 +10,9 @@ This step bridges the thesis's FORMAL tools (Steps 2–8: CFR, equilibrium, expl
 
 - **Contribution #1 (Behavioral Adaptation):** The state tensor encoding (cards, position, pot, stacks, betting history) designed here carries directly to the Playtech behavioral analysis pipeline (Step 13). The encoding IS the foundation of the behavioral adaptation framework — how you represent game state determines what behavioral patterns you can detect. This step prototypes the encoding on small games; Step 13 scales it to real data.
 
-- **Contribution #2 (Multi-Agent Safe Exploitation):** ARDT demonstrates that safe (minimax) strategies can emerge from offline data without explicit game-theoretic computation. This opens a path for Contribution #2: instead of computing Nash equilibria for N-player games (intractable, as shown in Step 11), learn safe strategies directly from behavioral data. The minimax conditioning on return-to-go is the offline analog of safe exploitation.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** ARDT demonstrates that safe (minimax) strategies can emerge from offline data without explicit game-theoretic<sup class="gl" data-gl="game_theory">gl</sup> computation. This opens a path for Contribution #2: instead of computing Nash equilibria<sup class="gl" data-gl="nash_equilibrium">gl</sup> for N-player games (intractable, as shown in Step 11), learn safe strategies directly from behavioral data. The minimax conditioning on return-to-go is the offline analog of safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup>.
 
-- **Contribution #3 (Evaluation Methodology):** The comparison table (CFR vs DT vs ARDT vs BC vs LLM on Kuhn Poker) is a microcosm of the evaluation framework: multiple agent architectures, same game, standardized metrics (exploitability, behavioral statistics). This prototype scales to the full evaluation framework in Step 14.
+- **Contribution #3 (Evaluation Methodology):** The comparison table (CFR vs DT vs ARDT vs BC vs LLM on Kuhn Poker) is a microcosm of the evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup>: multiple agent architectures, same game, standardized metrics (exploitability<sup class="gl" data-gl="exploitability">gl</sup>, behavioral statistics). This prototype scales to the full evaluation framework in Step 14.
 
 - **Bridge to Step 13:** Everything in this step's implementation — the state tensor encoding, the trajectory dataset format, the DT training pipeline — transfers to Playtech's anonymized hand history data. Step 12 builds the prototype on synthetic Kuhn/Leduc data; Step 13 applies it to real poker data.
 
@@ -51,9 +51,9 @@ This step bridges the thesis's FORMAL tools (Steps 2–8: CFR, equilibrium, expl
 
 The goal: understand TWO distinct but converging paradigms:
 
-**Paradigm A — Sequence Modeling for Offline RL (Decision Transformer):** Instead of learning a value function like Q-learning, what if you reformulate RL as a SEQUENCE prediction problem? Given a history of (state, action, reward) triples, predict the next action — conditioned on the DESIRED future return. The transformer architecture handles this naturally: it's already designed to predict the next token given a sequence. The breakthrough insight: you can train on a static dataset of past games (no environment interaction needed), and at test time, you simply condition on "I want high reward" and the model produces good actions.
+**Paradigm A — Sequence Modeling for Offline RL (Decision Transformer):** Instead of learning a value function<sup class="gl" data-gl="value_function">gl</sup> like Q-learning, what if you reformulate RL as a SEQUENCE prediction problem? Given a history of (state, action, reward) triples, predict the next action — conditioned on the DESIRED future return. The transformer architecture handles this naturally: it's already designed to predict the next token given a sequence. The breakthrough insight: you can train on a static dataset of past games (no environment interaction needed), and at test time, you simply condition on "I want high reward" and the model produces good actions.
 
-**Paradigm B — LLM Agents in Strategic Games:** What if you give a powerful language model (GPT-4, Claude, etc.) the rules of a game in natural language and let it PLAY? No RL training, no game tree search — just prompt engineering, in-context learning, and reasoning. This is radically different from everything in Steps 1–11. It works shockingly well in some settings (Diplomacy via CICERO) and fails embarrassingly in others (simple logical games). The key question: WHERE does LLM strategic reasoning work, where does it fail, and can it be COMBINED with game-theoretic methods?
+**Paradigm B — LLM Agents in Strategic Games:** What if you give a powerful language model (GPT-4, Claude, etc.) the rules of a game in natural language and let it PLAY? No RL training, no game tree<sup class="gl" data-gl="game_tree">gl</sup> search — just prompt engineering, in-context learning, and reasoning. This is radically different from everything in Steps 1–11. It works shockingly well in some settings (Diplomacy via CICERO) and fails embarrassingly in others (simple logical games). The key question: WHERE does LLM strategic reasoning work, where does it fail, and can it be COMBINED with game-theoretic methods?
 
 End of day: you should be able to explain to a non-expert: "There are two ways to use modern AI for game playing beyond classical RL. First, you can treat game histories as text sequences and train a transformer to predict good moves — this is the Decision Transformer approach. Second, you can just ask a large language model like GPT-4 to play a game by giving it the rules in plain English — and sometimes it plays surprisingly well, especially in games involving negotiation and deception. Both approaches have serious limitations: the sequence model struggles with luck-based games, and the LLM sometimes makes illegal moves or terrible strategic blunders. The frontier research question is how to combine these approaches with the game-theoretic methods we've already studied."
 
@@ -73,7 +73,7 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
 
 - [**Stanford CS224R — Lecture 10: RL for LLM Reasoning (Spring 2025)**](https://www.youtube.com/watch?v=O2VpNnwB4lM)  
   ⏱ ~1h11m · Speaker: Aviral Kumar (CMU) | Stanford  
-  *How reinforcement learning improves LLM reasoning capabilities. Directly relevant to understanding how LLM agents might learn strategic reasoning in games.*
+  *How reinforcement learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> improves LLM reasoning capabilities. Directly relevant to understanding how LLM agents might learn strategic reasoning in games.*
 
 ### Blog Posts / Accessible Reads
 
@@ -129,7 +129,7 @@ End of day: you should be able to explain to a non-expert: "There are two ways t
      - Does the LLM understand the rules? (Check for illegal move attempts)
      - Does the LLM reason strategically? (Look for evidence of planning, bluffing, theory of mind)
      - Does the LLM adapt to opponent behavior? (Play multiple rounds — does it exploit patterns?)
-   - **Connection to Step 7:** Compare the LLM's implicit opponent modeling (in-context) with the explicit Bayesian opponent model from Step 7. Which is more systematic? Which is more flexible?
+   - **Connection to Step 7:** Compare the LLM's implicit opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> (in-context) with the explicit Bayesian opponent model from Step 7. Which is more systematic? Which is more flexible?
 
 4. **Quick sanity check — LLM on Kuhn Poker:**
    - Write a simple Kuhn Poker text interface (you have the environment from Step 2)
@@ -152,7 +152,7 @@ https://arxiv.org/abs/2106.01345
   - KEY OBSERVATION: DT is competitive without any temporal difference learning, Bellman backup, or value function. Pure supervised learning on (state, action, return) sequences.
 - **SKIM:** Section 5 (Discussion)
 - **SKIP:** Appendix details on specific environments (unless you're replicating)
-- **PhD Connection:** The state representation (cards, position, pot, stacks, betting history) from the original docPlan maps directly to the DT input tokenization. Hand histories become sequences. Return-to-go = desired winrate. This is the *architecture* for Step 13's Playtech behavioral cloning.
+- **PhD Connection:** The state representation (cards, position, pot, stacks, betting history) from the original docPlan maps directly to the DT input tokenization. Hand histories become sequences. Return-to-go = desired winrate. This is the *architecture* for Step 13's Playtech behavioral cloning<sup class="gl" data-gl="behavioral_cloning">gl</sup>.
 
 ### Paper 2: Paster, McIlraith & Ba — "You Can't Count on Luck" (2022)
 https://arxiv.org/abs/2205.15967
@@ -489,7 +489,7 @@ https://arxiv.org/abs/2106.02039
 - **Write the mandatory one-pager** (Section 4.7 format). Commit to repo.
 - **Update the Learning Log** (`learningLog.md`):
   - **Connections:**
-    - [Step 2] Kuhn Poker Nash equilibrium → [Step 12] used as ground truth to evaluate DT, ARDT, and LLM agents. The exact Nash solution is the benchmark that all other methods are measured against.
+    - [Step 2] Kuhn Poker Nash equilibrium → [Step 12] used as ground truth to evaluate DT, ARDT, and LLM agents. The exact Nash solution is the benchmark<sup class="gl" data-gl="benchmark">gl</sup> that all other methods are measured against.
     - [Step 3] CFR agent → [Step 12] used as DATA GENERATOR. The quality of DT training data depends on the quality of the generating agent. Near-Nash CFR data = high-quality offline data. Random data = low-quality.
     - [Step 5] Deep CFR (neural equilibrium) → [Step 12] ARDT offers an ALTERNATIVE path to equilibrium strategies: instead of iterating CFR with neural networks, just do supervised learning on an offline game dataset with adversarially robust conditioning. Same destination, different road.
     - [Step 7] Bayesian opponent model → [Step 12] LLM agents do implicit opponent modeling via in-context reasoning. Same function (infer opponent's state from behavior), radically different implementation (statistics vs language).
@@ -498,7 +498,7 @@ https://arxiv.org/abs/2106.02039
     - [Step 12] Poker state tensor encoding → prediction: [Step 13] Same encoding applied to Playtech data. The DT pipeline is the PROTOTYPE for Step 13's real-world behavioral analysis pipeline.
     - [Step 12] Paster et al. stochasticity warning → prediction: [Step 13] Must condition on decision EV, not outcome, when building the Playtech pipeline. Return-to-go conflates luck with skill in poker.
   - **Confusions:**
-    - [Step 12] DT conditions on return-to-go, but in poker the return depends heavily on card deal (luck). Paster et al. say this means DT will fail. ARDT's fix (minimax conditioning) helps, but does it fully solve the problem? In Kuhn Poker (3 cards, tiny game), we can verify. In full poker (10^160 information sets), unclear. → PARTIALLY ADDRESSED (ARDT helps; full solution may need EV-based conditioning, deferred to Step 13)
+    - [Step 12] DT conditions on return-to-go, but in poker the return depends heavily on card deal (luck). Paster et al. say this means DT will fail. ARDT's fix (minimax conditioning) helps, but does it fully solve the problem? In Kuhn Poker (3 cards, tiny game), we can verify. In full poker (10^160 information sets<sup class="gl" data-gl="information_set">gl</sup>), unclear. → PARTIALLY ADDRESSED (ARDT helps; full solution may need EV-based conditioning, deferred to Step 13)
     - [Step 12] LLM agents understand game rules through language, but their strategic reasoning is inconsistent (sometimes optimal, sometimes terrible). Can we QUANTIFY when LLM reasoning is reliable? What game properties predict LLM success? → OPEN (TextArena evaluation may give partial answers)
     - [Step 12] ARDT recovers Nash in full-coverage settings (Tang et al.'s claim). But offline poker data has PARTIAL coverage (not all states visited). How does ARDT degrade with partial coverage? → OPEN (tested on Kuhn, but Kuhn is too small to stress this)
     - [Step 7→12] Bayesian opponent model (Step 7) is precise but requires explicit state representation and prior specification. LLM opponent model (Step 12) is flexible but imprecise and uncontrollable. Is there a principled way to COMBINE them? (e.g., LLM generates hypotheses, Bayesian model evaluates them) → OPEN (potentially novel contribution)

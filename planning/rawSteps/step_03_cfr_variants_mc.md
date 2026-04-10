@@ -1,7 +1,7 @@
 # Step 3 — CFR Variants + Monte Carlo Methods
 
 **Duration:** 10 days (Tier 2 — compressed)  
-**Dependencies:** Step 2 (Game Theory + CFR Basics)  
+**Dependencies:** Step 2 (Game Theory<sup class="gl" data-gl="game_theory">gl</sup> + CFR Basics)  
 **Phase:** B — Scaling the Toolbox
 
 > **Know-How First compression:** Implementation phase cut from 6d to 3d. Build one MC-CFR variant (External Sampling) to working correctness on Kuhn and Leduc. Defer polished multi-variant comparison (Outcome Sampling, Robust Sampling) to implementation phase post-November. All reading and intuition phases unchanged.
@@ -9,11 +9,11 @@
 
 ### PhD Connection
 
-This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: MCCFR is the algorithm that will compute the baseline Nash strategy (the "play it safe" anchor) from which the adaptive agent will deviate based on opponent observations. CFR+ is the tool that makes this computation tractable for real-sized games. The Leduc implementation also establishes the intermediate benchmark game used in Steps 5–8 before scaling to full poker.
+This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: MCCFR is the algorithm that will compute the baseline Nash strategy (the "play it safe" anchor) from which the adaptive agent will deviate based on opponent observations. CFR+ is the tool that makes this computation tractable for real-sized games. The Leduc implementation also establishes the intermediate benchmark game<sup class="gl" data-gl="benchmark">gl</sup> used in Steps 5–8 before scaling to full poker.
 
 ---
 
-> **Phase Overview:** Phase A established a working CFR solver on the minimal Kuhn Poker benchmark, but vanilla CFR requires a full traversal of the game tree on every iteration — an approach that becomes infeasible as games grow. This phase will introduce two complementary scaling mechanisms: Monte Carlo sampling methods that reduce per-iteration cost, and game abstraction techniques that reduce the game tree itself. These tools are needed to bridge the gap between toy benchmarks and the medium-scale games on which later thesis work will be developed.
+> **Phase Overview:** Phase A established a working CFR solver on the minimal Kuhn Poker benchmark, but vanilla CFR requires a full traversal of the game tree<sup class="gl" data-gl="game_tree">gl</sup> on every iteration — an approach that becomes infeasible as games grow. This phase will introduce two complementary scaling mechanisms: Monte Carlo sampling methods that reduce per-iteration cost, and game abstraction techniques that reduce the game tree itself. These tools are needed to bridge the gap between toy benchmarks and the medium-scale games on which later thesis work will be developed.
 
 
 ## Table of Contents
@@ -42,7 +42,7 @@ This step feeds **Contribution #1 (Behavioral Adaptation Framework)** directly: 
 
 ## Phase 1: Intuition (1 day)
 
-The goal: understand WHY vanilla CFR is too slow for large games, what Monte Carlo sampling does about it, and how CFR+ improved convergence. End of day: you should be able to explain to a non-expert: "Instead of walking every branch of the game tree every iteration, we sample a few branches — it's noisier, but we only need to update the sampled branches, which makes each iteration 1000x cheaper."
+The goal: understand WHY vanilla CFR is too slow for large games, what Monte Carlo sampling does about it, and how CFR+ improved convergence<sup class="gl" data-gl="convergence">gl</sup>. End of day: you should be able to explain to a non-expert: "Instead of walking every branch of the game tree every iteration, we sample a few branches — it's noisier, but we only need to update the sampled branches, which makes each iteration 1000x cheaper."
 
 ### Videos
 
@@ -90,7 +90,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
    ```python
    import pyspiel
    from open_spiel.python.algorithms import mccfr
-   from open_spiel.python.algorithms import exploitability as expl
+   from open_spiel.python.algorithms import exploitability<sup class="gl" data-gl="exploitability">gl</sup> as expl
    
    game = pyspiel.load_game("kuhn_poker")
    
@@ -120,7 +120,7 @@ The goal: understand WHY vanilla CFR is too slow for large games, what Monte Car
    
    state = game.new_initial_state()
    print(state)
-   # Explore the game tree — Leduc has ~936 information sets vs Kuhn's ~12
+   # Explore the game tree — Leduc has ~936 information sets<sup class="gl" data-gl="information_set">gl</sup> vs Kuhn's ~12
    ```
    *Observe: Leduc is ~80x larger than Kuhn. Vanilla CFR is already noticeably slower here. This motivates MCCFR.*
 
@@ -219,20 +219,20 @@ https://arxiv.org/abs/0709.2092
 **Context — what comes after (Ch 9–end):** Ch 9–14 cover toy game solutions, multistreet play, tournament theory. *Relevant for poker intuition but not for CFR implementation. Can revisit during Step 13 (behavioral analysis pipelines) if working with poker data.*  
 **Reading focus:**
 - **Ch 1–3 (skim, ~1 hr):** EV basics, pot odds, fundamental theorem of poker. You know most of this from playing. Skim for formal vocabulary.
-- **Ch 4–5 (read, ~2 hrs):** Game-theoretic optimal play, exploitation, the balance between GTO and exploitative strategy. *This is the vocabulary that connects to Steps 7–8 (opponent modeling + safe exploitation).*
-- **Ch 6–8 (read key sections, ~2 hrs):** Half-street and full-street toy game solutions. These are the simplest games where you can see Nash equilibrium bluffing frequencies derived analytically. *Builds intuition for why the CFR output "looks the way it does" — the math explains the bluff/call frequencies.*
+- **Ch 4–5 (read, ~2 hrs):** Game-theoretic optimal play, exploitation, the balance between GTO and exploitative strategy. *This is the vocabulary that connects to Steps 7–8 (opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> + safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup>).*
+- **Ch 6–8 (read key sections, ~2 hrs):** Half-street and full-street toy game solutions. These are the simplest games where you can see Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> bluffing frequencies derived analytically. *Builds intuition for why the CFR output "looks the way it does" — the math explains the bluff/call frequencies.*
 
 **Note:** If you can't get this book, the poker-specific math can be substituted by reading Neller & Lanctot's worked examples more carefully and playing with Leduc. The book adds color and domain intuition but isn't algorithmically critical.
 
 ### Optional Supplementary
 
-- **Schmid et al. (2018) — "Variance Reduction in Monte Carlo Counterfactual Regret Minimization"**  
+- **Schmid et al. (2018) — "Variance Reduction in Monte Carlo Counterfactual<sup class="gl" data-gl="mccfr">gl</sup> Regret Minimization<sup class="gl" data-gl="cfr">gl</sup>"**  
   https://arxiv.org/abs/1809.03057  
   *VR-MCCFR adds baseline subtraction to reduce sampling variance. SKIM Sections 1–3 only. This technique reappears in Step 5 (Deep CFR relies on variance reduction).*
 
 - **Farina et al. (2020) — "Stochastic Regret Minimization in Extensive-Form Games"**  
   https://arxiv.org/abs/2002.08493  
-  *Unifies sampling-based regret minimization. SKIM abstract only — good for bibliography mining.*
+  *Unifies sampling-based regret minimization<sup class="gl" data-gl="regret">gl</sup>. SKIM abstract only — good for bibliography mining.*
 
 ### Math Flags
 

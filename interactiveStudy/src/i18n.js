@@ -57,6 +57,8 @@ function setLang(lang) {
     navigateCalendar();
   } else if (isHomepage) {
     navigateHome();
+  } else if (isGlossaryPage) {
+    navigateGlossary();
   } else if (currentStepIndex >= 0) {
     navigateTo(STEP_META[currentStepIndex].id);
   }

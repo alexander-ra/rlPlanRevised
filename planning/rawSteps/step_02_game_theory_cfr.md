@@ -1,4 +1,4 @@
-# Step 2 — Game Theory + CFR Basics
+# Step 2 — Game Theory<sup class="gl" data-gl="game_theory">gl</sup> + CFR Basics
 
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 1 (RL Basics)  
@@ -8,8 +8,8 @@
 
 This step feeds **all three thesis contributions** at the foundational level:
 - **Contribution #1 (Behavioral Adaptation Framework):** CFR's information-set decomposition is the basis for computing counter-strategies against observed behavior.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** Safe exploitation (Step 8) is defined as deviation from Nash equilibrium — you must first understand Nash computation via CFR to understand what you're deviating FROM.
-- **Contribution #3 (Evaluation Methodology):** Exploitability (computed via best response) is the primary evaluation metric for your thesis. You implemented it from scratch in this step.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** Safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> (Step 8) is defined as deviation from Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> — you must first understand Nash computation via CFR to understand what you're deviating FROM.
+- **Contribution #3 (Evaluation Methodology):** Exploitability<sup class="gl" data-gl="exploitability">gl</sup> (computed via best response) is the primary evaluation metric for your thesis. You implemented it from scratch in this step.
 
 > **[P6] Sequence-form reading pointer:** When reviewing Step 2 material during Step 8, revisit Shoham & Leyton-Brown Chapter 4 on sequence-form representation. The sequence-form is the mathematical backbone of all LP-based equilibrium and exploitation computation used in Step 8.
 
@@ -39,7 +39,7 @@ This step feeds **all three thesis contributions** at the foundational level:
 
 ## Phase 1: Intuition (1 day)
 
-The goal: understand what game theory IS, why Nash equilibrium matters, what an extensive-form game looks like, and why CFR was invented. NO math, NO code — just build the mental model.
+The goal: understand what game theory IS, why Nash equilibrium matters, what an extensive-form game<sup class="gl" data-gl="extensive_form_game">gl</sup> looks like, and why CFR was invented. NO math, NO code — just build the mental model.
 
 ### Videos
 
@@ -53,15 +53,15 @@ The goal: understand what game theory IS, why Nash equilibrium matters, what an 
 
 - [**Stanford CS221 — Lecture 10: Games I (Autumn 2025)**](https://www.youtube.com/watch?v=SMOD_GiRzb8)  
   ⏱ ~1h13m · Instructor: Percy Liang (Stanford)  
-  *University lecture covering game trees, minimax, alpha-beta pruning, and evaluation functions. The formal framework for two-player games that CFR operates on.*
+  *University lecture covering game trees<sup class="gl" data-gl="game_tree">gl</sup>, minimax, alpha-beta pruning, and evaluation functions. The formal framework for two-player games that CFR operates on.*
 
 - [**Poker AI: Libratus and an Introduction to Counterfactual Regret Minimization**](https://www.youtube.com/watch?v=htRtfyab-Ns)  
   ⏱ ~12m · Channel: Fullstack Academy  
-  *Concise intro to CFR with a Rock-Paper-Scissors worked example. Explains regret matching, convergence to Nash equilibrium, and how Libratus used CFR to beat top poker pros.*
+  *Concise intro to CFR with a Rock-Paper-Scissors worked example. Explains regret matching, convergence<sup class="gl" data-gl="convergence">gl</sup> to Nash equilibrium, and how Libratus used CFR to beat top poker pros.*
 
 - [**Noam Brown — AI for Imperfect-Information Games: Poker and Beyond**](https://www.youtube.com/watch?v=cn8Sld4xQjg)  
   ⏱ ~1h1m · Channel: London Machine Learning Meetup  
-  *Comprehensive talk covering the journey from game theory basics to superhuman poker AI. Covers CFR, abstraction, subgame solving, and why imperfect information is fundamentally harder than chess/Go.*
+  *Comprehensive talk covering the journey from game theory basics to superhuman poker AI. Covers CFR, abstraction, subgame solving<sup class="gl" data-gl="subgame_solving">gl</sup>, and why imperfect information<sup class="gl" data-gl="imperfect_information">gl</sup> is fundamentally harder than chess/Go.*
 
 ### Blog Posts
 
@@ -92,7 +92,7 @@ No reading yet. Run existing CFR solvers, play games, see convergence happen.
    - *This creates the intuition for what the CFR algorithm will compute formally.*
 
 2. **Visualize the Kuhn Poker game tree:**
-   - Draw the full game tree by hand. It has ~30 terminal nodes. Label each node with: player, information set, actions.
+   - Draw the full game tree by hand. It has ~30 terminal nodes. Label each node with: player, information set<sup class="gl" data-gl="information_set">gl</sup>, actions.
    - Resources for verification: Neller & Lanctot Figure 1 (you'll read this paper in Phase 3, but peek at the figure now).
 
 3. **Install OpenSpiel and run their CFR on Kuhn:**
@@ -125,7 +125,7 @@ No reading yet. Run existing CFR solvers, play games, see convergence happen.
    # List all available games
    print(pyspiel.registered_names())
    
-   # Try a normal-form game
+   # Try a normal-form game<sup class="gl" data-gl="normal_form_game">gl</sup>
    game = pyspiel.load_game_as_turn_based("matrix_rps")  # Rock-Paper-Scissors
    state = game.new_initial_state()
    print(state)
@@ -191,14 +191,14 @@ No reading yet. Run existing CFR solvers, play games, see convergence happen.
 3. **Questions to answer by end of Day 2:**
    - What is an information set, and why is it different from a game state?
    - What does "exploitability" measure, and why is it the right metric?
-   - Why does CFR converge for 2-player zero-sum games?
+   - Why does CFR converge for 2-player zero-sum games<sup class="gl" data-gl="zero_sum_game">gl</sup>?
    - How does the OpenSpiel CFR output compare to the known Kuhn Nash equilibrium?
 
 ---
 
 ## Phase 3: Targeted Reading (3 days)
 
-### Core Reading: Neller & Lanctot — "An Introduction to Counterfactual Regret Minimization" (2013)
+### Core Reading: Neller & Lanctot — "An Introduction to Counterfactual Regret<sup class="gl" data-gl="counterfactual_value">gl</sup> Minimization<sup class="gl" data-gl="cfr">gl</sup>" (2013)
 
 http://modelai.gettysburg.edu/2013/cfr/cfr.pdf  
 **Length:** ~30 pages  
@@ -235,7 +235,7 @@ http://modelai.gettysburg.edu/2013/cfr/cfr.pdf
 **Context — what comes after (Ch 7+):** Ch 7 covers learning in games (connects to MARL in Step 9). Ch 8+ covers mechanism design, auctions, social choice — not relevant for this PhD track.  
 **Reading focus:**
 - **Ch 3 (read carefully, ~2 hrs):** Introduction to game theory. Normal-form games, strategy profiles, best responses. This is the vocabulary.
-- **Ch 4 (read 4.1–4.3 carefully, skim rest, ~2 hrs):** Solution concepts. Nash equilibrium definition, mixed strategies, existence theorem. *The Nash existence proof (Theorem 4.1.3) is important to know EXISTS but you don't need to reproduce it — treat it as: "Nash proved that every finite game has at least one mixed-strategy equilibrium."*
+- **Ch 4 (read 4.1–4.3 carefully, skim rest, ~2 hrs):** Solution concepts. Nash equilibrium definition, mixed strategies<sup class="gl" data-gl="mixed_strategy">gl</sup>, existence theorem. *The Nash existence proof (Theorem 4.1.3) is important to know EXISTS but you don't need to reproduce it — treat it as: "Nash proved that every finite game has at least one mixed-strategy equilibrium."*
 - **Ch 6 (read carefully, ~3 hrs):** Extensive-form games. This is the critical chapter: game trees, information sets, perfect vs imperfect information, subgame perfect equilibrium, behavioural strategies. *This notation directly transfers to CFR and every paper you'll read in Steps 3–8.*
 
 ### Paper 1: Zinkevich et al. — "Regret Minimization in Games with Incomplete Information" (2007)
@@ -367,7 +367,7 @@ https://arxiv.org/abs/0709.2092
 
 ### Day 1 — Reference Skim + Gap Fill
 
-- **Reference skim:** Shoham & Leyton-Brown Ch 7 (Learning in games) — NOT to learn deeply, but to see how regret-based learning fits into the broader landscape of learning algorithms for games. This connects to Steps 9 (MARL) and 10 (population-based training).
+- **Reference skim:** Shoham & Leyton-Brown Ch 7 (Learning in games) — NOT to learn deeply, but to see how regret-based learning fits into the broader landscape of learning algorithms for games. This connects to Steps 9 (MARL) and 10 (population-based training<sup class="gl" data-gl="population_based_training">gl</sup>).
 - **Optional skim:** Zinkevich et al. (2007) Sections 5–6 for the Rhode Island Hold'em experiments — this gives a preview of what larger games look like before you scale to Leduc in Step 3.
 - Review your Phase 4 code: can you trace through the CFR recursion by hand for a 2-card, 1-action subtree? If not, do it now.
 
@@ -376,8 +376,8 @@ https://arxiv.org/abs/0709.2092
 - **Write the mandatory one-pager** (Section 4.7 format). Commit to repo.
 - **Update the Learning Log** (`learningLog.md`):
   - **Connections:**
-    - [Step 1] Q-learning updates at each state → [Step 2] CFR updates at each information set. Same idea: local regret minimization → global convergence.
-    - [Step 1] Experience replay (DQN) stores transitions → [Step 2] Strategy sum accumulates weighted strategies over time. Both are "memory" mechanisms that stabilize learning.
+    - [Step 1] Q-learning updates at each state → [Step 2] CFR updates at each information set. Same idea: local regret minimization<sup class="gl" data-gl="regret">gl</sup> → global convergence.
+    - [Step 1] Experience replay<sup class="gl" data-gl="experience_replay">gl</sup> (DQN) stores transitions → [Step 2] Strategy sum accumulates weighted strategies over time. Both are "memory" mechanisms that stabilize learning.
     - [Step 2] Vanilla CFR traverses the full game tree → [Step 3] MCCFR samples paths (Monte Carlo). Same relationship as: dynamic programming (full sweep) → Monte Carlo methods (sampling).
   - **Confusions:** Common open questions for Step 2:
     - "Why does the AVERAGE strategy converge to Nash, but the CURRENT strategy doesn't?"

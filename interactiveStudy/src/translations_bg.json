@@ -132,5 +132,18 @@
   "lock_prompt": "Въведете парола, за да отключите редактирането.\n\n(Това засяга редактиране на график и отчет. Съдържанието остава същото.)",
   "lock_incorrect": "Неправилна парола.",
   "unlock_label": "Отключи",
-  "lock_label": "Заключи"
+  "lock_label": "Заключи",
+  "glossary_btn": "📖 Речник",
+  "gl_domain_rl": "Обучение с подкрепление",
+  "gl_domain_gt": "Теория на игрите",
+  "gl_domain_alg": "Алгоритми",
+  "gl_domain_eval": "Оценяване",
+  "gl_terms_count": "термина",
+  "gl_search_placeholder": "Търсене на термини, дефиниции…",
+  "gl_filter_label": "Филтриране по домейн",
+  "gl_filter_all": "Всички",
+  "gl_no_results": "Няма намерени термини.",
+  "gl_unavailable": "Данните за речника не са налични.",
+  "gl_tooltip_aria": "Речник",
+  "gl_view_in_glossary": "Виж в речника"
 }

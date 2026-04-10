@@ -1,4 +1,4 @@
-# Step 10 — Population-Based Training + Evolutionary Game Theory
+# Step 10 — Population-Based Training + Evolutionary Game Theory<sup class="gl" data-gl="game_theory">gl</sup>
 
 **Duration:** 14 days (Tier 2)  
 **Dependencies:** Step 7 (Opponent Modeling), Step 8 (Safe Exploitation), Step 9 (Multi-Agent RL)  
@@ -8,9 +8,9 @@
 
 This step provides the EVOLUTIONARY MACHINERY for the thesis. The connection to each contribution:
 
-- **Contribution #1 (Behavioral Adaptation):** PBT's exploiter mechanism is automated opponent modeling at scale. The main exploiter finds weaknesses in the main agent — exactly what your Step 7 opponent model does, but embedded in the training loop. Your thesis combines EXPLICIT modeling (Step 7's Bayesian model) with IMPLICIT modeling (Step 10's exploiter agents).
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The key gap: AlphaStar's league provides HEURISTIC safety (exploiters keep main agents honest) but NO FORMAL SAFETY GUARANTEE. Your thesis contribution is to formalize this: what does "safe exploitation in a population" MEAN mathematically? The spinning top decomposition tells you that the cyclic component is where safety is hardest (because improvement is illusory). Can you define safety as "never losing to the transitive component" while accepting cycling in the cyclic component? This is a concrete thesis hypothesis.
-- **Contribution #3 (Evaluation Methodology):** EGTA provides the evaluation framework: measure the meta-Nash of the agent population as the multi-agent generalization of exploitability. The spinning top decomposition provides a diagnostic: how much of the competitive structure is "real skill" vs "rock-paper-scissors dynamics"?
+- **Contribution #1 (Behavioral Adaptation):** PBT's exploiter mechanism is automated opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> at scale. The main exploiter finds weaknesses in the main agent — exactly what your Step 7 opponent model does, but embedded in the training loop. Your thesis combines EXPLICIT modeling (Step 7's Bayesian model) with IMPLICIT modeling (Step 10's exploiter agents).
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The key gap: AlphaStar's league provides HEURISTIC safety (exploiters keep main agents honest) but NO FORMAL SAFETY GUARANTEE. Your thesis contribution is to formalize this: what does "safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> in a population" MEAN mathematically? The spinning top decomposition<sup class="gl" data-gl="spinning_top">gl</sup> tells you that the cyclic component is where safety is hardest (because improvement is illusory). Can you define safety as "never losing to the transitive component" while accepting cycling in the cyclic component? This is a concrete thesis hypothesis.
+- **Contribution #3 (Evaluation Methodology):** EGTA provides the evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup>: measure the meta-Nash of the agent population as the multi-agent generalization of exploitability<sup class="gl" data-gl="exploitability">gl</sup>. The spinning top decomposition provides a diagnostic: how much of the competitive structure is "real skill" vs "rock-paper-scissors dynamics"?
 
 ---
 
@@ -40,7 +40,7 @@ This step provides the EVOLUTIONARY MACHINERY for the thesis. The connection to 
 
 ## Phase 1: Intuition (1 day)
 
-The goal: understand WHY population-based training exists (self-play against ONE opponent is brittle — you need a POPULATION for robustness) and HOW evolutionary game theory provides the mathematical lens to analyze populations of strategies competing and evolving. Key insight: in Steps 2–8, you computed a SINGLE strategy (Nash equilibrium). In Steps 9–10, you maintain a POPULATION of strategies that evolve over time. Evolutionary game theory tells you what happens to these populations in the long run.
+The goal: understand WHY population-based training<sup class="gl" data-gl="population_based_training">gl</sup> exists (self-play against ONE opponent is brittle — you need a POPULATION for robustness<sup class="gl" data-gl="robustness">gl</sup>) and HOW evolutionary game theory provides the mathematical lens to analyze populations of strategies competing and evolving. Key insight: in Steps 2–8, you computed a SINGLE strategy (Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup>). In Steps 9–10, you maintain a POPULATION of strategies that evolve over time. Evolutionary game theory tells you what happens to these populations in the long run.
 
 End of day: you should be able to explain to a non-expert: "Instead of training one AI against itself (self-play), we train a POPULATION of different AIs against each other. The strong ones survive, the weak ones get replaced. This is like evolution — but instead of biological organisms, we're evolving AI strategies. The result is more robust AIs because they've been tested against many different opponents, not just one. Evolutionary game theory is the math that tells us what this population converges to."
 
@@ -137,7 +137,7 @@ End of day: you should be able to explain to a non-expert: "Instead of training 
    - Answer: for some games (PD, Hawk-Dove), replicator dynamics converge to Nash. For others (RPS), they cycle AROUND Nash without converging. This is the fundamental difficulty of evolutionary approaches to equilibrium computation.
 
 3. **Run a simple PBT experiment:**
-   - Create a population of 10 PPO agents with DIFFERENT hyperparameters (learning rate, entropy bonus)
+   - Create a population of 10 PPO agents with DIFFERENT hyperparameters<sup class="gl" data-gl="hyperparameter">gl</sup> (learning rate, entropy bonus)
    - Train them via round-robin against each other (each agent plays N games vs each other agent)
    - Periodically: replace the bottom 20% with mutated copies of the top 20%
    - Observe: does the population converge to a single dominant strategy or maintain diversity?
@@ -195,7 +195,7 @@ https://arxiv.org/abs/1807.01281 (Science 2019)
     curriculum needed — the population self-organizes into a difficulty ladder."
 ```
 
-### Paper 3: Vinyals et al. — "Grandmaster Level in StarCraft II Using Multi-Agent Reinforcement Learning" (AlphaStar, 2019)
+### Paper 3: Vinyals et al. — "Grandmaster Level in StarCraft II Using Multi-Agent Reinforcement Learning<sup class="gl" data-gl="reinforcement_learning">gl</sup><sup class="gl" data-gl="marl">gl</sup>" (AlphaStar, 2019)
 
 **Link:** https://www.nature.com/articles/s41586-019-1724-z  
 **Alt link:** https://arxiv.org/abs/1911.12254 (extended version)
@@ -323,7 +323,7 @@ https://arxiv.org/abs/1803.06376 (AAMAS 2018)
 **WHY:** The replicator equation dx_i/dt = x_i(f_i(x) - f̄(x)) is the mathematical formalization of population evolution. It connects to Nash equilibria (fixed points are equilibria), evolutionary stability (ESS is an attractor), and the cycling problem in non-transitive games (orbits around the fixed point). For your thesis: understanding when replicator dynamics CONVERGE vs CYCLE tells you when population-based methods will work.
 
 🔢 **Spinning top decomposition (Balduzzi et al., Theorem 1)** — Must understand the statement.  
-**WHY:** This decomposition (A = T + C, transitive + cyclic) is the diagnostic tool for evaluating whether your multi-agent training is actually improving or just cycling. For your thesis: FFA games (Step 11) likely have significant non-transitive structure (coalition dynamics create RPS-like cycles). Understanding the decomposition helps you design evaluation metrics (Contribution #3) that distinguish real improvement from cyclical shift.
+**WHY:** This decomposition (A = T + C, transitive + cyclic) is the diagnostic tool for evaluating whether your multi-agent training is actually improving or just cycling. For your thesis: FFA games (Step 11) likely have significant non-transitive structure (coalition<sup class="gl" data-gl="coalition">gl</sup> dynamics create RPS-like cycles). Understanding the decomposition helps you design evaluation metrics (Contribution #3) that distinguish real improvement from cyclical shift.
 
 🔢 **EGTA approximation bound (Tuyls et al., Theorem 1)** — Read statement.  
 **WHY:** This bound tells you how many policies you need in your population for the empirical Nash to approximate the true Nash. For your thesis evaluation (Contribution #3), this determines sample complexity for multi-agent evaluation.
@@ -384,7 +384,7 @@ Starting point: Your PSRO from Step 9 + your Nash solver from Step 2 + your Deep
   ```python
   def spinning_top_decomposition(payoff_matrix):
       """Decompose antisymmetric payoff matrix A into T (transitive) + C (cyclic).
-      A must be zero-sum: A[i,j] = -A[j,i]."""
+      A must be zero-sum<sup class="gl" data-gl="zero_sum_game">gl</sup>: A[i,j] = -A[j,i]."""
       n = payoff_matrix.shape[0]
       # Make antisymmetric: A_anti = (A - A.T) / 2
       A_anti = (payoff_matrix - payoff_matrix.T) / 2
@@ -438,7 +438,7 @@ Starting point: Your PSRO from Step 9 + your Nash solver from Step 2 + your Deep
 - Track: Elo of all agents over time, exploitability of main agents over time
 
 **Day 5 — EGTA Analysis:**
-- 🔴 Apply Empirical Game-Theoretic Analysis to your league:
+- 🔴 Apply Empirical Game-Theoretic Analysis<sup class="gl" data-gl="egta">gl</sup> to your league:
   ```python
   def build_empirical_game(league):
       """Construct the normal-form meta-game from league match results."""
@@ -475,7 +475,7 @@ Starting point: Your PSRO from Step 9 + your Nash solver from Step 2 + your Deep
 
 ### Deliverables:
 - [ ] Replicator dynamics simulator with verified behavior on matrix games
-- [ ] Phase portraits for all matrix games showing convergence/cycling
+- [ ] Phase portraits for all matrix games showing convergence<sup class="gl" data-gl="convergence">gl</sup>/cycling
 - [ ] Spinning top decomposition implementation with transitive ratio metric
 - [ ] PBT League for Leduc (main agents + exploiters + historical snapshots)
 - [ ] EGTA analysis computing meta-Nash of the league
@@ -521,7 +521,7 @@ Starting point: Your PSRO from Step 9 + your Nash solver from Step 2 + your Deep
     - [Step 10] EGTA → prediction: [Step 14] The empirical game-theoretic analysis becomes a core evaluation tool for Contribution #3. Meta-Nash of the agent population is the multi-agent generalization of exploitability.
   - **Confusions:**
     - [Step 10] AlphaStar uses ~600 agents in the league, trained with massive compute (TPU pods). For Leduc, we use 7 agents. Does the league design still make sense at small scale? Is the three-agent-type structure overhead that doesn't help for small games? → PARTIALLY ANSWERED (the exploiter mechanism still helps even at small scale, but the diversity benefits are less dramatic)
-    - [Step 10] Replicator dynamics assume a fixed payoff matrix (a fixed game). But in PBT/league training, the agents are LEARNING — the "game" changes as agents improve. How does this non-stationarity affect the replicator analysis? → OPEN (link to Step 9's learning dynamics question)
+    - [Step 10] Replicator dynamics assume a fixed payoff matrix (a fixed game). But in PBT/league training, the agents are LEARNING — the "game" changes as agents improve. How does this non-stationarity<sup class="gl" data-gl="non_stationarity">gl</sup> affect the replicator analysis? → OPEN (link to Step 9's learning dynamics question)
     - [Step 10] The spinning top decomposition requires computing the FULL payoff matrix between all agents. For large populations, this is O(n²) games. Is there an efficient approximation? → OPEN (relevant for Step 14 scaling)
     - [Step 8→10] Step 8 proved safe exploitation for 2-player. The AlphaStar exploiter mechanism provides safety pressure in a POPULATION. But is there a formal guarantee? AlphaStar exploiters are heuristic — there's no theorem saying "main agents can't become exploitable." → OPEN (this IS the Contribution #2 gap: formalizing population-level safety)
 

@@ -45,7 +45,7 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
 
 - [**Stanford CS224R — Lecture 1: Class Intro + MDPs (Spring 2025)**](https://www.youtube.com/watch?v=EvHRQhMX7_w)  
   ⏱ ~53m · Instructor: Chelsea Finn (Stanford)  
-  *"Why study deep RL?" — a field overview of where deep reinforcement learning stands today, what problems remain open, and the landscape of current research directions.*
+  *"Why study deep RL?" — a field overview of where deep reinforcement learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> stands today, what problems remain open, and the landscape of current research directions.*
 
 - [**Stanford CS230 — Lecture 1: Introduction to Deep Learning (Autumn 2025)**](https://www.youtube.com/watch?v=_NLHFoVNlbg)  
   ⏱ ~1h · Instructor: Andrew Ng (Stanford)  
@@ -53,7 +53,7 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
 
 - [**Parables on the Power of Planning in AI: From Poker to Diplomacy**](https://www.youtube.com/watch?v=eaAonE58sLU)  
   ⏱ ~57m · Speaker: Noam Brown (OpenAI) | Channel: Paul G. Allen School  
-  *The broadest game AI overview available: the full trajectory from poker to Go to Diplomacy. Brown identifies open problems including N-player safety, opponent modeling, and real-time adaptation — directly adjacent to all three thesis contributions.*
+  *The broadest game AI overview available: the full trajectory from poker to Go to Diplomacy. Brown identifies open problems including N-player safety, opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup>, and real-time adaptation — directly adjacent to all three thesis contributions.*
 
 ### Blog Posts / Accessible Reads
 
@@ -62,7 +62,7 @@ End of day: you should be able to explain to a non-expert: "I've spent 6 months 
   *Any recent retrospective on game AI post-CICERO. Look for identification of open problems, unresolved challenges, and new directions.*
 
 - **Your own 13 one-pagers from Steps 2–14**  
-  **Re-read ALL of them sequentially.** This is the single most valuable intuition exercise: seeing the through-line from CFR basics (Step 2) through evaluation frameworks (Step 14). Mark in the margin of each: "Contribution #1 / #2 / #3" — which contribution does this step's open question feed? Some will feed multiple.
+  **Re-read ALL of them sequentially.** This is the single most valuable intuition exercise: seeing the through-line from CFR basics (Step 2) through evaluation frameworks<sup class="gl" data-gl="evaluation_framework">gl</sup> (Step 14). Mark in the margin of each: "Contribution #1 / #2 / #3" — which contribution does this step's open question feed? Some will feed multiple.
 
 ---
 
@@ -127,8 +127,8 @@ For each cell, annotate with **Step numbers** that provided the knowledge. This 
 
 For each of the three gaps, attempt to DISPROVE it:
 1. **Search Google Scholar** for any paper that fills the gap. Use queries like:
-   - "behavioral adaptation framework imperfect information games"
-   - "safe exploitation N-player multiplayer"
+   - "behavioral adaptation framework imperfect information<sup class="gl" data-gl="imperfect_information">gl</sup> games"
+   - "safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> N-player multiplayer"
    - "evaluation framework cross-game multi-agent"
 2. **Search recent conference proceedings** (NeurIPS 2025, ICML 2025, ICLR 2025/2026, AAAI 2026):
    - Check the accepted paper lists for any title matching the three contribution areas
@@ -250,7 +250,7 @@ Skim the table of contents and contribution chapters of 2–3 recent dissertatio
 
 - **Michael Bowling group (Alberta):** Search Google Scholar for recent dissertations by students working on poker AI / game solving (e.g., Dustin Morrill, Ryan D'Orazio, Marc Lanctot's earlier work)
 - **Tuomas Sandholm group (CMU):** Search for dissertations on safe exploitation, game abstraction (e.g., Noam Brown's thesis if accessible — it covers Libratus + Pluribus)
-- **Karl Tuyls group (DeepMind → Liverpool):** Evaluation-focused dissertations, α-Rank related
+- **Karl Tuyls group (DeepMind → Liverpool):** Evaluation-focused dissertations, α-Rank<sup class="gl" data-gl="alpha_rank">gl</sup> related
 
 **What to extract from each dissertation:**
 1. How many contributions? (Typically 2–4)
@@ -277,7 +277,7 @@ For each of the three contributions, write a structured design document (2–3 p
 | Section | Content |
 |---------|---------|
 | **Problem Statement** | Given: sequence of observed actions from an opponent in an imperfect-information game. Goal: (i) infer the opponent's strategy type in real-time, (ii) adapt exploitation strategy accordingly, (iii) maintain safety guarantee during adaptation. |
-| **Prior Art** | Bayesian opponent model (Southey 2005), handrange inference (Bard 2013), player2vec embeddings (Wang 2024), behavioral cloning from action sequences (Step 13), piKL regularization (Bakhtin 2022). |
+| **Prior Art** | Bayesian opponent model (Southey 2005), handrange inference (Bard 2013), player2vec embeddings (Wang 2024), behavioral cloning<sup class="gl" data-gl="behavioral_cloning">gl</sup> from action sequences (Step 13), piKL regularization (Bakhtin 2022). |
 | **The Gap** | No existing work provides a UNIFIED detect→adapt→evaluate pipeline: detection papers stop at classification, exploitation papers assume known opponent type, evaluation papers measure after-the-fact. The thesis proposes a CLOSED LOOP: observe → infer type → select exploitation strategy → evaluate outcome → update inference. |
 | **Proposed Method** | Phase 1: player2vec embedding (from game histories) → opponent type posterior. Phase 2: Strategy selection conditioned on type posterior (mixture of pre-computed exploitation strategies). Phase 3: Online Bayesian update of type posterior from match outcomes. Phase 4: Evaluate via three-layer framework (Contribution #3). |
 | **Experimental Plan** | Testbeds: Kuhn (proof-of-concept), Leduc (scaling), Playtech data (real-world). Opponent pool: bot zoo from Step 14. Metrics: adaptation speed (hands to correct classification), exploitation gain (mbb/hand above Nash baseline), safety (never worse than Nash vs adversarial opponents). |
@@ -290,12 +290,12 @@ For each of the three contributions, write a structured design document (2–3 p
 
 | Section | Content |
 |---------|---------|
-| **Problem Statement** | Given: N-player imperfect-information game (N > 2). A safety baseline strategy exists (e.g., equal share policy from Ge 2024). Problem: exploit sub-optimal opponents while guaranteeing expected payoff ≥ C/n - ε (equal share minus tolerance). Challenge: minimax theorem fails for N > 2; Nash equilibria are non-unique and non-exploitable; coalition dynamics create non-stationary opponent distributions. |
-| **Prior Art** | Safe exploitation: Ganzfried & Sandholm (2015), Liu et al. (2022), Jeary & Turrini (2023), Ge et al. OX-Search (2024), Milec et al. ABD (2025). All 2-player zero-sum. N-player safety: Ge et al. Equal Share (2024) — defines the objective but doesn't provide exploitation. Coalition dynamics: Babyak et al. (2024) — formalizes communication levels. Behavioral safety: Bakhtin et al. piKL (2022) — KL-constrained policies in Diplomacy. |
+| **Problem Statement** | Given: N-player imperfect-information game (N > 2). A safety baseline strategy exists (e.g., equal share policy from Ge 2024). Problem: exploit sub-optimal opponents while guaranteeing expected payoff ≥ C/n - ε (equal share minus tolerance). Challenge: minimax theorem fails for N > 2; Nash equilibria<sup class="gl" data-gl="nash_equilibrium">gl</sup> are non-unique and non-exploitable; coalition<sup class="gl" data-gl="coalition">gl</sup> dynamics create non-stationary<sup class="gl" data-gl="non_stationarity">gl</sup> opponent distributions. |
+| **Prior Art** | Safe exploitation: Ganzfried & Sandholm (2015), Liu et al. (2022), Jeary & Turrini (2023), Ge et al. OX-Search (2024), Milec et al. ABD (2025). All 2-player zero-sum<sup class="gl" data-gl="zero_sum_game">gl</sup>. N-player safety: Ge et al. Equal Share (2024) — defines the objective but doesn't provide exploitation. Coalition dynamics: Babyak et al. (2024) — formalizes communication levels. Behavioral safety: Bakhtin et al. piKL (2022) — KL-constrained policies in Diplomacy. |
 | **The Gap** | NO existing work combines safe exploitation with N-player settings. The "equal share" paper defines WHAT to guarantee but not HOW to exploit. The OX-Search paper defines HOW to exploit but only for N=2. The thesis fills the gap at the intersection: safe exploitation that guarantees equal share in N-player games. |
 | **Proposed Method** | Approach 1 (conservative): piKL-regularized exploitation. Start from equal share policy, allow exploitation deviation bounded by KL divergence. The KL budget is the "safety knob" — more KL = more exploitation risk but potentially more gain. Approach 2 (ambitious): Adaptation safety redefined for N-player. Replace minimax value with equal share value in the RNR framework from OX-Search. Prove (or conjecture + validate empirically) that the resulting strategy guarantees equal share. Approach 3 (pragmatic): Population-based safety. Train exploitation policy against a population of opponents (PBT from Step 10), then evaluate worst-case performance across the population. If worst-case ≥ equal share, declare "population-safe." |
-| **Experimental Plan** | Testbeds: (1) 3-player Kuhn Poker (small enough for exact analysis), (2) 3-player Leduc Poker (medium complexity), (3) So Long Sucker (4-player with dynamic coalitions — Step 11 testbed). Metrics: (a) Exploitation gain vs. sub-optimal opponents (mbb/hand above equal share), (b) Safety: worst-case payoff vs. adversarial opponents (must be ≥ C/n - ε), (c) Adaptation speed: hands required to achieve positive exploitation, (d) Coalition robustness: exploitation maintains safety even when other players form coalitions. |
-| **Expected Publications** | (1) Full paper (flagship): "Safe Exploitation in Multiplayer Games: Guaranteeing Equal Share While Adapting to Opponents" (NeurIPS, ICML, or AAAI main track). This is THE thesis paper. (2) Supporting paper: "Coalition-Aware Safe Exploitation in Free-For-All Games" (AAMAS or game theory conference). (3) Workshop paper: "Extending Adaptation Safety from Two-Player to N-Player Imperfect-Information Games" (NeurIPS workshops — GFAI, MARL workshop). |
+| **Experimental Plan** | Testbeds: (1) 3-player Kuhn Poker (small enough for exact analysis), (2) 3-player Leduc Poker (medium complexity), (3) So Long Sucker (4-player with dynamic coalitions — Step 11 testbed). Metrics: (a) Exploitation gain vs. sub-optimal opponents (mbb/hand above equal share), (b) Safety: worst-case payoff vs. adversarial opponents (must be ≥ C/n - ε), (c) Adaptation speed: hands required to achieve positive exploitation, (d) Coalition robustness<sup class="gl" data-gl="robustness">gl</sup>: exploitation maintains safety even when other players form coalitions. |
+| **Expected Publications** | (1) Full paper (flagship): "Safe Exploitation in Multiplayer Games: Guaranteeing Equal Share While Adapting to Opponents" (NeurIPS, ICML, or AAAI main track). This is THE thesis paper. (2) Supporting paper: "Coalition-Aware Safe Exploitation in Free-For-All Games" (AAMAS or game theory<sup class="gl" data-gl="game_theory">gl</sup> conference). (3) Workshop paper: "Extending Adaptation Safety from Two-Player to N-Player Imperfect-Information Games" (NeurIPS workshops — GFAI, MARL workshop). |
 | **PhD Timeline Fit** | Chapter II (deadline 04.2027): Formal framework + 3-player Kuhn analysis. Chapter III (deadline 01.2028): Leduc + SLS experiments. Chapter IV (deadline 08.2028): Playtech data + full evaluation via Contribution #3. |
 | **Risk Assessment** | High risk: proving formal guarantees (may need to settle for empirical validation). Medium risk: SLS testbed complexity (dynamic coalitions are hard to control). Mitigation: use 3-player Kuhn as proof-of-concept (small enough for exhaustive analysis). If formal proofs fail, pivot to empirical contribution: "we show empirically that piKL-regularized exploitation maintains equal share in N-player poker." |
 | **Scope Decision** | If formal guarantees are achievable → Approach 2 (strongest contribution). If only empirical results → Approach 1 (piKL) as primary, with Approach 3 (population-based) as validation. Decision point: by end of Chapter II (04.2027). |
@@ -306,7 +306,7 @@ For each of the three contributions, write a structured design document (2–3 p
 | Section | Content |
 |---------|---------|
 | **Problem Statement** | Given: a set of AI agents for an imperfect-information game. Goal: produce a comprehensive evaluation that answers: (1) How exploitable is each agent? (2) How do they rank against each other? (3) How confident are these measurements? No existing framework combines all three answers. |
-| **Prior Art** | Exploitability: exact (Kuhn/Leduc), approximate ISMCTS-BR (Timbers 2022), ApproxED (Martin 2025). Ranking: Elo (ubiquitous), α-Rank (Omidshafiei 2019), VasE (Lanctot 2025), Nash averaging, spinning top (Balduzzi 2019). Confidence: AIVAT (Burch 2019), sample complexity for α-Rank (Rowland 2019). |
+| **Prior Art** | Exploitability<sup class="gl" data-gl="exploitability">gl</sup>: exact (Kuhn/Leduc), approximate ISMCTS-BR (Timbers 2022), ApproxED (Martin 2025). Ranking: Elo (ubiquitous), α-Rank (Omidshafiei 2019), VasE (Lanctot 2025), Nash averaging, spinning top (Balduzzi 2019). Confidence: AIVAT (Burch 2019), sample complexity for α-Rank (Rowland 2019). |
 | **The Gap** | (1) No existing framework integrates all three layers. Papers present individual metrics, not a unified pipeline. (2) No cross-game validation: exploitability is computed for one game, ranking for another, confidence for a third. (3) N-player evaluation needs coalition-aware metrics (from Step 14 confusions). |
 | **Proposed Method** | The three-layer evaluation framework from Step 14, enhanced with: (a) Cross-game consistency analysis (apply same framework to Kuhn, Leduc, SLS, Playtech → check if agent rankings are consistent across games → generalization evidence), (b) Coalition-aware exploitability for N-player (marginal exploitability conditioned on coalition structures from Step 11), (c) VasE + α-Rank comparison with spinning top diagnostic (identify when and why they disagree). |
 | **Experimental Plan** | Apply the full framework to: (1) Kuhn poker (exact ground truth available — validation), (2) Leduc poker (medium — approximate methods needed), (3) SLS (N-player coalition game), (4) Playtech data (real-world, noisy). Compare framework with existing approaches: "what insights does the three-layer framework provide that Elo alone misses? That α-Rank alone misses?" |
@@ -650,7 +650,7 @@ research plan for 2027–2029.
 #### Learning Log Update
 
 - **Connections:**
-  - [Step 2→15] CFR's regret minimization → equal share's no-regret foundation (Ge 2024). Full circle: the first algorithm you learned (Step 2) provides the theoretical tool for the thesis's central contribution.
+  - [Step 2→15] CFR's regret minimization<sup class="gl" data-gl="regret">gl</sup> → equal share's no-regret foundation (Ge 2024). Full circle: the first algorithm you learned (Step 2) provides the theoretical tool for the thesis's central contribution.
   - [Step 7→15] Bayesian opponent model → Contribution #1's real-time inference pipeline. Step 7's handrange inference scales up via player2vec (Step 13) into the full behavioral adaptation framework.
   - [Step 8→15] OX-Search's adaptation safety → Contribution #2's foundational mechanism. The 2-player guarantee from Step 8 is what the thesis EXTENDS to N-player.
   - [Step 8→15] Jiawei Ge is co-author of BOTH OX-Search and Equal Share. The same researcher who defined adaptation safety (2-player) also defined equal share (N-player). These are companion papers — the thesis bridges them.

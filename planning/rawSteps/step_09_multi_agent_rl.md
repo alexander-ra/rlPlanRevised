@@ -6,15 +6,15 @@
 
 ### PhD Connection
 
-This step transitions the thesis from 2-player zero-sum game theory (Steps 2–8) to the multi-agent world. The key thesis-relevant insights:
+This step transitions the thesis from 2-player zero-sum game<sup class="gl" data-gl="zero_sum_game">gl</sup> theory<sup class="gl" data-gl="game_theory">gl</sup> (Steps 2–8) to the multi-agent world. The key thesis-relevant insights:
 
-- **Contribution #1 (Behavioral Adaptation):** LOLA's "learning-aware" gradient provides a new angle on opponent modeling. Your Step 7 model detects WHAT the opponent is doing; LOLA anticipates what they WILL do. Combining both — a belief model that predicts both current and future strategies — is a potential thesis contribution.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** The fundamental gap: Step 8's safety guarantees assume 2-player zero-sum. In the multi-agent world, there's no minimax theorem. PSRO provides the framework: can you define "safe exploitation in a population" where the safety guarantee is against the meta-Nash of the POPULATION? This is the bridge to Steps 10 and 11.
-- **Contribution #3 (Evaluation Methodology):** PSRO's meta-game analysis provides an evaluation framework for multi-agent systems. Instead of just measuring exploitability (which is 2-player), you can measure the meta-Nash distance — how far is the learned policy population from the meta-Nash equilibrium?
+- **Contribution #1 (Behavioral Adaptation):** LOLA's "learning-aware" gradient provides a new angle on opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup>. Your Step 7 model detects WHAT the opponent is doing; LOLA anticipates what they WILL do. Combining both — a belief model that predicts both current and future strategies — is a potential thesis contribution.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** The fundamental gap: Step 8's safety guarantees assume 2-player zero-sum. In the multi-agent world, there's no minimax theorem. PSRO provides the framework: can you define "safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup> in a population" where the safety guarantee is against the meta-Nash of the POPULATION? This is the bridge to Steps 10 and 11.
+- **Contribution #3 (Evaluation Methodology):** PSRO's meta-game analysis provides an evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup> for multi-agent systems. Instead of just measuring exploitability<sup class="gl" data-gl="exploitability">gl</sup> (which is 2-player), you can measure the meta-Nash distance — how far is the learned policy population from the meta-Nash equilibrium?
 
 ---
 
-> **Phase Overview:** The preceding phases focused on two-player imperfect-information games. Phase E will transition the study to multi-agent settings, where new challenges arise: non-stationarity from simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions. Step 9 introduces multi-agent RL paradigms (CTDE, PSRO), Step 10 scales to population-based training and evolutionary game theory, and Step 11 applies these tools to coalition formation in free-for-all games.
+> **Phase Overview:** The preceding phases focused on two-player imperfect-information<sup class="gl" data-gl="imperfect_information">gl</sup> games. Phase E will transition the study to multi-agent settings, where new challenges arise: non-stationarity<sup class="gl" data-gl="non_stationarity">gl</sup> from simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions. Step 9 introduces multi-agent RL paradigms (CTDE, PSRO), Step 10 scales to population-based training<sup class="gl" data-gl="population_based_training">gl</sup> and evolutionary game theory, and Step 11 applies these tools to coalition formation<sup class="gl" data-gl="coalition">gl</sup> in free-for-all games.
 
 
 ## Table of Contents
@@ -44,7 +44,7 @@ This step transitions the thesis from 2-player zero-sum game theory (Steps 2–8
 
 ## Phase 1: Intuition (1 day)
 
-The goal: understand WHY multi-agent RL is fundamentally different from single-agent RL and from the game-theoretic approach you've used so far. In Steps 2–8 you computed or approximated Nash equilibria — strategies against a RATIONAL opponent. In MARL, agents LEARN simultaneously in a SHARED environment, so the environment is NON-STATIONARY from each agent's perspective (the other agents are also changing). This creates two new challenges: (1) coordination — how do cooperating agents learn to work together without explicit programming? (2) credit assignment — when the team wins, which agent's actions were responsible?
+The goal: understand WHY multi-agent RL is fundamentally different from single-agent RL and from the game-theoretic approach you've used so far. In Steps 2–8 you computed or approximated Nash equilibria<sup class="gl" data-gl="nash_equilibrium">gl</sup> — strategies against a RATIONAL opponent. In MARL, agents LEARN simultaneously in a SHARED environment, so the environment is NON-STATIONARY from each agent's perspective (the other agents are also changing). This creates two new challenges: (1) coordination — how do cooperating agents learn to work together without explicit programming? (2) credit assignment — when the team wins, which agent's actions were responsible?
 
 End of day: you should be able to explain to a non-expert: "In single-agent RL, the agent learns by trial and error in a fixed world. In multi-agent RL, every agent IS the 'world' for every other agent — so the 'world' keeps changing as agents learn. It's like learning to dance with a partner who is also learning to dance — you keep stepping on each other's toes until you accidentally synchronize."
 
@@ -180,7 +180,7 @@ https://arxiv.org/abs/1706.02275
     CTDE methods."
 ```
 
-### Paper 2: Rashid et al. — "QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning" (2018)
+### Paper 2: Rashid et al. — "QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning<sup class="gl" data-gl="reinforcement_learning">gl</sup><sup class="gl" data-gl="marl">gl</sup>" (2018)
 
 https://arxiv.org/abs/1803.11485 (ICML 2018)
 
@@ -228,7 +228,7 @@ https://arxiv.org/abs/2103.01955 (NeurIPS 2022)
     novelty. A cautionary tale for over-engineering."
 ```
 
-### Paper 4: Foerster et al. — "Learning with Opponent-Learning Awareness" (LOLA, 2018)
+### Paper 4: Foerster et al. — "Learning with Opponent-Learning Awareness<sup class="gl" data-gl="lola">gl</sup>" (LOLA, 2018)
 
 https://arxiv.org/abs/1709.04326 (AAMAS 2018)
 
@@ -323,7 +323,7 @@ https://arxiv.org/abs/1605.07736 (NeurIPS 2016)
 ### Math Flags
 
 🔢 **MADDPG centralized critic gradient (Lowe et al., Equation 5)** — Must understand.  
-**WHY:** This is the prototype CTDE gradient. The centralized critic sees (s, a1, ..., aN) but the policy gradient updates only πi(oi). Understanding this asymmetry is essential for all cooperative MARL methods.
+**WHY:** This is the prototype CTDE gradient. The centralized critic sees (s, a1, ..., aN) but the policy gradient<sup class="gl" data-gl="policy_gradient">gl</sup> updates only πi(oi). Understanding this asymmetry is essential for all cooperative MARL methods.
 
 🔢 **QMIX monotonicity constraint (Rashid et al., Section 3.1)** — Must understand the constraint and WHY it enables decomposition.  
 **WHY:** The monotonicity constraint is a structural assumption that trades expressiveness for tractability. Your thesis will face similar tradeoffs: in N-player exploitation (Contribution #2), you'll need structural assumptions about agent interactions to make the problem tractable.
@@ -338,7 +338,7 @@ https://arxiv.org/abs/1605.07736 (NeurIPS 2016)
 
 ## Phase 4: Implementation (6 days)
 
-### Project: Multi-Agent Learning Benchmark on Matrix Games + Goofspiel
+### Project: Multi-Agent Learning Benchmark<sup class="gl" data-gl="benchmark">gl</sup> on Matrix Games + Goofspiel
 
 This step's implementation focuses on COMPARING different MARL paradigms on controlled testbeds, rather than building one system from scratch. The goal is to understand WHEN each approach works and fails.
 
@@ -350,7 +350,7 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
 |-----------|--------|---------------|
 | Independent Learners (IL) baseline — each agent runs PPO ignoring others | 🔴 HAND-CODE | Must understand WHY independent learning fails: non-stationarity. Building it yourself makes the failure modes visceral. Use your Step 1 PPO, extend to multi-agent. |
 | MADDPG — centralized critic with decentralized actors | 🔴 HAND-CODE | The core CTDE algorithm. Hand-code the centralized critic that takes all agents' observations + actions. The actor remains your standard policy network. Key learning: the asymmetry between training and execution. |
-| MAPPO — PPO with centralized value function | 🟡 AI-ASSISTED | After hand-coding MADDPG, you understand CTDE. MAPPO is simpler (just PPO + global state in value function). AI-draft, review the centralized value function integration. |
+| MAPPO — PPO with centralized value function<sup class="gl" data-gl="value_function">gl</sup> | 🟡 AI-ASSISTED | After hand-coding MADDPG, you understand CTDE. MAPPO is simpler (just PPO + global state in value function). AI-draft, review the centralized value function integration. |
 | PSRO loop — population + meta-Nash + best-response oracle | 🔴 HAND-CODE | PSRO is the game-theory↔MARL bridge. You must hand-code the double-oracle loop: compute meta-Nash over policy population, train best-response via RL, add to population. This is thesis-critical for Step 10. |
 | Matrix game experiments (Prisoner's Dilemma, Matching Pennies, Stag Hunt) | 🔴 HAND-CODE | Small enough to verify analytically. Build the matrix game environment and run all methods on it. You should predict the results before running. |
 | Goofspiel environment wrapper | 🟡 AI-ASSISTED | Use OpenSpiel's Goofspiel. Write a PettingZoo-compatible wrapper if needed, AI-assisted. |
@@ -399,7 +399,7 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
           self.meta_game = {}  # payoff matrix between policies
       
       def compute_meta_nash(self):
-          # Solve the normal-form game where actions = policies in population
+          # Solve the normal-form game<sup class="gl" data-gl="normal_form_game">gl</sup> where actions = policies in population
           # Returns: mixture weights over population for each player
           ...
       
@@ -418,7 +418,7 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
   ```
 - Run PSRO on Kuhn Poker (using your Step 2 exact best-response as the oracle):
   - Verify: the meta-Nash should converge to the game's Nash equilibrium
-  - Compare convergence speed: PSRO vs vanilla CFR from Step 2
+  - Compare convergence<sup class="gl" data-gl="convergence">gl</sup> speed: PSRO vs vanilla CFR from Step 2
 - Run PSRO on Leduc (using PPO as the approximate best-response oracle):
   - Observe: how well does approximate BR affect PSRO convergence?
   - Compare exploitability of PSRO's meta-Nash strategy vs your MCCFR strategy from Step 3
@@ -510,4 +510,4 @@ Starting point: Your PPO from Step 1, your Nash solver from Step 2, your MCCFR f
 - [ ] Markov-games bridge notation exercise completed (P9)
 - [ ] Step notes committed to repo
 
-> **[P9] Markov-Games Bridge:** Add a short formal bridge on Markov games (stochastic games) to Phase 1 (Orientation), before jumping into CTDE/PSRO/LOLA. ~Half-page of notation connecting EFG-style reasoning (game trees, information sets, counterfactual values) to MARL-style reasoning (joint policies, centralized critics, decentralized execution). Explains what is preserved (sequential decisions, partial observability) and what is lost (exact game tree structure, regret-based convergence guarantees). ~0.5d absorbed within 14d allocation.
+> **[P9] Markov-Games Bridge:** Add a short formal bridge on Markov games (stochastic games) to Phase 1 (Orientation), before jumping into CTDE/PSRO/LOLA. ~Half-page of notation connecting EFG-style reasoning (game trees, information sets<sup class="gl" data-gl="information_set">gl</sup>, counterfactual values) to MARL-style reasoning (joint policies, centralized critics, decentralized execution). Explains what is preserved (sequential decisions, partial observability) and what is lost (exact game tree<sup class="gl" data-gl="game_tree">gl</sup> structure, regret-based convergence guarantees). ~0.5d absorbed within 14d allocation.

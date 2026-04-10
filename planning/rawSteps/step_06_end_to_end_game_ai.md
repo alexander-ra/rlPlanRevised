@@ -8,8 +8,8 @@
 
 This step is the **architectural foundation** for the entire thesis. Every subsequent step (7–15) builds on the systems studied here:
 - **Contribution #1 (Behavioral Adaptation Framework):** ReBeL's PBS representation provides the starting point. Your thesis extends PBS to include beliefs about opponent strategy types, creating a richer state representation for adaptive play. DeepStack's continual re-solving provides the template for real-time strategy adjustment.
-- **Contribution #2 (Multi-Agent Safe Exploitation):** Pluribus demonstrates that Nash-based approaches work empirically for N-player games but provides NO safety guarantee. This gap is your thesis contribution. The theoretical tools from Steps 4 (subgame solving safety) and 6 (depth-limited solving bounds) provide the starting point for developing N-player guarantees.
-- **Contribution #3 (Evaluation Methodology):** The exploitability metric used across ALL five systems is the evaluation backbone. Student of Games' unified framework for perfect + imperfect info provides the template for a domain-agnostic evaluation framework.
+- **Contribution #2 (Multi-Agent Safe Exploitation):** Pluribus demonstrates that Nash-based approaches work empirically for N-player games but provides NO safety guarantee. This gap is your thesis contribution. The theoretical tools from Steps 4 (subgame solving<sup class="gl" data-gl="subgame_solving">gl</sup> safety) and 6 (depth-limited solving bounds) provide the starting point for developing N-player guarantees.
+- **Contribution #3 (Evaluation Methodology):** The exploitability<sup class="gl" data-gl="exploitability">gl</sup> metric used across ALL five systems is the evaluation backbone. Student of Games' unified framework for perfect + imperfect info provides the template for a domain-agnostic evaluation framework<sup class="gl" data-gl="evaluation_framework">gl</sup>.
 
 ---
 
@@ -46,7 +46,7 @@ This step is the **architectural foundation** for the entire thesis. Every subse
 The goal: understand the EVOLUTION of game-solving architectures and WHY each system exists. This isn't about memorizing papers — it's about understanding a 7-year design progression:
 - **DeepStack (2017):** "What if we use neural networks to estimate values at the bottom of a search tree, like AlphaGo but for poker?"
 - **Libratus (2017):** "What if we compute a coarse blueprint strategy offline, then refine it in real-time for specific situations?"
-- **Pluribus (2019):** "What if we extend this to 6 players, where Nash equilibrium doesn't even technically apply?"
+- **Pluribus (2019):** "What if we extend this to 6 players, where Nash equilibrium<sup class="gl" data-gl="nash_equilibrium">gl</sup> doesn't even technically apply?"
 - **ReBeL (2020):** "What if we unify search and learning into a single framework, like AlphaZero but for imperfect info?"
 - **Student of Games (2023):** "What if we unify PERFECT and IMPERFECT information games in ONE algorithm?"
 
@@ -56,7 +56,7 @@ End of phase: you should be able to draw the architecture diagram of each system
 
 - [**How DeepMind Conquered Go With Deep Learning (AlphaGo) — Two Minute Papers #42**](https://www.youtube.com/watch?v=IFmj5M5Q5jg)  
   ⏱ ~3m · Channel: Two Minute Papers  
-  *Quick accessible intro to the AlphaGo paradigm: deep learning + Monte Carlo tree search. The perfect-information template that ReBeL and Student of Games later extend to imperfect information.*
+  *Quick accessible intro to the AlphaGo paradigm: deep learning + Monte Carlo tree search. The perfect-information template that ReBeL and Student of Games later extend to imperfect information<sup class="gl" data-gl="imperfect_information">gl</sup>.*
 
 - [**AlphaZero: Shedding new light on the grand games of chess, shogi and Go**](https://www.youtube.com/watch?v=7L2sUGcOgh0)  
   ⏱ ~5m · Channel: DeepMind  
@@ -86,7 +86,7 @@ End of phase: you should be able to draw the architecture diagram of each system
   https://www.science.org/doi/10.1126/sciadv.adg3256  
   *The Student of Games Science Advances publication. Read the introduction for the unification argument.*
 
-- **Meta AI Blog — "ReBeL: Combining deep reinforcement learning and search" (2020)**  
+- **Meta AI Blog — "ReBeL: Combining deep reinforcement learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> and search" (2020)**  
   https://ai.meta.com/blog/rebel-a-general-game-playing-ai-bot-that-excels-at-poker-and-more/  
   *Accessible explanation of ReBeL with diagrams.*
 
@@ -146,7 +146,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
    
    **Student of Games:**
    ```
-   [Training: Growing-Tree CFR (GT-CFR) — grow game tree incrementally →
+   [Training: Growing-Tree CFR (GT-CFR) — grow game tree<sup class="gl" data-gl="game_tree">gl</sup> incrementally →
     Train value + policy networks on GT-CFR data →
     Use networks to guide further GT-CFR tree growth → Repeat] →
    [Play phase: Search using trained networks (works for perfect AND imperfect info)]
@@ -192,7 +192,7 @@ This step has MORE reading and LESS coding than previous steps. The value is in 
    # Liar's Dice is larger than Leduc, has bluffing dynamics, 
    # and was used to evaluate DeepStack and Student of Games
    ```
-   - Run your Step 3 MCCFR on Liar's Dice — observe convergence
+   - Run your Step 3 MCCFR on Liar's Dice — observe convergence<sup class="gl" data-gl="convergence">gl</sup>
    - *This game is large enough to feel the limitations of tabular methods, motivating the architectures you're studying*
 
 4. **Questions to answer by end of Day 2:**
@@ -385,7 +385,7 @@ https://arxiv.org/abs/1805.08195 (NeurIPS 2018)
 
 - **Milec, Kovařík & Lisý (2025) — "Adapting Beyond the Depth Limit"**  
   https://arxiv.org/abs/2501.10464  
-  *Studies opponent adaptation beyond the search depth. SKIM abstract + Section 3. Bridges Step 6 → Step 8 (safe exploitation). Key question: can depth-limited search-based systems adapt to sub-rational opponents while maintaining robustness?*
+  *Studies opponent adaptation beyond the search depth. SKIM abstract + Section 3. Bridges Step 6 → Step 8 (safe exploitation<sup class="gl" data-gl="safe_exploitation">gl</sup>). Key question: can depth-limited search-based systems adapt to sub-rational opponents while maintaining robustness<sup class="gl" data-gl="robustness">gl</sup>?*
 
 - **Kubíček & Lisý (2023/2025) — "Look-ahead Search on Top of Policy Networks in IIGs"**  
   https://arxiv.org/abs/2312.15220  
@@ -398,7 +398,7 @@ https://arxiv.org/abs/1805.08195 (NeurIPS 2018)
 ### Math Flags
 
 🔢 **Public Belief State definition (Brown et al., ReBeL, Def. 1)** — Must understand fully.  
-**WHY this can't be substituted:** PBS is the core state representation for imperfect-info search. Your thesis (opponent modeling in Step 7) will likely need to track beliefs about opponent strategies — essentially, you're building a more nuanced PBS. If you don't understand the standard PBS definition, you can't extend it.
+**WHY this can't be substituted:** PBS is the core state representation for imperfect-info search. Your thesis (opponent modeling<sup class="gl" data-gl="opponent_modeling">gl</sup> in Step 7) will likely need to track beliefs about opponent strategies — essentially, you're building a more nuanced PBS. If you don't understand the standard PBS definition, you can't extend it.
 
 🔢 **Depth-limited solving exploitability bound (Brown & Sandholm 2018, Theorem 1)** — Must understand the statement and what it depends on.  
 **WHY:** This bound quantifies how value network errors propagate to exploitability. For your thesis's safe exploitation component (Contribution #1), you need to know: if your opponent model is wrong by ε, how much can you lose? This theorem provides the template for that analysis.
@@ -426,7 +426,7 @@ Starting point: Your Leduc engine (Step 3) + Deep CFR (Step 5) + abstraction pip
 | ReBeL training loop (self-play → PBS-CFR → value network training → repeat) | 🔴 HAND-CODE | The training loop IS ReBeL. Understanding how search data feeds network training which feeds better search is the key intellectual content. |
 | Architecture comparison framework (tables, diagrams, written analysis) | 🟡 AI-ASSISTED | Comparison tables and written analysis. AI helps structure, you fill in the analysis from your paper readings. |
 | Search tree expansion logic | 🟡 AI-ASSISTED | Tree data structures and traversal. AI drafts template, you implement the PBS-specific logic. |
-| Hyperparameter tuning, logging, experiment management | 🟢 AI-GENERATED | Standard training infrastructure. |
+| Hyperparameter<sup class="gl" data-gl="hyperparameter">gl</sup> tuning, logging, experiment management | 🟢 AI-GENERATED | Standard training infrastructure. |
 | Plotting (training curves, PBS visualizations, architecture diagrams) | 🟢 AI-GENERATED | Visualizations. |
 
 ### Sub-phase Breakdown (10 days):
@@ -447,7 +447,7 @@ Starting point: Your Leduc engine (Step 3) + Deep CFR (Step 5) + abstraction pip
   - Search: Given PBS → build local game tree of depth d → CFR at leaves → estimate leaf PBS values with network
 
 **Days 3–4 — PBS-CFR (Local Solver):**
-- 🔴 Implement CFR that operates on PUBLIC BELIEF STATES rather than information sets:
+- 🔴 Implement CFR that operates on PUBLIC BELIEF STATES rather than information sets<sup class="gl" data-gl="information_set">gl</sup>:
   - Input: a PBS (probability distribution over hands)
   - Operation: run CFR iterations over the local game tree, starting from the given PBS
   - Output: strategy at each info set + expected value for the given PBS
