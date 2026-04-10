@@ -122,26 +122,34 @@ function renderStep(stepId) {
   const contentEl = document.getElementById('content');
   contentEl.innerHTML = html;
 
-  // Download cards
+  // Download widget
   const reportFolder = STEP_REPORTS[stepId];
   if (reportFolder) {
+    const stepMeta = STEP_META[currentStepIndex];
+    const c = getPhaseColors(stepMeta.phase);
     const wrap = document.createElement('div');
-    wrap.className = 'dl-cards';
+    wrap.className = 'dl-widget';
     wrap.innerHTML = `
-      <div class="dl-card dl-card--summary">
-        <div class="dl-card-title">${t('study_summary')}</div>
-        <div class="dl-card-desc">${t('summary_desc')}</div>
-        <div class="dl-btns">
-          <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">\uD83C\uDDEC\uD83C\uDDE7</span> EN \u2193</a>
-          <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">\uD83C\uDDE7\uD83C\uDDEC</span> BG \u2193</a>
-        </div>
+      <div class="dl-widget-hdr" style="background:linear-gradient(135deg,${c.border} 0%,${c.border}99 100%)">
+        <span class="dl-widget-hdr-icon">📥</span>
+        <span>${t('deliverables_label')}</span>
       </div>
-      <div class="dl-card dl-card--report">
-        <div class="dl-card-title">${t('impl_report')}</div>
-        <div class="dl-card-desc">${t('report_desc')}</div>
-        <div class="dl-btns">
-          <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">\uD83C\uDDEC\uD83C\uDDE7</span> EN \u2193</a>
-          <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-btn"><span class="dl-flag">\uD83C\uDDE7\uD83C\uDDEC</span> BG \u2193</a>
+      <div class="dl-widget-body">
+        <div class="dl-widget-col">
+          <div class="dl-widget-col-title">${t('study_summary')}</div>
+          <div class="dl-widget-col-desc">${t('summary_desc')}</div>
+          <div class="dl-widget-btns">
+            <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDEC\uD83C\uDDE7 EN \u2193</a>
+            <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDE7\uD83C\uDDEC BG \u2193</a>
+          </div>
+        </div>
+        <div class="dl-widget-col">
+          <div class="dl-widget-col-title">${t('impl_report')}</div>
+          <div class="dl-widget-col-desc">${t('report_desc')}</div>
+          <div class="dl-widget-btns">
+            <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDEC\uD83C\uDDE7 EN \u2193</a>
+            <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDE7\uD83C\uDDEC BG \u2193</a>
+          </div>
         </div>
       </div>`;
     contentEl.insertBefore(wrap, contentEl.firstChild);

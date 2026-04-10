@@ -322,6 +322,11 @@ function buildHeroSection() {
           <div class="hp-stat"><span class="hp-stat-val">${daysLeft}</span><span class="hp-stat-label">${t('days_left')}</span></div>
           <div class="hp-stat hp-stat--current"><span class="hp-stat-val hp-stat-val--sm">${activeText}</span><span class="hp-stat-label">${t('current_step')}</span></div>
         </div>
+        <div class="hp-hero-dl">
+          <span class="hp-hero-dl-label">📄 ${t('study_plan_label')}</span>
+          <a href="${STUDY_PLAN_URL_EN}" target="_blank" rel="noopener noreferrer" class="hp-hero-dl-btn">🇬🇧 EN PDF ↓</a>
+          <a href="${STUDY_PLAN_URL_BG}" target="_blank" rel="noopener noreferrer" class="hp-hero-dl-btn">🇧🇬 BG PDF ↓</a>
+        </div>
       </div>
     </div>
     <div class="hp-contributions">${contribHtml}</div>
