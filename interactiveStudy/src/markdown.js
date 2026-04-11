@@ -85,11 +85,41 @@ function buildSectionNav() {
   }
   fab.style.display = '';
 
+  // Phase names for the label shown beside the colored bar
+  const phaseNames = {
+    1: currentLang === 'bg' ? 'Интуиция'        : 'Intuition',
+    2: currentLang === 'bg' ? 'Изследване'      : 'Exploration',
+    3: currentLang === 'bg' ? 'Четене'          : 'Targeted Reading',
+    4: currentLang === 'bg' ? 'Имплементация'   : 'Implementation',
+    5: currentLang === 'bg' ? 'Консолидация'    : 'Consolidation',
+  };
+
+  let currentPhase = 0;
+
   headings.forEach((h, i) => {
     if (!h.id) h.id = 'section-' + i;
+
+    // Detect phase number from H2 headings like "Phase 1: …" / "Фаза 1: …"
+    if (h.tagName === 'H2') {
+      const txt = (h.dataset.sectionTitle || h.textContent).trim();
+      const m = txt.match(/^(?:Phase|Фаза) (\d+)[:\s]/);
+      if (m) currentPhase = +m[1];
+    }
+
+    const isH3 = h.tagName === 'H3';
     const item = document.createElement('button');
-    item.className = 'section-item' + (h.tagName === 'H3' ? ' indent' : '');
-    item.textContent = h.dataset.sectionTitle || h.textContent;
+    item.className = 'section-item' + (isH3 ? ' indent' : '');
+    if (currentPhase > 0) item.dataset.phase = currentPhase;
+
+    const label = h.dataset.sectionTitle || h.textContent;
+    if (!isH3 && currentPhase > 0 && phaseNames[currentPhase]) {
+      item.innerHTML =
+        `<span class="section-item-phase" aria-hidden="true">${phaseNames[currentPhase]}</span>` +
+        `<span class="section-item-title">${label}</span>`;
+    } else {
+      item.textContent = label;
+    }
+
     item.addEventListener('click', () => {
       h.scrollIntoView({ behavior: 'smooth', block: 'start' });
       closeSectionNav();
