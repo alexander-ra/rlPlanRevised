@@ -1054,6 +1054,31 @@ body {
   .hp-contrib-detail-badge { width: 44px; height: 44px; }
 }
 
+/* Highlight pulse when scrolled-to from hero badge */
+@keyframes contrib-highlight {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--primary-rgb, 99,102,241), 0.45); }
+  50%  { box-shadow: 0 0 0 6px rgba(var(--primary-rgb, 99,102,241), 0.18); }
+  100% { box-shadow: var(--shadow-1); }
+}
+.hp-contrib-detail--highlight {
+  animation: contrib-highlight 1.2s ease-out forwards;
+}
+
+/* ===== Date Estimates Note (outside Study Specifications collapsible) ===== */
+.hp-dates-note {
+  font-size: 0.76rem;
+  color: var(--on-surface-low);
+  font-style: italic;
+  margin: 0.5rem 0 0.35rem;
+  padding: 0 0.25rem;
+  line-height: 1.5;
+}
+
+/* ===== Study Specifications Collapsible ===== */
+.hp-spec-details { margin-top: 0.25rem; }
+.hp-spec-body { padding: 0 1.25rem 0.75rem; }
+.hp-spec-body .hp-contrib-details { margin-top: 0.5rem; }
+
 /* ===== Interleaved Phase Blocks ===== */
 .hp-phases-interleaved { padding: 0; }
 .hp-phase-block { margin-bottom: 1.25rem; }
@@ -1320,6 +1345,30 @@ body {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+}
+.hp-contribution--link {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.hp-contribution--link:hover {
+  background: rgba(255,255,255,0.26);
+  border-color: rgba(255,255,255,0.45);
+  transform: translateY(-1px);
+}
+.hp-contribution-text { flex: 1; min-width: 0; }
+.hp-contribution-arrow {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  opacity: 0.55;
+  transition: opacity 0.15s, transform 0.15s;
+  line-height: 1;
+  color: #fff;
+  margin-left: auto;
+  padding-left: 0.25rem;
+}
+.hp-contribution--link:hover .hp-contribution-arrow {
+  opacity: 1;
+  transform: translateY(2px);
 }
 .hp-contrib-badge {
   flex-shrink: 0;

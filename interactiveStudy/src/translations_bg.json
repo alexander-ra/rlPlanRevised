@@ -145,5 +145,6 @@
   "gl_no_results": "Няма намерени термини.",
   "gl_unavailable": "Данните за речника не са налични.",
   "gl_tooltip_aria": "Речник",
-  "gl_view_in_glossary": "Виж в речника"
+  "gl_view_in_glossary": "Виж в речника",
+  "study_specs_label": "Спецификации на изследването"
 }

@@ -305,9 +305,10 @@ function buildHeroSection() {
     { title: t('c3_title'), desc: t('c3_desc') },
   ];
   const contribHtml = contributions.map((c, i) =>
-    `<div class="hp-contribution">
+    `<div class="hp-contribution hp-contribution--link" onclick="scrollToContribDetail(${i + 1})" title="${currentLang === 'bg' ? 'Превъртете до детайлите' : 'Scroll to details'}">
       <div class="hp-contrib-badge">${contribBadges[i]}</div>
-      <div><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
+      <div class="hp-contribution-text"><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
+      <span class="hp-contribution-arrow" aria-hidden="true">↓</span>
     </div>`
   ).join('');
 
@@ -408,20 +409,54 @@ function buildContributionDetailCards(afterMd) {
   const cardsHtml = contribs.map(c => {
     const badge = badges[c.n - 1] || '';
     const bodyHtml = mdToHtmlForIntro(c.text);
-    return `<div class="hp-contrib-detail">
+    return `<div class="hp-contrib-detail" id="contrib-detail-${c.n}">
       <div class="hp-contrib-detail-badge">${badge}</div>
       <div class="hp-contrib-detail-body">${bodyHtml}</div>
     </div>`;
   }).join('');
 
-  const introHtml = nonContribs.length > 0
-    ? `<div class="hp-intro-card hp-intro-card--after">${mdToHtmlForIntro(nonContribs.join('\n\n'))}</div>`
+  // First non-contrib paragraph (date estimates note) stays outside the collapsible
+  const dateNote = nonContribs.length > 0
+    ? `<p class="hp-dates-note">${mdToHtmlForIntro(nonContribs[0]).replace(/^<p>|<\/p>$/g, '')}</p>`
     : '';
-  const detailsHtml = contribs.length > 0
-    ? `<div class="hp-contrib-details">${cardsHtml}</div>`
+  const restNonContribs = nonContribs.slice(1);
+
+  const innerHtml = [
+    restNonContribs.length > 0
+      ? `<div class="hp-intro-card hp-intro-card--after">${mdToHtmlForIntro(restNonContribs.join('\n\n'))}</div>`
+      : '',
+    contribs.length > 0
+      ? `<div class="hp-contrib-details">${cardsHtml}</div>`
+      : '',
+  ].join('');
+
+  const specsHtml = innerHtml
+    ? `<details class="hp-intro-card hp-spec-details" id="study-specs-details">
+        <summary class="hp-intro-summary">${t('study_specs_label')}</summary>
+        <div class="hp-intro-body hp-spec-body">${innerHtml}</div>
+      </details>`
     : '';
 
-  return introHtml + detailsHtml;
+  return dateNote + specsHtml;
+}
+
+/* ===== Scroll-to-contribution helper (called from hero badge onclick) ===== */
+function scrollToContribDetail(n) {
+  const details = document.getElementById('study-specs-details');
+  const doScroll = () => {
+    const el = document.getElementById('contrib-detail-' + n);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('hp-contrib-detail--highlight');
+    setTimeout(() => el.classList.remove('hp-contrib-detail--highlight'), 1500);
+  };
+  if (details && !details.open) {
+    details.open = true;
+    // Wait two animation frames for the <details> to expand before scrolling
+    requestAnimationFrame(() => requestAnimationFrame(doScroll));
+  } else {
+    doScroll();
+  }
 }
 
 /* ===== Collapsible Research Context Card ===== */
