@@ -1086,6 +1086,31 @@ body {
   .hp-contrib-detail-badge { width: 44px; height: 44px; }
 }
 
+/* Highlight pulse when scrolled-to from hero badge */
+@keyframes contrib-highlight {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--primary-rgb, 99,102,241), 0.45); }
+  50%  { box-shadow: 0 0 0 6px rgba(var(--primary-rgb, 99,102,241), 0.18); }
+  100% { box-shadow: var(--shadow-1); }
+}
+.hp-contrib-detail--highlight {
+  animation: contrib-highlight 1.2s ease-out forwards;
+}
+
+/* ===== Date Estimates Note (outside Study Specifications collapsible) ===== */
+.hp-dates-note {
+  font-size: 0.76rem;
+  color: var(--on-surface-low);
+  font-style: italic;
+  margin: 0.5rem 0 0.35rem;
+  padding: 0 0.25rem;
+  line-height: 1.5;
+}
+
+/* ===== Study Specifications Collapsible ===== */
+.hp-spec-details { margin-top: 0.25rem; }
+.hp-spec-body { padding: 0 1.25rem 0.75rem; }
+.hp-spec-body .hp-contrib-details { margin-top: 0.5rem; }
+
 /* ===== Interleaved Phase Blocks ===== */
 .hp-phases-interleaved { padding: 0; }
 .hp-phase-block { margin-bottom: 1.25rem; }
@@ -1352,6 +1377,30 @@ body {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+}
+.hp-contribution--link {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.hp-contribution--link:hover {
+  background: rgba(255,255,255,0.26);
+  border-color: rgba(255,255,255,0.45);
+  transform: translateY(-1px);
+}
+.hp-contribution-text { flex: 1; min-width: 0; }
+.hp-contribution-arrow {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  opacity: 0.55;
+  transition: opacity 0.15s, transform 0.15s;
+  line-height: 1;
+  color: #fff;
+  margin-left: auto;
+  padding-left: 0.25rem;
+}
+.hp-contribution--link:hover .hp-contribution-arrow {
+  opacity: 1;
+  transform: translateY(2px);
 }
 .hp-contrib-badge {
   flex-shrink: 0;
@@ -1882,7 +1931,8 @@ const TRANSLATIONS = {
     "gl_no_results": "No matching terms found.",
     "gl_unavailable": "Glossary data not available.",
     "gl_tooltip_aria": "Glossary",
-    "gl_view_in_glossary": "View in glossary"
+    "gl_view_in_glossary": "View in glossary",
+    "study_specs_label": "Study Specifications"
   },
   "bg": {
     "page_title": "RL Обучение — Стъпки",
@@ -2031,7 +2081,8 @@ const TRANSLATIONS = {
     "gl_no_results": "Няма намерени термини.",
     "gl_unavailable": "Данните за речника не са налични.",
     "gl_tooltip_aria": "Речник",
-    "gl_view_in_glossary": "Виж в речника"
+    "gl_view_in_glossary": "Виж в речника",
+    "study_specs_label": "Спецификации на изследването"
   }
 };
 
@@ -4140,9 +4191,10 @@ function buildHeroSection() {
     { title: t('c3_title'), desc: t('c3_desc') },
   ];
   const contribHtml = contributions.map((c, i) =>
-    `<div class="hp-contribution">
+    `<div class="hp-contribution hp-contribution--link" onclick="scrollToContribDetail(${i + 1})" title="${currentLang === 'bg' ? 'Превъртете до детайлите' : 'Scroll to details'}">
       <div class="hp-contrib-badge">${contribBadges[i]}</div>
-      <div><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
+      <div class="hp-contribution-text"><div class="hp-contrib-title">${c.title}</div><div class="hp-contrib-desc">${c.desc}</div></div>
+      <span class="hp-contribution-arrow" aria-hidden="true">↓</span>
     </div>`
   ).join('');
 
@@ -4243,20 +4295,54 @@ function buildContributionDetailCards(afterMd) {
   const cardsHtml = contribs.map(c => {
     const badge = badges[c.n - 1] || '';
     const bodyHtml = mdToHtmlForIntro(c.text);
-    return `<div class="hp-contrib-detail">
+    return `<div class="hp-contrib-detail" id="contrib-detail-${c.n}">
       <div class="hp-contrib-detail-badge">${badge}</div>
       <div class="hp-contrib-detail-body">${bodyHtml}</div>
     </div>`;
   }).join('');
 
-  const introHtml = nonContribs.length > 0
-    ? `<div class="hp-intro-card hp-intro-card--after">${mdToHtmlForIntro(nonContribs.join('\n\n'))}</div>`
+  // First non-contrib paragraph (date estimates note) stays outside the collapsible
+  const dateNote = nonContribs.length > 0
+    ? `<p class="hp-dates-note">${mdToHtmlForIntro(nonContribs[0]).replace(/^<p>|<\/p>$/g, '')}</p>`
     : '';
-  const detailsHtml = contribs.length > 0
-    ? `<div class="hp-contrib-details">${cardsHtml}</div>`
+  const restNonContribs = nonContribs.slice(1);
+
+  const innerHtml = [
+    restNonContribs.length > 0
+      ? `<div class="hp-intro-card hp-intro-card--after">${mdToHtmlForIntro(restNonContribs.join('\n\n'))}</div>`
+      : '',
+    contribs.length > 0
+      ? `<div class="hp-contrib-details">${cardsHtml}</div>`
+      : '',
+  ].join('');
+
+  const specsHtml = innerHtml
+    ? `<details class="hp-intro-card hp-spec-details" id="study-specs-details">
+        <summary class="hp-intro-summary">${t('study_specs_label')}</summary>
+        <div class="hp-intro-body hp-spec-body">${innerHtml}</div>
+      </details>`
     : '';
 
-  return introHtml + detailsHtml;
+  return dateNote + specsHtml;
+}
+
+/* ===== Scroll-to-contribution helper (called from hero badge onclick) ===== */
+function scrollToContribDetail(n) {
+  const details = document.getElementById('study-specs-details');
+  const doScroll = () => {
+    const el = document.getElementById('contrib-detail-' + n);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('hp-contrib-detail--highlight');
+    setTimeout(() => el.classList.remove('hp-contrib-detail--highlight'), 1500);
+  };
+  if (details && !details.open) {
+    details.open = true;
+    // Wait two animation frames for the <details> to expand before scrolling
+    requestAnimationFrame(() => requestAnimationFrame(doScroll));
+  } else {
+    doScroll();
+  }
 }
 
 /* ===== Collapsible Research Context Card ===== */

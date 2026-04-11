@@ -145,5 +145,6 @@
   "gl_no_results": "No matching terms found.",
   "gl_unavailable": "Glossary data not available.",
   "gl_tooltip_aria": "Glossary",
-  "gl_view_in_glossary": "View in glossary"
+  "gl_view_in_glossary": "View in glossary",
+  "study_specs_label": "Study Specifications"
 }
