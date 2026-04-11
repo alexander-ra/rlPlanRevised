@@ -421,42 +421,29 @@ function buildContributionDetailCards(afterMd) {
     : '';
   const restNonContribs = nonContribs.slice(1);
 
-  const innerHtml = [
-    restNonContribs.length > 0
-      ? `<div class="hp-intro-card hp-intro-card--after">${mdToHtmlForIntro(restNonContribs.join('\n\n'))}</div>`
-      : '',
-    contribs.length > 0
-      ? `<div class="hp-contrib-details">${cardsHtml}</div>`
-      : '',
-  ].join('');
-
-  const specsHtml = innerHtml
+  // Study Specifications collapsible contains only the context/objective text
+  const specsHtml = restNonContribs.length > 0
     ? `<details class="hp-intro-card hp-spec-details" id="study-specs-details">
         <summary class="hp-intro-summary">${t('study_specs_label')}</summary>
-        <div class="hp-intro-body hp-spec-body">${innerHtml}</div>
+        <div class="hp-intro-body hp-spec-body">${mdToHtmlForIntro(restNonContribs.join('\n\n'))}</div>
       </details>`
     : '';
 
-  return dateNote + specsHtml;
+  // Contribution detail cards are always visible, outside the collapsible
+  const contribsHtml = contribs.length > 0
+    ? `<div class="hp-contrib-details">${cardsHtml}</div>`
+    : '';
+
+  return dateNote + specsHtml + contribsHtml;
 }
 
 /* ===== Scroll-to-contribution helper (called from hero badge onclick) ===== */
 function scrollToContribDetail(n) {
-  const details = document.getElementById('study-specs-details');
-  const doScroll = () => {
-    const el = document.getElementById('contrib-detail-' + n);
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    el.classList.add('hp-contrib-detail--highlight');
-    setTimeout(() => el.classList.remove('hp-contrib-detail--highlight'), 1500);
-  };
-  if (details && !details.open) {
-    details.open = true;
-    // Wait two animation frames for the <details> to expand before scrolling
-    requestAnimationFrame(() => requestAnimationFrame(doScroll));
-  } else {
-    doScroll();
-  }
+  const el = document.getElementById('contrib-detail-' + n);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('hp-contrib-detail--highlight');
+  setTimeout(() => el.classList.remove('hp-contrib-detail--highlight'), 1500);
 }
 
 /* ===== Collapsible Research Context Card ===== */
