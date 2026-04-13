@@ -208,12 +208,12 @@ https://arxiv.org/abs/1407.5042 (originally appeared in AAAI 2015 / Science 2015
 
 ### Paper 3: Zinkevich et al. (2007) — Revisit Section 5
 
-https://arxiv.org/abs/0709.2092  
+https://arxiv.org/abs/1205.0622  
 *You read this in Step 2. Now revisit Section 5 (the Kuhn/Rhode Island experiments) with fresh eyes — you've now seen MCCFR and CFR+ convergence in Phase 2. Compare the convergence plots.*
 
 ### Book: Chen & Ankenman — "The Mathematics of Poker" (2006)
 
-**Link:** No free version available. Purchase: https://www.amazon.com/Mathematics-Poker-Bill-Chen/dp/1886070253  
+**Link:** Free (registration required): https://www.academia.edu/36002047/The_Mathematics_of_Poker | Purchase: https://www.amazon.com/Mathematics-Poker-Bill-Chen/dp/1886070253  
 **Assigned chapters:** 1–8  
 **Context — what comes before:** Nothing — Chapter 1 is the start.  
 **Context — what comes after (Ch 9–end):** Ch 9–14 cover toy game solutions, multistreet play, tournament theory. *Relevant for poker intuition but not for CFR implementation. Can revisit during Step 13 (behavioral analysis pipelines) if working with poker data.*  

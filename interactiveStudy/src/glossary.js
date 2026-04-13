@@ -306,6 +306,7 @@ function setupGlossaryTooltips() {
     });
     trigger.addEventListener('focus', () => glShowPopup(trigger));
     trigger.addEventListener('blur',  e => {
+      if (Date.now() - _glLastTouch < 500) return;
       if (!trigger.contains(e.relatedTarget)) glScheduleHide(trigger, 250);
     });
     trigger.addEventListener('click', e => {

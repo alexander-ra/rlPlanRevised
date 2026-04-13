@@ -240,7 +240,7 @@ http://modelai.gettysburg.edu/2013/cfr/cfr.pdf
 
 ### Paper 1: Zinkevich et al. — "Regret Minimization in Games with Incomplete Information" (2007)
 
-https://arxiv.org/abs/0709.2092  
+https://arxiv.org/abs/1205.0622  
 *The original CFR paper. You DON'T need to read this front-to-back — Neller & Lanctot covers the same material more accessibly. Use this paper as a reference.*
 
 ```

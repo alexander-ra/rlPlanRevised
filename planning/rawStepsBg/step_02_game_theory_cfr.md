@@ -239,7 +239,7 @@ http://modelai.gettysburg.edu/2013/cfr/cfr.pdf
 
 ### Статия 1: Zinkevich et al. — "Regret Minimization in Games with Incomplete Information" (2007)
 
-https://arxiv.org/abs/0709.2092  
+https://arxiv.org/abs/1205.0622  
 *Оригиналната статия за CFR. НЕ е необходимо да я четете от кора до кора — Neller & Lanctot обхваща същия материал по-достъпно. Използвайте тази статия като справка.*
 
 ```
