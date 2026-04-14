@@ -25,6 +25,18 @@ RAW_STEPS_DIR_EN  = REPO_ROOT / "planning" / "rawSteps"
 RAW_STEPS_DIR_BG  = REPO_ROOT / "planning" / "rawStepsBg"
 INTRO_MD_EN       = REPO_ROOT / "deliverables" / "studyPlan" / "en" / "01_introduction.md"
 INTRO_MD_BG       = REPO_ROOT / "deliverables" / "studyPlan" / "bg" / "01_introduction.md"
+STUDY_PLAN_DIR    = REPO_ROOT / "deliverables" / "studyPlan"
+
+# Study plan phase files → phase letter mapping
+STUDY_PLAN_PHASE_FILES = [
+    ("02_phase_a.md", "A"),
+    ("03_phase_b.md", "B"),
+    ("04_phase_c.md", "C"),
+    ("05_phase_d.md", "D"),
+    ("06_phase_e.md", "E"),
+    ("07_phase_f.md", "F"),
+    ("08_phase_g.md", "G"),
+]
 
 # Step file list (order matters)
 STEP_FILES = [
@@ -81,6 +93,62 @@ def read_steps(steps_dir: Path) -> dict[str, str]:
         short_id = parts[0] + "_" + parts[1]  # "step_01"
         steps[short_id] = filepath.read_text(encoding="utf-8")
     return steps
+
+
+def parse_study_plans(lang: str) -> tuple[dict[str, str], dict[str, str]]:
+    """Parse study plan phase files for a given language.
+
+    Returns:
+        phase_overviews: {"A": "paragraph text...", ...}  (one per phase)
+        contrib_alignments: {"step_01": "paragraph text...", ...}  (one per step)
+    """
+    study_dir = STUDY_PLAN_DIR / lang
+
+    if lang == "en":
+        overview_re   = re.compile(r"###\s+\d+\.\d+\s+Phase Overview\s*\n\n(.*?)(?=\n###|\Z)", re.DOTALL)
+        step_sec_re   = re.compile(r"(###\s+\d+\.\d+\s+Step\s+\d+.*?)(?=\n###|\Z)", re.DOTALL)
+        step_num_re   = re.compile(r"###\s+\d+\.\d+\s+Step\s+(\d+)")
+        contrib_re    = re.compile(r"\*\*Contribution Alignment\.\*\*\s+(.*?)(?=\n\n\*\*Literature)", re.DOTALL)
+    else:
+        overview_re   = re.compile(r"###\s+\d+\.\d+\s+Преглед на етапа\s*\n\n(.*?)(?=\n###|\Z)", re.DOTALL)
+        step_sec_re   = re.compile(r"(###\s+\d+\.\d+\s+Стъпка\s+\d+.*?)(?=\n###|\Z)", re.DOTALL)
+        step_num_re   = re.compile(r"###\s+\d+\.\d+\s+Стъпка\s+(\d+)")
+        contrib_re    = re.compile(r"\*\*Връзка с приносите\.\*\*\s+(.*?)(?=\n\n\*\*Литература)", re.DOTALL)
+
+    phase_overviews: dict[str, str] = {}
+    contrib_alignments: dict[str, str] = {}
+
+    for filename, phase_letter in STUDY_PLAN_PHASE_FILES:
+        filepath = study_dir / filename
+        if not filepath.exists():
+            print(f"WARNING: Study plan file not found: {filepath}", file=sys.stderr)
+            continue
+        text = filepath.read_text(encoding="utf-8")
+
+        # --- Phase overview ---
+        m = overview_re.search(text)
+        if m:
+            phase_overviews[phase_letter] = m.group(1).strip()
+        else:
+            print(f"WARNING: No phase overview found in {filepath}", file=sys.stderr)
+
+        # --- Contribution alignments (one per step section) ---
+        for sec_m in step_sec_re.finditer(text):
+            section = sec_m.group(1)
+            heading_line = section.split("\n", 1)[0]
+            num_m = step_num_re.search(heading_line)
+            if not num_m:
+                continue
+            step_id = f"step_{int(num_m.group(1)):02d}"
+            ca_m = contrib_re.search(section)
+            if ca_m:
+                # Normalise to a single line of plain text (collapse internal whitespace)
+                align_text = " ".join(ca_m.group(1).split())
+                contrib_alignments[step_id] = align_text
+            else:
+                print(f"WARNING: No contribution alignment found for {step_id} in {filepath}", file=sys.stderr)
+
+    return phase_overviews, contrib_alignments
 
 
 def bundle_js() -> str:
@@ -527,22 +595,30 @@ def get_favicon_link() -> str:
 
 
 def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
-                             intro_en: str, intro_bg: str) -> str:
+                             intro_en: str, intro_bg: str,
+                             phase_overviews_en: dict, phase_overviews_bg: dict,
+                             contrib_align_en: dict, contrib_align_bg: dict) -> str:
     """Generate a <script> block embedding EN/BG content, translations, and glossary."""
     def dict_to_js(d: dict, var_name: str) -> str:
         pairs = [f"  {json.dumps(k)}: {json.dumps(v)}" for k, v in d.items()]
         return f"const {var_name} = {{\n" + ",\n".join(pairs) + "\n};"
 
-    en_js       = dict_to_js(steps_en, "STEPS_CONTENT_EN")
-    bg_js       = dict_to_js(steps_bg, "STEPS_CONTENT_BG")
-    trans_js    = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
-    intro_en_js = f"const INTRO_MD_EN = {json.dumps(intro_en)};"
-    intro_bg_js = f"const INTRO_MD_BG = {json.dumps(intro_bg)};"
-    glossary_js = f"const GLOSSARY_DATA = {json.dumps(get_glossary_data(), ensure_ascii=False, indent=2)};"
+    en_js              = dict_to_js(steps_en, "STEPS_CONTENT_EN")
+    bg_js              = dict_to_js(steps_bg, "STEPS_CONTENT_BG")
+    trans_js           = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
+    intro_en_js        = f"const INTRO_MD_EN = {json.dumps(intro_en)};"
+    intro_bg_js        = f"const INTRO_MD_BG = {json.dumps(intro_bg)};"
+    glossary_js        = f"const GLOSSARY_DATA = {json.dumps(get_glossary_data(), ensure_ascii=False, indent=2)};"
+    phase_ov_en_js     = dict_to_js(phase_overviews_en, "PHASE_OVERVIEWS_EN")
+    phase_ov_bg_js     = dict_to_js(phase_overviews_bg, "PHASE_OVERVIEWS_BG")
+    contrib_en_js      = dict_to_js(contrib_align_en, "CONTRIB_ALIGN_EN")
+    contrib_bg_js      = dict_to_js(contrib_align_bg, "CONTRIB_ALIGN_BG")
 
     return (
         f"<script>\n{en_js}\n\n{bg_js}\n\n{trans_js}\n\n"
-        f"{intro_en_js}\n{intro_bg_js}\n\n{glossary_js}\n</script>"
+        f"{intro_en_js}\n{intro_bg_js}\n\n{glossary_js}\n\n"
+        f"{phase_ov_en_js}\n\n{phase_ov_bg_js}\n\n"
+        f"{contrib_en_js}\n\n{contrib_bg_js}\n</script>"
     )
 
 
@@ -604,8 +680,18 @@ def build():
     # Read bilingual intro markdown
     intro_en, intro_bg = read_intro_md()
 
+    # Parse study plan data: phase overviews + contribution alignments
+    phase_overviews_en, contrib_align_en = parse_study_plans("en")
+    phase_overviews_bg, contrib_align_bg = parse_study_plans("bg")
+    print(f"  Phase overviews EN: {len(phase_overviews_en)}, BG: {len(phase_overviews_bg)}")
+    print(f"  Contribution alignments EN: {len(contrib_align_en)}, BG: {len(contrib_align_bg)}")
+
     # Generate combined content + translations script
-    content_script = generate_content_script(steps_en, steps_bg, translations, intro_en, intro_bg)
+    content_script = generate_content_script(
+        steps_en, steps_bg, translations, intro_en, intro_bg,
+        phase_overviews_en, phase_overviews_bg,
+        contrib_align_en, contrib_align_bg,
+    )
 
     # Build favicon link
     favicon_link = get_favicon_link()
@@ -633,6 +719,8 @@ def build():
     print(f"  EN steps: {len(steps_en)}, BG steps: {len(steps_bg)}")
     print(f"  Translations: {list(translations.keys())}")
     print(f"  JS modules: {len(JS_MODULES)}")
+    print(f"  Phase overviews EN: {sorted(phase_overviews_en)}, BG: {sorted(phase_overviews_bg)}")
+    print(f"  Contrib alignments EN: {len(contrib_align_en)} steps, BG: {len(contrib_align_bg)} steps")
 
 
 if __name__ == "__main__":
