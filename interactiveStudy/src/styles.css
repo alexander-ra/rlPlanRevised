@@ -1141,18 +1141,50 @@ body {
 /* ===== Interleaved Phase Blocks ===== */
 .hp-phases-interleaved { padding: 0; }
 .hp-phase-block { margin-bottom: 1.25rem; }
-.hp-phase-desc {
-  padding: 0.65rem 1rem;
-  margin: 0 0 0.5rem;
+
+/* Collapsible phase overview wrapper */
+.hp-phase-details {
   background: var(--surface-variant);
-  border-left: 3px solid var(--primary);
   border-radius: 0 6px 6px 0;
+  margin: 0 0 0.5rem;
+  /* border-left set via inline style using phase colour */
+}
+.hp-phase-summary {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--on-surface);
+  cursor: pointer;
+  list-style: none;
+  padding: 0.55rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  margin: 0;
+}
+.hp-phase-summary::-webkit-details-marker { display: none; }
+.hp-phase-summary::marker { display: none; }
+.hp-phase-summary::after {
+  content: '▾';
+  font-size: 0.9em;
+  opacity: 0.5;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+.hp-phase-details[open] > .hp-phase-summary::after { transform: rotate(180deg); }
+.hp-phase-summary:hover { color: var(--primary); }
+
+/* Phase overview body (shown when expanded) */
+.hp-phase-desc {
+  padding: 0 1rem 0.65rem;
   font-size: 0.85rem;
   line-height: 1.55;
 }
 .hp-phase-desc p { margin: 0; color: var(--on-surface-medium); }
 .hp-phase-desc strong { color: var(--on-surface); font-weight: 600; }
 .hp-phase-desc em { font-style: italic; color: var(--on-surface-low); }
+.hp-phase-desc sup { font-size: 0.68em; vertical-align: super; }
 @media (min-width: 768px) {
   .hp-phases-interleaved { padding: 0 0.25rem; }
 }
