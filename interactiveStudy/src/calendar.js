@@ -478,8 +478,16 @@ function navigateHome() {
       const descHtml = overviewText
         ? mdToHtmlForIntro(overviewText)
         : mdToHtmlForIntro(phaseLine.replace(/^-\s+/, ''));
+      // Build collapsible title: "Phase A: Foundation" / "Фаза A: Основи"
+      const labelFull = getPhaseLabel(phaseKey); // e.g. "A — Foundation"
+      const phaseName = labelFull.replace(/^[A-G]\s*[—–\-]+\s*/, '');
+      const prefix = currentLang === 'bg' ? 'Фаза' : 'Phase';
+      const summaryTitle = `${prefix} ${phaseKey}: ${phaseName}`;
       return `<div class="hp-phase-block">
-        <div class="hp-phase-desc" style="border-left-color:${c.border}">${descHtml}</div>
+        <details class="hp-phase-details" style="border-left:3px solid ${c.border}">
+          <summary class="hp-phase-summary">${summaryTitle}</summary>
+          <div class="hp-phase-desc">${descHtml}</div>
+        </details>
         <div class="sc-list">${buildPhaseSteps(phaseKey)}</div>
       </div>`;
     }).join('');
