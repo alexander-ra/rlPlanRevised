@@ -14,26 +14,12 @@ function getStepTier(num) {
 }
 
 function extractStepSummary(stepId) {
-  const stepsContent = getStepsContent();
-  const md = stepsContent[stepId];
-  if (!md) return '';
-  const lines = md.split('\n');
-  const targets = [t('extract_target_phase_overview'), t('extract_target_contribution')];
-  for (const target of targets) {
-    let result = '', capturing = false;
-    for (const line of lines) {
-      if (line.includes(`**${target}**`) || line.includes(`**${target}`)) {
-        result = line.replace(/^>\s*/, '').replace(/\*\*/g, '');
-        capturing = true; continue;
-      }
-      if (capturing) {
-        if (line.startsWith('>')) { result += ' ' + line.replace(/^>\s*/, '').replace(/\*\*/g, ''); }
-        else break;
-      }
-    }
-    if (result.trim()) return result.trim();
-  }
-  return '';
+  const alignments = (currentLang === 'bg' && typeof CONTRIB_ALIGN_BG !== 'undefined')
+    ? CONTRIB_ALIGN_BG
+    : (typeof CONTRIB_ALIGN_EN !== 'undefined' ? CONTRIB_ALIGN_EN : null);
+  if (!alignments || !alignments[stepId]) return '';
+  // Convert ^N^ superscript notation used in study plan text
+  return alignments[stepId].replace(/\^(\w+)\^/g, '<sup>$1</sup>');
 }
 
 /* ===== Calendar Helpers ===== */
@@ -479,14 +465,21 @@ function navigateHome() {
       currentLang === 'bg' ? INTRO_MD_BG : INTRO_MD_EN
     );
 
-    // Build phase blocks: each phase bullet from the intro + its step cards
+    // Build phase blocks: phase overview from study plan + step cards
+    const phaseOverviews = (currentLang === 'bg' && typeof PHASE_OVERVIEWS_BG !== 'undefined')
+      ? PHASE_OVERVIEWS_BG
+      : (typeof PHASE_OVERVIEWS_EN !== 'undefined' ? PHASE_OVERVIEWS_EN : null);
     const phaseBlocksHtml = PHASE_ORDER.map((phaseKey, i) => {
       const phaseLine = phases[i];
       if (!phaseLine) return '';
       const c = getPhaseColors(phaseKey);
-      const phaseHtml = mdToHtmlForIntro(phaseLine.replace(/^-\s+/, ''));
+      // Use detailed phase overview from study plan; fall back to intro bullet
+      const overviewText = phaseOverviews && phaseOverviews[phaseKey];
+      const descHtml = overviewText
+        ? mdToHtmlForIntro(overviewText)
+        : mdToHtmlForIntro(phaseLine.replace(/^-\s+/, ''));
       return `<div class="hp-phase-block">
-        <div class="hp-phase-desc" style="border-left-color:${c.border}">${phaseHtml}</div>
+        <div class="hp-phase-desc" style="border-left-color:${c.border}">${descHtml}</div>
         <div class="sc-list">${buildPhaseSteps(phaseKey)}</div>
       </div>`;
     }).join('');
