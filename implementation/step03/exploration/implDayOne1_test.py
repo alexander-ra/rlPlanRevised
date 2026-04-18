@@ -147,7 +147,15 @@ if oscfrplus_exploits:
     plt.plot(iterations, oscfrplus_exploits, label='OpenSpiel CFR+', marker='v', linewidth=2, color='purple')
 plt.xscale('log')
 plt.yscale('log')
-plt.ylim([0.002, 0.5])  # Ensure all lines are visible
+
+# Dynamic axis limits so all lines are fully visible
+all_exploits_iter = es_exploits + os_exploits + cfr_exploits + oscfr_exploits + oscfrplus_exploits
+if iterations and all_exploits_iter:
+    min_expl_iter = min([e for e in all_exploits_iter if e > 0] or [1e-6])
+    max_expl_iter = max(all_exploits_iter)
+    plt.xlim([min(iterations) * 0.8, max(iterations) * 1.2])
+    plt.ylim([min_expl_iter * 0.5, max_expl_iter * 2.0])
+
 plt.xlabel('Iterations (log scale)')
 plt.ylabel('Exploitability (log scale)')
 plt.title('Exploitability vs Iterations: Kuhn Poker - All Algorithms')
@@ -157,18 +165,6 @@ plt.tight_layout()
 plot1_path = relativePath + 'kuhn_exploitability_iterations.png'
 plt.savefig(plot1_path, dpi=150)
 print(f"✓ Plot saved: {plot1_path}")
-
-# Dynamic axis limits for all methods (iterations plot)
-all_iters = iterations
-all_exploits_iter = es_exploits + os_exploits + cfr_exploits + oscfr_exploits + oscfrplus_exploits
-if all_iters and all_exploits_iter:
-    min_iter = min([i for i in all_iters if i > 0] or [1])
-    max_iter = max(all_iters)
-    min_expl_iter = min([e for e in all_exploits_iter if e > 0] or [1e-6])
-    max_expl_iter = max(all_exploits_iter)
-    plt.xlim([min_iter * 0.8, max_iter * 1.2])
-    plt.ylim([min_expl_iter * 0.8, max_expl_iter * 1.2])
-
 plt.close()
 
 
