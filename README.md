@@ -26,6 +26,12 @@ This repository contains the complete planning materials for the first phase of 
 
 The study plan spans 15 learning steps organized into 7 thematic phases (A–G), covering ~28 weeks (April–October 2026) with a built-in buffer before the November deadline. Testbeds: Kuhn Poker (12 states) and Leduc Hold'em (~936 info sets) for exact algorithm verification.
 
+**Progress (as of April 2026):**
+- ✅ **Steps 1–3 completed** (Phase A Foundations, partial Phase B)
+  - Step 1: DQN + PPO from scratch (CartPole, LunarLander)
+  - Step 2: Vanilla CFR on Kuhn Poker
+  - Step 3: CFR variants (CFR+, MCCFR) on Leduc Poker with convergence analysis
+
 ## Repository Structure
 
 ```
@@ -97,6 +103,33 @@ The study plan spans 15 learning steps organized into 7 thematic phases (A–G),
 │       ├── figures/                     # Generated convergence/strategy figures
 │       ├── models/                      # Saved strategy snapshots
 │       └── logs/                        # JSON logs from CFR training/evaluation
+│   └── step03/                          # Step 3: CFR Variants & Monte Carlo Methods on Leduc Poker
+│       ├── config.py                    # Hyperparameters (algorithms, iterations, logging)
+│       ├── compare_openspiel.py         # Cross-verification vs OpenSpiel CFR and CFR+
+│       ├── verify_setup.py              # Dependency and environment verification
+│       ├── convergence_analysis.md      # Theoretical analysis: why MCCFR is slower on small games
+│       ├── cfr/
+│       │   ├── leduc_poker.py           # Leduc Poker game engine
+│       │   ├── info_set_node.py         # Regret-matching node (game-agnostic)
+│       │   ├── cfr_trainer.py           # Vanilla CFR full-traversal (buffered regrets)
+│       │   ├── cfrplus_trainer.py       # CFR+ with linear regret weighting
+│       │   ├── mccfr_external_trainer.py # MCCFR External Sampling variant
+│       │   ├── mccfr_outcome_trainer.py # MCCFR Outcome Sampling variant
+│       │   ├── train.py                 # Individual algorithm trainer
+│       │   └── train_all_timed.py       # Comprehensive 4-algorithm benchmark (180s wall-clock)
+│       ├── evaluate/
+│       │   ├── best_response.py         # Iterative info-set-constrained best response
+│       │   ├── exploitability.py        # Exploitability: (BR₀(σ₁) + BR₁(σ₀))/2
+│       │   └── convergence.py           # Convergence diagnostics and data export
+│       ├── utils/
+│       │   ├── logger.py                # JSON-based training logger
+│       │   └── plotting.py              # Convergence curves, comparison charts
+│       ├── figures/                     # Generated convergence plots
+│       ├── models/                      # Saved strategy snapshots (JSON)
+│       ├── logs/                        # Training event logs (JSON)
+│       ├── tests/                       # Unit tests for game rules and CFR correctness
+│       ├── exploration/                 # Exploratory experiments and variance analysis
+│       └── guidance/                    # Reference materials and tutorials
 ├── planning/
 │   ├── rawSteps/                        # 15 executable learning steps (full 5-phase cycle each)
 │   ├── cleanSteps/                      # Supervisor-facing versions (formal references only)
