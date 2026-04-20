@@ -26,6 +26,8 @@ RAW_STEPS_DIR_BG  = REPO_ROOT / "planning" / "rawStepsBg"
 INTRO_MD_EN       = REPO_ROOT / "deliverables" / "studyPlan" / "en" / "01_introduction.md"
 INTRO_MD_BG       = REPO_ROOT / "deliverables" / "studyPlan" / "bg" / "01_introduction.md"
 STUDY_PLAN_DIR    = REPO_ROOT / "deliverables" / "studyPlan"
+PROBLEM_REPORT_EN = REPO_ROOT / "deliverables" / "reports" / "ruseMay" / "report.md"
+PROBLEM_REPORT_BG = REPO_ROOT / "deliverables" / "reports" / "ruseMay" / "report_bg.md"
 
 # Study plan phase files → phase letter mapping
 STUDY_PLAN_PHASE_FILES = [
@@ -184,6 +186,32 @@ def read_intro_md() -> tuple[str, str]:
         print(f"WARNING: Intro EN not found: {INTRO_MD_EN}", file=sys.stderr)
     if not bg:
         print(f"WARNING: Intro BG not found: {INTRO_MD_BG}", file=sys.stderr)
+    return en, bg
+
+
+def extract_report_section(md_text: str, section_heading: str) -> str:
+    """Return the body between a top-level `# <section_heading>` and the next `# ` heading.
+
+    Returns an empty string if the heading is not found.
+    """
+    pattern = re.compile(
+        rf"^#\s+{re.escape(section_heading)}\s*\n(.*?)(?=^#\s+\S|\Z)",
+        re.DOTALL | re.MULTILINE,
+    )
+    m = pattern.search(md_text)
+    return m.group(1).strip() if m else ""
+
+
+def read_problem_intro() -> tuple[str, str]:
+    """Read the Introduction section from the ruseMay report (EN + BG)."""
+    en_body = PROBLEM_REPORT_EN.read_text(encoding="utf-8") if PROBLEM_REPORT_EN.exists() else ""
+    bg_body = PROBLEM_REPORT_BG.read_text(encoding="utf-8") if PROBLEM_REPORT_BG.exists() else ""
+    en = extract_report_section(en_body, "Introduction")
+    bg = extract_report_section(bg_body, "Въведение")
+    if not en:
+        print(f"WARNING: Problem Introduction EN not extracted from {PROBLEM_REPORT_EN}", file=sys.stderr)
+    if not bg:
+        print(f"WARNING: Problem Introduction BG not extracted from {PROBLEM_REPORT_BG}", file=sys.stderr)
     return en, bg
 
 
@@ -597,7 +625,8 @@ def get_favicon_link() -> str:
 def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
                              intro_en: str, intro_bg: str,
                              phase_overviews_en: dict, phase_overviews_bg: dict,
-                             contrib_align_en: dict, contrib_align_bg: dict) -> str:
+                             contrib_align_en: dict, contrib_align_bg: dict,
+                             problem_intro_en: str, problem_intro_bg: str) -> str:
     """Generate a <script> block embedding EN/BG content, translations, and glossary."""
     def dict_to_js(d: dict, var_name: str) -> str:
         pairs = [f"  {json.dumps(k)}: {json.dumps(v)}" for k, v in d.items()]
@@ -608,6 +637,8 @@ def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
     trans_js           = f"const TRANSLATIONS = {json.dumps(translations, ensure_ascii=False, indent=2)};"
     intro_en_js        = f"const INTRO_MD_EN = {json.dumps(intro_en)};"
     intro_bg_js        = f"const INTRO_MD_BG = {json.dumps(intro_bg)};"
+    problem_en_js      = f"const PROBLEM_INTRO_EN = {json.dumps(problem_intro_en)};"
+    problem_bg_js      = f"const PROBLEM_INTRO_BG = {json.dumps(problem_intro_bg)};"
     glossary_js        = f"const GLOSSARY_DATA = {json.dumps(get_glossary_data(), ensure_ascii=False, indent=2)};"
     phase_ov_en_js     = dict_to_js(phase_overviews_en, "PHASE_OVERVIEWS_EN")
     phase_ov_bg_js     = dict_to_js(phase_overviews_bg, "PHASE_OVERVIEWS_BG")
@@ -616,7 +647,8 @@ def generate_content_script(steps_en: dict, steps_bg: dict, translations: dict,
 
     return (
         f"<script>\n{en_js}\n\n{bg_js}\n\n{trans_js}\n\n"
-        f"{intro_en_js}\n{intro_bg_js}\n\n{glossary_js}\n\n"
+        f"{intro_en_js}\n{intro_bg_js}\n\n"
+        f"{problem_en_js}\n{problem_bg_js}\n\n{glossary_js}\n\n"
         f"{phase_ov_en_js}\n\n{phase_ov_bg_js}\n\n"
         f"{contrib_en_js}\n\n{contrib_bg_js}\n</script>"
     )
@@ -680,6 +712,9 @@ def build():
     # Read bilingual intro markdown
     intro_en, intro_bg = read_intro_md()
 
+    # Read bilingual problem-introduction section from ruseMay report
+    problem_intro_en, problem_intro_bg = read_problem_intro()
+
     # Parse study plan data: phase overviews + contribution alignments
     phase_overviews_en, contrib_align_en = parse_study_plans("en")
     phase_overviews_bg, contrib_align_bg = parse_study_plans("bg")
@@ -691,6 +726,7 @@ def build():
         steps_en, steps_bg, translations, intro_en, intro_bg,
         phase_overviews_en, phase_overviews_bg,
         contrib_align_en, contrib_align_bg,
+        problem_intro_en, problem_intro_bg,
     )
 
     # Build favicon link

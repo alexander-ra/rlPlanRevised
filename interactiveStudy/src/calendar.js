@@ -434,6 +434,20 @@ function scrollToContribDetail(n) {
 
 /* ===== Collapsible Research Context Card ===== */
 function buildCollapsibleIntroCard(before) {
+  // Prefer the ruseMay report Introduction section when available; fall back
+  // to the study-plan intro's "before" block for backwards compatibility.
+  const problemMd = (currentLang === 'bg' && typeof PROBLEM_INTRO_BG !== 'undefined')
+    ? PROBLEM_INTRO_BG
+    : (typeof PROBLEM_INTRO_EN !== 'undefined' ? PROBLEM_INTRO_EN : '');
+
+  if (problemMd && problemMd.trim()) {
+    const title = currentLang === 'bg' ? 'Въведение в проблема' : 'Introduction to problem';
+    return `<details class="hp-intro-card hp-intro-details">
+      <summary class="hp-intro-summary">${title}</summary>
+      <div class="hp-intro-body">${mdToHtmlForIntro(problemMd)}</div>
+    </details>`;
+  }
+
   if (!before || !before.trim()) return '';
   const headingMatch = before.match(/^###\s+(?:\d+\.\d+\s+)?(.+)$/m);
   const title = headingMatch ? headingMatch[1].trim()
