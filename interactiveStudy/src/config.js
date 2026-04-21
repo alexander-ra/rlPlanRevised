@@ -29,6 +29,8 @@ const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/maste
 const SUMMARY_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/summaries';
 const STUDY_PLAN_URL_EN = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/studyPlan/studyPlanEN.pdf';
 const STUDY_PLAN_URL_BG = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/studyPlan/studyPlanBG.pdf';
+const RESEARCH_GOALS_URL_EN = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports/ruseMay/adaptive-multiagents-initial-report-may-en.pdf';
+const RESEARCH_GOALS_URL_BG = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports/ruseMay/adaptive-multiagents-initial-report-may-bg.pdf';
 
 /* ===== Tertiary step colors for calendar (cycle within phase) ===== */
 const STEP_BG_PALETTE = [
