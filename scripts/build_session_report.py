@@ -6,8 +6,8 @@
 #   from deliverables/reports/ruseMay/
 #
 # Outputs:
-#   deliverables/reports/ruseMay/report.pdf      (English)
-#   deliverables/reports/ruseMay/report_bg.pdf   (Bulgarian)
+#   deliverables/reports/ruseMay/adaptive-multiagents-initial-report-may-en.pdf
+#   deliverables/reports/ruseMay/adaptive-multiagents-initial-report-may-bg.pdf
 #
 # USAGE (run from repo root):
 #   python3 scripts/build_session_report.py [--lang en|bg|both]
@@ -47,11 +47,11 @@ def find_engine() -> str:
 def build(lang: str, pandoc_bin: str, engine: str) -> bool:
     if lang == "en":
         content = REPORT_DIR / "report.md"
-        output  = REPORT_DIR / "report.pdf"
+        output  = REPORT_DIR / "adaptive-multiagents-initial-report-may-en.pdf"
         extra   = []
     else:
         content = REPORT_DIR / "report_bg.md"
-        output  = REPORT_DIR / "report_bg.pdf"
+        output  = REPORT_DIR / "adaptive-multiagents-initial-report-may-bg.pdf"
         extra   = [
             "-V", "lang=bg",
             "-V", "mainfont=Liberation Serif",

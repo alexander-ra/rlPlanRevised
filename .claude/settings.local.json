@@ -10,7 +10,10 @@
       "Bash(git -C /home/alexanderandreev/rlProjects/rlPlanRevised commit -m ':*)",
       "Bash(python3 scripts/build.py)",
       "Bash(git add:*)",
-      "Bash(git commit -m ':*)"
+      "Bash(git commit -m ':*)",
+      "WebFetch(domain:www.scribbr.com)",
+      "WebFetch(domain:writingcenter.gmu.edu)",
+      "Bash(python3 -c \"import importlib.util; print\\('pypdf:', importlib.util.find_spec\\('pypdf'\\) is not None, 'pdfplumber:', importlib.util.find_spec\\('pdfplumber'\\) is not None, 'PyPDF2:', importlib.util.find_spec\\('PyPDF2'\\) is not None\\)\")"
     ]
   }
 }
