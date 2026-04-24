@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">PhD thesis infographic: Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments</title>
+  <desc id="desc">An infographic summarizing the thesis motivation, three planned contributions, and expected output.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="52%" stop-color="#16213a"/>
+      <stop offset="100%" stop-color="#0b3b3f"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" x2="1">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" x2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="0" x2="1">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+    <style>
+      .bg-text { fill: #9ca3af; font: 500 20px Inter, Arial, sans-serif; }
+      .label { fill: #e5e7eb; font: 700 24px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .small { fill: #cbd5e1; font: 500 20px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .tiny { fill: #94a3b8; font: 500 17px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .title { fill: #ffffff; font: 800 54px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .subtitle { fill: #d1d5db; font: 500 26px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .pillar-title { fill: #ffffff; font: 800 29px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .pillar-text { fill: #e5e7eb; font: 500 20px Inter, Arial, sans-serif; letter-spacing: 0; }
+      .number { fill: #0f172a; font: 900 30px Inter, Arial, sans-serif; }
+      .mono { fill: #cbd5e1; font: 700 17px "SFMono-Regular", Consolas, monospace; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+
+  <g opacity="0.18">
+    <circle cx="1410" cy="130" r="210" fill="#2dd4bf"/>
+    <circle cx="120" cy="850" r="260" fill="#f97316"/>
+    <circle cx="820" cy="1040" r="260" fill="#a855f7"/>
+  </g>
+
+  <g opacity="0.22" stroke="#94a3b8" stroke-width="2">
+    <path d="M198 198 C410 88, 596 244, 752 152 S1076 66, 1338 212" fill="none"/>
+    <path d="M214 742 C414 656, 565 812, 772 706 S1132 612, 1398 760" fill="none"/>
+    <circle cx="198" cy="198" r="8" fill="#94a3b8"/>
+    <circle cx="752" cy="152" r="8" fill="#94a3b8"/>
+    <circle cx="1338" cy="212" r="8" fill="#94a3b8"/>
+    <circle cx="214" cy="742" r="8" fill="#94a3b8"/>
+    <circle cx="772" cy="706" r="8" fill="#94a3b8"/>
+    <circle cx="1398" cy="760" r="8" fill="#94a3b8"/>
+  </g>
+
+  <text x="120" y="120" class="title">Adaptive Strategy Learning</text>
+  <text x="120" y="164" class="subtitle">Multi-agent imperfect-information environments</text>
+  <text x="120" y="206" class="bg-text">PhD thesis focus: from static equilibrium play to adaptive, safety-aware game AI</text>
+
+  <g transform="translate(1120 80)">
+    <rect x="0" y="0" width="360" height="118" rx="18" fill="#020617" opacity="0.42" stroke="#334155"/>
+    <text x="30" y="42" class="mono">Official topic</text>
+    <text x="30" y="76" class="small">AI in computer games</text>
+    <text x="30" y="101" class="tiny">Games as rigorous testbeds</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="130" y="280" width="1340" height="170" rx="30" fill="#f8fafc" opacity="0.98"/>
+    <text x="190" y="334" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800">Core research gap</text>
+    <text x="190" y="374" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="600">Equilibrium agents are strong but static.</text>
+    <text x="190" y="408" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="600">Exploitative agents can adapt, but may become unsafe.</text>
+    <text x="190" y="435" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="500">The open problem is adaptive exploitation that remains robust, especially beyond two-player zero-sum games.</text>
+    <g transform="translate(1250 315)">
+      <path d="M0 38 C0 16 18 0 40 0 C62 0 80 16 80 38 C80 70 40 90 40 90 C40 90 0 70 0 38Z" fill="#0f172a"/>
+      <path d="M40 19 L55 43 L40 70 L25 43Z" fill="#2dd4bf"/>
+    </g>
+  </g>
+
+  <g transform="translate(130 500)" filter="url(#shadow)">
+    <rect x="0" y="0" width="408" height="300" rx="24" fill="#0f172a" stroke="#2dd4bf" stroke-width="3"/>
+    <circle cx="62" cy="64" r="30" fill="url(#teal)"/>
+    <text x="53" y="75" class="number">1</text>
+    <text x="110" y="58" class="pillar-title">Behavioral</text>
+    <text x="110" y="94" class="pillar-title">Adaptation</text>
+    <text x="42" y="145" class="pillar-text">Infer opponent tendencies from</text>
+    <text x="42" y="174" class="pillar-text">observed action sequences.</text>
+    <text x="42" y="218" class="tiny">Methods: Bayesian models, player types,</text>
+    <text x="42" y="244" class="tiny">behavioral traces, non-stationarity tests.</text>
+    <g transform="translate(296 190)" stroke="#2dd4bf" stroke-width="5" fill="none" opacity="0.9">
+      <circle cx="0" cy="0" r="18"/>
+      <circle cx="56" cy="-34" r="18"/>
+      <circle cx="70" cy="42" r="18"/>
+      <path d="M16 -10 L40 -24"/>
+      <path d="M18 8 L52 32"/>
+    </g>
+  </g>
+
+  <g transform="translate(596 500)" filter="url(#shadow)">
+    <rect x="0" y="0" width="408" height="300" rx="24" fill="#0f172a" stroke="#f59e0b" stroke-width="3"/>
+    <circle cx="62" cy="64" r="30" fill="url(#gold)"/>
+    <text x="53" y="75" class="number">2</text>
+    <text x="110" y="58" class="pillar-title">Multi-Agent</text>
+    <text x="110" y="94" class="pillar-title">Safe Exploitation</text>
+    <text x="42" y="145" class="pillar-text">Exploit sub-optimal opponents</text>
+    <text x="42" y="174" class="pillar-text">without excessive vulnerability.</text>
+    <text x="42" y="218" class="tiny">Methods: KL regularization, equal-share</text>
+    <text x="42" y="244" class="tiny">baselines, N-player heuristic safety.</text>
+    <g transform="translate(302 188)" fill="none" stroke="#fbbf24" stroke-width="5" opacity="0.95">
+      <path d="M42 0 L86 22 V62 C86 92 42 112 42 112 C42 112 -2 92 -2 62 V22Z"/>
+      <path d="M22 58 L38 74 L66 36"/>
+    </g>
+  </g>
+
+  <g transform="translate(1062 500)" filter="url(#shadow)">
+    <rect x="0" y="0" width="408" height="300" rx="24" fill="#0f172a" stroke="#c084fc" stroke-width="3"/>
+    <circle cx="62" cy="64" r="30" fill="url(#rose)"/>
+    <text x="53" y="75" class="number">3</text>
+    <text x="110" y="58" class="pillar-title">Evaluation</text>
+    <text x="110" y="94" class="pillar-title">Methodology</text>
+    <text x="42" y="145" class="pillar-text">Measure adaptation, robustness,</text>
+    <text x="42" y="174" class="pillar-text">and metric failure modes.</text>
+    <text x="42" y="218" class="tiny">Methods: exploitability, AlphaRank,</text>
+    <text x="42" y="244" class="tiny">VasE, AIVAT, confidence intervals.</text>
+    <g transform="translate(292 190)" stroke="#c084fc" stroke-width="5" fill="none" opacity="0.95">
+      <path d="M0 100 H104"/>
+      <path d="M18 100 V48"/>
+      <path d="M52 100 V18"/>
+      <path d="M86 100 V66"/>
+      <path d="M10 36 L52 18 L94 62"/>
+    </g>
+  </g>
+
+  <g opacity="0.95">
+    <path d="M538 650 H596" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M584 638 L604 650 L584 662" fill="none" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M1004 650 H1062" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1050 638 L1070 650 L1050 662" fill="none" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(130 850)">
+    <rect x="0" y="0" width="1340" height="82" rx="22" fill="#020617" opacity="0.5" stroke="#334155"/>
+    <text x="42" y="35" class="label">Expected thesis output</text>
+    <text x="42" y="63" class="small">Adaptive agent framework plus experimental evidence across benchmarks and behavioral data.</text>
+  </g>
+
+  <g transform="translate(1110 854)">
+    <text x="0" y="26" class="mono">Chapter I: state of the art</text>
+    <text x="0" y="54" class="mono">Chapters III-IV: system + experiments</text>
+  </g>
+</svg>

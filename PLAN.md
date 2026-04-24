@@ -16,7 +16,8 @@ A 15-step learning progression (2 completed + 13 new) spanning April–mid Octob
 2. [PhD Goal Alignment](#2-phd-goal-alignment)  
 3. [The 15-Step Plan — Titles, Dependencies & Calendar](#3-the-15-step-plan-titles--dependencies)  
 4. [Learning Methodology & Step Blueprint](#4-learning-methodology--step-blueprint)  
-5. [Job Market Validation](#5-job-market-validation)  
+5. [Peripheral Watchlist](#5-peripheral-watchlist)  
+6. [Job Market Validation](#6-job-market-validation)  
 [Appendix: Source Files](#appendix-source-files)
 
 ---
@@ -497,7 +498,69 @@ Each step is generated in two versions, stored in separate directories:
 
 ---
 
-## 5. Job Market Validation
+## 5. Peripheral Watchlist
+
+This section is intentionally **outside the 15-step execution schedule**. These are optional fields, papers, and algorithms to sample when there is free time, or to pull into Chapter II if they become directly relevant. The rule: 30 minutes of exposure is useful; full implementation is not required unless the topic becomes part of the final thesis contribution.
+
+### 5.1 Major Supporting Fields
+
+| Area | Why it matters | Where to connect |
+|------|----------------|------------------|
+| Extensive-form correlated equilibrium (EFCE), coarse correlated equilibrium (CCE) | N-player general-sum games often need alternatives to Nash. EFCE/CCE may provide better theoretical baselines for multiplayer imperfect-information settings. | Chapter II, Steps 10-11, Step 14 |
+| POMDP / POSG / I-POMDP theory | Opponent modeling is belief-state reasoning under partial observability. I-POMDPs formalize recursive beliefs about other agents. | Step 7, Chapter II |
+| Safe RL / CMDP / constrained optimization | Safe exploitation can be framed as constrained optimization: maximize reward subject to risk/safety limits. Useful vocabulary beyond poker-specific safety theorems. | Step 8, Chapter II |
+| Off-policy evaluation and causal evaluation | Real hand-history data is observational. OPE helps define what can and cannot be claimed about a new policy from logged data. | Steps 13-14, Chapter IV |
+| Temporal graphs and graph fraud detection | Collusion/fraud often appears as coordinated relational behavior, not isolated anomalous actions. Important for career transfer into fraud/risk systems. | Step 13, post-PhD production work |
+| Online learning theory: OMD, FTRL, Phi-regret | CFR, optimistic CFR, policy-gradient game solvers, and R-NaD can be unified through online learning. Helps make Chapter II theoretically coherent. | Steps 3, 8, 10, Chapter II |
+| Stackelberg and security games | Strong application bridge to cybersecurity, fraud defense, patrol/resource allocation, and attacker-defender settings. | Chapter I relevance, career positioning |
+
+### 5.2 Papers And Resources To Bookmark
+
+| Topic | Resource | Priority |
+|-------|----------|----------|
+| EFCE / no-regret learning | [No-Regret Learning Dynamics for Extensive-Form Correlated Equilibrium](https://arxiv.org/abs/2004.00603) | Medium |
+| EFCE from bandit feedback | [Sample-Efficient Learning of Correlated Equilibria in Extensive-Form Games](https://openreview.net/forum?id=SYdg8tcFgdG) | Medium |
+| I-POMDPs | [Recursively modeling other agents for decision making: A research perspective](https://www.sciencedirect.com/science/article/pii/S000437021930027X) | Medium |
+| Safe RL constraints | [A Survey of Constraint Formulations in Safe Reinforcement Learning](https://www.ijcai.org/proceedings/2024/913) | Medium |
+| Safe RL / CMDPs | [A Survey of Safe Reinforcement Learning and Constrained MDPs](https://arxiv.org/abs/2505.17342) | Medium |
+| Off-policy evaluation | [Doubly Robust Off-policy Value Evaluation for Reinforcement Learning](https://proceedings.mlr.press/v48/jiang16.html) | Medium |
+| Stochastic regret | [Stochastic Regret Minimization in Extensive-Form Games](https://proceedings.mlr.press/v119/farina20a.html) | Medium |
+| Optimistic regret | [Optimistic Regret Minimization for Extensive-Form Games](https://arxiv.org/abs/1910.10906) | Medium |
+| Policy gradients in IIGs | [Reevaluating Policy Gradient Methods for Imperfect-Information Games](https://arxiv.org/abs/2502.08938) | High |
+| Policy-gradient theory | [A Policy-Gradient Approach to Solving Imperfect-Information Games with Best-Iterate Convergence](https://www.mit.edu/~gfarina/2025/iclr25_qfr/) | Medium |
+| Safe subgame exploitation | [Safe and Robust Subgame Exploitation in Imperfect Information Games](https://proceedings.mlr.press/v235/ge24b.html) | High |
+| Consistent opponent modeling | [Consistent Opponent Modeling of Static Opponents in Imperfect-Information Games](https://arxiv.org/abs/2508.17671) | High |
+| Social / LLM games | [TextArena](https://arxiv.org/abs/2504.11442) | Low |
+| Deception / trust games | [The Traitors: Deception and Trust in Multi-Agent Language Model Simulations](https://arxiv.org/abs/2505.12923) | Low |
+| Stackelberg security games | [Machine Learning Techniques for Stackelberg Security Games: a Survey](https://arxiv.org/abs/1609.09341) | Low |
+| Defensive deception | [Game-Theoretic and Machine Learning-based Approaches for Defensive Deception: A Survey](https://arxiv.org/abs/2101.10121) | Low |
+
+### 5.3 Minor Free-Time Topics
+
+- **DCFR / LCFR / DDCFR / AutoCFR** - modern CFR variants and automated CFR design. Useful if equilibrium computation speed becomes a bottleneck.
+- **Online Outcome Sampling and imperfect-information MCTS** - useful contrast to CFR and subgame solving.
+- **Level-k and cognitive hierarchy models** - useful for human suboptimality and behavioral archetypes.
+- **Bayesian online changepoint detection** - useful for non-stationary opponents, bot behavior changes, and collusion onset.
+- **Conformal prediction for anomaly detection** - useful for calibrated fraud/risk thresholds.
+- **Temporal GNNs for fraud detection** - useful for collusion and coordinated abuse in transaction/player graphs.
+- **Algorithmic collusion literature** - useful if the thesis discusses implicit collusion between adaptive agents.
+- **Bayesian games / Harsanyi type spaces** - useful theoretical grounding for opponent types and hidden incentives.
+- **Social deduction games** - optional intuition for deception, trust, hidden roles, and partial information.
+- **Adversarial ML for fraud detectors** - useful for understanding how fraud systems themselves can be attacked.
+
+### 5.4 Intake Rule
+
+Do not add these items to the core roadmap unless one of three conditions holds:
+
+- The item directly supports Chapter II's theoretical framework.
+- The item becomes a baseline or reviewer-obvious comparison for Chapters III-IV.
+- The item supports the fraud/risk career path with practical, demonstrable value.
+
+Otherwise, treat it as optional exposure: one video, one abstract, one skim, or one short note in `learningLog.md`.
+
+---
+
+## 6. Job Market Validation
 
 The plan was validated against 10 real job postings from Glassdoor (March 2026) spanning both target career paths.
 
