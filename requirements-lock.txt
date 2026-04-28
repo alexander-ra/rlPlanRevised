@@ -13,9 +13,11 @@ filelock==3.25.2
 fonttools==4.62.1
 fsspec==2026.3.0
 grpcio==1.80.0
+greenlet==3.5.0
 gymnasium==1.0.0
 Jinja2==3.1.6
 kiwisolver==1.5.0
+lxml==6.1.0
 Markdown==3.10.2
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
@@ -28,12 +30,15 @@ opencv-python==4.13.0.92
 packaging==26.0
 pandas==3.0.2
 pillow==12.2.0
+playwright==1.58.0
 protobuf==7.34.1
 psutil==7.2.2
+pyee==13.0.1
 pygame==2.6.1
 pygame-ce==2.5.7
 Pygments==2.20.0
 pyparsing==3.3.2
+python-pptx==1.0.2
 python-dateutil==2.9.0.post0
 rich==14.3.3
 setuptools==81.0.0
@@ -48,3 +53,4 @@ tqdm==4.67.3
 typing_extensions==4.15.0
 Werkzeug==3.1.7
 wheel==0.46.3
+xlsxwriter==3.2.9
