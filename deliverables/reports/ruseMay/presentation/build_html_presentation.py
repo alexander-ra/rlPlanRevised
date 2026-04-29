@@ -2,7 +2,8 @@
 
 Pipeline:
 1. Write one standalone 1920x1080 HTML file per slide.
-2. Render each HTML slide to a 1920x1080 PNG with Playwright/Chromium.
+2. Render each HTML slide to a 3840x2160 PNG with Playwright/Chromium
+   using device_scale_factor=2 for sharper projected text.
 3. Place each PNG full-bleed into a 16:9 PowerPoint deck.
 
 This intentionally makes the PPTX non-editable at the element level. The
@@ -13,6 +14,7 @@ from __future__ import annotations
 
 import base64
 import html
+import mimetypes
 from pathlib import Path
 
 from PIL import Image, ImageStat
@@ -42,18 +44,47 @@ def logo_data_uri() -> str:
 LOGO_URI = logo_data_uri()
 
 
+def asset_data_uri(relative_path: str) -> str:
+    path = ASSETS / relative_path
+    if not path.exists():
+        return ""
+    mime_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+    data = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:{mime_type};base64,{data}"
+
+
+def asset_img(relative_path: str, alt: str, class_name: str) -> str:
+    uri = asset_data_uri(relative_path)
+    if not uri:
+        return ""
+    return f'<img class="{esc(class_name)}" src="{uri}" alt="{esc(alt)}">'
+
+
+def thumbnail(relative_path: str, alt: str) -> str:
+    image = asset_img(relative_path, alt, "example-thumb")
+    if image:
+        return image
+    return f'<div class="example-thumb placeholder-thumb">{esc(alt)}</div>'
+
+
 def esc(value: str) -> str:
     return html.escape(value, quote=True)
 
 
-def footer(slide_no: int) -> str:
+TOTAL_SLIDES = 13
+
+
+def footer(slide_no: int, title: str) -> str:
     return f"""
     <footer class="footer">
       <div class="footer-left">
-        {'<img src="' + LOGO_URI + '" alt="Ruse University logo">' if LOGO_URI else ''}
-        <span>Ruse University Academic Session &middot; May 2026</span>
+        {'<img src="' + LOGO_URI + '" alt="University of Ruse logo">' if LOGO_URI else ''}
+        <span>&ldquo;Angel Kanchev&rdquo; University of Ruse</span>
       </div>
-      <span class="slide-no">{slide_no:02d}</span>
+      <div class="footer-right">
+        <span class="footer-title">{esc(title)}</span>
+        <span class="slide-no">{slide_no:02d}/{TOTAL_SLIDES}</span>
+      </div>
     </footer>
     """
 
@@ -61,20 +92,22 @@ def footer(slide_no: int) -> str:
 COMMON_CSS = """\
 /* === 1. Design tokens === */
 :root {
-  --bg: #f7f8fb;
+  --bg: #f5f7fb;
   --panel: #ffffff;
-  --ink: #202832;
-  --ink-soft: #56616e;
-  --muted: #8b95a3;
-  --rule: #d8dde5;
-  --blue: #1f5f9f;
-  --blue-soft: #dceaf7;
-  --red: #c74432;
-  --red-soft: #fae2dd;
-  --teal: #178c7d;
-  --teal-soft: #d9eee9;
-  --amber: #bf821e;
-  --shadow: 0 18px 44px rgba(31, 46, 64, 0.08);
+  --ink: #17212c;
+  --ink-soft: #526173;
+  --muted: #8793a5;
+  --rule: #d7dde7;
+  --blue: #155f9f;
+  --blue-soft: #dbeaf8;
+  --red: #c74735;
+  --red-soft: #fae3de;
+  --teal: #148d80;
+  --teal-soft: #d8eee9;
+  --amber: #bb7d1c;
+  --shadow: 0 26px 70px rgba(22, 34, 50, 0.10);
+  --shadow-soft: 0 12px 32px rgba(22, 34, 50, 0.07);
+  --hairline: rgba(21, 95, 159, 0.12);
 }
 
 /* === 2. Reset === */
@@ -86,7 +119,7 @@ html, body {
   overflow: hidden;
   background: var(--bg);
   color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Aptos, "Segoe UI", Arial, Helvetica, sans-serif;
   letter-spacing: 0;
 }
 body { -webkit-font-smoothing: antialiased; }
@@ -99,26 +132,73 @@ body { -webkit-font-smoothing: antialiased; }
   padding: 82px 104px 104px;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(247,248,251,0.98)),
-    radial-gradient(circle at 91% 18%, rgba(31,95,159,0.08), transparent 25%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(245,247,251,0.98)),
+    linear-gradient(135deg, rgba(21,95,159,0.06), transparent 28%),
+    linear-gradient(315deg, rgba(20,141,128,0.055), transparent 24%),
     var(--bg);
+}
+.slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  opacity: 0.38;
+}
+.slide::after {
+  content: "";
+  position: absolute;
+  left: 104px;
+  right: 104px;
+  top: 30px;
+  height: 4px;
+  z-index: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue), var(--teal), transparent 72%);
+  opacity: 0.55;
+}
+.slide > * {
+  position: relative;
+  z-index: 1;
+}
+.title-slide {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.98), rgba(245,247,251,0.9) 58%, rgba(245,247,251,0.98)),
+    linear-gradient(135deg, rgba(21,95,159,0.08), transparent 34%),
+    linear-gradient(315deg, rgba(20,141,128,0.07), transparent 25%),
+    var(--bg);
+}
+.title-slide::after {
+  left: 104px;
+  right: 104px;
+  background: linear-gradient(90deg, var(--blue), var(--teal), var(--red), transparent 76%);
 }
 
 /* === 4. Header & title rule === */
-.slide-header { position: relative; height: 128px; }
+.slide-header {
+  position: relative;
+  height: 128px;
+}
 h1 {
   margin: 0;
-  font-size: 54px;
+  font-size: 56px;
   line-height: 1.04;
-  font-weight: 760;
+  font-weight: 780;
   max-width: 1300px;
+  letter-spacing: -0.01em;
 }
 .title-rule {
-  width: 92px;
+  width: 112px;
   height: 8px;
-  margin-top: 26px;
+  margin-top: 24px;
   border-radius: 999px;
   background: var(--ink);
+  box-shadow: 0 6px 16px rgba(21, 95, 159, 0.18);
 }
 .title-rule.blue  { background: var(--blue); }
 .title-rule.red   { background: var(--red); }
@@ -137,9 +217,23 @@ h1 {
   justify-content: space-between;
   color: var(--muted);
   font-size: 18px;
+  background: linear-gradient(180deg, transparent, rgba(245,247,251,0.75) 42%);
 }
 .footer-left { display: flex; align-items: center; gap: 14px; }
 .footer img  { width: 30px; height: auto; display: block; }
+.footer-right {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+}
+.footer-title {
+  color: var(--ink-soft);
+  font-weight: 700;
+  max-width: 720px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .slide-no    { font-variant-numeric: tabular-nums; }
 
 /* === 6. Typography === */
@@ -151,9 +245,12 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+.eyebrow.blue { color: var(--blue); }
+.eyebrow.red { color: var(--red); }
+.eyebrow.teal { color: var(--teal); }
 .lead {
   color: var(--ink-soft);
-  font-size: 29px;
+  font-size: 30px;
   line-height: 1.35;
   margin: 0;
 }
@@ -188,10 +285,13 @@ h1 {
 
 /* === 8. Panel surface === */
 .panel {
-  background: rgba(255,255,255,0.76);
-  border: 1.5px solid var(--rule);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.76)),
+    var(--panel);
+  border: 1.5px solid rgba(148, 160, 178, 0.42);
   border-radius: 8px;
   box-shadow: var(--shadow);
+  backdrop-filter: blur(2px);
 }
 
 /* === 9. Bullet list === */
@@ -207,12 +307,13 @@ h1 {
   align-items: start;
 }
 .bullet i {
-  width: 16px;
-  height: 16px;
-  margin-top: 13px;
+  width: 18px;
+  height: 18px;
+  margin-top: 12px;
   background: var(--blue);
-  border-radius: 4px;
+  border-radius: 5px;
   display: block;
+  box-shadow: 0 0 0 7px rgba(21,95,159,0.10);
 }
 .bullet.red i  { background: var(--red); }
 .bullet.teal i { background: var(--teal); }
@@ -243,24 +344,44 @@ h1 {
   margin-right: auto;
 }
 .tile {
+  position: relative;
   min-height: 240px;
   padding: 34px 34px 30px;
   display: grid;
   grid-template-columns: 108px 1fr;
   gap: 26px;
   align-items: center;
+  overflow: hidden;
+}
+.tile::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(180deg, var(--blue), rgba(21,95,159,0.18));
+}
+.tile:nth-child(2)::before { background: linear-gradient(180deg, var(--red), rgba(199,71,53,0.18)); }
+.tile:nth-child(3)::before { background: linear-gradient(180deg, var(--teal), rgba(20,141,128,0.18)); }
+.tile-grid.two .tile:first-child::before { background: linear-gradient(180deg, var(--teal), rgba(20,141,128,0.18)); }
+.tile-grid.two .tile:nth-child(2)::before { background: linear-gradient(180deg, var(--red), rgba(199,71,53,0.18)); }
+.tile > * {
+  position: relative;
+  z-index: 1;
 }
 .icon {
   position: relative;
   width: 108px;
   height: 108px;
   border-radius: 8px;
-  background: var(--blue-soft);
+  background: linear-gradient(180deg, #eef6fd, var(--blue-soft));
   color: var(--blue);
   display: grid;
   place-items: center;
   font-size: 48px;
   font-weight: 760;
+  box-shadow: inset 0 0 0 1px rgba(21,95,159,0.08), var(--shadow-soft);
 }
 .icon svg {
   width: 72px;
@@ -272,11 +393,11 @@ h1 {
   stroke-linejoin: round;
 }
 .icon svg .fill   { fill: currentColor; stroke: none; }
-.icon.red  { background: var(--red-soft);  color: var(--red); }
-.icon.teal { background: var(--teal-soft); color: var(--teal); }
+.icon.red  { background: linear-gradient(180deg, #fff0ed, var(--red-soft));  color: var(--red); }
+.icon.teal { background: linear-gradient(180deg, #ebfaf6, var(--teal-soft)); color: var(--teal); }
 .tile h2 {
   margin: 0 0 10px;
-  font-size: 31px;
+  font-size: 32px;
   line-height: 1.1;
 }
 .tile p {
@@ -293,7 +414,7 @@ h1 {
   min-height: 42px;
   padding: 0 20px;
   border-radius: 999px;
-  background: white;
+  background: rgba(255,255,255,0.78);
   border: 1.5px solid var(--rule);
   color: var(--ink-soft);
   font-size: 19px;
@@ -317,11 +438,12 @@ h1 {
   font-size: 30px;
   font-weight: 760;
   background: var(--blue);
-  box-shadow: 0 10px 26px rgba(31, 95, 159, 0.22);
+  box-shadow: 0 14px 30px rgba(31, 95, 159, 0.24), inset 0 0 0 1px rgba(255,255,255,0.26);
   z-index: 2;
 }
 .node.red  { background: var(--red);  box-shadow: 0 10px 26px rgba(199, 68, 50, 0.20); }
 .node.teal { background: var(--teal); box-shadow: 0 10px 26px rgba(23, 140, 125, 0.18); }
+.node.gray { background: #6b7685; box-shadow: 0 10px 26px rgba(86, 97, 110, 0.22); }
 .line {
   position: absolute;
   height: 4px;
@@ -330,12 +452,12 @@ h1 {
   border-radius: 999px;
   z-index: 1;
 }
-.line.blue { background: rgba(31,95,159,0.28); }
-.line.red  { background: rgba(199,68,50,0.35); }
+.line.blue { background: rgba(31,95,159,0.34); }
+.line.red  { background: rgba(199,68,50,0.42); }
 .arrow {
   position: absolute;
   height: 4px;
-  background: var(--ink-soft);
+  background: rgba(82,97,115,0.78);
   transform-origin: left center;
   border-radius: 999px;
 }
@@ -344,7 +466,7 @@ h1 {
   position: absolute;
   right: -3px;
   top: -8px;
-  border-left: 18px solid var(--ink-soft);
+  border-left: 18px solid rgba(82,97,115,0.78);
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
 }
@@ -355,18 +477,25 @@ h1 {
   height: 590px;
   margin-top: 28px;
 }
-.timeline .axis {
+.timeline svg {
   position: absolute;
   left: 60px;
-  right: 60px;
-  top: 292px;
-  height: 5px;
-  background: var(--ink-soft);
-  border-radius: 999px;
+  top: 230px;
+  width: 1600px;
+  height: 160px;
+  overflow: visible;
+}
+.timeline-path {
+  fill: none;
+  stroke: url(#timelineGradient);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 10px 18px rgba(31,95,159,0.12));
 }
 .milestone {
   position: absolute;
-  width: 250px;
+  width: 220px;
   text-align: center;
 }
 .milestone .dot {
@@ -377,32 +506,36 @@ h1 {
   margin-left: -16px;
   border-radius: 50%;
   background: var(--blue);
-  box-shadow: 0 0 0 10px rgba(31,95,159,0.10);
+  box-shadow: 0 0 0 10px rgba(31,95,159,0.10), 0 10px 24px rgba(31,95,159,0.18);
 }
-.milestone.top    .dot { top:  276px; }
-.milestone.bottom .dot { top: -38px; }
+.milestone .dot { top: var(--dot-top, 250px); }
+.milestone.teal .dot {
+  background: var(--teal);
+  box-shadow: 0 0 0 10px rgba(20,141,128,0.12), 0 10px 24px rgba(20,141,128,0.20);
+}
 .milestone h2 {
   margin: 0 0 8px;
   color: var(--blue);
-  font-size: 24px;
+  font-size: 22px;
 }
+.milestone.teal h2 { color: var(--teal); }
 .milestone strong {
   display: block;
-  font-size: 31px;
+  font-size: 28px;
   margin-bottom: 10px;
 }
 .milestone p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: 19px;
+  font-size: 18px;
   line-height: 1.25;
 }
 
 /* === 14. Policy box & opponents === */
 .policy-box {
   position: absolute;
-  background: white;
-  border: 4px solid var(--ink);
+  background: linear-gradient(180deg, #fff, #f7faff);
+  border: 4px solid rgba(23,33,44,0.88);
   border-radius: 8px;
   padding: 28px;
   font-size: 33px;
@@ -420,13 +553,32 @@ h1 {
   display: grid;
   place-items: center;
   color: var(--blue);
-  background: white;
+  background: rgba(255,255,255,0.88);
   font-size: 28px;
   font-weight: 760;
   box-shadow: var(--shadow);
 }
 .opponent.red   { border-color: var(--red);   color: var(--red); }
 .opponent.amber { border-color: var(--amber); color: var(--amber); }
+
+.limitation-diagram {
+  height: 700px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+}
+.limitation-stage {
+  position: relative;
+  min-height: 430px;
+  display: grid;
+  place-items: center;
+}
+.limitation-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 460px;
+  display: block;
+}
 
 /* === 15. Numbered list === */
 .numbered {
@@ -450,6 +602,7 @@ h1 {
   font-size: 38px;
   font-weight: 800;
   background: var(--blue);
+  box-shadow: 0 12px 28px rgba(31, 95, 159, 0.18);
 }
 .num.red  { background: var(--red); }
 .num.teal { background: var(--teal); }
@@ -469,9 +622,21 @@ h1 {
   margin-top: 52px;
 }
 .process-card {
+  position: relative;
   padding: 34px 32px;
   min-height: 210px;
   text-align: center;
+  overflow: hidden;
+}
+.process-card::before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  top: 0;
+  height: 5px;
+  border-radius: 0 0 999px 999px;
+  background: linear-gradient(90deg, var(--blue), var(--teal));
 }
 .process-card h2 {
   margin: 0 0 12px;
@@ -494,7 +659,8 @@ h1 {
   height: 28px;
   margin: 90px 0 34px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--red-soft), var(--blue-soft));
+  background: linear-gradient(90deg, var(--red), var(--red-soft) 34%, var(--blue-soft) 66%, var(--blue));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), var(--shadow-soft);
 }
 .track::before {
   content: "";
@@ -504,7 +670,7 @@ h1 {
   width: 42px;
   height: 80px;
   border-radius: 8px;
-  background: var(--ink);
+  background: linear-gradient(180deg, #2f3947, var(--ink));
   box-shadow: 0 14px 28px rgba(32,40,50,0.22);
 }
 .track-labels {
@@ -520,7 +686,12 @@ h1 {
   font-size: 25px;
   line-height: 1.32;
   color: var(--ink-soft);
+  background:
+    linear-gradient(90deg, rgba(21,95,159,0.06), transparent 34%),
+    rgba(255,255,255,0.82);
 }
+.note-blue { border-color: var(--blue); }
+.note-red { border-color: var(--red); }
 
 /* === 19. Stack / layer === */
 .stack {
@@ -533,9 +704,11 @@ h1 {
   min-height: 112px;
   padding: 22px 30px;
   border: 3px solid var(--teal);
-  background: white;
+  background: rgba(255,255,255,0.9);
 }
-.layer:nth-child(odd) { background: var(--teal-soft); }
+.layer:nth-child(odd) {
+  background: linear-gradient(180deg, #effaf7, var(--teal-soft));
+}
 .layer strong {
   display: block;
   font-size: 29px;
@@ -545,8 +718,26 @@ h1 {
 
 /* === 20. Outcome panels === */
 .outcome {
+  position: relative;
   padding: 42px 44px;
   min-height: 548px;
+  overflow: hidden;
+}
+.outcome::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 7px;
+  background: linear-gradient(90deg, var(--blue), var(--teal));
+}
+.outcome.light::before {
+  background: linear-gradient(90deg, var(--teal), rgba(20,141,128,0.25));
+}
+.outcome > * {
+  position: relative;
+  z-index: 1;
 }
 .outcome h2 {
   margin: 0 0 8px;
@@ -566,9 +757,552 @@ h1 {
   font-size: 28px;
   line-height: 1.58;
 }
-.outcome.light h2           { color: var(--muted); }
+.outcome.light              { border-color: var(--teal); }
+.outcome.light h2           { color: var(--teal); }
 .outcome.light h3,
-.outcome.light ul           { color: var(--ink-soft); }
+.outcome.light ul           { color: var(--ink); }
+
+/* === 21. Illustration placeholders === */
+.illustration-placeholder {
+  position: relative;
+  min-height: 520px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 52px;
+  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(21,95,159,0.10), transparent 34%),
+    linear-gradient(315deg, rgba(20,141,128,0.10), transparent 34%),
+    rgba(255,255,255,0.78);
+}
+.illustration-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 28px;
+  border: 2px dashed rgba(21,95,159,0.30);
+  border-radius: 8px;
+}
+.illustration-placeholder .placeholder-label {
+  display: block;
+  color: var(--blue);
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.illustration-placeholder .placeholder-meta {
+  display: block;
+  max-width: 680px;
+  margin-top: 18px;
+  color: var(--ink-soft);
+  font-size: 24px;
+  line-height: 1.28;
+}
+.title-illustration {
+  min-height: 610px;
+}
+.wide-illustration {
+  min-height: 610px;
+  margin-top: 34px;
+}
+.side-illustration {
+  min-height: 600px;
+}
+.testbed-illustration {
+  min-height: 460px;
+}
+.illustration-image-panel {
+  padding: 0;
+  background:
+    linear-gradient(135deg, rgba(21,95,159,0.06), transparent 42%),
+    linear-gradient(315deg, rgba(20,141,128,0.06), transparent 36%),
+    rgba(255,255,255,0.72);
+}
+.illustration-image-panel::before {
+  display: none;
+}
+.title-illustration-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 18px;
+  display: block;
+}
+.title-illustration-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  padding: 36px 28px;
+}
+
+/* === 22. Layout-specific polish === */
+.split-environment {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  height: 620px;
+}
+.split-card {
+  position: relative;
+  padding: 34px;
+  min-height: 100%;
+}
+.split-card h2 {
+  margin: 0 0 22px;
+  font-size: 28px;
+}
+.state-strip {
+  display: grid;
+  gap: 18px;
+  margin-top: 34px;
+}
+.state-pill {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.72);
+  border: 1.5px solid rgba(148,160,178,0.36);
+  color: var(--ink-soft);
+  font-size: 21px;
+  font-weight: 700;
+}
+.state-pill i {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.state-pill.red i { background: var(--red); }
+.state-pill.teal i { background: var(--teal); }
+.scale-tag {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 13px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: rgba(21,95,159,0.10);
+  color: var(--blue);
+  font-size: 15px;
+  font-weight: 800;
+}
+.output-badge {
+  position: absolute;
+  width: 140px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1.5px solid var(--rule);
+  background: rgba(255,255,255,0.86);
+  color: var(--muted);
+  font-size: 18px;
+  font-weight: 760;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-top: 46px;
+}
+.metric-caption {
+  text-align: center;
+  margin-top: 30px;
+}
+.metric-card {
+  min-height: 430px;
+  padding: 34px 28px;
+  text-align: center;
+}
+.metric-card h2 {
+  margin: 0 0 14px;
+  font-size: 28px;
+  min-height: 32px;
+  line-height: 1.1;
+}
+.metric-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 20px;
+  line-height: 1.25;
+}
+.gauge {
+  width: 150px;
+  height: 150px;
+  margin: 34px auto 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--teal);
+  font-size: 34px;
+  font-weight: 800;
+  background:
+    radial-gradient(circle at center, white 0 48%, transparent 49%),
+    conic-gradient(var(--teal) 0 68%, rgba(20,141,128,0.16) 68% 100%);
+  box-shadow: var(--shadow-soft);
+}
+.cycle-mark {
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 150px;
+  margin: 34px auto 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-soft), var(--teal-soft));
+  color: var(--blue);
+  font-size: 30px;
+  font-weight: 800;
+  box-shadow: var(--shadow-soft);
+}
+.outcome.primary {
+  min-height: 578px;
+  border-color: var(--blue) !important;
+  border-width: 4px !important;
+  box-shadow: 0 30px 88px rgba(21,95,159,0.14);
+}
+
+/* === 24. Phase grid (study path) === */
+.phase-a { --phase-bg: #dbeafe; --phase-border: #2563eb; --phase-text: #1e40af; }
+.phase-b { --phase-bg: #fae8ff; --phase-border: #d946ef; --phase-text: #86198f; }
+.phase-c { --phase-bg: #fef3c7; --phase-border: #d97706; --phase-text: #92400e; }
+.phase-d { --phase-bg: #ffe4e6; --phase-border: #f43f5e; --phase-text: #be123c; }
+.phase-e { --phase-bg: #dcfce7; --phase-border: #059669; --phase-text: #065f46; }
+.phase-f { --phase-bg: #cffafe; --phase-border: #0891b2; --phase-text: #155e75; }
+.phase-g { --phase-bg: #ede9fe; --phase-border: #7c3aed; --phase-text: #4c1d95; }
+
+.phase-lead {
+  margin: 6px 0 30px;
+}
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+.phase-card {
+  grid-column: span 3;
+  padding: 26px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 250px;
+  background:
+    linear-gradient(180deg, var(--phase-bg, #ffffff), rgba(255,255,255,0.65));
+  border: 2px solid var(--phase-border, var(--rule));
+}
+.phase-card.wide {
+  grid-column: span 4;
+}
+.phase-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: var(--phase-border, var(--blue));
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 800;
+  font-family: Aptos, "Segoe UI", Arial, sans-serif;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+}
+.phase-card h2 {
+  margin: 16px 0 4px;
+  font-size: 24px;
+  line-height: 1.14;
+  color: var(--phase-text, var(--ink));
+}
+.phase-meta {
+  display: block;
+  font-size: 15px;
+  color: var(--phase-border, var(--muted));
+  font-weight: 760;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+.phase-card p {
+  margin: 14px 0 0;
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.34;
+}
+.phase-footer {
+  text-align: center;
+  margin-top: 26px;
+}
+
+/* === 23. Responsive-friendly slide compositions === */
+.title-composition {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(560px, 0.82fr);
+  gap: 72px;
+  align-items: center;
+}
+.title-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.title-logo {
+  width: 144px;
+  height: auto;
+  margin-bottom: 74px;
+}
+.title-heading {
+  margin: 0 0 34px;
+  font-size: clamp(62px, 3.7vw, 70px);
+  line-height: 1.02;
+  max-width: 980px;
+}
+.title-subtitle {
+  margin: 0;
+  color: var(--blue);
+  font-size: 34px;
+  line-height: 1.18;
+  font-style: italic;
+}
+.title-copy .title-rule {
+  margin-top: 42px;
+}
+.title-author {
+  margin: 52px 0 0;
+  font-size: 31px;
+  font-weight: 760;
+}
+.title-meta {
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 25px;
+}
+.split-card {
+  display: flex;
+  flex-direction: column;
+}
+.split-card .state-strip {
+  margin-top: auto;
+}
+.agent-svg-wrap {
+  flex: 1;
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  padding: 12px 0;
+}
+.agent-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 320px;
+  display: block;
+}
+.domain-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+.domain-chip {
+  min-height: 86px;
+  padding: 18px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.domain-chip h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.testbed-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+.testbed-chip {
+  min-height: 86px;
+  padding: 16px;
+  text-align: center;
+  display: grid;
+  align-content: center;
+}
+.testbed-chip h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.testbed-chip p {
+  margin: 5px 0 0;
+  font-size: 16px;
+}
+.slide-bottom-note {
+  position: absolute;
+  left: 104px;
+  right: 104px;
+  bottom: 104px;
+  text-align: center;
+}
+.contribution-layout {
+  margin-top: -30px;
+}
+.visual-with-note {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.visual-with-note .note {
+  margin-top: 0;
+}
+.closing-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.closing-illustration {
+  min-height: 460px;
+  margin-top: 0;
+}
+.closing-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+.summary-panel {
+  padding: 22px 28px;
+}
+.summary-panel strong {
+  display: block;
+  font-size: 24px;
+  color: var(--muted);
+}
+.summary-panel span {
+  display: block;
+  margin-top: 8px;
+  font-size: 25px;
+  color: var(--ink-soft);
+}
+.summary-panel.next {
+  border-color: var(--blue);
+}
+.summary-panel.next strong {
+  color: var(--blue);
+}
+.summary-panel.next span {
+  color: var(--ink);
+}
+.thank-you {
+  margin: 18px 0 0;
+  padding: 24px 0;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--blue);
+}
+.timeline-lead {
+  margin-top: 8px;
+}
+.limitation-lead {
+  margin-top: 20px;
+}
+.diagram-caption-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 36px;
+  text-align: center;
+}
+.diagram-caption-low {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 110px;
+}
+.problem-title-blue { color: var(--blue); }
+.problem-title-red { color: var(--red); }
+.problem-title-teal { color: var(--teal); }
+
+.example-grid {
+  display: grid;
+  gap: 22px;
+  align-items: stretch;
+}
+.example-grid.five {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 42px;
+}
+.example-grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 36px;
+}
+.example-card {
+  min-height: 570px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.example-grid.four .example-card {
+  min-height: 555px;
+}
+.example-thumb-frame {
+  height: 250px;
+  margin: 18px 18px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--blue-soft), var(--teal-soft));
+  border: 1.5px solid rgba(148,160,178,0.30);
+}
+.example-grid.four .example-thumb-frame {
+  height: 270px;
+}
+.example-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.86) contrast(1.05);
+}
+.placeholder-thumb {
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  color: var(--blue);
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+}
+.example-card-content {
+  padding: 24px 24px 28px;
+}
+.example-card h2 {
+  margin: 0 0 14px;
+  font-size: 28px;
+  line-height: 1.08;
+}
+.example-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.example-bullets li {
+  position: relative;
+  padding-left: 22px;
+  color: var(--ink-soft);
+  font-size: 20px;
+  line-height: 1.28;
+}
+.example-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--blue);
+}
 """
 
 
@@ -587,7 +1321,7 @@ def shell(title: str, body: str, *, slide_no: int | None, accent: str = "blue", 
         <div class="title-rule {accent}"></div>
       </header>
     """
-    foot = "" if slide_no is None else footer(slide_no)
+    foot = "" if slide_no is None else footer(slide_no, title)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -690,93 +1424,112 @@ def svg_icon(kind: str) -> str:
 
 
 def slides() -> list[tuple[str, str]]:
-    title_network = "\n".join(
-        [
-            line(1310, 210, 1440, 305, "blue"),
-            line(1440, 305, 1580, 220, "blue"),
-            line(1440, 305, 1400, 430, "blue"),
-            line(1400, 430, 1540, 500, "blue"),
-            line(1540, 500, 1370, 650, "blue"),
-            line(1540, 500, 1660, 625, "blue"),
-            line(1660, 625, 1740, 430, "blue"),
-        ]
-        + [
-            f'<div class="node" style="left:{x}px;top:{y}px">{label}</div>'
-            for x, y, label in [
-                (1270, 170, "A"),
-                (1400, 265, "?"),
-                (1540, 180, "?"),
-                (1360, 390, "?"),
-                (1500, 460, "?"),
-                (1330, 610, "?"),
-                (1620, 585, "?"),
-                (1700, 390, "?"),
-            ]
-        ]
+    title_visual = asset_img(
+        "illustration1.png",
+        "Multi-agent imperfect-information game-tree hero illustration",
+        "title-illustration-image",
     )
+    if title_visual:
+        title_visual_html = f'<div class="title-illustration panel illustration-image-panel">{title_visual}</div>'
+    else:
+        title_visual_html = """
+          <div class="illustration-placeholder title-illustration panel">
+            <div>
+              <span class="placeholder-label">illustration1</span>
+              <span class="placeholder-meta">Hero visual: multi-agent network, hidden information, game-tree structure</span>
+            </div>
+          </div>
+        """
+
     s1 = shell(
         "Adaptive Strategy Learning",
         f"""
-        <div style="position:absolute;left:104px;top:98px">
-          {'<img src="' + LOGO_URI + '" alt="Ruse University logo" style="width:144px;height:auto">' if LOGO_URI else ''}
-        </div>
-        <section style="position:absolute;left:104px;top:330px;width:1050px">
-          <h1 style="font-size:78px;line-height:1.02;margin:0 0 34px">
-            Adaptive Strategy Learning<br>
-            in Multi-Agent<br>
-            Imperfect-Information Games
-          </h1>
-          <p style="margin:0;color:var(--blue);font-size:34px;font-style:italic">
-            From Equilibrium Computation to Safe Opponent Exploitation
-          </p>
-          <div class="title-rule blue" style="margin-top:42px"></div>
-          <p style="margin:54px 0 0;font-size:31px;font-weight:760">Alexander Andreev</p>
-          <p style="margin:12px 0 0;color:var(--ink-soft);font-size:25px">
-            PhD session report &middot; May 2026 &middot; Ruse University "Angel Kanchev"
-          </p>
+        <section class="title-composition">
+          <div class="title-copy">
+            {'<img class="title-logo" src="' + LOGO_URI + '" alt="Ruse University logo">' if LOGO_URI else ''}
+            <h1 class="title-heading">
+              Adaptive Strategy Learning<br>
+              in Multi-Agent<br>
+              Imperfect-Information Games
+            </h1>
+            <p class="title-subtitle">
+              From Equilibrium Computation to Safe Opponent Exploitation
+            </p>
+            <div class="title-rule blue"></div>
+            <p class="title-author">Alexander Andreev</p>
+            <p class="title-meta">
+              PhD session report &middot; May 2026 &middot; Ruse University "Angel Kanchev"
+            </p>
+          </div>
+          {title_visual_html}
         </section>
-        <div class="diagram" style="position:absolute;left:0;top:0;width:1920px;height:1080px">
-          {title_network}
-        </div>
         """,
         slide_no=None,
         title_slide=True,
     )
 
-    # .diagram has position:relative, so all coordinates below are panel-relative.
-    # Right panel is the .diagram.panel div, width ≈ 836px (1.02fr of 1640px), height = 620px.
-    # Single-agent section: x 0–380. Divider at x=380. Multi-agent section: x 380–836.
-    multi_lines = "\n".join(
-        [
-            line(472, 222, 632, 132, "red"),  # A → top-right
-            line(472, 222, 352, 332, "red"),  # A → left
-            line(472, 222, 682, 332, "red"),  # A → right
-            line(632, 132, 682, 332, "red"),  # top-right → right
-            line(352, 332, 502, 442, "red"),  # left → bottom
-            line(682, 332, 502, 442, "red"),  # right → bottom
-        ]
-    )
+    single_agent_svg = """
+        <svg class="agent-svg" viewBox="0 0 400 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <circle cx="200" cy="180" r="58" fill="#155f9f"/>
+          <text x="200" y="201" text-anchor="middle" fill="white" font-size="56" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif">A</text>
+        </svg>
+    """
+    multi_agent_svg = """
+        <svg class="agent-svg" viewBox="0 0 400 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <g stroke="#c74735" stroke-width="3" stroke-linecap="round" opacity="0.55" fill="none">
+            <line x1="200" y1="180" x2="100" y2="80"/>
+            <line x1="200" y1="180" x2="300" y2="80"/>
+            <line x1="200" y1="180" x2="60"  y2="240"/>
+            <line x1="200" y1="180" x2="340" y2="240"/>
+            <line x1="200" y1="180" x2="200" y2="320"/>
+            <line x1="100" y1="80"  x2="300" y2="80"/>
+            <line x1="60"  y1="240" x2="200" y2="320"/>
+            <line x1="340" y1="240" x2="200" y2="320"/>
+          </g>
+          <circle cx="200" cy="180" r="42" fill="#155f9f"/>
+          <text x="200" y="195" text-anchor="middle" fill="white" font-size="34" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif">A</text>
+          <circle cx="100" cy="80"  r="30" fill="#c74735"/>
+          <text   x="100" y="92"  text-anchor="middle" fill="white" font-size="26" font-weight="760">?</text>
+          <circle cx="300" cy="80"  r="30" fill="#c74735"/>
+          <text   x="300" y="92"  text-anchor="middle" fill="white" font-size="26" font-weight="760">?</text>
+          <circle cx="60"  cy="240" r="30" fill="#c74735"/>
+          <text   x="60"  y="252" text-anchor="middle" fill="white" font-size="26" font-weight="760">?</text>
+          <circle cx="340" cy="240" r="30" fill="#c74735"/>
+          <text   x="340" y="252" text-anchor="middle" fill="white" font-size="26" font-weight="760">?</text>
+          <circle cx="200" cy="320" r="30" fill="#c74735"/>
+          <text   x="200" y="332" text-anchor="middle" fill="white" font-size="26" font-weight="760">?</text>
+        </svg>
+    """
     s2 = shell(
         "Why this matters now",
         f"""
         <section class="grid-2">
           <div class="bullets">
-            <div class="bullet"><i></i><div><strong>Strong single agents</strong><span>well understood in constrained benchmarks</span></div></div>
-            <div class="bullet"><i></i><div><strong>Agents interacting with other agents</strong><span>open problem</span></div></div>
-            <div class="bullet red"><i></i><div><strong>Hidden information</strong><span>adversarial intent &middot; real-time decisions</span></div></div>
+            <div class="bullet"><i></i><div><strong>Strong single agents</strong><span>Well understood in constrained benchmarks</span></div></div>
+            <div class="bullet red"><i></i><div><strong>Agents interacting with other agents</strong><span>Open problem</span></div></div>
+            <div class="bullet red"><i></i><div><strong>Hidden information</strong><span>Adversarial intent &middot; Real-time decisions</span></div></div>
           </div>
-          <div class="diagram panel" style="height:620px">
-            <div class="tag" style="position:absolute;left:60px;top:50px">Single agent</div>
-            <div class="node" style="left:148px;top:268px">A</div>
-            <div style="position:absolute;left:380px;top:50px;width:2px;height:470px;background:var(--rule)"></div>
-            <div class="tag" style="position:absolute;left:440px;top:50px">Multi-agent</div>
-            {multi_lines}
-            <div class="node" style="left:430px;top:180px">A</div>
-            <div class="node red" style="left:590px;top:90px">?</div>
-            <div class="node red" style="left:310px;top:290px">?</div>
-            <div class="node" style="left:640px;top:290px">?</div>
-            <div class="node red" style="left:460px;top:400px">?</div>
-            <p class="caption" style="position:absolute;right:36px;bottom:36px;text-align:right">hidden &middot; possibly adversarial</p>
+          <div class="split-environment">
+            <article class="split-card panel">
+              <h2>Benchmark agent</h2>
+              <div class="agent-svg-wrap">{single_agent_svg}</div>
+              <div class="state-strip">
+                <div class="state-pill"><i></i>Single objective</div>
+                <div class="state-pill"><i></i>Static environment</div>
+                <div class="state-pill"><i></i>Solo evaluation</div>
+              </div>
+            </article>
+            <article class="split-card panel">
+              <h2>Strategic environment</h2>
+              <div class="agent-svg-wrap">{multi_agent_svg}</div>
+              <div class="state-strip">
+                <div class="state-pill red"><i></i>Hidden intent</div>
+                <div class="state-pill red"><i></i>Adversarial response</div>
+                <div class="state-pill red"><i></i>Real-time pressure</div>
+              </div>
+            </article>
           </div>
         </section>
         """,
@@ -785,11 +1538,11 @@ def slides() -> list[tuple[str, str]]:
     )
 
     use_tiles = [
-        ("Financial markets", "hidden positions &middot; microsecond reactions", svg_icon("market"), ""),
-        ("Cybersecurity", "adaptive attackers &middot; hidden intent", svg_icon("lock"), "red"),
-        ("Social platforms", "bot networks &middot; coordinated disinformation", svg_icon("network"), ""),
-        ("Security", "patrol and screening randomisation", svg_icon("grid"), "teal"),
-        ("Gaming platforms", "collusion &middot; fraud detection", svg_icon("cards"), "red"),
+        ("Financial markets", "Hidden positions &middot; Microsecond reactions", svg_icon("market"), ""),
+        ("Cybersecurity", "Adaptive attackers &middot; Hidden intent", svg_icon("lock"), "red"),
+        ("Social platforms", "Bot networks &middot; Coordinated disinformation", svg_icon("network"), ""),
+        ("Security", "Patrol and screening randomisation", svg_icon("grid"), "teal"),
+        ("Gaming platforms", "Collusion &middot; Fraud detection", svg_icon("cards"), "red"),
     ]
     tile_html = "".join(
         f"""
@@ -809,30 +1562,81 @@ def slides() -> list[tuple[str, str]]:
         """
         for title, sub, icon, color in use_tiles[3:]
     )
+    use_cases_data = [
+        ("Financial markets", "example_thumbs/financial_markets.jpg",
+         ["Hidden positions", "Microsecond reactions", "Adversarial flow"]),
+        ("Cybersecurity", "example_thumbs/cybersecurity.jpg",
+         ["Adaptive attackers", "Hidden intent", "Real-time defense"]),
+        ("Social platforms", "example_thumbs/social_platforms.jpeg",
+         ["Bot networks", "Coordinated disinformation", "Mixed human / agent traffic"]),
+        ("Security", "example_thumbs/security.webp",
+         ["Patrol randomisation", "Screening allocation", "Deployed today"]),
+        ("Gaming platforms", "example_thumbs/gaming_platforms.jpg",
+         ["Collusion detection", "Fraud signals", "Online play at scale"]),
+    ]
+    use_card_html = "".join(
+        f"""
+        <article class="example-card panel">
+          <div class="example-thumb-frame">{thumbnail(image, title)}</div>
+          <div class="example-card-content">
+            <h2>{title}</h2>
+            <ul class="example-bullets">
+              {''.join(f'<li>{b}</li>' for b in bullets)}
+            </ul>
+          </div>
+        </article>
+        """
+        for title, image, bullets in use_cases_data
+    )
     s3 = shell(
         "Where this shows up",
         f"""
-        <section class="tile-grid">{tile_html}</section>
-        <section class="tile-grid two" style="margin-top:28px">{tile_html_2}</section>
+        <section class="example-grid five">
+          {use_card_html}
+        </section>
         """,
         slide_no=3,
         accent="blue",
     )
 
     testbeds = [
-        ("Poker / Belot-like", "hidden cards &middot; inference", svg_icon("cards")),
-        ("Auction-style", "hidden valuations &middot; bidding", svg_icon("gavel")),
-        ("Pursuit-evasion", "partial observability &middot; adversarial search", svg_icon("grid")),
-        ("Coalition games", "alliances &middot; betrayal &middot; N-player incentives", svg_icon("coalition")),
+        ("Poker / Belot-like", "Hidden cards &middot; Inference", svg_icon("cards")),
+        ("Auction-style", "Hidden valuations &middot; Bidding", svg_icon("gavel")),
+        ("Pursuit-evasion", "Partial observability &middot; Adversarial search", svg_icon("grid")),
+        ("Coalition games", "Alliances &middot; Betrayal &middot; N-player incentives", svg_icon("coalition")),
     ]
+    testbed_data = [
+        ("Poker / Belot-like", "example_thumbs/poker_belot.jpg",
+         ["Hidden cards", "Opponent inference", "Sequential betting"]),
+        ("Auction-style", "example_thumbs/auction.webp",
+         ["Private valuations", "Strategic bidding", "One-shot decisions"]),
+        ("Pursuit-evasion", "example_thumbs/pursuit_evasion.png",
+         ["Partial observability", "Adversarial search", "Spatial inference"]),
+        ("Coalition games", "example_thumbs/coalition_diplomacy.jpeg",
+         ["Alliances and betrayal", "N-player incentives", "Negotiation pressure"]),
+    ]
+    testbed_card_html = "".join(
+        f"""
+        <article class="example-card panel">
+          <div class="example-thumb-frame">{thumbnail(image, title)}</div>
+          <div class="example-card-content">
+            <h2>{title}</h2>
+            <ul class="example-bullets">
+              {''.join(f'<li>{b}</li>' for b in bullets)}
+            </ul>
+          </div>
+        </article>
+        """
+        for title, image, bullets in testbed_data
+    )
     s4 = shell(
         "Why study games?",
         f"""
-        <p class="lead" style="margin-top:12px">Controlled environments where strategic behaviour is testable.</p>
-        <section class="tile-grid" style="grid-template-columns:repeat(4,1fr);gap:24px;margin-top:58px">
-          {''.join(f'<article class="tile panel" style="grid-template-columns:1fr;min-height:530px;text-align:center"><div class="icon" style="margin:18px auto 42px">{icon}</div><h2>{title}</h2><p>{sub}</p></article>' for title, sub, icon in testbeds)}
+        <p class="lead">Controlled environments where strategic behaviour is testable.</p>
+        <section class="example-grid four">
+          {testbed_card_html}
         </section>
-        <p class="caption" style="position:absolute;left:104px;right:104px;bottom:104px;text-align:center">
+        <p class="caption slide-bottom-note">
           Validation environments, not the final application domains.
         </p>
         """,
@@ -841,26 +1645,47 @@ def slides() -> list[tuple[str, str]]:
     )
 
     milestones = [
-        ("2007", "CFR", "regret minimisation<br>in imperfect-info games", 70, "top"),
-        ("2017", "Libratus", "2-player poker<br>superhuman", 420, "bottom"),
-        ("2019", "Pluribus", "6-player poker<br>superhuman", 770, "top"),
-        ("2020", "ReBeL", "search + RL<br>in imperfect-info", 1120, "bottom"),
-        ("2022", "DeepNash / CICERO", "Stratego &middot; Diplomacy<br>7 players, coalitions", 1470, "top"),
+        ("2007", "CFR",                "Regret minimisation<br>imperfect-info games",       "Algorithmic base",  70,  "top",    280, "blue"),
+        ("2016", "AlphaGo",             "Deep RL + MCTS<br>Go",                              "Perfect info",       295, "bottom", -46, "teal"),
+        ("2017", "Libratus",            "2-Player poker<br>Superhuman",                      "2 players",          520, "top",    280, "blue"),
+        ("2017", "AlphaZero",           "Self-play<br>Chess &middot; Shogi &middot; Go",     "Perfect info",       745, "bottom", -46, "teal"),
+        ("2019", "Pluribus",            "6-Player poker<br>Superhuman",                      "6 players",          970, "top",    280, "blue"),
+        ("2020", "ReBeL",               "Search + RL<br>imperfect-info",                     "Search + learning",  1195, "bottom", -46, "blue"),
+        ("2022", "DeepNash / CICERO",   "Stratego &middot; Diplomacy<br>7 players",          "Large scale",        1420, "top",    280, "blue"),
     ]
     m_html = "".join(
         f"""
-        <div class="milestone {pos}" style="left:{x}px;top:{70 if pos == 'top' else 338}px">
-          <div class="dot"></div><h2>{year}</h2><strong>{name}</strong><p>{sub}</p>
+        <div class="milestone {pos} {color}" style="left:{x}px;top:{70 if pos == 'top' else 338}px;--dot-top:{dot_top}px">
+          <div class="dot"></div><h2>{year}</h2><strong>{name}</strong><p>{sub}</p><span class="scale-tag">{scale}</span>
         </div>
         """
-        for year, name, sub, x, pos in milestones
+        for year, name, sub, scale, x, pos, dot_top, color in milestones
     )
     s5 = shell(
         "State of the art",
         f"""
-        <p class="lead" style="margin-top:8px">"Superhuman" in progressively larger games.</p>
+        <p class="lead timeline-lead">"Superhuman" in progressively larger games.</p>
         <section class="timeline">
-          <div class="axis"></div>
+          <svg viewBox="0 0 1600 160" aria-hidden="true">
+            <defs>
+              <linearGradient id="timelineGradient" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%"     stop-color="#155f9f" />
+                <stop offset="16.67%" stop-color="#148d80" />
+                <stop offset="33.33%" stop-color="#155f9f" />
+                <stop offset="50%"    stop-color="#148d80" />
+                <stop offset="66.67%" stop-color="#155f9f" />
+                <stop offset="100%"   stop-color="#155f9f" />
+              </linearGradient>
+            </defs>
+            <path class="timeline-path"
+                  d="M 120 136
+                     C 232 136, 232 78, 345 78
+                     C 457 78, 457 136, 570 136
+                     C 682 136, 682 78, 795 78
+                     C 907 78, 907 136, 1020 136
+                     C 1132 136, 1132 78, 1245 78
+                     C 1357 78, 1357 136, 1470 136" />
+          </svg>
           {m_html}
         </section>
         """,
@@ -868,37 +1693,78 @@ def slides() -> list[tuple[str, str]]:
         accent="blue",
     )
 
+    limitation_svg = """
+        <svg class="limitation-svg" viewBox="0 0 1400 460" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <marker id="arrow-head-grey" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <polygon points="0 0, 10 5, 0 10" fill="#526173"/>
+            </marker>
+          </defs>
+          <rect x="60" y="160" width="360" height="150" rx="10"
+                fill="white" stroke="#17212c" stroke-width="4"/>
+          <text x="240" y="222" text-anchor="middle" font-size="36" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#17212c">Equilibrium</text>
+          <text x="240" y="270" text-anchor="middle" font-size="36" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#17212c">Policy</text>
+
+          <g stroke="#526173" stroke-width="3" fill="none" marker-end="url(#arrow-head-grey)">
+            <line x1="425" y1="220" x2="935" y2="80"/>
+            <line x1="425" y1="235" x2="935" y2="235"/>
+            <line x1="425" y1="250" x2="935" y2="390"/>
+          </g>
+
+          <g font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="20"
+             font-weight="760" fill="#8793a5">
+            <text x="680" y="135" text-anchor="middle">Same output</text>
+            <text x="680" y="220" text-anchor="middle">Same output</text>
+            <text x="680" y="345" text-anchor="middle">Same output</text>
+          </g>
+
+          <rect x="940" y="40" width="380" height="80" rx="8"
+                fill="white" stroke="#155f9f" stroke-width="4"/>
+          <text x="1130" y="92" text-anchor="middle" font-size="28" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#155f9f">Cautious beginner</text>
+
+          <rect x="940" y="195" width="380" height="80" rx="8"
+                fill="white" stroke="#c74735" stroke-width="4"/>
+          <text x="1130" y="247" text-anchor="middle" font-size="28" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#c74735">Aggressive bluffer</text>
+
+          <rect x="940" y="350" width="380" height="80" rx="8"
+                fill="white" stroke="#bb7d1c" stroke-width="4"/>
+          <text x="1130" y="402" text-anchor="middle" font-size="28" font-weight="760"
+                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#bb7d1c">Coordinated group</text>
+        </svg>
+    """
     s6 = shell(
         "The limitation",
         f"""
-        <section class="diagram" style="height:700px">
-          <div class="big-statement">Fixed strategies. No adaptation.</div>
-          <p class="lead" style="margin-top:20px">The same policy against every opponent.</p>
-          <div class="policy-box" style="left:160px;top:370px;width:360px;height:150px">Equilibrium<br>policy</div>
-          <div class="opponent" style="left:1120px;top:300px">Cautious beginner</div>
-          <div class="opponent red" style="left:1120px;top:466px">Aggressive bluffer</div>
-          <div class="opponent amber" style="left:1120px;top:632px">Coordinated group</div>
-          {arrow(520,445,1120,358)}
-          {arrow(520,445,1120,524)}
-          {arrow(520,445,1120,690)}
-          <p class="caption" style="position:absolute;left:0;right:0;bottom:110px">Safe, but blind. Systematically misses exploitable weaknesses.</p>
+        <section class="limitation-diagram">
+          <div>
+            <div class="big-statement">Fixed strategies. No adaptation.</div>
+            <p class="lead limitation-lead">The same policy against every opponent.</p>
+          </div>
+          <div class="limitation-stage">{limitation_svg}</div>
+          <p class="caption" style="text-align:center;margin:0">Safe, but blind. Systematically misses exploitable weaknesses.</p>
         </section>
         """,
         slide_no=6,
         accent="red",
     )
 
-    # .diagram has position:relative, so all coordinates are panel-relative.
-    # Right panel width ≈ 935px (1.14fr of 1640px), height = 650px.
-    # Nodes are 160×160; centres = left+80, top+80.
-    tri = "\n".join(
+    # .diagram has position:relative; right panel ≈ 935px wide × 650px tall.
+    # Four nodes (160×160) at cardinal positions around centre (467, 290).
+    # Arrows connect edge-to-edge in clockwise order.
+    cycle = "\n".join(
         [
-            arrow(519, 211, 678, 399),   # Adaptation edge → Safety edge
-            arrow(650, 460, 270, 460),   # Safety edge → Evaluation edge
-            arrow(242, 400, 415, 210),   # Evaluation edge → Adaptation edge
-            '<div class="node" style="left:387px;top:70px;width:160px;height:160px;font-size:23px">Adaptation</div>',
-            '<div class="node red" style="left:650px;top:380px;width:160px;height:160px;font-size:25px">Safety</div>',
-            '<div class="node teal" style="left:110px;top:380px;width:160px;height:160px;font-size:22px">Evaluation</div>',
+            arrow(523, 151, 658, 249),   # Play → Study (top → right)
+            arrow(658, 331, 523, 429),   # Study → Steer Safely (right → bottom)
+            arrow(411, 429, 274, 331),   # Steer Safely → Evaluate (bottom → left)
+            arrow(274, 249, 411, 151),   # Evaluate → Play (left → top)
+            '<div class="node gray" style="left:387px;top:30px;width:160px;height:160px;font-size:30px">Play</div>',
+            '<div class="node"      style="left:635px;top:210px;width:160px;height:160px;font-size:28px">Study</div>',
+            '<div class="node red"  style="left:387px;top:390px;width:160px;height:160px;font-size:24px">Steer&nbsp;Safely</div>',
+            '<div class="node teal" style="left:137px;top:210px;width:160px;height:160px;font-size:28px">Evaluate</div>',
         ]
     )
     s7 = shell(
@@ -906,34 +1772,46 @@ def slides() -> list[tuple[str, str]]:
         f"""
         <section class="grid-2 narrow-left">
           <div class="numbered">
-            <div class="item"><div class="num">1</div><div><strong style="color:var(--blue)">Adaptation</strong><span>infer opponents in real time</span></div></div>
-            <div class="item"><div class="num red">2</div><div><strong style="color:var(--red)">Safety</strong><span>exploit without exposing yourself</span></div></div>
-            <div class="item"><div class="num teal">3</div><div><strong style="color:var(--teal)">Evaluation</strong><span>measure if an agent adapts well</span></div></div>
+            <div class="item"><div class="num">1</div><div><strong class="problem-title-blue">Study</strong><span>Infer opponents in real time</span></div></div>
+            <div class="item"><div class="num red">2</div><div><strong class="problem-title-red">Steer Safely</strong><span>Exploit without exposing yourself</span></div></div>
+            <div class="item"><div class="num teal">3</div><div><strong class="problem-title-teal">Evaluate</strong><span>Measure if an agent adapts well</span></div></div>
           </div>
-          <div class="diagram panel" style="height:650px">{tri}<p class="caption" style="position:absolute;left:0;right:0;bottom:36px;text-align:center">inference &rarr; action &rarr; measurement</p></div>
+          <div class="diagram panel" style="height:650px">{cycle}<p class="caption diagram-caption-bottom">Play &rarr; Study &rarr; Steer Safely &rarr; Evaluate</p></div>
         </section>
         """,
         slide_no=7,
         accent="",
     )
 
+    illustration4 = asset_img(
+        "illustration4.png",
+        "Belief update diagram: observed actions, hidden state, behavioural type, confidence gate",
+        "title-illustration-image",
+    )
+    if illustration4:
+        s8_visual = f'<section class="side-illustration panel illustration-image-panel">{illustration4}</section>'
+    else:
+        s8_visual = """
+            <section class="illustration-placeholder side-illustration panel">
+              <div>
+                <span class="placeholder-label">illustration4</span>
+                <span class="placeholder-meta">Belief update diagram: observed actions, hidden state, behavioural type, confidence gate, equilibrium fallback</span>
+              </div>
+            </section>
+        """
     s8 = shell(
         "Behavioral Adaptation Framework",
         f"""
-        <div class="eyebrow" style="color:var(--blue)">Contribution 1</div>
-        <section class="grid-2 narrow-left" style="margin-top:-30px">
+        <div class="eyebrow blue">Contribution 1</div>
+        <section class="grid-2 narrow-left contribution-layout">
           <div class="bullets">
-            <div class="bullet"><i></i><div><strong>Infer opponent type</strong><span>not just hidden state</span></div></div>
-            <div class="bullet"><i></i><div><strong>Adapt only when evidence is strong enough</strong><span>fallback to equilibrium</span></div></div>
-            <div class="bullet"><i></i><div><strong>Detect anomalies</strong><span>bots &middot; collusion &middot; adversarial users</span></div></div>
+            <div class="bullet"><i></i><div><strong>Infer opponent type</strong><span>Not just hidden state</span></div></div>
+            <div class="bullet"><i></i><div><strong>Adapt only when evidence is strong enough</strong><span>Fallback to equilibrium</span></div></div>
+            <div class="bullet"><i></i><div><strong>Detect anomalies</strong><span>Bots &middot; Collusion &middot; Adversarial users</span></div></div>
           </div>
-          <div>
-            <section class="process">
-              <article class="process-card panel"><h2>Observed actions</h2><p>sequence of strategic behaviour</p></article>
-              <article class="process-card panel"><h2>Beliefs</h2><p>hidden state + behavioural type</p></article>
-              <article class="process-card panel"><h2>Decision</h2><p>adaptive policy, or equilibrium fallback</p></article>
-            </section>
-            <div class="note panel" style="margin-top:44px;border-color:var(--blue)">
+          <div class="visual-with-note">
+            {s8_visual}
+            <div class="note panel note-blue">
               Weak evidence keeps the agent near equilibrium play. Strong evidence opens the adaptation path.
             </div>
           </div>
@@ -943,23 +1821,35 @@ def slides() -> list[tuple[str, str]]:
         accent="blue",
     )
 
+    illustration5 = asset_img(
+        "illustration5.png",
+        "Reference policy band with constrained exploitative policy path",
+        "title-illustration-image",
+    )
+    if illustration5:
+        s9_visual = f'<section class="side-illustration panel illustration-image-panel">{illustration5}</section>'
+    else:
+        s9_visual = """
+            <section class="illustration-placeholder side-illustration panel">
+              <div>
+                <span class="placeholder-label">illustration5</span>
+                <span class="placeholder-meta">Reference policy band with constrained exploitative policy path and pi_KL distance</span>
+              </div>
+            </section>
+        """
     s9 = shell(
         "Multi-Agent Safe Exploitation",
-        """
-        <div class="eyebrow" style="color:var(--red)">Contribution 2</div>
-        <section class="grid-2 narrow-left" style="margin-top:-30px">
+        f"""
+        <div class="eyebrow red">Contribution 2</div>
+        <section class="grid-2 narrow-left contribution-layout">
           <div class="bullets">
-            <div class="bullet red"><i></i><div><strong>Exploit detected weaknesses</strong><span>act on the inferred type</span></div></div>
-            <div class="bullet red"><i></i><div><strong>Stay close to a reference policy</strong><span>pi_KL regularisation</span></div></div>
-            <div class="bullet red"><i></i><div><strong>Useful safety heuristics</strong><span>beyond two-player guarantees</span></div></div>
+            <div class="bullet red"><i></i><div><strong>Exploit detected weaknesses</strong><span>Act on the inferred type</span></div></div>
+            <div class="bullet red"><i></i><div><strong>Stay close to a reference policy</strong><span>pi_KL Regularisation</span></div></div>
+            <div class="bullet red"><i></i><div><strong>Useful safety heuristics</strong><span>Beyond two-player guarantees</span></div></div>
           </div>
-          <div>
-            <section class="slider panel">
-              <div class="track-labels"><span style="color:var(--red)">Exploit</span><span style="color:var(--blue)">Reference policy</span></div>
-              <div class="track"></div>
-              <p class="caption" style="text-align:center">constrained by pi_KL band around reference</p>
-            </section>
-            <div class="note panel" style="margin-top:34px;border-color:var(--red)">
+          <div class="visual-with-note">
+            {s9_visual}
+            <div class="note panel note-red">
               Two-player safety guarantees provably fail at N >= 3. The target is practical, characterised safety behaviour in larger games.
             </div>
           </div>
@@ -972,20 +1862,32 @@ def slides() -> list[tuple[str, str]]:
     s10 = shell(
         "Evaluation Methodology",
         """
-        <div class="eyebrow" style="color:var(--teal)">Contribution 3</div>
-        <section class="grid-2 narrow-left" style="margin-top:-30px">
+        <div class="eyebrow teal">Contribution 3</div>
+        <section class="grid-2 narrow-left contribution-layout">
           <div class="bullets">
-            <div class="bullet teal"><i></i><div><strong>Safety</strong><span>worst-case vulnerability</span></div></div>
-            <div class="bullet teal"><i></i><div><strong>Population ranking</strong><span>non-transitive dynamics</span></div></div>
-            <div class="bullet teal"><i></i><div><strong>Statistical reliability</strong><span>variance reduction</span></div></div>
+            <div class="bullet teal"><i></i><div><strong>Safety</strong><span>Worst-case vulnerability</span></div></div>
+            <div class="bullet teal"><i></i><div><strong>Population ranking</strong><span>Non-transitive dynamics</span></div></div>
+            <div class="bullet teal"><i></i><div><strong>Statistical reliability</strong><span>Variance reduction</span></div></div>
           </div>
           <div>
-            <section class="stack">
-              <article class="layer panel"><strong>Safety</strong><span>N-player exploitability</span></article>
-              <article class="layer panel"><strong>Population ranking</strong><span>alpha-Rank &middot; R/P/S cycles</span></article>
-              <article class="layer panel"><strong>Statistical reliability</strong><span>AIVAT variance reduction</span></article>
+            <section class="metric-grid">
+              <article class="metric-card panel">
+                <h2>Safety</h2>
+                <div class="gauge">!</div>
+                <p>How vulnerable is the agent in the worst case across the player count?</p>
+              </article>
+              <article class="metric-card panel">
+                <h2>Ranking</h2>
+                <div class="cycle-mark">&#8635;</div>
+                <p>Does the population have cyclic, non-transitive structure rather than a single best?</p>
+              </article>
+              <article class="metric-card panel">
+                <h2>Reliability</h2>
+                <div class="gauge">&#963;</div>
+                <p>Are comparisons stable when hidden information drives high variance?</p>
+              </article>
             </section>
-            <p class="caption" style="text-align:center;margin-top:36px">validated across structurally different game types</p>
+            <p class="caption metric-caption">Validated across structurally different game types</p>
           </div>
         </section>
         """,
@@ -994,10 +1896,64 @@ def slides() -> list[tuple[str, str]]:
     )
 
     s11 = shell(
+        "What I study deeply first",
+        """
+        <p class="lead phase-lead">Seven phases of preparation. Each builds the foundation for the contributions.</p>
+        <section class="phase-grid">
+          <article class="phase-card panel phase-a">
+            <div class="phase-badge">A</div>
+            <h2>Foundation</h2>
+            <span class="phase-meta">Steps 1–2 &middot; Done</span>
+            <p>Reinforcement learning &middot; Counterfactual regret minimisation</p>
+          </article>
+          <article class="phase-card panel phase-b">
+            <div class="phase-badge">B</div>
+            <h2>Scaling the toolbox</h2>
+            <span class="phase-meta">Steps 3–4 &middot; Done</span>
+            <p>CFR variants &middot; Game abstraction &middot; Imperfect-info scaling</p>
+          </article>
+          <article class="phase-card panel phase-c">
+            <div class="phase-badge">C</div>
+            <h2>Neural methods</h2>
+            <span class="phase-meta">Steps 5–6 &middot; May–early June</span>
+            <p>Deep CFR / DREAM &middot; Pluribus &rarr; ReBeL &rarr; Student of Games</p>
+          </article>
+          <article class="phase-card panel phase-d">
+            <div class="phase-badge">D</div>
+            <h2>Opponent modelling</h2>
+            <span class="phase-meta">Steps 7–8 &middot; June–mid July</span>
+            <p>Behavioural inference &middot; Safe exploitation theory and search</p>
+          </article>
+          <article class="phase-card wide panel phase-e">
+            <div class="phase-badge">E</div>
+            <h2>Multi-agent dynamics</h2>
+            <span class="phase-meta">Steps 9–11 &middot; mid July–August</span>
+            <p>MARL &middot; Population-based training &middot; Coalition formation</p>
+          </article>
+          <article class="phase-card wide panel phase-f">
+            <div class="phase-badge">F</div>
+            <h2>Data-driven approaches</h2>
+            <span class="phase-meta">Steps 12–13 &middot; late August–September</span>
+            <p>Sequence models &middot; LLM agents &middot; Behavioural analysis pipelines</p>
+          </article>
+          <article class="phase-card wide panel phase-g">
+            <div class="phase-badge">G</div>
+            <h2>Integration</h2>
+            <span class="phase-meta">Steps 14–15 &middot; late September–mid October</span>
+            <p>Evaluation frameworks &middot; Research frontier mapping</p>
+          </article>
+        </section>
+        <p class="caption phase-footer">All phases conclude before the contribution work begins in earnest.</p>
+        """,
+        slide_no=11,
+        accent="blue",
+    )
+
+    s12 = shell(
         "Expected outcomes",
         """
         <section class="columns">
-          <article class="outcome panel" style="border-color:var(--blue);border-width:3px">
+          <article class="outcome panel primary">
             <h2>REALISTIC TARGET</h2>
             <h3>What the thesis will deliver</h3>
             <ul>
@@ -1017,43 +1973,43 @@ def slides() -> list[tuple[str, str]]:
             </ul>
           </article>
         </section>
-        <p class="caption" style="position:absolute;left:104px;right:104px;bottom:110px;text-align:center">
+        <p class="caption slide-bottom-note">
           Grounded outcomes already constitute a coherent thesis. No pivot required.
         </p>
         """,
-        slide_no=11,
+        slide_no=12,
         accent="",
     )
 
-    s12 = shell(
+    illustration6 = asset_img(
+        "illustration6.png",
+        "Transformation graphic: fixed-strategy systems becoming adaptive, safe, accountable agents",
+        "title-illustration-image",
+    )
+    if illustration6:
+        s13_visual = f'<section class="closing-illustration panel illustration-image-panel">{illustration6}</section>'
+    else:
+        s13_visual = """
+          <section class="illustration-placeholder closing-illustration panel">
+            <div>
+              <span class="placeholder-label">illustration6</span>
+              <span class="placeholder-meta">Transformation graphic: fixed-strategy systems becoming adaptive, safe, accountable agents</span>
+            </div>
+          </section>
+        """
+    s13 = shell(
         "Today to Tomorrow",
         f"""
-        <p class="lead" style="margin-top:10px">The gap between today's deployed systems and the next generation.</p>
-        <section class="columns" style="align-items:center;margin-top:78px">
-          <article class="outcome panel light" style="min-height:390px">
-            <h2>TODAY</h2>
-            <h3>Fixed-strategy systems</h3>
-            <ul>
-              <li>Equilibrium solvers</li>
-              <li>Identical play vs. every opponent</li>
-              <li>Two-player safety guarantees</li>
-            </ul>
-          </article>
-          <article class="outcome panel" style="min-height:390px;border-color:var(--blue);border-width:3px">
-            <h2>NEXT GENERATION</h2>
-            <h3>Adaptive, safe, accountable agents</h3>
-            <ul>
-              <li>Adaptation</li>
-              <li>Safety beyond two players</li>
-              <li>Systematic evaluation</li>
-            </ul>
-          </article>
+        <section class="closing-layout">
+          {s13_visual}
+          <section class="closing-summary">
+            <article class="summary-panel panel"><strong>TODAY</strong><span>Fixed-strategy systems</span></article>
+            <article class="summary-panel next panel"><strong>NEXT GENERATION</strong><span>Adaptive, safe, accountable agents</span></article>
+          </section>
+          <p class="thank-you">Thank you. Questions welcome.</p>
         </section>
-        <div style="position:absolute;left:895px;top:560px;width:130px;text-align:center;color:var(--muted);font-size:20px">thesis</div>
-        {arrow(820,540,1100,540)}
-        <p style="position:absolute;left:104px;right:104px;bottom:110px;text-align:center;font-size:36px;font-weight:760">Thank you. Questions welcome.</p>
         """,
-        slide_no=12,
+        slide_no=13,
         accent="",
     )
 
@@ -1068,8 +2024,9 @@ def slides() -> list[tuple[str, str]]:
         ("slide_08_contribution_1.html", s8),
         ("slide_09_contribution_2.html", s9),
         ("slide_10_contribution_3.html", s10),
-        ("slide_11_outcomes.html", s11),
-        ("slide_12_close.html", s12),
+        ("slide_11_study_path.html", s11),
+        ("slide_12_outcomes.html", s12),
+        ("slide_13_close.html", s13),
     ]
 
 

@@ -1,9 +1,9 @@
 # Presentation Script — May 2026 Ruse University Session
 
 **Topic:** Adaptive Strategy Learning in Multi-Agent Imperfect-Information Games
-**Target length:** 10–12 minutes
+**Target length:** 12–14 minutes
 **Speaking pace assumption:** ~140 words per minute
-**Slide count:** 12 (11 content + title)
+**Slide count:** 13 (12 content + title)
 
 Design philosophy: minimal text on each slide so the audience looks at the
 speaker, not the screen. Slide content is 1–4 short phrases; the spoken
@@ -396,7 +396,57 @@ transfer.
 
 ---
 
-## Slide 11 — Expected outcomes (≈ 1 min)
+## Slide 11 — What I study deeply first (≈ 1 min 30s)
+
+**On screen:**
+- Phase A — Foundation — Steps 1–2 — RL · CFR (Done)
+- Phase B — Scaling the toolbox — Steps 3–4 — CFR variants · Game abstraction
+- Phase C — Neural methods — Steps 5–6 — Deep CFR · Pluribus → ReBeL → SoG
+- Phase D — Opponent modelling — Steps 7–8 — Behavioural inference · Safe exploitation
+- Phase E — Multi-agent dynamics — Steps 9–11 — MARL · PBT · Coalitions
+- Phase F — Data-driven approaches — Steps 12–13 — Sequence models · Behavioural pipelines
+- Phase G — Integration — Steps 14–15 — Evaluation · Frontier mapping
+
+**Visual notes:**
+- Use a 4 + 3 card grid: top row holds Phases A–D, bottom row holds Phases
+  E–G. Each card carries a phase letter badge, name, step range, and a
+  one-line keyword list.
+- Colour the badges to match contribution alignment: blue for the early
+  toolbox (B–D), red for multi-agent dynamics (E), teal for data-driven
+  work (F), amber for integration (G). Phase A reads as completed.
+- Keep type small but legible. The point is the shape of the path, not the
+  individual words.
+
+**Say:**
+Before attacking the contributions, I commit to studying seven phases
+deeply. The first two are already done — reinforcement learning and the
+CFR foundation, including a Vanilla CFR implementation on Kuhn poker.
+
+Phase B scales that toolbox: CFR variants, game abstraction, the
+machinery for imperfect-information games at non-trivial size.
+
+Phase C moves to neural methods — Deep CFR, DREAM, and the end-to-end
+architectures that culminate in Pluribus, ReBeL, and Student of Games.
+That is where modern game AI actually lives.
+
+Phases D and E are the heart of the preparation. Phase D goes deep into
+opponent modelling and safe exploitation theory — directly underneath
+the first two contributions. Phase E covers multi-agent dynamics:
+multi-agent RL, population-based training, and coalition formation.
+That is where the safety problem becomes genuinely multi-player.
+
+Phase F brings in data-driven methods and sequence models — including
+LLM agents in strategic settings. Phase G is integration: evaluation
+frameworks and a research-frontier mapping that feeds directly into the
+contribution design.
+
+The order is not arbitrary. Each phase unlocks the next, and the three
+contributions sit on top of all seven. The thesis is the visible part;
+this slide is the iceberg under it.
+
+---
+
+## Slide 12 — Expected outcomes (≈ 1 min)
 
 **On screen:**
 - **Realistic target:** validated adaptation · characterised safety heuristics · working evaluation framework
@@ -426,7 +476,7 @@ on that foundation. No pivot required.
 
 ---
 
-## Slide 12 — Close (≈ 30s)
+## Slide 13 — Close (≈ 30s)
 
 **On screen:**
 - The gap between *today's deployed systems* and *the next generation.*
@@ -466,16 +516,18 @@ Thank you. I'd be happy to take questions.
 | 8 | Contribution 1: Behavioral Adaptation | 1:30 |
 | 9 | Contribution 2: Safe Exploitation | 1:30 |
 | 10 | Contribution 3: Evaluation | 1:30 |
-| 11 | Expected outcomes | 1:00 |
-| 12 | Close | 0:30 |
-| **Total** | | **~13:30** |
+| 11 | What I study deeply first | 1:30 |
+| 12 | Expected outcomes | 1:00 |
+| 13 | Close | 0:30 |
+| **Total** | | **~15:00** |
 
-This is ~13:30 of planned timing, but the scripted text is closer to
-10--11 minutes at normal speaking pace. The remaining time is for pauses,
+This is ~15:00 of planned timing, but the scripted text is closer to
+12--13 minutes at normal speaking pace. The remaining time is for pauses,
 transitions, and short clarifications if the committee needs them.
 
-If you need to tighten: shorten Slide 3 use cases and Slide 4 testbeds.
-Together they can save one to two minutes without weakening the thesis
+If you need to tighten: shorten Slide 3 use cases and Slide 4 testbeds,
+or compress Slide 11 by reading only Phases B–E aloud. Together those
+edits save two to three minutes without weakening the thesis
 contribution.
 
 ## Notes for delivery
