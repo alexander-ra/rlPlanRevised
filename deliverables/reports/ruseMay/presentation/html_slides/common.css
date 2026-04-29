@@ -484,7 +484,7 @@ h1 {
 .limitation-svg {
   width: 100%;
   height: 100%;
-  max-height: 460px;
+  max-height: 540px;
   display: block;
 }
 
@@ -707,14 +707,19 @@ h1 {
   line-height: 1.28;
 }
 .title-illustration {
-  min-height: 610px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  place-self: center;
 }
 .wide-illustration {
   min-height: 610px;
   margin-top: 34px;
 }
 .side-illustration {
-  min-height: 600px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 1566 / 1005;
 }
 .testbed-illustration {
   min-height: 460px;
@@ -732,8 +737,7 @@ h1 {
 .title-illustration-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 18px;
+  object-fit: cover;
   display: block;
 }
 .title-illustration-svg {
@@ -1067,7 +1071,9 @@ h1 {
   gap: 22px;
 }
 .closing-illustration {
-  min-height: 460px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 2172 / 724;
   margin-top: 0;
 }
 .closing-summary {
@@ -1128,6 +1134,17 @@ h1 {
 .problem-title-blue { color: var(--blue); }
 .problem-title-red { color: var(--red); }
 .problem-title-teal { color: var(--teal); }
+.open-problem-visual {
+  width: min(650px, 100%);
+  aspect-ratio: 1 / 1;
+  place-self: center;
+}
+.open-problem-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 .example-grid {
   display: grid;

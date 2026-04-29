@@ -14,7 +14,12 @@ from __future__ import annotations
 
 import base64
 import html
+import json
 import mimetypes
+import re
+import shutil
+import subprocess
+import textwrap
 from pathlib import Path
 
 from PIL import Image, ImageStat
@@ -29,6 +34,7 @@ LOGO = ASSETS / "ru-logo-125x140.png"
 HTML_DIR = HERE / "html_slides"
 PNG_DIR = HERE / "slide_images"
 OUTPUT = HERE / "adaptive_strategy_ruse_may_html.pptx"
+SCRIPT_PATH = HERE.parent / "presentation_script.md"
 
 WIDTH = 1920
 HEIGHT = 1080
@@ -82,7 +88,7 @@ def footer(slide_no: int, title: str) -> str:
         <span>&ldquo;Angel Kanchev&rdquo; University of Ruse</span>
       </div>
       <div class="footer-right">
-        <span class="footer-title">{esc(title)}</span>
+        <span class="footer-title">Alexander Andreev &middot; Prof. Dr. Tsvetomir Vasilev</span>
         <span class="slide-no">{slide_no:02d}/{TOTAL_SLIDES}</span>
       </div>
     </footer>
@@ -576,7 +582,7 @@ h1 {
 .limitation-svg {
   width: 100%;
   height: 100%;
-  max-height: 460px;
+  max-height: 540px;
   display: block;
 }
 
@@ -799,14 +805,19 @@ h1 {
   line-height: 1.28;
 }
 .title-illustration {
-  min-height: 610px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  place-self: center;
 }
 .wide-illustration {
   min-height: 610px;
   margin-top: 34px;
 }
 .side-illustration {
-  min-height: 600px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 1566 / 1005;
 }
 .testbed-illustration {
   min-height: 460px;
@@ -824,8 +835,7 @@ h1 {
 .title-illustration-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 18px;
+  object-fit: cover;
   display: block;
 }
 .title-illustration-svg {
@@ -1159,7 +1169,9 @@ h1 {
   gap: 22px;
 }
 .closing-illustration {
-  min-height: 460px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 2172 / 724;
   margin-top: 0;
 }
 .closing-summary {
@@ -1220,6 +1232,17 @@ h1 {
 .problem-title-blue { color: var(--blue); }
 .problem-title-red { color: var(--red); }
 .problem-title-teal { color: var(--teal); }
+.open-problem-visual {
+  width: min(650px, 100%);
+  aspect-ratio: 1 / 1;
+  place-self: center;
+}
+.open-problem-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 .example-grid {
   display: grid;
@@ -1456,7 +1479,7 @@ def slides() -> list[tuple[str, str]]:
               From Equilibrium Computation to Safe Opponent Exploitation
             </p>
             <div class="title-rule blue"></div>
-            <p class="title-author">Alexander Andreev</p>
+            <p class="title-author">Alexander Andreev<br>Prof. Dr. Tsvetomir Vasilev</p>
             <p class="title-meta">
               PhD session report &middot; May 2026 &middot; Ruse University "Angel Kanchev"
             </p>
@@ -1694,46 +1717,107 @@ def slides() -> list[tuple[str, str]]:
     )
 
     limitation_svg = """
-        <svg class="limitation-svg" viewBox="0 0 1400 460" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <svg class="limitation-svg" viewBox="0 0 1400 540" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
-            <marker id="arrow-head-grey" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-              <polygon points="0 0, 10 5, 0 10" fill="#526173"/>
+            <marker id="arrow-head-grey" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <polygon points="0 0, 11 6, 0 12" fill="#526173"/>
             </marker>
+            <linearGradient id="lim-policy-bg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#f1f4f9"/>
+            </linearGradient>
+            <linearGradient id="lim-blue-bg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#f4faff"/>
+              <stop offset="100%" stop-color="#ffffff"/>
+            </linearGradient>
+            <linearGradient id="lim-red-bg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fff4f1"/>
+              <stop offset="100%" stop-color="#ffffff"/>
+            </linearGradient>
+            <linearGradient id="lim-amber-bg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fff8eb"/>
+              <stop offset="100%" stop-color="#ffffff"/>
+            </linearGradient>
           </defs>
-          <rect x="60" y="160" width="360" height="150" rx="10"
-                fill="white" stroke="#17212c" stroke-width="4"/>
-          <text x="240" y="222" text-anchor="middle" font-size="36" font-weight="760"
-                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#17212c">Equilibrium</text>
-          <text x="240" y="270" text-anchor="middle" font-size="36" font-weight="760"
-                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#17212c">Policy</text>
 
-          <g stroke="#526173" stroke-width="3" fill="none" marker-end="url(#arrow-head-grey)">
-            <line x1="425" y1="220" x2="935" y2="80"/>
-            <line x1="425" y1="235" x2="935" y2="235"/>
-            <line x1="425" y1="250" x2="935" y2="390"/>
+          <!-- Equilibrium policy box (left) -->
+          <g font-family="Aptos, Segoe UI, Arial, sans-serif">
+            <rect x="30" y="180" width="380" height="180" rx="12"
+                  fill="url(#lim-policy-bg)" stroke="#17212c" stroke-width="4"/>
+            <text x="220" y="218" text-anchor="middle" font-size="18" font-weight="800"
+                  fill="#8793a5" letter-spacing="3">EQUILIBRIUM POLICY</text>
+            <text x="220" y="298" text-anchor="middle" font-size="92" font-weight="700"
+                  font-family="Georgia, 'Times New Roman', serif" fill="#17212c" font-style="italic">&#960;*</text>
+            <text x="220" y="338" text-anchor="middle" font-size="21" font-weight="700"
+                  fill="#526173">Nash equilibrium &#183; pre-computed</text>
           </g>
 
-          <g font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="20"
-             font-weight="760" fill="#8793a5">
-            <text x="680" y="135" text-anchor="middle">Same output</text>
-            <text x="680" y="220" text-anchor="middle">Same output</text>
-            <text x="680" y="345" text-anchor="middle">Same output</text>
+          <!-- "Same action, every time" eyebrow -->
+          <text x="655" y="60" text-anchor="middle" font-size="18" font-weight="800"
+                fill="#8793a5" letter-spacing="3"
+                font-family="Aptos, Segoe UI, Arial, sans-serif">SAME ACTION, EVERY TIME</text>
+
+          <!-- Arrows from policy to opponents -->
+          <g stroke="#526173" stroke-width="3.2" fill="none" marker-end="url(#arrow-head-grey)" opacity="0.78">
+            <line x1="410" y1="248" x2="892" y2="80"/>
+            <line x1="410" y1="270" x2="892" y2="270"/>
+            <line x1="410" y1="292" x2="892" y2="460"/>
           </g>
 
-          <rect x="940" y="40" width="380" height="80" rx="8"
-                fill="white" stroke="#155f9f" stroke-width="4"/>
-          <text x="1130" y="92" text-anchor="middle" font-size="28" font-weight="760"
-                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#155f9f">Cautious beginner</text>
+          <!-- Identical action tokens riding each arrow -->
+          <g font-family="Aptos, Segoe UI, Arial, sans-serif">
+            <g transform="translate(645, 138)">
+              <rect x="-58" y="-23" width="116" height="46" rx="10"
+                    fill="white" stroke="#17212c" stroke-width="2"/>
+              <text x="0" y="7" text-anchor="middle" font-size="20" font-weight="800" fill="#17212c">play a*</text>
+            </g>
+            <g transform="translate(645, 270)">
+              <rect x="-58" y="-23" width="116" height="46" rx="10"
+                    fill="white" stroke="#17212c" stroke-width="2"/>
+              <text x="0" y="7" text-anchor="middle" font-size="20" font-weight="800" fill="#17212c">play a*</text>
+            </g>
+            <g transform="translate(645, 402)">
+              <rect x="-58" y="-23" width="116" height="46" rx="10"
+                    fill="white" stroke="#17212c" stroke-width="2"/>
+              <text x="0" y="7" text-anchor="middle" font-size="20" font-weight="800" fill="#17212c">play a*</text>
+            </g>
+          </g>
 
-          <rect x="940" y="195" width="380" height="80" rx="8"
-                fill="white" stroke="#c74735" stroke-width="4"/>
-          <text x="1130" y="247" text-anchor="middle" font-size="28" font-weight="760"
-                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#c74735">Aggressive bluffer</text>
+          <!-- Opponent 1: Cautious beginner -->
+          <g font-family="Aptos, Segoe UI, Arial, sans-serif">
+            <rect x="900" y="20" width="475" height="120" rx="10"
+                  fill="url(#lim-blue-bg)" stroke="#155f9f" stroke-width="3.5"/>
+            <text x="1137" y="60"  text-anchor="middle" font-size="28" font-weight="800" fill="#155f9f">Cautious beginner</text>
+            <text x="1137" y="90"  text-anchor="middle" font-size="18" font-weight="700" fill="#526173">Folds 70% &#183; undersized bets</text>
+            <text x="1137" y="122" text-anchor="middle">
+              <tspan font-size="15" font-weight="800" fill="#c74735" letter-spacing="1.5">&#10005; MISSED</tspan>
+              <tspan font-size="16" font-weight="600" fill="#8793a5" font-style="italic">  value not extracted</tspan>
+            </text>
+          </g>
 
-          <rect x="940" y="350" width="380" height="80" rx="8"
-                fill="white" stroke="#bb7d1c" stroke-width="4"/>
-          <text x="1130" y="402" text-anchor="middle" font-size="28" font-weight="760"
-                font-family="Aptos, Segoe UI, Arial, sans-serif" fill="#bb7d1c">Coordinated group</text>
+          <!-- Opponent 2: Aggressive bluffer -->
+          <g font-family="Aptos, Segoe UI, Arial, sans-serif">
+            <rect x="900" y="210" width="475" height="120" rx="10"
+                  fill="url(#lim-red-bg)" stroke="#c74735" stroke-width="3.5"/>
+            <text x="1137" y="250" text-anchor="middle" font-size="28" font-weight="800" fill="#c74735">Aggressive bluffer</text>
+            <text x="1137" y="280" text-anchor="middle" font-size="18" font-weight="700" fill="#526173">Raises 60% &#183; weak hands</text>
+            <text x="1137" y="312" text-anchor="middle">
+              <tspan font-size="15" font-weight="800" fill="#c74735" letter-spacing="1.5">&#10005; MISSED</tspan>
+              <tspan font-size="16" font-weight="600" fill="#8793a5" font-style="italic">  bluffs not punished</tspan>
+            </text>
+          </g>
+
+          <!-- Opponent 3: Coordinated group -->
+          <g font-family="Aptos, Segoe UI, Arial, sans-serif">
+            <rect x="900" y="400" width="475" height="120" rx="10"
+                  fill="url(#lim-amber-bg)" stroke="#bb7d1c" stroke-width="3.5"/>
+            <text x="1137" y="440" text-anchor="middle" font-size="28" font-weight="800" fill="#bb7d1c">Coordinated group</text>
+            <text x="1137" y="470" text-anchor="middle" font-size="18" font-weight="700" fill="#526173">Shared signals &#183; collusion</text>
+            <text x="1137" y="502" text-anchor="middle">
+              <tspan font-size="15" font-weight="800" fill="#c74735" letter-spacing="1.5">&#10005; MISSED</tspan>
+              <tspan font-size="16" font-weight="600" fill="#8793a5" font-style="italic">  collusion not detected</tspan>
+            </text>
+          </g>
         </svg>
     """
     s6 = shell(
@@ -1755,18 +1839,12 @@ def slides() -> list[tuple[str, str]]:
     # .diagram has position:relative; right panel ≈ 935px wide × 650px tall.
     # Four nodes (160×160) at cardinal positions around centre (467, 290).
     # Arrows connect edge-to-edge in clockwise order.
-    cycle = "\n".join(
-        [
-            arrow(523, 151, 658, 249),   # Play → Study (top → right)
-            arrow(658, 331, 523, 429),   # Study → Steer Safely (right → bottom)
-            arrow(411, 429, 274, 331),   # Steer Safely → Evaluate (bottom → left)
-            arrow(274, 249, 411, 151),   # Evaluate → Play (left → top)
-            '<div class="node gray" style="left:387px;top:30px;width:160px;height:160px;font-size:30px">Play</div>',
-            '<div class="node"      style="left:635px;top:210px;width:160px;height:160px;font-size:28px">Study</div>',
-            '<div class="node red"  style="left:387px;top:390px;width:160px;height:160px;font-size:24px">Steer&nbsp;Safely</div>',
-            '<div class="node teal" style="left:137px;top:210px;width:160px;height:160px;font-size:28px">Evaluate</div>',
-        ]
+    illustration2 = asset_img(
+        "illustration2.png",
+        "Play, study, steer safely, and evaluate research cycle",
+        "open-problem-image",
     )
+    s7_visual = illustration2 or '<div class="placeholder-thumb open-problem-image">illustration2</div>'
     s7 = shell(
         "Three open problems",
         f"""
@@ -1776,7 +1854,7 @@ def slides() -> list[tuple[str, str]]:
             <div class="item"><div class="num red">2</div><div><strong class="problem-title-red">Steer Safely</strong><span>Exploit without exposing yourself</span></div></div>
             <div class="item"><div class="num teal">3</div><div><strong class="problem-title-teal">Evaluate</strong><span>Measure if an agent adapts well</span></div></div>
           </div>
-          <div class="diagram panel" style="height:650px">{cycle}<p class="caption diagram-caption-bottom">Play &rarr; Study &rarr; Steer Safely &rarr; Evaluate</p></div>
+          <div class="diagram panel illustration-image-panel open-problem-visual">{s7_visual}</div>
         </section>
         """,
         slide_no=7,
@@ -1896,7 +1974,7 @@ def slides() -> list[tuple[str, str]]:
     )
 
     s11 = shell(
-        "What I study deeply first",
+        "Study Plan",
         """
         <p class="lead phase-lead">Seven phases of preparation. Each builds the foundation for the contributions.</p>
         <section class="phase-grid">
@@ -2002,10 +2080,6 @@ def slides() -> list[tuple[str, str]]:
         f"""
         <section class="closing-layout">
           {s13_visual}
-          <section class="closing-summary">
-            <article class="summary-panel panel"><strong>TODAY</strong><span>Fixed-strategy systems</span></article>
-            <article class="summary-panel next panel"><strong>NEXT GENERATION</strong><span>Adaptive, safe, accountable agents</span></article>
-          </section>
           <p class="thank-you">Thank you. Questions welcome.</p>
         </section>
         """,
@@ -2083,13 +2157,213 @@ def build_pptx(png_paths: list[Path]) -> None:
     prs.save(OUTPUT)
 
 
+def parse_speaker_notes() -> dict[int, str]:
+    if not SCRIPT_PATH.exists():
+        return {}
+
+    text = SCRIPT_PATH.read_text(encoding="utf-8")
+    headings = list(re.finditer(r"^## Slide\s+(\d+)\s+[—-]\s+(.+)$", text, flags=re.MULTILINE))
+    notes: dict[int, str] = {}
+
+    for index, heading in enumerate(headings):
+        slide_no = int(heading.group(1))
+        section_end = headings[index + 1].start() if index + 1 < len(headings) else len(text)
+        section = text[heading.end() : section_end]
+        say_match = re.search(r"^\*\*Say:\*\*\s*$", section, flags=re.MULTILINE)
+        if not say_match:
+            continue
+
+        title = re.sub(r"\s*\([^)]*\)\s*$", "", heading.group(2)).strip()
+        raw_note = section[say_match.end() :].split("\n---", 1)[0].strip()
+        note = markdown_to_plain_note(raw_note)
+        if note:
+            notes[slide_no] = f"{title}\n\n{note}"
+
+    return notes
+
+
+def markdown_to_plain_note(text: str) -> str:
+    lines = []
+    for line in text.splitlines():
+        clean = line.strip()
+        clean = re.sub(r"^[-*]\s+", "", clean)
+        clean = re.sub(r"\*\*(.*?)\*\*", r"\1", clean)
+        clean = re.sub(r"\*(.*?)\*", r"\1", clean)
+        lines.append(clean)
+    return "\n".join(lines).strip()
+
+
+def inject_speaker_notes(pptx_path: Path, notes: dict[int, str]) -> None:
+    if not notes:
+        return
+
+    flatpak_spawn = shutil.which("flatpak-spawn")
+    if flatpak_spawn:
+        soffice_cmd = [flatpak_spawn, "--host", "/usr/bin/soffice"]
+        python_cmd = [
+            flatpak_spawn,
+            "--host",
+            "env",
+            "PYTHONPATH=/usr/lib64/python3.14/site-packages:/usr/lib/python3/dist-packages:"
+            "/usr/lib64/libreoffice/program:/usr/lib/libreoffice/program",
+            "python3",
+        ]
+    elif shutil.which("soffice"):
+        soffice_cmd = ["soffice"]
+        python_cmd = ["python3"]
+    elif shutil.which("libreoffice"):
+        soffice_cmd = ["libreoffice"]
+        python_cmd = ["python3"]
+    else:
+        raise RuntimeError("LibreOffice is required to add speaker notes to the PPTX.")
+
+    helper_dir = HERE / ".tmp"
+    helper_dir.mkdir(parents=True, exist_ok=True)
+    notes_json = helper_dir / "speaker_notes.json"
+    helper_script = helper_dir / "add_speaker_notes_uno.py"
+    notes_json.write_text(json.dumps(notes, ensure_ascii=False), encoding="utf-8")
+    helper_script.write_text(
+        textwrap.dedent(
+            """
+            import json
+            import sys
+            import time
+            from pathlib import Path
+
+            import uno
+            from com.sun.star.beans import PropertyValue
+
+
+            def prop(name, value):
+                item = PropertyValue()
+                item.Name = name
+                item.Value = value
+                return item
+
+
+            pptx_path = Path(sys.argv[1]).resolve()
+            notes_path = Path(sys.argv[2]).resolve()
+            notes = {int(key): value for key, value in json.loads(notes_path.read_text(encoding="utf-8")).items()}
+
+            ctx = uno.getComponentContext()
+            resolver = ctx.ServiceManager.createInstanceWithContext(
+                "com.sun.star.bridge.UnoUrlResolver", ctx
+            )
+            remote = None
+            last_error = None
+            for _ in range(40):
+                try:
+                    remote = resolver.resolve(
+                        "uno:socket,host=localhost,port=21073;urp;StarOffice.ComponentContext"
+                    )
+                    break
+                except Exception as exc:
+                    last_error = exc
+                    time.sleep(0.25)
+            if remote is None:
+                raise RuntimeError(f"Could not connect to LibreOffice: {last_error}")
+
+            desktop = remote.ServiceManager.createInstanceWithContext(
+                "com.sun.star.frame.Desktop", remote
+            )
+            doc = desktop.loadComponentFromURL(
+                pptx_path.as_uri(),
+                "_blank",
+                0,
+                (prop("Hidden", True), prop("ReadOnly", False)),
+            )
+            if doc is None:
+                raise RuntimeError(f"LibreOffice could not load {pptx_path}")
+
+            try:
+                pages = doc.getDrawPages()
+                for slide_no, note in notes.items():
+                    if not 1 <= slide_no <= pages.getCount():
+                        continue
+
+                    notes_page = pages.getByIndex(slide_no - 1).getNotesPage()
+                    target = None
+                    for index in range(notes_page.getCount()):
+                        shape = notes_page.getByIndex(index)
+                        if getattr(shape, "ShapeType", "") == "com.sun.star.presentation.NotesShape":
+                            target = shape
+                            break
+                    if target is None:
+                        for index in range(notes_page.getCount()):
+                            shape = notes_page.getByIndex(index)
+                            if hasattr(shape, "String"):
+                                target = shape
+                                break
+                    if target is None:
+                        target = doc.createInstance("com.sun.star.drawing.TextShape")
+                        target.Position = uno.createUnoStruct("com.sun.star.awt.Point", 914400, 3657600)
+                        target.Size = uno.createUnoStruct("com.sun.star.awt.Size", 5486400, 4572000)
+                        notes_page.add(target)
+
+                    target.String = note
+                doc.store()
+            finally:
+                doc.close(True)
+            """
+        ).strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    profile = f"file:///tmp/rlplan-lo-profile-{pptx_path.stem}"
+    server = subprocess.Popen(
+        [
+            *soffice_cmd,
+            "--headless",
+            "--nologo",
+            "--nofirststartwizard",
+            "-env:UserInstallation=" + profile,
+            "--accept=socket,host=localhost,port=21073;urp;StarOffice.ComponentContext",
+            "--nodefault",
+            "--norestore",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    try:
+        result = subprocess.run(
+            [*python_cmd, str(helper_script.resolve()), str(pptx_path.resolve()), str(notes_json.resolve())],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                "LibreOffice failed to add speaker notes.\n"
+                f"stdout:\n{result.stdout}\n"
+                f"stderr:\n{result.stderr}"
+            )
+    finally:
+        server.terminate()
+        try:
+            server.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            server.kill()
+            server.communicate()
+        notes_json.unlink(missing_ok=True)
+        helper_script.unlink(missing_ok=True)
+        try:
+            helper_dir.rmdir()
+        except OSError:
+            pass
+
+
 def build() -> None:
     html_paths = write_html_files()
     png_paths = render_pngs(html_paths)
     verify_pngs(png_paths)
     build_pptx(png_paths)
+    speaker_notes = parse_speaker_notes()
+    inject_speaker_notes(OUTPUT, speaker_notes)
     print(f"Wrote {len(html_paths)} HTML slides to {HTML_DIR}")
     print(f"Wrote {len(png_paths)} PNG slides to {PNG_DIR}")
+    print(f"Added speaker notes to {len(speaker_notes)} slides from {SCRIPT_PATH}")
     print(f"Wrote {OUTPUT}")
 
 
