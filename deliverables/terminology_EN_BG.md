@@ -108,11 +108,42 @@
 | Publication pipeline | Публикационен план | |
 | Dissertation chapter | Глава на дисертацията | |
 | Subgame solving | Решаване на подигри | |
+| Nested subgame solving | Вложено решаване на подигри | Brown & Sandholm (2017) |
+| Safe subgame solving | Безопасно решаване на подигри | |
+| Augmented subgame | Разширена подигра | Subgame plus alternative-payoff nodes |
 | Action abstraction | Абстракция на действията | |
+| Information abstraction | Информационна абстракция | |
 | Card bucketing | Групиране на карти | „Групиране" avoids anglicism |
 | Game tree | Дърво на играта | |
+| Signal tree | Сигнално дърво | Smaller than game tree (Gilpin & Sandholm 2007) |
 | Chance node | Възел на случайността | |
 | Terminal state | Крайно състояние | |
+| Lossless abstraction | Беззагубна абстракция | Standard CS BG; avoid „безпотерна" |
+| Lossy abstraction | Абстракция със загуби | Use „със загуби" as adjectival phrase, not „загубна" |
+| Exploitability gap | Пропуск в експлоатируемостта | Prefer prepositional phrase over adj+noun „експлоатируемостен пропуск" |
+| Action translation | Превод на действия | |
+| Nearest-action translator | Преводач към най-близкото действие | |
+| Probability-split translator | Вероятностно разделяне | |
+| Pseudo-harmonic mapping | Псевдохармонично преобразуване | Ganzfried & Sandholm (2013); single word, no hyphen |
+| Suit isomorphism | Изоморфизъм на цветовете | Suit = цвят (на карта) |
+| Ordered game isomorphism (OGI) | Подреден игрови изоморфизъм | Gilpin & Sandholm Definition 3.2 |
+| Hand-strength distribution (HSD) | Разпределение на силата на ръката | Keep „HSD" abbreviation in Latin |
+| Earth Mover's Distance (EMD) | Разстояние на Земекопача | Keep „EMD" abbreviation in Latin |
+| Perfect recall | Съвършена памет | |
+| Imperfect recall | Несъвършена памет | |
+| Reach probability | Вероятност за достигане | |
+| Reach-weighted bound | Граница, претеглена по достигането | Kroer & Sandholm (2016) |
+| Counterfactual best-response value (CBV) | Стойност на най-добрия отговор по контрафактуалния стандарт | Keep „CBV" symbolic |
+| Blueprint (strategy) | Схема (на стратегията) | |
+| Off-tree action | Действие извън дървото | |
+| Information bottleneck (IB) | Информационно тясно място | Keep „IB" abbreviation in Latin |
+| Equivariant encoder | Еквивариантен кодер | |
+| Production-grade | Промишлено ниво / промишлен | Use „промишлен", not „продуктивен" (false friend) |
+| Fixed-limit (poker) | С лимит / лимитен | „Ледюк с лимит" preferred over „лимит Ледюк" |
+| Fixed-limit Leduc | Ледюк с лимит | Keep „Leduc" transliterated |
+| No-limit (poker) | Безлимитен | |
+| Wall-clock budget | Бюджет в реално време | |
+| Smoke test | Бърза проверка със смалени бюджети | Avoid calque „димен тест" |
 
 ---
 
