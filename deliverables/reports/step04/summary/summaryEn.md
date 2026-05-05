@@ -43,7 +43,7 @@ The combined number of information sets in heads-up no-limit Hold'em is $\sim 10
 
 The recipe is the same in every step-4 paper: *build a smaller game whose strategies translate back into playable strategies for the real game, run the Step 3 algorithms on that smaller game, then bound the damage.* That recipe has two routes.
 
-### Two Routes to Abstraction
+### Two Routes to Abstraction {.unlisted}
 
 The word "abstraction" in this literature actually covers two operationally different things. Both are used in modern game AI; both will appear in this thesis; conflating them is a category error. This section pins the boundary, and the abstraction pipeline follows it strictly: every phase has an *explicit* subsection (drawing on the four step-4 papers) and an *implicit* subsection (the Deep-RL counterpart in the same conceptual slot).
 
@@ -76,7 +76,7 @@ The implementations done in Step 4 (the implementation phase) are all explicit. 
 
 Across all four papers, every concrete abstraction technique falls onto one of two orthogonal axes. (A third — runtime refinement — appears in real-time refinement below.)
 
-### Information Abstraction
+### Information Abstraction {.unlisted}
 
 Group together info sets that the agent will treat as the same state. Two flavours:
 
@@ -88,7 +88,7 @@ Group together info sets that the agent will treat as the same state. Two flavou
 
 > **Remember:** information abstraction decides which hidden situations the agent treats as the same.
 
-### Action Abstraction and the Translation Problem
+### Action Abstraction and the Translation Problem {.unlisted}
 
 Restrict the set of actions the solver considers, run CFR (or any step-3 algorithm) on the restricted game, then handle whatever the *real* opponent does that lies outside that restriction. The structure of "the restriction" depends on whether the underlying action space is discrete or continuous, and the **action translation problem** that sits between abstract and real game looks different in the two regimes.
 
@@ -123,7 +123,7 @@ Translators 1 and 2 are implemented and evaluated in this step (results in the i
 
 > **Remember:** action abstraction decides which moves the agent can reason about before translation or resolving.
 
-### Real-Time Refinement
+### Real-Time Refinement {.unlisted}
 
 The third axis is *runtime* rather than design-time. Information abstraction (information abstraction) and action abstraction (action abstraction) are choices baked into the abstract game *before* the solver runs. Real-time refinement accepts that whatever those choices were, the abstract Nash will have $\varepsilon_{\text{abs}} > 0$ — and patches the error live, while play unfolds, by re-solving specific subgames at higher fidelity than the blueprint.
 
@@ -230,6 +230,9 @@ When the analytical bound is too pessimistic or the inputs too high-dimensional 
 The empirical route does *not* come with the Gilpin or Kroer guarantees. It comes with the error-budget section evaluator (CFR-BR) that measures merge quality after the fact.
 
 *Intuition:* A low pair and a high suited connector might have the same average win probability, but their strategic character is entirely different (one is a stable medium hand, the other is boom-or-bust). Earth Mover's Distance correctly identifies this character difference, preventing harmful merges that average strength alone would allow.
+
+*How they are calculated:* $E[HS]$ (Expected Hand Strength) simply calculates the raw probability of winning against any two random cards. EMD, on the other hand, measures the minimum "work" required to reshape one full probability distribution into another, accounting for the shape of the outcomes (peaked vs bimodal).
+
 
 > **Remember:** empirical abstraction is a budgeted guess that must be measured after solving.
 

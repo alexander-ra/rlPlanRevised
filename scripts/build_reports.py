@@ -96,7 +96,7 @@ def run_pandoc(
         str(input_file),
         "--pdf-engine", engine,
         "--toc",
-        "--toc-depth=2",
+        "--toc-depth=3",
         "--number-sections",
         "-V", "secnumdepth=3",
         "-V", f"geometry:margin={margin}",
