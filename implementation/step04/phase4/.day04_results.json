@@ -1,0 +1,10 @@
+{
+  "iterations": 20000,
+  "k_preflop": 3,
+  "k_postflop": 3,
+  "info_sets_unabstracted": 10304,
+  "info_sets_suit_iso": 2968,
+  "info_sets_suit_iso_action_abstract": 504,
+  "info_sets_triple_abstract": 108,
+  "wall_clock_s": 3.0417487621307373
+}

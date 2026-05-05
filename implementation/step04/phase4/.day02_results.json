@@ -1,0 +1,77 @@
+{
+  "iterations": 200,
+  "results": [
+    {
+      "config": "k2_perfect",
+      "k_preflop": 2,
+      "k_postflop": 2,
+      "recall": "perfect",
+      "info_sets": 132,
+      "wall_clock_s": 5.5629260540008545,
+      "exploitability": 1.148029257675545
+    },
+    {
+      "config": "k2_imperfect",
+      "k_preflop": 2,
+      "k_postflop": 2,
+      "recall": "imperfect",
+      "info_sets": 72,
+      "wall_clock_s": 5.4038002490997314,
+      "exploitability": 1.2032313970109272
+    },
+    {
+      "config": "k3_perfect",
+      "k_preflop": 3,
+      "k_postflop": 3,
+      "recall": "perfect",
+      "info_sets": 228,
+      "wall_clock_s": 5.364407777786255,
+      "exploitability": 0.6484758514745401
+    },
+    {
+      "config": "k3_imperfect",
+      "k_preflop": 3,
+      "k_postflop": 3,
+      "recall": "imperfect",
+      "info_sets": 108,
+      "wall_clock_s": 5.646573305130005,
+      "exploitability": 0.8871886918290486
+    },
+    {
+      "config": "k5_perfect",
+      "k_preflop": 3,
+      "k_postflop": 5,
+      "recall": "perfect",
+      "info_sets": 228,
+      "wall_clock_s": 6.735212802886963,
+      "exploitability": 0.6484758514745401
+    },
+    {
+      "config": "k5_imperfect",
+      "k_preflop": 3,
+      "k_postflop": 5,
+      "recall": "imperfect",
+      "info_sets": 108,
+      "wall_clock_s": 6.1673033237457275,
+      "exploitability": 0.8871886918290486
+    },
+    {
+      "config": "full_perfect",
+      "k_preflop": 3,
+      "k_postflop": 9,
+      "recall": "perfect",
+      "info_sets": 288,
+      "wall_clock_s": 5.72433066368103,
+      "exploitability": 0.18978807527104544
+    },
+    {
+      "config": "full_imperfect",
+      "k_preflop": 3,
+      "k_postflop": 9,
+      "recall": "imperfect",
+      "info_sets": 288,
+      "wall_clock_s": 5.534682750701904,
+      "exploitability": 0.18978807527104544
+    }
+  ]
+}

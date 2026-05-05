@@ -1,0 +1,164 @@
+[
+  {
+    "name": "day1_full_leduc",
+    "info_sets": 936,
+    "exploit": 0.18978807527106528,
+    "exploit_gap": 0.0,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 22.408416986465454,
+    "notes": "unabstracted Leduc"
+  },
+  {
+    "name": "day1_rank_canonical",
+    "info_sets": 288,
+    "exploit": 0.18978807527104544,
+    "exploit_gap": 0.0,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 4.290409564971924,
+    "notes": "lossless suit-iso (rank engine)"
+  },
+  {
+    "name": "day2_k2_perfect",
+    "info_sets": 132,
+    "exploit": 1.148029257675545,
+    "exploit_gap": 0.9582411824044799,
+    "emd_proxy": 45.19999999999999,
+    "wall_clock_s": 5.5629260540008545,
+    "notes": "k_pre=2, k_post=2, recall=perfect"
+  },
+  {
+    "name": "day2_k2_imperfect",
+    "info_sets": 72,
+    "exploit": 1.2032313970109272,
+    "exploit_gap": 1.013443321739862,
+    "emd_proxy": 54.8,
+    "wall_clock_s": 5.4038002490997314,
+    "notes": "k_pre=2, k_post=2, recall=imperfect"
+  },
+  {
+    "name": "day2_k3_perfect",
+    "info_sets": 228,
+    "exploit": 0.6484758514745401,
+    "exploit_gap": 0.45868777620347484,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 5.364407777786255,
+    "notes": "k_pre=3, k_post=3, recall=perfect"
+  },
+  {
+    "name": "day2_k3_imperfect",
+    "info_sets": 108,
+    "exploit": 0.8871886918290486,
+    "exploit_gap": 0.6974006165579834,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 5.646573305130005,
+    "notes": "k_pre=3, k_post=3, recall=imperfect"
+  },
+  {
+    "name": "day2_k5_perfect",
+    "info_sets": 228,
+    "exploit": 0.6484758514745401,
+    "exploit_gap": 0.45868777620347484,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 6.735212802886963,
+    "notes": "k_pre=3, k_post=5, recall=perfect"
+  },
+  {
+    "name": "day2_k5_imperfect",
+    "info_sets": 108,
+    "exploit": 0.8871886918290486,
+    "exploit_gap": 0.6974006165579834,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 6.1673033237457275,
+    "notes": "k_pre=3, k_post=5, recall=imperfect"
+  },
+  {
+    "name": "day2_full_perfect",
+    "info_sets": 288,
+    "exploit": 0.18978807527104544,
+    "exploit_gap": 0.0,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 5.72433066368103,
+    "notes": "k_pre=3, k_post=9, recall=perfect"
+  },
+  {
+    "name": "day2_full_imperfect",
+    "info_sets": 288,
+    "exploit": 0.18978807527104544,
+    "exploit_gap": 0.0,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 5.534682750701904,
+    "notes": "k_pre=3, k_post=9, recall=imperfect"
+  },
+  {
+    "name": "day3_mini_nl_full",
+    "info_sets": 4704,
+    "exploit": 0.7458165407007424,
+    "exploit_gap": 0.0,
+    "emd_proxy": 0.0,
+    "wall_clock_s": 68.02109050750732,
+    "notes": "mini-NL full"
+  },
+  {
+    "name": "day3_translator_nearest",
+    "info_sets": 936,
+    "exploit": 1.4015325672357215,
+    "exploit_gap": 0.6557160265349791,
+    "emd_proxy": null,
+    "wall_clock_s": 12.71702265739441,
+    "notes": "action-abstracted, translator=nearest"
+  },
+  {
+    "name": "day3_translator_probability_split",
+    "info_sets": 936,
+    "exploit": 1.4015325672357215,
+    "exploit_gap": 0.6557160265349791,
+    "emd_proxy": null,
+    "wall_clock_s": 12.71702265739441,
+    "notes": "action-abstracted, translator=probability_split"
+  },
+  {
+    "name": "day3_translator_pseudo_harmonic",
+    "info_sets": 936,
+    "exploit": 1.4015325672357215,
+    "exploit_gap": 0.6557160265349791,
+    "emd_proxy": null,
+    "wall_clock_s": 12.71702265739441,
+    "notes": "action-abstracted, translator=pseudo_harmonic"
+  },
+  {
+    "name": "day4_extended_unabstracted",
+    "info_sets": 10304,
+    "exploit": null,
+    "exploit_gap": null,
+    "emd_proxy": 0.0,
+    "wall_clock_s": null,
+    "notes": "Extended Leduc baseline"
+  },
+  {
+    "name": "day4_extended_suit_iso",
+    "info_sets": 2968,
+    "exploit": null,
+    "exploit_gap": null,
+    "emd_proxy": 0.0,
+    "wall_clock_s": null,
+    "notes": "Extended Leduc + suit isomorphism"
+  },
+  {
+    "name": "day4_extended_suit_action",
+    "info_sets": 504,
+    "exploit": null,
+    "exploit_gap": null,
+    "emd_proxy": null,
+    "wall_clock_s": null,
+    "notes": "Extended Leduc + suit + action"
+  },
+  {
+    "name": "day4_extended_triple",
+    "info_sets": 108,
+    "exploit": null,
+    "exploit_gap": null,
+    "emd_proxy": null,
+    "wall_clock_s": 3.0417487621307373,
+    "notes": "Extended Leduc + suit + action + bucket k_pre=3 k_post=3"
+  }
+]

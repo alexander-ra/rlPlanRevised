@@ -1,0 +1,13 @@
+{
+  "iterations": 100,
+  "full_info_sets": 4704,
+  "abstract_info_sets": 936,
+  "exploit_full": 0.7458165407007424,
+  "exploit_per_translator": {
+    "nearest": 1.4015325672357215,
+    "probability_split": 1.4015325672357215,
+    "pseudo_harmonic": 1.4015325672357215
+  },
+  "wall_clock_full_s": 68.02109050750732,
+  "wall_clock_abstract_s": 12.71702265739441
+}

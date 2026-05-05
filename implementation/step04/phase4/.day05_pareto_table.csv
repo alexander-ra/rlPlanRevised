@@ -1,0 +1,19 @@
+name,info_sets,exploit,exploit_gap,emd_proxy,wall_clock_s,notes
+day1_full_leduc,936,0.18978807527106528,0.0,0.0,22.408416986465454,unabstracted Leduc
+day1_rank_canonical,288,0.18978807527104544,0.0,0.0,4.290409564971924,lossless suit-iso (rank engine)
+day2_k2_perfect,132,1.148029257675545,0.9582411824044799,45.19999999999999,5.5629260540008545,"k_pre=2, k_post=2, recall=perfect"
+day2_k2_imperfect,72,1.2032313970109272,1.013443321739862,54.8,5.4038002490997314,"k_pre=2, k_post=2, recall=imperfect"
+day2_k3_perfect,228,0.6484758514745401,0.45868777620347484,0.0,5.364407777786255,"k_pre=3, k_post=3, recall=perfect"
+day2_k3_imperfect,108,0.8871886918290486,0.6974006165579834,0.0,5.646573305130005,"k_pre=3, k_post=3, recall=imperfect"
+day2_k5_perfect,228,0.6484758514745401,0.45868777620347484,0.0,6.735212802886963,"k_pre=3, k_post=5, recall=perfect"
+day2_k5_imperfect,108,0.8871886918290486,0.6974006165579834,0.0,6.1673033237457275,"k_pre=3, k_post=5, recall=imperfect"
+day2_full_perfect,288,0.18978807527104544,0.0,0.0,5.72433066368103,"k_pre=3, k_post=9, recall=perfect"
+day2_full_imperfect,288,0.18978807527104544,0.0,0.0,5.534682750701904,"k_pre=3, k_post=9, recall=imperfect"
+day3_mini_nl_full,4704,0.7458165407007424,0.0,0.0,68.02109050750732,mini-NL full
+day3_translator_nearest,936,1.4015325672357215,0.6557160265349791,,12.71702265739441,"action-abstracted, translator=nearest"
+day3_translator_probability_split,936,1.4015325672357215,0.6557160265349791,,12.71702265739441,"action-abstracted, translator=probability_split"
+day3_translator_pseudo_harmonic,936,1.4015325672357215,0.6557160265349791,,12.71702265739441,"action-abstracted, translator=pseudo_harmonic"
+day4_extended_unabstracted,10304,,,0.0,,Extended Leduc baseline
+day4_extended_suit_iso,2968,,,0.0,,Extended Leduc + suit isomorphism
+day4_extended_suit_action,504,,,,,Extended Leduc + suit + action
+day4_extended_triple,108,,,,3.0417487621307373,Extended Leduc + suit + action + bucket k_pre=3 k_post=3

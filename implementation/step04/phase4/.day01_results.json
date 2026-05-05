@@ -1,0 +1,18 @@
+{
+  "iterations": 200,
+  "full_engine": {
+    "info_sets": 936,
+    "wall_clock_s": 22.408416986465454
+  },
+  "rank_engine": {
+    "info_sets": 288,
+    "wall_clock_s": 4.290409564971924
+  },
+  "wall_clock_speedup": 5.222908593485782,
+  "suit_isomorphism_check": {
+    "pairs_checked": 18,
+    "violations": 0
+  },
+  "exploitability_full": 0.18978807527106528,
+  "exploitability_rank": 0.18978807527104544
+}

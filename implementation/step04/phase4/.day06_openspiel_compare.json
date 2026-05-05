@@ -1,0 +1,11 @@
+{
+  "iterations": 200,
+  "ours_info_sets": 936,
+  "openspiel_info_sets": 936,
+  "diff": {
+    "common_info_sets": 936,
+    "compared_info_sets": 936,
+    "max_l1": 1.8939872756510596,
+    "mean_l1": 0.2810825461606497
+  }
+}
