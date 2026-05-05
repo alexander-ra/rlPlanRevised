@@ -98,6 +98,7 @@ def run_pandoc(
         "--toc",
         "--toc-depth=2",
         "--number-sections",
+        "-V", "secnumdepth=3",
         "-V", f"geometry:margin={margin}",
         "-V", "fontsize=11pt",
         "-V", "linestretch=1.25",

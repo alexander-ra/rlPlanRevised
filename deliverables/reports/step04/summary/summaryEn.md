@@ -105,7 +105,7 @@ The base set is already finite. Two flavours of abstraction apply:
 The base set is uncountable — bet amount $b \in [b_{\min}, b_{\max}]$ in no-limit poker, joint torque $\tau \in \mathbb{R}^d$ in continuous control. CFR cannot run on a continuous tree at all without first collapsing it to a finite proxy, so for tabular methods action abstraction is *mandatory*, not optional. Two routes:
 
 - **Explicit discretisation (the route used in this step).** Pick a fixed grid of representative actions and pretend the rest do not exist. *No-limit poker example:* allow only `{fold, call, 0.5×pot, 1×pot, 2×pot, all-in}`. A minimum interesting case used here is a two-bet-size variant of Leduc (one "small" and one "large" raise per round) with a switch that drops the larger raise to recover a fixed-limit-shaped tree; both forms are needed to demonstrate translation between them.
-- **Implicit / parameterised actor (Deep RL).** A neural network outputs the parameters of a continuous distribution over actions — Gaussian mean & stddev (PPO/SAC continuous control), tanh-squashed normal (SAC), or a quantile head (IQN/D4PG). The "abstraction" is the limited expressiveness of the parameter family rather than a discrete grid. No translation is needed because the policy can output any real-valued action directly. *Forward pointer:* this is how Deep CFR (step 5) and Pluribus-style architectures (step 6) eventually replace explicit bet-size discretisation in real-money no-limit play.
+- **Implicit / parameterised actor (Deep RL).** A neural network outputs the parameters of a continuous distribution over actions — Gaussian mean & stddev (PPO/SAC continuous control), bounded normal distribution (SAC), or distributional outputs (like IQN and D4PG). The "abstraction" is the limited expressiveness of the parameter family rather than a discrete grid. No translation is needed because the policy can output any real-valued action directly. *Forward pointer:* this is how Deep CFR (step 5) and Pluribus-style architectures (step 6) eventually replace explicit bet-size discretisation in real-money no-limit play.
 
 The translation problem is **acute and unavoidable** in the explicit-discretisation route. When the opponent plays a 0.7×pot bet but the abstraction only contains 0.5×pot and 1×pot, the agent must convert that bet to a node it has trained on before it can look up its strategy. Three translators in common use, in increasing sophistication:
 
@@ -143,6 +143,8 @@ The two together — abstract blueprint + safe + nested live solving — are the
 For a strategy $\sigma$ played in game $G$, exploitability is the standard step-3 metric:
 
 $$\text{exploit}_G(\sigma) = \tfrac{1}{2}\bigl[v_G(\text{BR}(\sigma_{1}),\, \sigma_1) + v_G(\sigma_0,\, \text{BR}(\sigma_{0}))\bigr]$$
+
+where $\text{BR}(\sigma)$ (Best Response) is the strategy that optimally maximizes profit specifically against the strategy $\sigma$.
 
 Step 4 introduces a derived metric, the **exploitability gap**: how much worse an abstract strategy is than the real game's exact Nash, *measured in the real game*.
 
@@ -191,19 +193,19 @@ Each section below covers one phase. The four papers are *not* sectioned by auth
 
 Three nested levels of strictness, weakest at the top.
 
-#### Level 1 — Lossless (Gilpin Definition 3.2)
+#### Level 1 — Lossless
 
-The strict criterion: two sibling info sets $I_a, I_b$ in the *signal tree* (a structure smaller than the game tree, enumerating only sequences of public + private signals) are *ordered game isomorphic* if a child-bijection preserves edge probabilities, the bijection is itself ordered-game-isomorphic recursively, and at the leaves the utilities match for *every* opponent continuation.
+The strict criterion: two sibling info sets $I_a, I_b$ in the *signal tree* (a structure smaller than the game tree, enumerating only sequences of public + private signals) are *ordered game isomorphic* if a child-bijection (a one-to-one mapping between children) preserves edge probabilities, the bijection is itself ordered-game-isomorphic recursively, and at the leaves the utilities match for *every* opponent continuation.
 
 In plain terms: the two signal subtrees must have the same probabilities, the same recursive structure, and the same utility consequences no matter how the opponent continues. The last condition is the load-bearing one.
 
-*Concrete example (Leduc).* The merge `(priv=J♠, comm=Q♠) ≡ (priv=J♥, comm=Q♥)` passes by inspection: same edge probabilities (uniform over the four remaining cards), and Leduc utility depends only on rank + pair-matching, so utility-identity holds for every opponent rank continuation. The same merge in Hold'em fails because A♠ blocks an opponent's spade flush, breaking utility-identity for opponent continuations that include flush completions.
-
 When this check returns `True`, Theorem 3.4 of the paper guarantees a constructive lift from any abstract Nash to an exact Nash of the original game — *zero* exploitability cost. Theorem 4.1 establishes that GameShrink (the build-time pipeline) exhausts this criterion: every lossless merge expressible by Definition 3.2 is found.
+
+*Intuition:* Two situations can only be losslessly merged if they share exactly the same probabilities and consequences against all possible opponent moves (e.g., holding a red Jack vs a black Jack when suits don't matter). If one suit naturally blocks a flush while the other doesn't, they behave differently and cannot be merged.
 
 > **Remember:** lossless abstraction is free compression: same strategic meaning, fewer stored information sets.
 
-#### Level 2 — Bounded lossy (Kroer Definition 1 — CRSWF)
+#### Level 2 — Bounded lossy
 
 The criterion relaxes Gilpin's condition (3) — utility identity — to "utilities differ by at most $\varepsilon^R$ for every opponent continuation," and adds two analogous slack constants $\varepsilon^0, \varepsilon^D$ for chance-probability errors (absolute and conditional). Conditions (4) + (5) — action-sequence consistency on opponent and self moves along merged paths — stay strict.
 
@@ -211,13 +213,13 @@ In words: *merge $I, \tilde I$ if there is a leaf-bijection $\varphi: Z_I \to Z_
 
 The four mismatch constants per merge become inputs to the error-budget computation in the error-budget section.
 
-*Concrete example (Leduc, lossy J/Q bucket).* Treating J and Q as one "low" bucket: the bijection is forced to map J-leaves to Q-leaves. At a non-paired showdown, J loses to Q, so utility differs by 2 chips → $\varepsilon^R = 2$. Chance-probability mismatch $\varepsilon^0 = \varepsilon^D = 0$ because both hands are dealt with the same probability. Conditions 4 + 5 hold (the betting tree is rank-symmetric). The merge is *valid* in the CRSWF sense; the error-budget section says how much it costs.
-
 The CRSWF generalisation over Lanctot et al. 2009's *skew well-formed* predecessor is the addition of conditions decoupling absolute and conditional chance probabilities — this is what lets imperfect-recall abstractions merge info sets when chance probabilities differ "by a small amount everywhere."
+
+*Intuition:* When we group non-identical hands (like throwing low cards into a single \"bad hand\" bucket), we force the system to treat them as the same. This creates a quantifiable mismatch in maximum potential payoffs, but allows for a drastically smaller game size.
 
 > **Remember:** bounded lossy abstraction is controlled forgetting: the game shrinks, but each merge receives an error price.
 
-#### Level 3 — Empirical similarity (Johanson Section 4)
+#### Level 3 — Empirical similarity
 
 When the analytical bound is too pessimistic or the inputs too high-dimensional to enumerate (Texas hold'em has $\sim 2.4 \times 10^9$ canonical river boards), drop the per-merge bound entirely and replace it with a *learned distance function* whose merges minimise empirical strategy mismatch:
 
@@ -225,9 +227,9 @@ When the analytical bound is too pessimistic or the inputs too high-dimensional 
 - Use Earth Mover's Distance between feature vectors as the similarity metric.
 - Merge info sets whose feature distributions are close.
 
-*Concrete example.* Two Texas hold'em hands with identical $E[HS] = 0.63$ — a low pair `4♠4♥` (peaked HSD near 0.63) and a high suited connector `Q♠K♠` (bimodal HSD with mass near 0.0 and near 1.0) — get distance 0 under the older $E[HS]$-only metric but a large EMD distance under HSD. The latter correctly refuses to merge them.
-
 The empirical route does *not* come with the Gilpin or Kroer guarantees. It comes with the error-budget section evaluator (CFR-BR) that measures merge quality after the fact.
+
+*Intuition:* A low pair and a high suited connector might have the same average win probability, but their strategic character is entirely different (one is a stable medium hand, the other is boom-or-bust). Earth Mover's Distance correctly identifies this character difference, preventing harmful merges that average strength alone would allow.
 
 > **Remember:** empirical abstraction is a budgeted guess that must be measured after solving.
 
@@ -235,17 +237,9 @@ The empirical route does *not* come with the Gilpin or Kroer guarantees. It come
 
 The decision order is: first take every lossless merge you can find; then accept bounded lossy merges only when the error budget is tolerable; when exact checks are too pessimistic or too expensive, cluster with HSD + EMD and verify the resulting abstraction empirically.
 
-#### Implicit route — equivariant + finite-memory + learned-feature encoders
+#### Deep RL Equivalents (Implicit Route)
 
-The same three levels of strictness map to three Deep-RL idioms:
-
-- **Lossless ↔ permutation/group-equivariant encoders.** A network whose architecture is invariant under the suit-permutation group $S_4$ produces identical features for J♠ and J♥ by construction. Anchors: Zaheer et al. 2017 *"Deep Sets"* (NeurIPS); Cohen & Welling 2016 *"Group Equivariant Convolutional Networks"* (ICML).
-- **Bounded lossy ↔ finite-capacity recurrent / transformer policy.** An LSTM hidden state of width $d$ caps representable past at roughly $d$ floats; a transformer with context length $L$ caps attention at $L$ tokens. The Information Bottleneck Lagrangian penalises the mutual information of the hidden state with the full history to *force* forgetting at a controlled rate. Anchors: Tishby & Zaslavsky 2015 (IEEE ITW); Alemi et al. 2017 *"Deep Variational Information Bottleneck"* (ICLR).
-- **Empirical similarity ↔ end-to-end-learned encoder.** Replace HSD + EMD with a learned encoder $z = f_\theta(s)$ trained end-to-end alongside the policy; cosine or Wasserstein similarity in $z$-space replaces EMD on HSD histograms. Forward pointer to step 5 (Deep CFR).
-
-#### Why these are not the same theorem
-
-Gilpin's lossless lift is constructive and exact on the partition; equivariance is an architectural symmetry on the function class with no Nash-preservation theorem. Kroer's bounded lossy is data-independent and instance-wise; the IB / VIB analogue is asymptotic and on the training distribution. Johanson's empirical similarity is a measured property of HSD+EMD vs $E[HS]$ on real Texas hold'em; the learned-encoder analogue inherits its quality from the training data, not from any closed-form bound.
+In Deep RL, these three levels map naturally to network architectures: **Lossless** abstraction corresponds to permutation-equivariant networks (like Deep Sets), **Bounded lossy** relates to information bottlenecks in recurrent/transformer policies, and **Empirical similarity** matches end-to-end learned latent embeddings (like in Deep CFR).
 
 ### The Error Budget
 
@@ -253,40 +247,33 @@ Gilpin's lossless lift is constructive and exact on the partition; equivariance 
 
 Three quantification tools, increasing in tightness and decreasing in formal rigour.
 
-#### Tool 1 — Analytical bound (Kroer Theorem 2)
+#### Tool 1 — Analytical bound
 
 Given a CRSWF abstraction with per-merge constants $(\delta, \varepsilon^R, \varepsilon^0, \varepsilon^D)$ from the merging-criterion section Level 2, an upper bound on the exploitability gap of any abstract Nash strategy implemented in the original game.
 
 *The reach-weighting is the key idea.* Each merge contributes to $\varepsilon$ in proportion to how often its info set is reached during play. The formula combines reward mismatch, chance-probability mismatch, and conditional-distribution mismatch, then discounts them by opponent reach. Rare info sets can be merged aggressively without hurting overall exploitability — exactly what every practical poker abstraction since 2010 exploits.
 
-*Concrete example (Leduc, lossy J/Q bucket).* From the merging-criterion section: $\varepsilon^R = 2, \varepsilon^0 = \varepsilon^D = 0$. There are six ordered J–Q board-card scenarios per round, each reached with chance-probability $1/30$. Across two betting rounds, plugging these values into the reach-weighted bound returns a positive number that *shrinks as opponent strategies make the J/Q distinction matter less*. **That bound is the $\varepsilon_{\text{abs}}$ floor information abstraction promised.** Theorem 1 is the analogous statement at the regret level rather than the equilibrium level — useful for CFR-style algorithms whose convergence bound is on regret, not on Nash distance.
+Theorem 1 is the analogous statement at the regret level rather than the equilibrium level — useful for CFR-style algorithms whose convergence bound is on regret, not on Nash distance.
 
 *The improvement over Lanctot et al. 2009.* Their predecessor took the *maximum* per-leaf reward error rather than this reach-weighted sum; the difference can be exponential. Concretely: aces vs kings ($I_A, I_K$) become "as similar as aces vs twos" ($I_A, I_2$) under the maximum, but very different under reach-weighting because aces and kings co-occur with similar opponent ranges while aces and twos do not.
 
+*Intuition:* The error of a bucket merge is weighted by how often players actually reach that situation. A sloppy merge in a rare endgame scenario costs almost nothing to overall strategy, allowing aggressive abstraction without losing money overall.
+
 > **Remember:** the analytical bound is rigorous but usually loose; its most important idea is reach-weighting.
 
-#### Tool 2 — EMD proxy (Johanson Section 3)
+#### Tool 2 — EMD proxy
 
 A *measured* upper bound that does not require enumerating leaves. Earth Mover's Distance between the hand-strength histograms of two info sets is the minimum work to transform one into the other:
 
 In words: *imagine each histogram as piles of sand on the bin grid. EMD is the minimum total work — sand mass times distance moved — to reshape pile A into pile B.* On one-dimensional histograms it can be computed cheaply as the distance between cumulative distributions. Two strategically equivalent hands (same shape) get distance 0; an "all-strength" vs "all-potential" pair gets a large distance even when their means coincide.
 
-*Concrete example (the four canonical hands from Figure 2 of the paper, distance pairs):*
-
-| Pair | $E[HS]$ distance | EMD distance |
-|---|---|---|
-| `4♠4♥` ↔ `6♠6♥` | 0.063 | 3.101 |
-| `4♠4♥` ↔ `T♠J♠` | 0.005 | 6.212 |
-| `4♠4♥` ↔ `Q♠K♠` | 0.064 | 5.143 |
-| `T♠J♠` ↔ `Q♠K♠` | 0.059 | 3.103 |
-
-Two pairs of low pairs (`4♠4♥`,`6♠6♥`) and two pairs of suited high cards (`T♠J♠`,`Q♠K♠`) get small EMD distances — those are the natural strategic groupings. The cross-pair (low pair vs suited high) gets a large EMD distance, even when $E[HS]$ values almost coincide, because the *shapes* of their HSD histograms differ (peaked vs bimodal).
+*Intuition:* Hands that play similarly (like two different low pairs, or two different suited connectors) will naturally have a small structural distance. Hands that play completely differently will have a huge distance, even if their raw win percentage is identical.
 
 EMD is a *proxy*, not a bound. It correlates well with post-solve exploitability but carries no formal guarantee.
 
 > **Remember:** EMD remembers distribution shape; expected hand strength remembers only the mean.
 
-#### Tool 3 — CFR-BR direct evaluator (Johanson Section 3)
+#### Tool 3 — CFR-BR direct evaluator
 
 The strongest measurement: it returns the closest representable Nash approximation the abstraction can express, *isolating* abstraction error from solving error.
 
@@ -303,14 +290,9 @@ Two factorial comparisons on equal info-set budgets:
 
 Both are reasons the build-time pipeline defaults to imperfect recall + HSD + EMD.
 
-#### Implicit route — VIB rate–distortion + Wasserstein objectives
+#### Deep RL Equivalents (Implicit Route)
 
-- **Alemi et al. 2017, *"Deep Variational Information Bottleneck"* (ICLR)** — variational tractable form of the IB Lagrangian. Test loss vs $I(z; s)$ is the *rate–distortion curve* of the encoder, structurally the same plot as the Pareto frontier (info-set count vs $\Delta_{\text{abs}}$): one axis sweeps "compression budget," the other sweeps "task quality."
-- **Tolstikhin et al. 2018, *"Wasserstein Auto-Encoders"* (ICLR)** — replaces the KL term in a VAE / VIB by Wasserstein distance between aggregated posterior and prior. Wasserstein and EMD are the same object; where Johanson uses EMD on HSD histograms to merge info sets, a WAE uses Wasserstein on latent codes to shape the encoder.
-
-#### Why these are not the same theorem
-
-Kroer's Theorem 2 is constructive and instance-wise; the IB / WAE bounds are asymptotic and on the encoder's training distribution. Johanson's CFR-BR is a *direct measurement* of abstraction quality without distributional assumptions; the analogue in Deep RL would be evaluating a learned encoder against a fixed validation game tree, which the literature does not formalise as a guarantee — it reports test-loss curves instead.
+Rather than explicit error bounds, Deep RL monitors abstraction quality purely via rate-distortion curves (Information Bottleneck) and test loss tracking, accepting asymptotic convergence over formal algorithmic guarantees.
 
 ### The Build-Time Pipeline
 
@@ -336,6 +318,8 @@ The pipeline computes a hand-strength distribution for each information set, clu
 
 Imperfect recall is the bucket-reallocation freedom that the merging-criterion section Level 2 enables and the error-budget section Theorem 2 quantifies — empirically worth more than the lost continuity (Johanson Section 3's Tool 3 result).
 
+![Infoset grouping via K-means](day01_infosets_kmeans.png)
+
 > **Remember:** HSD + EMD decides *what looks strategically similar*; imperfect recall decides *where to spend the bucket budget*.
 
 #### Annotation — computational hardness (Kroer Theorem 3 + Proposition 2)
@@ -346,18 +330,9 @@ Imperfect recall is the bucket-reallocation freedom that the merging-criterion s
 
 This is *why* every practical poker abstraction since 2010 is a level-by-level clustering pipeline rather than a global optimiser.
 
-#### Implicit route — end-to-end-learned abstraction (Deep CFR forward pointer)
+#### Deep RL Equivalents (Implicit Route)
 
-In the implicit route the build-time pipeline is replaced by *training the encoder and policy together*: the encoder's compression behaviour is shaped by gradients from the regret loss, not by a separate clustering pass.
-
-- **Brown, Lerer, Gross & Sandholm 2019, *"Deep Counterfactual Regret Minimization"* (ICML)** — the seminal Deep CFR paper. Two networks: an *advantage* network estimates regrets at sampled info sets, and a *strategy* network estimates the average policy. Card abstraction becomes implicit — whatever similarity the network discovers from the regret-loss signal.
-- **Steinberger, Lerer & Brown 2020, *"DREAM: Deep Regret minimization with Advantage baselines and Model-free learning"* (NeurIPS)** — single-network variant with reduced variance.
-
-The the build-time pipeline explicit pipeline is *replaced* by gradient descent in the implicit route. There is no separate "build-time" step at all in Deep CFR — abstraction happens during training.
-
-#### Why these are not the same theorem
-
-GameShrink's Theorem 4.1 is a completeness statement: the algorithm finds every merge expressible under Definition 3.2. The Johanson + Kroer pipeline carries no completeness — it returns one partition that scores well, leaving better partitions on the table; Theorem 3 says finding the best is NP-hard. Deep CFR carries no completeness or optimality — its regret bound is *with respect to the network's own function class*, not with respect to all possible abstractions.
+In Modern Deep RL (like Deep CFR), there is no separate \"build-time\" abstraction pipeline. The neural network's latent space learns its own abstract representation directly shaped by the gradient descent of the regret-minimization loss.
 
 ### Runtime Patching
 
@@ -402,19 +377,9 @@ The inexpensive version builds a subgame just after the off-tree action, re-solv
 
 > **Remember:** action translation rounds the opponent's move; nested solving keeps the move and solves around it.
 
-#### Implicit route — depth-limited search with NN value heads (ReBeL / DeepStack / MuZero)
+#### Deep RL Equivalents (Implicit Route)
 
-The Deep-RL counterpart to "tabular subgame solver seeded by blueprint $\text{CBV}$ values" is "depth-limited solver seeded by a learned value head $V_\phi(\text{public-belief-state})$."
-
-- **Brown, Bakhtin, Lerer & Gong 2020, *"Combining Deep Reinforcement Learning and Search for Imperfect-Information Games (ReBeL),"* NeurIPS** — trains a NN that maps a public belief state to an EV vector; runs CFR on a depth-limited subgame at runtime where leaves are evaluated with $V_\phi$ instead of rolling out to terminal.
-- **Moravčík, Schmid, Burch et al. 2017, *"DeepStack,"* Science** — earlier and simultaneous; uses a NN to evaluate counterfactual values at the leaves of a depth-limited live solve. The first NN-augmented poker AI to beat human pros.
-- **Schrittwieser et al. 2020, *"MuZero,"* Nature** — perfect-information analogue: NN learns environment dynamics + value; search expands in the *learned* model. The off-tree-action problem dissolves because the model can simulate any action.
-
-Both ReBeL and DeepStack inherit the *structural pattern* of Brown & Sandholm's tabular form (live solve + scaffolded alternative payoffs); the NN replaces the $\text{CBV}^{\sigma_2}$ table.
-
-#### Why these are not the same theorem
-
-Brown & Sandholm's Theorem 1 is a conservative deterministic exploitability bound; Theorem 2 trades determinism for a $2\Delta$ slack against the true minimally-exploitable strategy. Both are instance-wise. ReBeL / DeepStack provide neither in closed form: their guarantee is asymptotic — as $V_\phi$'s training error goes to zero, the live-solve solution converges toward an exact subgame Nash. In practice excellent; in theory there is no upfront $\varepsilon$ to read off.
+The Deep RL equivalent of subgame solving replaces exact equilibrium solvers with depth-limited heuristic search backed by neural-network value functions (as seen in DeepStack and ReBeL).
 
 ---
 
