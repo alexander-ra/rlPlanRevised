@@ -253,6 +253,8 @@ This pipeline + linear programming was the engine that solved Rhode Island Hold'
 
 ### Pipeline 2 — HSD + EMD + k-means + imperfect recall (lossy)
 
+![Infoset grouping via K-means](day01_infosets_kmeans.png){width=65% fig-pos="H"}
+
 When the lossless merger has run to convergence and the game is still too large, switch to clustering:
 
 The pipeline computes an HSD for each information set, clusters those distributions with EMD as the distance metric, and maps each information set to a bucket id. Two recall regimes:
@@ -261,8 +263,6 @@ The pipeline computes an HSD for each information set, clusters those distributi
 - **Imperfect recall** — the later-round bucket can forget the earlier trail, freeing more buckets for the round where new information matters most.
 
 Imperfect recall consistently wins at a fixed bucket budget — capacity is spent on rounds that matter rather than on remembering history.
-
-![Infoset grouping via K-means](day01_infosets_kmeans.png)
 
 > **Remember:** HSD + EMD decides *what looks strategically similar*; imperfect recall decides *where to spend the bucket budget*.
 
