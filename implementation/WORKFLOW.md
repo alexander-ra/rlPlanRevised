@@ -29,6 +29,31 @@ Consequences that are **not** optional:
 
 Everything below serves this rule.
 
+### 0.1 When a real run contradicts a prediction
+
+Once code is actually executed (by the human, or by the agent when explicitly asked to run
+it), an "expected outcome" will sometimes not match what happened. When it doesn't:
+
+1. **Suspect a bug first, not the prediction.** A mismatch is the most common place a real
+   defect hides. Before concluding "the prediction was just wrong," verify the run itself:
+   re-read the relevant code path, check inputs/config/seeds, and confirm the observed
+   behavior is genuinely the mathematically/theoretically correct outcome (a tiny targeted
+   check — a print, a hand computation — is worth more than a plausible story). Only call it
+   "expected, prediction was off" **after** you have actively ruled out an implementation
+   error. Silently trusting the number is exactly the failure §0 warns about, in reverse.
+2. **Keep the original assumption; don't rewrite history.** The pre-run prediction is a
+   legitimate artifact — it shows what theory led you to expect. Leave it in place.
+3. **Append what really happened and why the two diverged.** Add a clearly-labeled
+   "what actually happened (observed on a real run)" note next to the prediction, naming
+   the source of the confusion (an ambiguous term, an off-by-one mental model, a config
+   that means something other than assumed). The gap between prediction and reality is
+   usually the most instructive part of the step — capture it, don't erase it.
+4. **Check whether the lesson still holds.** Often the headline takeaway survives even when
+   the mechanism differs; say so explicitly. If the takeaway itself changes, update it.
+
+This mirrors real research: you form a hypothesis, run the experiment, and report the
+result **and** the reconciliation — never just quietly edit the hypothesis to match.
+
 ---
 
 ## 1. Why this exists (the retired restriction)

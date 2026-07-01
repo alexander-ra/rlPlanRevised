@@ -10,9 +10,18 @@ its likelihood under each type and renormalize:
 
 Two experiments:
   1) Hidden opponent really IS one of our types (TightPassive) -> the posterior should
-     concentrate on it within a handful of hands.
-  2) Hidden opponent is a MIXTURE of two types -> the posterior should split between the
-     two nearest types and stay low on the others (type-based models degrade gracefully).
+     concentrate on it within a handful of hands.  (Confirmed on a real run.)
+  2) Hidden opponent is a MIXTURE of two types -> the naive prediction was that the
+     posterior would "split between the two nearest types". OBSERVED on a real run: it does
+     NOT split; it commits hard to one type and jumps AlwaysCall -> LooseAggressive -> Nash,
+     landing on Nash. This is correct, not a bug: `mixture()` is a per-ACTION average (with
+     J/Q it plays a true 0.5/0.5), so the only candidate that assigns real probability to
+     both betting and checking a J/Q is Nash; every deterministic type eventually eats a
+     fatal run of epsilon-sized likelihood penalties. The takeaway is unchanged -- a
+     type-based model has no honest home for an unrepresentable opponent (it lands on the
+     nearest MIXED type instead of reporting uncertainty), which motivates the continuous
+     model in Phase 4. (A per-HAND mixture, picking one whole-hand policy per deal, would
+     instead produce the two-type split the prediction imagined.)
 
 SIMPLIFICATION (important — see the README "watch out"): this detector is *omniscient*
 about the opponent's private card (it uses the true card when scoring the likelihood).
@@ -25,12 +34,15 @@ Runtime: < 1 s.
 """
 
 import os
+import re
 import json
 import math
 import random
 
 from kuhn_tools import play_hand, random_deal
-from opponent_types import make_type_zoo, mixture, tight_passive, loose_aggressive
+from opponent_types import (
+    make_type_zoo, mixture, tight_passive, loose_aggressive, always_call,
+)
 
 FIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures")
 
@@ -99,10 +111,16 @@ def main():
     os.makedirs(FIG_DIR, exist_ok=True)
     candidates = make_type_zoo(include_nash=True, seed=CONFIG["seed"])
 
+    nash_policy = candidates["Nash"]
     scenarios = {
         "hidden = TightPassive": candidates["TightPassive"],
         "hidden = Mixture(TightPassive, LooseAggressive)":
             mixture(tight_passive, loose_aggressive, 0.5),
+        "hidden = AlwaysCall": candidates["AlwaysCall"],
+        "hidden = Mixture(AlwaysCall, TightPassive)":
+            mixture(always_call, tight_passive, 0.5),
+        "hidden = Mixture(Nash, TightPassive)":
+            mixture(nash_policy, tight_passive, 0.5),
     }
 
     out = {}
@@ -144,7 +162,10 @@ def _maybe_plot(out):
         ax.set_title(f"Type posterior over time\n{label}")
         ax.legend()
         fig.tight_layout()
-        safe = label.split("=")[0].strip().replace(" ", "_") + "_" + str(abs(hash(label)) % 1000)
+        # Deterministic slug of the full label so re-runs overwrite the same
+        # file (Python's str hash() is randomized per process, so hashing here
+        # would litter figures/ with a new PNG every run and break determinism).
+        safe = re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
         path = os.path.join(FIG_DIR, f"posterior_{safe}.png")
         fig.savefig(path, dpi=120)
         plt.close(fig)

@@ -1,0 +1,1557 @@
+{
+  "hidden = TightPassive": {
+    "names": [
+      "AlwaysCall",
+      "TightPassive",
+      "LooseAggressive",
+      "Nash"
+    ],
+    "trajectory": [
+      {
+        "AlwaysCall": 0.005500814771549267,
+        "TightPassive": 0.5445806623833773,
+        "LooseAggressive": 5.556378557120472e-05,
+        "Nash": 0.4498629590595022
+      },
+      {
+        "AlwaysCall": 0.005500998324558488,
+        "TightPassive": 0.5445988341312897,
+        "LooseAggressive": 5.556563964200489e-05,
+        "Nash": 0.44984460190450976
+      },
+      {
+        "AlwaysCall": 7.153410956094531e-05,
+        "TightPassive": 0.7011058078068249,
+        "LooseAggressive": 7.153410956094531e-05,
+        "Nash": 0.29875112397405323
+      },
+      {
+        "AlwaysCall": 7.158326206041555e-05,
+        "TightPassive": 0.7015875514541312,
+        "LooseAggressive": 7.230632531355099e-07,
+        "Nash": 0.29834014222055527
+      },
+      {
+        "AlwaysCall": 7.626937513550157e-07,
+        "TightPassive": 0.7400409842460194,
+        "LooseAggressive": 7.781795238802338e-11,
+        "Nash": 0.2599582529824113
+      },
+      {
+        "AlwaysCall": 8.377930226690933e-07,
+        "TightPassive": 0.8129097321027975,
+        "LooseAggressive": 8.634379945450778e-13,
+        "Nash": 0.18708943010331638
+      },
+      {
+        "AlwaysCall": 8.74719726149845e-09,
+        "TightPassive": 0.8402522788078304,
+        "LooseAggressive": 9.106010404413844e-17,
+        "Nash": 0.15974771244497232
+      },
+      {
+        "AlwaysCall": 9.329623423308974e-11,
+        "TightPassive": 0.887237904488078,
+        "LooseAggressive": 9.712327894542242e-19,
+        "Nash": 0.1127620954186257
+      },
+      {
+        "AlwaysCall": 9.331414454188421e-11,
+        "TightPassive": 0.8874082297426198,
+        "LooseAggressive": 9.812315549641784e-21,
+        "Nash": 0.112591770164066
+      },
+      {
+        "AlwaysCall": 9.708332258269299e-11,
+        "TightPassive": 0.9232527378737302,
+        "LooseAggressive": 1.0311775839826265e-22,
+        "Nash": 0.07674726202918655
+      },
+      {
+        "AlwaysCall": 1.0193706185305912e-12,
+        "TightPassive": 0.9597172022291717,
+        "LooseAggressive": 1.0936686154244928e-26,
+        "Nash": 0.040282797769808996
+      },
+      {
+        "AlwaysCall": 1.0193736642703737e-12,
+        "TightPassive": 0.9597200697327172,
+        "LooseAggressive": 1.0936718831565132e-26,
+        "Nash": 0.040279930266263496
+      },
+      {
+        "AlwaysCall": 1.0369349252801442e-14,
+        "TightPassive": 0.9664911118881478,
+        "LooseAggressive": 1.1237506230507377e-30,
+        "Nash": 0.03350888811184178
+      },
+      {
+        "AlwaysCall": 1.0474116458916759e-16,
+        "TightPassive": 0.9664935391285651,
+        "LooseAggressive": 1.1351044901331619e-32,
+        "Nash": 0.03350646087143486
+      },
+      {
+        "AlwaysCall": 1.075436744354313e-18,
+        "TightPassive": 0.9824300145453301,
+        "LooseAggressive": 1.1538211851446742e-32,
+        "Nash": 0.017569985454669958
+      },
+      {
+        "AlwaysCall": 1.0754756961791035e-18,
+        "TightPassive": 0.9824655977090972,
+        "LooseAggressive": 1.1655181575938316e-34,
+        "Nash": 0.017534402290902692
+      },
+      {
+        "AlwaysCall": 1.0956398998420453e-20,
+        "TightPassive": 0.9908770860815951,
+        "LooseAggressive": 1.1754968707959994e-34,
+        "Nash": 0.00912291391840498
+      },
+      {
+        "AlwaysCall": 1.0990974233421629e-20,
+        "TightPassive": 0.9940040083590233,
+        "LooseAggressive": 1.1911175756188755e-36,
+        "Nash": 0.00599599164097671
+      },
+      {
+        "AlwaysCall": 1.1135047622762348e-22,
+        "TightPassive": 0.9969634099651759,
+        "LooseAggressive": 1.2189203491707422e-40,
+        "Nash": 0.0030365900348241046
+      },
+      {
+        "AlwaysCall": 1.1258856523680902e-24,
+        "TightPassive": 0.9979680095413291,
+        "LooseAggressive": 1.2324733391399627e-42,
+        "Nash": 0.0020319904586707637
+      },
+      {
+        "AlwaysCall": 1.125889546493271e-24,
+        "TightPassive": 0.997971461234978,
+        "LooseAggressive": 1.244926870628591e-44,
+        "Nash": 0.0020285387650220517
+      },
+      {
+        "AlwaysCall": 1.1258897158954234e-24,
+        "TightPassive": 0.9979716113904832,
+        "LooseAggressive": 1.244927057941185e-44,
+        "Nash": 0.0020283886095168947
+      },
+      {
+        "AlwaysCall": 1.1262869783897324e-24,
+        "TightPassive": 0.9983237388555317,
+        "LooseAggressive": 1.2579457797458297e-46,
+        "Nash": 0.0016762611444683228
+      },
+      {
+        "AlwaysCall": 1.13766375746048e-26,
+        "TightPassive": 0.9983238642755764,
+        "LooseAggressive": 1.270652462406433e-48,
+        "Nash": 0.001676135724423446
+      },
+      {
+        "AlwaysCall": 1.1376670032234532e-26,
+        "TightPassive": 0.998326712500821,
+        "LooseAggressive": 1.283490997562789e-50,
+        "Nash": 0.0016732874991790205
+      },
+      {
+        "AlwaysCall": 1.137667144420477e-26,
+        "TightPassive": 0.9983268364041779,
+        "LooseAggressive": 1.283491156858161e-50,
+        "Nash": 0.0016731635958221222
+      },
+      {
+        "AlwaysCall": 1.15009033812799e-28,
+        "TightPassive": 0.9991361655547533,
+        "LooseAggressive": 1.284531664605596e-50,
+        "Nash": 0.0008638344452467395
+      },
+      {
+        "AlwaysCall": 1.150092386076585e-28,
+        "TightPassive": 0.9991379447015198,
+        "LooseAggressive": 1.297509042375611e-52,
+        "Nash": 0.0008620552984801897
+      },
+      {
+        "AlwaysCall": 1.1502648150728063e-28,
+        "TightPassive": 0.9992877416700013,
+        "LooseAggressive": 1.3108116898917977e-54,
+        "Nash": 0.0007122583299986891
+      },
+      {
+        "AlwaysCall": 1.1618837129705532e-30,
+        "TightPassive": 0.9992877944619728,
+        "LooseAggressive": 1.3108117591414548e-54,
+        "Nash": 0.0007122055380272321
+      },
+      {
+        "AlwaysCall": 1.1737653091294317e-32,
+        "TightPassive": 0.9994115938998457,
+        "LooseAggressive": 1.337592238095964e-58,
+        "Nash": 0.0005884061001542681
+      },
+      {
+        "AlwaysCall": 1.1737667328172484e-32,
+        "TightPassive": 0.9994128061099008,
+        "LooseAggressive": 1.3511049095892207e-60,
+        "Nash": 0.0005871938900992406
+      },
+      {
+        "AlwaysCall": 1.1737679059744459e-32,
+        "TightPassive": 0.9994138050037275,
+        "LooseAggressive": 1.3647537979722585e-62,
+        "Nash": 0.0005861949962726122
+      },
+      {
+        "AlwaysCall": 1.1737679570089754e-32,
+        "TightPassive": 0.9994138484574743,
+        "LooseAggressive": 1.3647538573107083e-62,
+        "Nash": 0.0005861515425256996
+      },
+      {
+        "AlwaysCall": 1.1737691280848982e-32,
+        "TightPassive": 0.9994148455791693,
+        "LooseAggressive": 1.378540625186344e-64,
+        "Nash": 0.000585154420830826
+      },
+      {
+        "AlwaysCall": 1.1740060123344161e-32,
+        "TightPassive": 0.9996165425142856,
+        "LooseAggressive": 1.39274629838518e-66,
+        "Nash": 0.00038345748571454863
+      },
+      {
+        "AlwaysCall": 1.1860848476479017e-34,
+        "TightPassive": 0.9998021491006411,
+        "LooseAggressive": 1.393004900434174e-66,
+        "Nash": 0.0001978508993587434
+      },
+      {
+        "AlwaysCall": 1.1980655202562587e-36,
+        "TightPassive": 0.9998021637727272,
+        "LooseAggressive": 1.3930049208765067e-66,
+        "Nash": 0.00019783622727282096
+      },
+      {
+        "AlwaysCall": 1.1981067374738206e-36,
+        "TightPassive": 0.9998365601080055,
+        "LooseAggressive": 1.4071240854766425e-68,
+        "Nash": 0.00016343989199449265
+      },
+      {
+        "AlwaysCall": 1.1981742638474558e-36,
+        "TightPassive": 0.9998929117960649,
+        "LooseAggressive": 1.4214175679353873e-70,
+        "Nash": 0.00010708820393521153
+      },
+      {
+        "AlwaysCall": 1.2103412013938355e-38,
+        "TightPassive": 0.999945924727095,
+        "LooseAggressive": 1.4503549938957306e-74,
+        "Nash": 5.4075272904941057e-05
+      },
+      {
+        "AlwaysCall": 1.2225668750495845e-40,
+        "TightPassive": 0.9999459287796513,
+        "LooseAggressive": 1.465005050276431e-76,
+        "Nash": 5.4071220348638415e-05
+      },
+      {
+        "AlwaysCall": 1.2349276492647467e-42,
+        "TightPassive": 0.999955332846667,
+        "LooseAggressive": 1.4947646444516576e-80,
+        "Nash": 4.4667153333070414e-05
+      },
+      {
+        "AlwaysCall": 1.247401670099883e-44,
+        "TightPassive": 0.9999553361941833,
+        "LooseAggressive": 1.509863282278386e-82,
+        "Nash": 4.4663805816783976e-05
+      },
+      {
+        "AlwaysCall": 1.2600289326928414e-46,
+        "TightPassive": 0.9999769587893371,
+        "LooseAggressive": 1.509895930899088e-82,
+        "Nash": 2.304121066293895e-05
+      },
+      {
+        "AlwaysCall": 1.2600289925397384e-46,
+        "TightPassive": 0.9999770062846893,
+        "LooseAggressive": 1.525147477387628e-84,
+        "Nash": 2.2993715310575815e-05
+      },
+      {
+        "AlwaysCall": 1.2600290418550932e-46,
+        "TightPassive": 0.9999770454220593,
+        "LooseAggressive": 1.5405530677568453e-86,
+        "Nash": 2.2954577940596118e-05
+      },
+      {
+        "AlwaysCall": 1.2727566101014098e-48,
+        "TightPassive": 0.9999770471246063,
+        "LooseAggressive": 1.5405530703797694e-86,
+        "Nash": 2.295287539361834e-05
+      },
+      {
+        "AlwaysCall": 1.2856273463207302e-50,
+        "TightPassive": 0.9999884101959303,
+        "LooseAggressive": 1.571850399138845e-90,
+        "Nash": 1.1589804069678522e-05
+      },
+      {
+        "AlwaysCall": 1.298618470526935e-52,
+        "TightPassive": 0.9999922522452671,
+        "LooseAggressive": 1.5877337760965584e-92,
+        "Nash": 7.747754732827737e-06
+      }
+    ],
+    "n_obs": 60
+  },
+  "hidden = Mixture(TightPassive, LooseAggressive)": {
+    "names": [
+      "AlwaysCall",
+      "TightPassive",
+      "LooseAggressive",
+      "Nash"
+    ],
+    "trajectory": [
+      {
+        "AlwaysCall": 0.9722110611418922,
+        "TightPassive": 0.009820313748908002,
+        "LooseAggressive": 0.009820313748908002,
+        "Nash": 0.0081483113602918
+      },
+      {
+        "AlwaysCall": 0.9722116487235045,
+        "TightPassive": 0.009820319684075813,
+        "LooseAggressive": 0.009820319684075813,
+        "Nash": 0.008147711908343765
+      },
+      {
+        "AlwaysCall": 0.2917147452146763,
+        "TightPassive": 0.29171474521467655,
+        "LooseAggressive": 0.29171474521467655,
+        "Nash": 0.1248557643559706
+      },
+      {
+        "AlwaysCall": 0.009850726815138383,
+        "TightPassive": 0.009850726815138383,
+        "LooseAggressive": 0.9752219546986998,
+        "Nash": 0.0050765916710234305
+      },
+      {
+        "AlwaysCall": 0.0001019119990502408,
+        "TightPassive": 0.0001019119990502408,
+        "LooseAggressive": 0.998839502691408,
+        "Nash": 0.0009566733104914522
+      },
+      {
+        "AlwaysCall": 0.00010191200628174712,
+        "TightPassive": 0.00010191200628174712,
+        "LooseAggressive": 0.9988395735674014,
+        "Nash": 0.0009566024200350069
+      },
+      {
+        "AlwaysCall": 1.030596377950977e-06,
+        "TightPassive": 1.030596377950977e-06,
+        "LooseAggressive": 0.9999866349294538,
+        "Nash": 1.1303877790128422e-05
+      },
+      {
+        "AlwaysCall": 1.0306050995398303e-06,
+        "TightPassive": 1.0410152520604377e-08,
+        "LooseAggressive": 0.9999950974784001,
+        "Nash": 3.861506347829467e-06
+      },
+      {
+        "AlwaysCall": 1.0410202972907693e-08,
+        "TightPassive": 1.0515356538290628e-10,
+        "LooseAggressive": 0.9999999439065261,
+        "Nash": 4.557811724137789e-08
+      },
+      {
+        "AlwaysCall": 1.0306060324505379e-06,
+        "TightPassive": 1.0410161943944857e-08,
+        "LooseAggressive": 0.9999960026807267,
+        "Nash": 2.9563030789831887e-06
+      },
+      {
+        "AlwaysCall": 1.0410203084133632e-08,
+        "TightPassive": 1.0515356650640063e-10,
+        "LooseAggressive": 0.9999999545908492,
+        "Nash": 3.489379420038885e-08
+      },
+      {
+        "AlwaysCall": 1.0410203084160575e-08,
+        "TightPassive": 1.0515356650667316e-10,
+        "LooseAggressive": 0.9999999545934374,
+        "Nash": 3.489120605934077e-08
+      },
+      {
+        "AlwaysCall": 1.0515357122686107e-10,
+        "TightPassive": 1.0621572851198119e-12,
+        "LooseAggressive": 0.9999999994819584,
+        "Nash": 4.1182577508596295e-10
+      },
+      {
+        "AlwaysCall": 1.0515357125548337e-10,
+        "TightPassive": 1.0728861468776983e-14,
+        "LooseAggressive": 0.9999999997541535,
+        "Nash": 1.4068219922993156e-10
+      },
+      {
+        "AlwaysCall": 1.0621572856414244e-12,
+        "TightPassive": 1.0837233809217659e-16,
+        "LooseAggressive": 0.9999999999730533,
+        "Nash": 2.5884413806961834e-11
+      },
+      {
+        "AlwaysCall": 1.0621572829472717e-12,
+        "TightPassive": 1.0728861443911865e-14,
+        "LooseAggressive": 0.9999999974365621,
+        "Nash": 2.562364904624125e-09
+      },
+      {
+        "AlwaysCall": 1.0728861457232416e-14,
+        "TightPassive": 1.0728861457232493e-14,
+        "LooseAggressive": 0.9999999986781316,
+        "Nash": 1.32184689435206e-09
+      },
+      {
+        "AlwaysCall": 1.0837233809335457e-16,
+        "TightPassive": 1.0837233809335457e-16,
+        "LooseAggressive": 0.9999999999839231,
+        "Nash": 1.607680347090173e-11
+      },
+      {
+        "AlwaysCall": 1.0728861471271401e-14,
+        "TightPassive": 1.0837233809365005e-16,
+        "LooseAggressive": 0.9999999999866496,
+        "Nash": 1.3339573837348247e-11
+      },
+      {
+        "AlwaysCall": 1.083723380936513e-16,
+        "TightPassive": 1.0837233809365207e-16,
+        "LooseAggressive": 0.9999999999866611,
+        "Nash": 1.333858441499963e-11
+      },
+      {
+        "AlwaysCall": 1.0946700817684782e-18,
+        "TightPassive": 1.0946700817684936e-18,
+        "LooseAggressive": 0.9999999999998426,
+        "Nash": 1.574371665286178e-13
+      },
+      {
+        "AlwaysCall": 1.0946700817684859e-18,
+        "TightPassive": 1.0946700817684936e-18,
+        "LooseAggressive": 0.9999999999998426,
+        "Nash": 1.5742548910526152e-13
+      },
+      {
+        "AlwaysCall": 1.0837233809370155e-16,
+        "TightPassive": 1.0837233809370307e-16,
+        "LooseAggressive": 0.9999999999871247,
+        "Nash": 1.2875009264319598e-11
+      },
+      {
+        "AlwaysCall": 1.0837233795697262e-16,
+        "TightPassive": 1.0728861457740337e-14,
+        "LooseAggressive": 0.9999999987254589,
+        "Nash": 1.2745303862661522e-09
+      },
+      {
+        "AlwaysCall": 1.0946700817521983e-18,
+        "TightPassive": 1.0837233809346809e-16,
+        "LooseAggressive": 0.9999999999849565,
+        "Nash": 1.504345938635027e-11
+      },
+      {
+        "AlwaysCall": 1.0946700817521994e-18,
+        "TightPassive": 1.0837233809346822e-16,
+        "LooseAggressive": 0.9999999999849576,
+        "Nash": 1.5042343583469238e-11
+      },
+      {
+        "AlwaysCall": 1.1057273553133154e-20,
+        "TightPassive": 1.0837233809425742e-16,
+        "LooseAggressive": 0.99999999999224,
+        "Nash": 7.759892078275287e-12
+      },
+      {
+        "AlwaysCall": 1.1168963185068634e-22,
+        "TightPassive": 1.0946700817685706e-18,
+        "LooseAggressive": 0.9999999999999056,
+        "Nash": 9.437875163072042e-14
+      },
+      {
+        "AlwaysCall": 1.1281780995019904e-24,
+        "TightPassive": 1.1057273553218947e-20,
+        "LooseAggressive": 0.9999999999999989,
+        "Nash": 1.1139655284818153e-15
+      },
+      {
+        "AlwaysCall": 1.1168963185068458e-22,
+        "TightPassive": 1.0946700817685533e-18,
+        "LooseAggressive": 0.9999999999998899,
+        "Nash": 1.1005525417896507e-13
+      },
+      {
+        "AlwaysCall": 1.1281780995019276e-24,
+        "TightPassive": 1.0946700817686037e-18,
+        "LooseAggressive": 0.9999999999999432,
+        "Nash": 5.677419149023174e-14
+      },
+      {
+        "AlwaysCall": 1.13957383788078e-26,
+        "TightPassive": 1.1057273553218656e-20,
+        "LooseAggressive": 0.9999999999999798,
+        "Nash": 2.0150485305006233e-14
+      },
+      {
+        "AlwaysCall": 1.1510846847280748e-28,
+        "TightPassive": 1.1057273553218685e-20,
+        "LooseAggressive": 0.9999999999999896,
+        "Nash": 1.0395028568714473e-14
+      },
+      {
+        "AlwaysCall": 1.151084684728087e-28,
+        "TightPassive": 1.1168963185069527e-22,
+        "LooseAggressive": 1.0,
+        "Nash": 1.0577936400292744e-16
+      },
+      {
+        "AlwaysCall": 1.1395738378807848e-26,
+        "TightPassive": 1.1057273553218705e-20,
+        "LooseAggressive": 0.9999999999999913,
+        "Nash": 8.651142196027717e-15
+      },
+      {
+        "AlwaysCall": 1.1281780995010193e-24,
+        "TightPassive": 1.0946700817677226e-18,
+        "LooseAggressive": 0.9999999999991454,
+        "Nash": 8.54697590704703e-13
+      },
+      {
+        "AlwaysCall": 1.1168963184126153e-22,
+        "TightPassive": 1.0837233808594253e-16,
+        "LooseAggressive": 0.9999999999155289,
+        "Nash": 8.447103572737913e-11
+      },
+      {
+        "AlwaysCall": 1.1281780994066921e-24,
+        "TightPassive": 1.0837233808594243e-16,
+        "LooseAggressive": 0.9999999999155351,
+        "Nash": 8.446477034502161e-11
+      },
+      {
+        "AlwaysCall": 1.116896310791504e-22,
+        "TightPassive": 1.0728861397300114e-14,
+        "LooseAggressive": 0.9999999930920564,
+        "Nash": 6.907932759014893e-09
+      },
+      {
+        "AlwaysCall": 1.1057268598816454e-20,
+        "TightPassive": 1.0621568097521106e-12,
+        "LooseAggressive": 0.9999995519327254,
+        "Nash": 4.48066212458383e-07
+      },
+      {
+        "AlwaysCall": 1.0922481038555796e-18,
+        "TightPassive": 1.0387170787887615e-08,
+        "LooseAggressive": 0.9977874814033713,
+        "Nash": 0.002212508209457907
+      },
+      {
+        "AlwaysCall": 8.97632119409011e-19,
+        "TightPassive": 8.451028218882939e-07,
+        "LooseAggressive": 0.8200024229754235,
+        "Nash": 0.1799967319217546
+      },
+      {
+        "AlwaysCall": 6.094439673952426e-20,
+        "TightPassive": 5.680416035000317e-06,
+        "LooseAggressive": 0.0005623611874650658,
+        "Nash": 0.9994319583965
+      },
+      {
+        "AlwaysCall": 6.159890165651925e-22,
+        "TightPassive": 5.684005968613666e-06,
+        "LooseAggressive": 5.68400596861407e-06,
+        "Nash": 0.9999886319880628
+      },
+      {
+        "AlwaysCall": 1.2061267889458913e-23,
+        "TightPassive": 1.1018176243540504e-05,
+        "LooseAggressive": 1.1018176243541286e-05,
+        "Nash": 0.999977963647513
+      },
+      {
+        "AlwaysCall": 1.0008098100360089e-23,
+        "TightPassive": 9.142570229186518e-06,
+        "LooseAggressive": 0.0009051144526895207,
+        "Nash": 0.9990857429770812
+      },
+      {
+        "AlwaysCall": 2.0038794300104373e-25,
+        "TightPassive": 1.812272636980146e-05,
+        "LooseAggressive": 1.8305784211922148e-07,
+        "Nash": 0.9999816942157881
+      },
+      {
+        "AlwaysCall": 3.0584996254512533e-25,
+        "TightPassive": 2.7660522376789817e-05,
+        "LooseAggressive": 2.822214302294902e-09,
+        "Nash": 0.999972336655409
+      },
+      {
+        "AlwaysCall": 5.988551452292115e-27,
+        "TightPassive": 5.361779202833215e-05,
+        "LooseAggressive": 5.4706450391120325e-09,
+        "Nash": 0.9999463767373266
+      },
+      {
+        "AlwaysCall": 9.14008934001073e-27,
+        "TightPassive": 8.183471633453018e-05,
+        "LooseAggressive": 8.433968945092022e-11,
+        "Nash": 0.9999181651993257
+      }
+    ],
+    "n_obs": 55
+  },
+  "hidden = AlwaysCall": {
+    "names": [
+      "AlwaysCall",
+      "TightPassive",
+      "LooseAggressive",
+      "Nash"
+    ],
+    "trajectory": [
+      {
+        "AlwaysCall": 0.9722110611418922,
+        "TightPassive": 0.009820313748908002,
+        "LooseAggressive": 0.009820313748908002,
+        "Nash": 0.0081483113602918
+      },
+      {
+        "AlwaysCall": 0.9722116487235045,
+        "TightPassive": 0.009820319684075813,
+        "LooseAggressive": 0.009820319684075813,
+        "Nash": 0.008147711908343765
+      },
+      {
+        "AlwaysCall": 0.9956731116497847,
+        "TightPassive": 0.00010158893088968337,
+        "LooseAggressive": 0.00010158893088968337,
+        "Nash": 0.004123710488435926
+      },
+      {
+        "AlwaysCall": 0.9957817148601215,
+        "TightPassive": 0.00010160001171922493,
+        "LooseAggressive": 1.0262627446386366e-06,
+        "Nash": 0.004115658865414774
+      },
+      {
+        "AlwaysCall": 0.9999643199020046,
+        "TightPassive": 1.0305733798571449e-06,
+        "LooseAggressive": 1.0409832119769113e-08,
+        "Nash": 3.4639114783311035e-05
+      },
+      {
+        "AlwaysCall": 0.9999762742630971,
+        "TightPassive": 1.030585700143049e-06,
+        "LooseAggressive": 1.0515107643536875e-10,
+        "Nash": 2.2695046051697082e-05
+      },
+      {
+        "AlwaysCall": 0.9999997993721678,
+        "TightPassive": 1.0410201468275637e-08,
+        "LooseAggressive": 1.0621570725717397e-12,
+        "Nash": 1.902165686767802e-07
+      },
+      {
+        "AlwaysCall": 0.9999999349146342,
+        "TightPassive": 1.0515356443737711e-10,
+        "LooseAggressive": 1.062157216539158e-12,
+        "Nash": 6.497915004392275e-08
+      },
+      {
+        "AlwaysCall": 0.9999999350262885,
+        "TightPassive": 1.0515356444911757e-10,
+        "LooseAggressive": 1.0728860774320686e-14,
+        "Nash": 6.486854715905742e-08
+      },
+      {
+        "AlwaysCall": 0.9999999573944214,
+        "TightPassive": 1.0515356680120663e-10,
+        "LooseAggressive": 1.083723334778307e-16,
+        "Nash": 4.250042495763913e-08
+      },
+      {
+        "AlwaysCall": 0.9999999786021692,
+        "TightPassive": 1.0621572629421917e-12,
+        "LooseAggressive": 1.094670058345093e-18,
+        "Nash": 2.1396768560692687e-08
+      },
+      {
+        "AlwaysCall": 0.9999999786037563,
+        "TightPassive": 1.0621572629438775e-12,
+        "LooseAggressive": 1.0946700583468304e-18,
+        "Nash": 2.1395181520445927e-08
+      },
+      {
+        "AlwaysCall": 0.9999999998206717,
+        "TightPassive": 1.0728861469490647e-14,
+        "LooseAggressive": 1.1057273551235919e-20,
+        "Nash": 1.7931765159371514e-10
+      },
+      {
+        "AlwaysCall": 0.9999999999981752,
+        "TightPassive": 1.0837233809489911e-16,
+        "LooseAggressive": 1.1057273553198624e-20,
+        "Nash": 1.8247287170076688e-12
+      },
+      {
+        "AlwaysCall": 0.999999999999098,
+        "TightPassive": 1.0946700817676631e-18,
+        "LooseAggressive": 1.1168963185059373e-22,
+        "Nash": 9.018377239386421e-13
+      },
+      {
+        "AlwaysCall": 0.9999999999991,
+        "TightPassive": 1.0946700817676731e-18,
+        "LooseAggressive": 1.1281780995009523e-24,
+        "Nash": 8.999787033335969e-13
+      },
+      {
+        "AlwaysCall": 0.9999999999995552,
+        "TightPassive": 1.1057273553213805e-20,
+        "LooseAggressive": 1.1395738378802637e-26,
+        "Nash": 4.4476312876491483e-13
+      },
+      {
+        "AlwaysCall": 0.9999999999999956,
+        "TightPassive": 1.1168963185069398e-22,
+        "LooseAggressive": 1.151084684728049e-28,
+        "Nash": 4.52554580960069e-15
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1281780995019595e-24,
+        "LooseAggressive": 1.1627118027556053e-30,
+        "Nash": 3.792957908602589e-17
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1395738378807623e-26,
+        "LooseAggressive": 1.1627118027556053e-30,
+        "Nash": 1.2956975796673926e-17
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1395738378807705e-26,
+        "LooseAggressive": 1.1744563664197982e-32,
+        "Nash": 1.293492135313145e-17
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1395738378807705e-26,
+        "LooseAggressive": 1.1744563664197982e-32,
+        "Nash": 1.293396194465086e-17
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1395738378807705e-26,
+        "LooseAggressive": 1.1863195620402121e-34,
+        "Nash": 1.0684861156439442e-17
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1510846847280542e-28,
+        "LooseAggressive": 1.1863195620401952e-34,
+        "Nash": 1.0872868796045162e-19
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1510846847280542e-28,
+        "LooseAggressive": 1.198302587919401e-36,
+        "Nash": 1.085436177135282e-19
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1510846847280542e-28,
+        "LooseAggressive": 1.198302587919401e-36,
+        "Nash": 1.0853556682056139e-19
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1627118027556053e-30,
+        "LooseAggressive": 1.210406654464036e-38,
+        "Nash": 5.363751175728775e-20
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1744563664197982e-32,
+        "LooseAggressive": 1.2104066544640188e-38,
+        "Nash": 5.458130146425407e-22
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1744563664197982e-32,
+        "LooseAggressive": 1.222632984307102e-40,
+        "Nash": 5.448839705117858e-22
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.1863195620402121e-34,
+        "LooseAggressive": 1.2349828124314284e-42,
+        "Nash": 5.544293602562755e-24
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.198302587919401e-36,
+        "LooseAggressive": 1.2474573862943666e-44,
+        "Nash": 2.7399508014268543e-24
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2104066544640533e-38,
+        "LooseAggressive": 1.2474573862943666e-44,
+        "Nash": 9.359839226701205e-25
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2226329843071194e-40,
+        "LooseAggressive": 1.2600579659539003e-46,
+        "Nash": 4.712195458077173e-25
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2226329843071194e-40,
+        "LooseAggressive": 1.2600579659539003e-46,
+        "Nash": 4.711845945299998e-25
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2349828124314284e-42,
+        "LooseAggressive": 1.2727858241958535e-48,
+        "Nash": 2.3287409154294987e-25
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2474573862943845e-44,
+        "LooseAggressive": 1.285642246662491e-50,
+        "Nash": 2.3695362789466984e-27
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2474573862943666e-44,
+        "LooseAggressive": 1.2986285319823085e-52,
+        "Nash": 1.957495023878785e-27
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2474573862943666e-44,
+        "LooseAggressive": 1.3117459919013348e-54,
+        "Nash": 1.2825070415469143e-27
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2600579659539182e-46,
+        "LooseAggressive": 1.3249959514154839e-56,
+        "Nash": 6.338548960744145e-28
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2600579659539003e-46,
+        "LooseAggressive": 1.3383797489045044e-58,
+        "Nash": 4.152875780616867e-28
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2727858241958716e-48,
+        "LooseAggressive": 1.3518987362671896e-60,
+        "Nash": 3.48061509003365e-30
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.285642246662491e-50,
+        "LooseAggressive": 1.365554279057742e-62,
+        "Nash": 3.541589222845248e-32
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.298628531982327e-52,
+        "LooseAggressive": 1.3793477566239954e-64,
+        "Nash": 1.7502284195364899e-32
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.2986285319823085e-52,
+        "LooseAggressive": 1.3793477566239954e-64,
+        "Nash": 1.7500986016626003e-32
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.3117459919013348e-54,
+        "LooseAggressive": 1.3932805622464343e-66,
+        "Nash": 8.649531981819119e-33
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.3117459919013348e-54,
+        "LooseAggressive": 1.4073541032792405e-68,
+        "Nash": 8.631702102062081e-33
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.311745991901316e-54,
+        "LooseAggressive": 1.4215698012921357e-70,
+        "Nash": 8.61700983206989e-33
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.311745991901316e-54,
+        "LooseAggressive": 1.435929092214252e-72,
+        "Nash": 5.645672480336812e-33
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.3249959514154839e-56,
+        "LooseAggressive": 1.4504334264790568e-74,
+        "Nash": 2.790051527924525e-33
+      },
+      {
+        "AlwaysCall": 1.0,
+        "TightPassive": 1.3383797489045044e-58,
+        "LooseAggressive": 1.4504334264790568e-74,
+        "Nash": 9.53098636734144e-34
+      }
+    ],
+    "n_obs": 64
+  },
+  "hidden = Mixture(AlwaysCall, TightPassive)": {
+    "names": [
+      "AlwaysCall",
+      "TightPassive",
+      "LooseAggressive",
+      "Nash"
+    ],
+    "trajectory": [
+      {
+        "AlwaysCall": 0.9722110611418922,
+        "TightPassive": 0.009820313748908002,
+        "LooseAggressive": 0.009820313748908002,
+        "Nash": 0.0081483113602918
+      },
+      {
+        "AlwaysCall": 0.9722116487235045,
+        "TightPassive": 0.009820319684075813,
+        "LooseAggressive": 0.009820319684075813,
+        "Nash": 0.008147711908343765
+      },
+      {
+        "AlwaysCall": 0.9956731116497847,
+        "TightPassive": 0.00010158893088968337,
+        "LooseAggressive": 0.00010158893088968337,
+        "Nash": 0.004123710488435926
+      },
+      {
+        "AlwaysCall": 0.9957817148601215,
+        "TightPassive": 0.00010160001171922493,
+        "LooseAggressive": 1.0262627446386366e-06,
+        "Nash": 0.004115658865414774
+      },
+      {
+        "AlwaysCall": 0.9999643199020046,
+        "TightPassive": 1.0305733798571449e-06,
+        "LooseAggressive": 1.0409832119769113e-08,
+        "Nash": 3.4639114783311035e-05
+      },
+      {
+        "AlwaysCall": 0.9999762742630971,
+        "TightPassive": 1.030585700143049e-06,
+        "LooseAggressive": 1.0515107643536875e-10,
+        "Nash": 2.2695046051697082e-05
+      },
+      {
+        "AlwaysCall": 0.9980457252553925,
+        "TightPassive": 0.00010183100961691608,
+        "LooseAggressive": 1.0600815385118676e-12,
+        "Nash": 0.001852443733930537
+      },
+      {
+        "AlwaysCall": 0.9993653272658856,
+        "TightPassive": 1.0299560519653084e-06,
+        "LooseAggressive": 1.0614831634014977e-12,
+        "Nash": 0.0006336427770009532
+      },
+      {
+        "AlwaysCall": 0.9993664051252887,
+        "TightPassive": 1.0299571628181518e-06,
+        "LooseAggressive": 1.072206371977486e-14,
+        "Nash": 0.0006325649175377731
+      },
+      {
+        "AlwaysCall": 0.9995844369862704,
+        "TightPassive": 1.0301818686675634e-06,
+        "LooseAggressive": 1.0832730255967391e-16,
+        "Nash": 0.0004145328318608248
+      },
+      {
+        "AlwaysCall": 0.9795926564562748,
+        "TightPassive": 9.994823553272828e-05,
+        "LooseAggressive": 1.07233077334296e-18,
+        "Nash": 0.020307395308192568
+      },
+      {
+        "AlwaysCall": 0.979594131959484,
+        "TightPassive": 9.994838607891821e-05,
+        "LooseAggressive": 1.072332388532186e-18,
+        "Nash": 0.020305919654437014
+      },
+      {
+        "AlwaysCall": 0.9998252664360158,
+        "TightPassive": 1.030430069943397e-06,
+        "LooseAggressive": 1.105534147640282e-20,
+        "Nash": 0.0001737031339142166
+      },
+      {
+        "AlwaysCall": 0.982993855417303,
+        "TightPassive": 0.00010029526124041369,
+        "LooseAggressive": 1.0869231960482254e-20,
+        "Nash": 0.016905849321456484
+      },
+      {
+        "AlwaysCall": 0.5295379476286874,
+        "TightPassive": 0.005348868157865469,
+        "LooseAggressive": 5.796693484302986e-19,
+        "Nash": 0.4651131842134471
+      },
+      {
+        "AlwaysCall": 0.5300461399889819,
+        "TightPassive": 0.005354001414030059,
+        "LooseAggressive": 5.8608651656858385e-21,
+        "Nash": 0.46459985859698805
+      },
+      {
+        "AlwaysCall": 0.6977025256666163,
+        "TightPassive": 7.118687130564332e-05,
+        "LooseAggressive": 7.792613823300409e-23,
+        "Nash": 0.30222628746207814
+      },
+      {
+        "AlwaysCall": 0.02278366087376578,
+        "TightPassive": 0.00023013798862389412,
+        "LooseAggressive": 2.5192517082499276e-22,
+        "Nash": 0.9769862011376103
+      },
+      {
+        "AlwaysCall": 0.7355661752442259,
+        "TightPassive": 7.505011480912325e-05,
+        "LooseAggressive": 8.2155115314851e-23,
+        "Nash": 0.264358774640965
+      },
+      {
+        "AlwaysCall": 0.027331712663792758,
+        "TightPassive": 0.00027607790569487316,
+        "LooseAggressive": 3.052668925267977e-24,
+        "Nash": 0.9723922094305123
+      },
+      {
+        "AlwaysCall": 0.03289372375481778,
+        "TightPassive": 0.00033225983590724767,
+        "LooseAggressive": 3.7109978751253047e-26,
+        "Nash": 0.966774016409275
+      },
+      {
+        "AlwaysCall": 0.032959407843005335,
+        "TightPassive": 0.000332923311545507,
+        "LooseAggressive": 3.755967888993169e-28,
+        "Nash": 0.9667076688454492
+      },
+      {
+        "AlwaysCall": 0.0006666983674557696,
+        "TightPassive": 0.0006666983674557696,
+        "LooseAggressive": 7.521544971373226e-28,
+        "Nash": 0.9986666032650885
+      },
+      {
+        "AlwaysCall": 6.7392790405835026e-06,
+        "TightPassive": 0.0006671886250177696,
+        "LooseAggressive": 7.603107020019101e-30,
+        "Nash": 0.9993260720959417
+      },
+      {
+        "AlwaysCall": 1.3394906250869872e-05,
+        "TightPassive": 1.3394906250869872e-05,
+        "LooseAggressive": 1.5264484724357227e-31,
+        "Nash": 0.9999732101874984
+      },
+      {
+        "AlwaysCall": 1.3422574392514597e-05,
+        "TightPassive": 1.3422574392514597e-05,
+        "LooseAggressive": 1.5450519812846684e-33,
+        "Nash": 0.9999731548512151
+      },
+      {
+        "AlwaysCall": 1.624785599421346e-05,
+        "TightPassive": 1.624785599421346e-05,
+        "LooseAggressive": 1.88915739339458e-35,
+        "Nash": 0.9999675042880115
+      },
+      {
+        "AlwaysCall": 0.0015942926186732658,
+        "TightPassive": 1.610396584518443e-05,
+        "LooseAggressive": 1.8724271159369487e-35,
+        "Nash": 0.9983896034154816
+      },
+      {
+        "AlwaysCall": 0.0032208481062860985,
+        "TightPassive": 3.286244369233824e-07,
+        "LooseAggressive": 3.820955114847425e-37,
+        "Nash": 0.9967788232692769
+      },
+      {
+        "AlwaysCall": 0.003227479703311424,
+        "TightPassive": 3.2930106145407573e-07,
+        "LooseAggressive": 3.867497280935474e-39,
+        "Nash": 0.9967721909956271
+      },
+      {
+        "AlwaysCall": 0.003232964863999807,
+        "TightPassive": 3.298607146209345e-07,
+        "LooseAggressive": 3.913202185033868e-41,
+        "Nash": 0.9967667052752855
+      },
+      {
+        "AlwaysCall": 0.0032332039016867756,
+        "TightPassive": 3.2988510373296066e-07,
+        "LooseAggressive": 3.9134915178408415e-41,
+        "Nash": 0.9967664662132094
+      },
+      {
+        "AlwaysCall": 0.003238698759142274,
+        "TightPassive": 3.304457462648961e-07,
+        "LooseAggressive": 3.9597399291618825e-43,
+        "Nash": 0.9967609707951115
+      },
+      {
+        "AlwaysCall": 0.004934824888769372,
+        "TightPassive": 5.035021823047985e-07,
+        "LooseAggressive": 6.094423919988967e-45,
+        "Nash": 0.9950646716090483
+      },
+      {
+        "AlwaysCall": 0.009934686995227596,
+        "TightPassive": 1.0238789275499066e-08,
+        "LooseAggressive": 1.2393098672719164e-46,
+        "Nash": 0.990065302765983
+      },
+      {
+        "AlwaysCall": 0.49651633421914754,
+        "TightPassive": 5.16883610852328e-09,
+        "LooseAggressive": 6.256393621590527e-47,
+        "Nash": 0.5034836606120163
+      },
+      {
+        "AlwaysCall": 0.6620267715057212,
+        "TightPassive": 6.961447930767744e-11,
+        "LooseAggressive": 8.426182900106053e-49,
+        "Nash": 0.33797322842466426
+      },
+      {
+        "AlwaysCall": 0.6620433676996137,
+        "TightPassive": 6.961622445673493e-11,
+        "LooseAggressive": 8.426394134109394e-49,
+        "Nash": 0.33795663223077
+      },
+      {
+        "AlwaysCall": 0.7985478068382328,
+        "TightPassive": 8.481833709890474e-13,
+        "LooseAggressive": 1.0266467964508813e-50,
+        "Nash": 0.20145219316091906
+      },
+      {
+        "AlwaysCall": 0.03850126460350217,
+        "TightPassive": 4.04854547190579e-12,
+        "LooseAggressive": 4.949885232419181e-52,
+        "Nash": 0.9614987353924493
+      },
+      {
+        "AlwaysCall": 0.0004893960601010976,
+        "TightPassive": 5.094712605573687e-12,
+        "LooseAggressive": 6.355436870869779e-56,
+        "Nash": 0.9995106039348043
+      },
+      {
+        "AlwaysCall": 4.946161245634131e-06,
+        "TightPassive": 5.097563993814203e-12,
+        "LooseAggressive": 6.42322611736532e-58,
+        "Nash": 0.9999950538336568
+      },
+      {
+        "AlwaysCall": 9.684896963781277e-08,
+        "TightPassive": 9.88153960185782e-12,
+        "LooseAggressive": 1.2451312691209701e-57,
+        "Nash": 0.999999903141149
+      },
+      {
+        "AlwaysCall": 9.704902349685648e-08,
+        "TightPassive": 9.901951178129937e-12,
+        "LooseAggressive": 1.2603063091403123e-59,
+        "Nash": 0.9999999029410745
+      },
+      {
+        "AlwaysCall": 9.72144950867521e-08,
+        "TightPassive": 9.918834311472955e-12,
+        "LooseAggressive": 1.2752072428475001e-61,
+        "Nash": 0.999999902775586
+      },
+      {
+        "AlwaysCall": 9.55398882888132e-06,
+        "TightPassive": 9.846437880365528e-12,
+        "LooseAggressive": 1.2658996518135432e-61,
+        "Nash": 0.9999904460013246
+      },
+      {
+        "AlwaysCall": 0.001138641564400852,
+        "TightPassive": 1.1853490463704754e-11,
+        "LooseAggressive": 1.523934811054925e-61,
+        "Nash": 0.9988613584237456
+      },
+      {
+        "AlwaysCall": 0.0033259013875573556,
+        "TightPassive": 3.497304086311835e-13,
+        "LooseAggressive": 4.4513190639598715e-61,
+        "Nash": 0.9966740986120929
+      },
+      {
+        "AlwaysCall": 0.0067066191803193675,
+        "TightPassive": 7.123484424590334e-15,
+        "LooseAggressive": 9.06666999449834e-63,
+        "Nash": 0.9932933808196736
+      },
+      {
+        "AlwaysCall": 0.01938207669802994,
+        "TightPassive": 2.0794761592148649e-16,
+        "LooseAggressive": 2.6202604994298747e-62,
+        "Nash": 0.9806179233019697
+      }
+    ],
+    "n_obs": 64
+  },
+  "hidden = Mixture(Nash, TightPassive)": {
+    "names": [
+      "AlwaysCall",
+      "TightPassive",
+      "LooseAggressive",
+      "Nash"
+    ],
+    "trajectory": [
+      {
+        "AlwaysCall": 0.005500814771549267,
+        "TightPassive": 0.5445806623833773,
+        "LooseAggressive": 5.556378557120472e-05,
+        "Nash": 0.4498629590595022
+      },
+      {
+        "AlwaysCall": 0.005500998324558488,
+        "TightPassive": 0.5445988341312897,
+        "LooseAggressive": 5.556563964200489e-05,
+        "Nash": 0.44984460190450976
+      },
+      {
+        "AlwaysCall": 0.02357780337520031,
+        "TightPassive": 0.023577803375200285,
+        "LooseAggressive": 2.4056528288134207e-06,
+        "Nash": 0.9528419875967706
+      },
+      {
+        "AlwaysCall": 0.023624261444050738,
+        "TightPassive": 0.023624261444050713,
+        "LooseAggressive": 2.4347403680773362e-08,
+        "Nash": 0.9527514527644948
+      },
+      {
+        "AlwaysCall": 0.00029427501300891234,
+        "TightPassive": 0.02913322628788229,
+        "LooseAggressive": 3.0634627871180986e-12,
+        "Nash": 0.9705724986960453
+      },
+      {
+        "AlwaysCall": 8.621465064529304e-06,
+        "TightPassive": 0.0008535250413884017,
+        "LooseAggressive": 8.885369421723938e-12,
+        "Nash": 0.9991378534846618
+      },
+      {
+        "AlwaysCall": 1.0540313227887131e-07,
+        "TightPassive": 0.0010330560994652202,
+        "LooseAggressive": 1.0972680625528623e-15,
+        "Nash": 0.9989668384974014
+      },
+      {
+        "AlwaysCall": 1.0562063046165883e-07,
+        "TightPassive": 0.0010351877991547217,
+        "LooseAggressive": 1.1106386494029584e-17,
+        "Nash": 0.9989647065802149
+      },
+      {
+        "AlwaysCall": 1.0580053016444238e-07,
+        "TightPassive": 0.001036950996141703,
+        "LooseAggressive": 1.1237680394191594e-19,
+        "Nash": 0.9989629432033282
+      },
+      {
+        "AlwaysCall": 1.0601884752026503e-07,
+        "TightPassive": 0.0010390907245461265,
+        "LooseAggressive": 1.1374615284039507e-21,
+        "Nash": 0.9989608032566063
+      },
+      {
+        "AlwaysCall": 2.118710609181117e-09,
+        "TightPassive": 0.002055782785377841,
+        "LooseAggressive": 2.29609622463843e-25,
+        "Nash": 0.9979442150959115
+      },
+      {
+        "AlwaysCall": 6.214601649075952e-09,
+        "TightPassive": 6.0909310762593924e-05,
+        "LooseAggressive": 6.734909110400031e-25,
+        "Nash": 0.9999390844746358
+      },
+      {
+        "AlwaysCall": 1.2167829135567933e-10,
+        "TightPassive": 0.0001180643244241254,
+        "LooseAggressive": 1.3054695320335124e-24,
+        "Nash": 0.9998819355538975
+      },
+      {
+        "AlwaysCall": 1.229165761523624e-12,
+        "TightPassive": 0.00011807317261482145,
+        "LooseAggressive": 1.318754918079284e-26,
+        "Nash": 0.999881926826156
+      },
+      {
+        "AlwaysCall": 2.4065060726225603e-14,
+        "TightPassive": 0.00022885633300880027,
+        "LooseAggressive": 2.5560879580452703e-26,
+        "Nash": 0.9997711436669672
+      },
+      {
+        "AlwaysCall": 2.411475877351805e-14,
+        "TightPassive": 0.0002293289564935456,
+        "LooseAggressive": 2.5872390629765587e-28,
+        "Nash": 0.9997706710434823
+      },
+      {
+        "AlwaysCall": 4.880720628294087e-14,
+        "TightPassive": 4.688400761464007e-06,
+        "LooseAggressive": 5.289351060772022e-30,
+        "Nash": 0.9999953115991896
+      },
+      {
+        "AlwaysCall": 4.930386531383326e-16,
+        "TightPassive": 4.6887485335065175e-06,
+        "LooseAggressive": 5.289743409573946e-30,
+        "Nash": 0.9999953112514659
+      },
+      {
+        "AlwaysCall": 6.028750698623324e-18,
+        "TightPassive": 5.675949108441275e-06,
+        "LooseAggressive": 6.533498090022629e-34,
+        "Nash": 0.9999943240508916
+      },
+      {
+        "AlwaysCall": 6.09010360227589e-20,
+        "TightPassive": 5.676374532844891e-06,
+        "LooseAggressive": 6.599987666200195e-36,
+        "Nash": 0.9999943236254673
+      },
+      {
+        "AlwaysCall": 7.372025987124617e-20,
+        "TightPassive": 6.871209966468677e-06,
+        "LooseAggressive": 8.06993629012655e-38,
+        "Nash": 0.9999931287900335
+      },
+      {
+        "AlwaysCall": 7.387253740623172e-20,
+        "TightPassive": 6.885403227831101e-06,
+        "LooseAggressive": 8.168288541710984e-40,
+        "Nash": 0.9999931145967721
+      },
+      {
+        "AlwaysCall": 1.446454705517736e-21,
+        "TightPassive": 1.3347084052467842e-05,
+        "LooseAggressive": 1.5833906907637833e-39,
+        "Nash": 0.9999866529159476
+      },
+      {
+        "AlwaysCall": 1.461174868210936e-23,
+        "TightPassive": 1.334808443700316e-05,
+        "LooseAggressive": 1.5995044124628075e-41,
+        "Nash": 0.9999866519155629
+      },
+      {
+        "AlwaysCall": 2.9229895013240893e-25,
+        "TightPassive": 2.6434993104364035e-05,
+        "LooseAggressive": 3.232029450932799e-45,
+        "Nash": 0.9999735650068956
+      },
+      {
+        "AlwaysCall": 2.929027148381052e-25,
+        "TightPassive": 2.6489596502099695e-05,
+        "LooseAggressive": 3.271419638833809e-47,
+        "Nash": 0.9999735104034979
+      },
+      {
+        "AlwaysCall": 3.545550464469969e-25,
+        "TightPassive": 3.2065322861057935e-05,
+        "LooseAggressive": 4.000012384694247e-49,
+        "Nash": 0.9999679346771391
+      },
+      {
+        "AlwaysCall": 3.581629753508858e-27,
+        "TightPassive": 3.206770130907674e-05,
+        "LooseAggressive": 4.000309085949151e-49,
+        "Nash": 0.999967932298691
+      },
+      {
+        "AlwaysCall": 4.379500120101746e-29,
+        "TightPassive": 3.881922652137104e-05,
+        "LooseAggressive": 4.940856122265202e-53,
+        "Nash": 0.9999611807734786
+      },
+      {
+        "AlwaysCall": 4.388546183336529e-29,
+        "TightPassive": 3.8899409457370585e-05,
+        "LooseAggressive": 5.0010724168619936e-55,
+        "Nash": 0.9999611005905427
+      },
+      {
+        "AlwaysCall": 4.3960284996195294e-29,
+        "TightPassive": 3.896573157695726e-05,
+        "LooseAggressive": 5.0602010795402305e-57,
+        "Nash": 0.9999610342684231
+      },
+      {
+        "AlwaysCall": 4.3963545731527545e-29,
+        "TightPassive": 3.896862184342637e-05,
+        "LooseAggressive": 5.0605764177905647e-57,
+        "Nash": 0.9999610313781565
+      },
+      {
+        "AlwaysCall": 4.4038502019449827e-29,
+        "TightPassive": 3.903506196308089e-05,
+        "LooseAggressive": 5.120408607369306e-59,
+        "Nash": 0.999960964938037
+      },
+      {
+        "AlwaysCall": 6.72147401786654e-29,
+        "TightPassive": 5.9578128850699944e-05,
+        "LooseAggressive": 7.894077952009068e-61,
+        "Nash": 0.9999404218711494
+      },
+      {
+        "AlwaysCall": 1.3160272158379298e-30,
+        "TightPassive": 0.00011548415487365827,
+        "LooseAggressive": 1.5301603766024028e-60,
+        "Nash": 0.9998845158451264
+      },
+      {
+        "AlwaysCall": 1.3294190142660402e-32,
+        "TightPassive": 0.00011549272020590869,
+        "LooseAggressive": 1.5302738669079923e-60,
+        "Nash": 0.999884507279794
+      },
+      {
+        "AlwaysCall": 1.609214821423028e-32,
+        "TightPassive": 0.00013979986379570371,
+        "LooseAggressive": 1.8710530660379148e-62,
+        "Nash": 0.9998602001362044
+      },
+      {
+        "AlwaysCall": 2.455969558087582e-32,
+        "TightPassive": 0.00021336132698766721,
+        "LooseAggressive": 2.8844290832293025e-64,
+        "Nash": 0.9997866386730124
+      },
+      {
+        "AlwaysCall": 4.912051180270106e-34,
+        "TightPassive": 0.0004224650656016909,
+        "LooseAggressive": 5.8272624048972215e-68,
+        "Nash": 0.9995775349343983
+      },
+      {
+        "AlwaysCall": 4.962039591359153e-36,
+        "TightPassive": 0.0004224967170543153,
+        "LooseAggressive": 5.8865646348473e-70,
+        "Nash": 0.9995775032829457
+      },
+      {
+        "AlwaysCall": 6.066921553729303e-38,
+        "TightPassive": 0.0005114070228510346,
+        "LooseAggressive": 7.270007798537712e-74,
+        "Nash": 0.9994885929771489
+      },
+      {
+        "AlwaysCall": 6.128662679148122e-40,
+        "TightPassive": 0.0005114453345034613,
+        "LooseAggressive": 7.343992348908139e-76,
+        "Nash": 0.9994885546654966
+      },
+      {
+        "AlwaysCall": 1.1994494375385532e-41,
+        "TightPassive": 0.0009909474911715722,
+        "LooseAggressive": 1.4229303314300545e-75,
+        "Nash": 0.9990090525088284
+      },
+      {
+        "AlwaysCall": 1.2019245928230134e-41,
+        "TightPassive": 0.000992992386806714,
+        "LooseAggressive": 1.4402693500637278e-77,
+        "Nash": 0.9990070076131934
+      },
+      {
+        "AlwaysCall": 1.2039718732427952e-41,
+        "TightPassive": 0.000994683785653736,
+        "LooseAggressive": 1.457295567160569e-79,
+        "Nash": 0.9990053162143463
+      },
+      {
+        "AlwaysCall": 1.2162233252345533e-43,
+        "TightPassive": 0.0009947574953768992,
+        "LooseAggressive": 1.4574035581164633e-79,
+        "Nash": 0.9990052425046232
+      },
+      {
+        "AlwaysCall": 2.430640355619886e-45,
+        "TightPassive": 0.0019681572335686166,
+        "LooseAggressive": 2.9420632610510157e-83,
+        "Nash": 0.9980318427664314
+      },
+      {
+        "AlwaysCall": 3.669135425056614e-47,
+        "TightPassive": 0.002941291193886665,
+        "LooseAggressive": 4.4411459346180023e-85,
+        "Nash": 0.9970587088061132
+      },
+      {
+        "AlwaysCall": 7.16458811342329e-49,
+        "TightPassive": 0.005685919463236079,
+        "LooseAggressive": 8.585344477691218e-85,
+        "Nash": 0.994314080536764
+      },
+      {
+        "AlwaysCall": 7.17930316158238e-49,
+        "TightPassive": 0.005697597535639637,
+        "LooseAggressive": 8.689876321193514e-87,
+        "Nash": 0.9943024024643603
+      }
+    ],
+    "n_obs": 62
+  }
+}

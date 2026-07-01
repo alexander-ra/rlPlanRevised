@@ -1,0 +1,18 @@
+{
+  "hands": 500,
+  "seeds": 300,
+  "final_winner_distribution": {
+    "Nash": 300
+  },
+  "nash_final_winner": "300/300",
+  "takeover_hand": {
+    "min": 2,
+    "median": 23.0,
+    "p90": 125,
+    "max": 461
+  },
+  "wrong_type_led_past_100": "40/300",
+  "wrong_type_led_past_200": "14/300",
+  "nash_dip_after_permanent_takeover": "0/300",
+  "most_volatile_seed": 76
+}
