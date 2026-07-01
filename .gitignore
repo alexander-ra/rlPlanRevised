@@ -14,5 +14,6 @@ implementation/step01/logs/
 # Optional: model checkpoints (remove if you want to keep them tracked)
 # implementation/step01/models/
 
-# Step 07 implementation: regenerable Nash CFR cache
+# Step 07 implementation: regenerable Nash CFR cache + run logs
 implementation/step07/implementation/_cache/
+implementation/step07/implementation/logs/

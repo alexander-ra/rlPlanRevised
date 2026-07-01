@@ -49,6 +49,25 @@ import config as cfgmod
 # re-prints the current status every HEARTBEAT_SEC so a long single step still pulses.
 import sys
 import threading
+import datetime
+
+
+class _Tee:
+    """Duplicate everything written to stdout into a log file as well, so the long run
+    leaves a persistent, tailable record without needing shell redirection."""
+
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, s):
+        for st in self.streams:
+            st.write(s)
+            st.flush()
+
+    def flush(self):
+        for st in self.streams:
+            st.flush()
+
 
 HEARTBEAT_SEC = 30
 _T0 = time.time()
@@ -352,6 +371,16 @@ def main():
 
     cfg = cfgmod.get_config(args.config)
     games = [args.game] if args.game else cfg["games"]
+
+    # Tee all output to a timestamped log file under implementation/logs/ (git-ignored),
+    # so a long/background run leaves a tailable record without shell redirection.
+    logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+    os.makedirs(logs_dir, exist_ok=True)
+    stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_path = os.path.join(logs_dir, f"tournament_{cfg['name']}_{stamp}.log")
+    _logfile = open(log_path, "a", encoding="utf-8")
+    sys.stdout = _Tee(sys.__stdout__, _logfile)
+    print(f"  [{_elapsed()}] logging to {log_path}", flush=True)
 
     os.makedirs(cfgmod.RESULTS_DIR, exist_ok=True)
 
