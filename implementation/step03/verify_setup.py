@@ -52,8 +52,8 @@ def main():
         sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
         from cfr.cfr_trainer import LeducTrainer
         trainer = LeducTrainer()
-        val = trainer.train(10)
-        print(f"       game value after 10 iters: {val:+.4f}")
+        trainer.train(10)
+        print(f"       info sets learned after 10 iters: {len(trainer.node_map)}")
     results.append(check("CFR smoke test (10 iterations)", test_cfr_import))
 
     passed = sum(results)
