@@ -42,6 +42,7 @@ NOTE (per implementation/WORKFLOW.md): written but NOT executed here.
 from __future__ import annotations
 
 import math
+import time
 
 from bayesian_model import OpponentModel
 from observation_buffer import candidate_deals
@@ -127,6 +128,7 @@ class ConsistentModel(OpponentModel):
         self._dirty = True
         self._table: dict = {}          # info_set -> {action: prob}
         self._y = None                  # last solved realization plan
+        self._fit_count = 0             # for progress logging in fit()
 
     def update(self, obs):
         self.observations.append(obs)
@@ -183,6 +185,7 @@ class ConsistentModel(OpponentModel):
                 "`pip install numpy scipy`."
             ) from exc
 
+        t0 = time.time()
         n = self.sf.num_seq
         terms = self._hand_terms()
         c0 = np.asarray(self._prior_coeffs(), dtype=float)
@@ -241,6 +244,11 @@ class ConsistentModel(OpponentModel):
         self._y = y
         self._table = self._behavioral_from_y(y)
         self._dirty = False
+        self._fit_count += 1
+        print(f"    [consistent] fit #{self._fit_count}: n_obs={len(self.observations)} "
+              f"n_seq={n} solver_iters={getattr(res, 'nit', '?')} "
+              f"success={getattr(res, 'success', '?')} took={time.time() - t0:.1f}s",
+              flush=True)
         return res
 
     def _behavioral_from_y(self, y) -> dict:

@@ -70,8 +70,10 @@ class _Tee:
 
 
 HEARTBEAT_SEC = 30
+PROGRESS_MIN_INTERVAL = 5.0  # min seconds between printed lines from per-refit progress
 _T0 = time.time()
 _STATUS = "starting"
+_LAST_PROGRESS_PRINT = 0.0
 
 
 def _elapsed() -> str:
@@ -83,6 +85,19 @@ def _set_status(msg: str):
     global _STATUS
     _STATUS = msg
     print(f"  [{_elapsed()}] {msg}", flush=True)
+
+
+def _set_status_throttled(msg: str, min_interval: float = PROGRESS_MIN_INTERVAL):
+    """Like _set_status, but for high-frequency callers (per-refit progress, which fires
+    every `refit_every` hands -- near-instant for the fast models). _STATUS is always kept
+    current so the 30s heartbeat still reflects the latest hand count; the print itself is
+    rate-limited so a fast model doesn't flood the log with thousands of lines per second."""
+    global _STATUS, _LAST_PROGRESS_PRINT
+    _STATUS = msg
+    now = time.time()
+    if now - _LAST_PROGRESS_PRINT >= min_interval:
+        print(f"  [{_elapsed()}] {msg}", flush=True)
+        _LAST_PROGRESS_PRINT = now
 
 
 def _start_heartbeat(interval: int = HEARTBEAT_SEC):
@@ -106,6 +121,7 @@ class Checkpoint:
         self.path = path
         self.interval = interval
         self.data: dict = {}
+        self._lock = threading.Lock()
         self._last_flush = time.time()
         if os.path.exists(path):
             try:
@@ -124,17 +140,32 @@ class Checkpoint:
         return self.data[key]
 
     def set(self, key: str, value, force_flush: bool = False):
-        self.data[key] = value
-        if force_flush or (time.time() - self._last_flush) >= self.interval:
+        with self._lock:
+            self.data[key] = value
+            due = force_flush or (time.time() - self._last_flush) >= self.interval
+        if due:
             self.flush()
 
     def flush(self):
-        os.makedirs(os.path.dirname(self.path), exist_ok=True)
-        tmp = self.path + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as fh:
-            json.dump(self.data, fh)
-        os.replace(tmp, self.path)  # atomic replace
-        self._last_flush = time.time()
+        with self._lock:
+            os.makedirs(os.path.dirname(self.path), exist_ok=True)
+            tmp = self.path + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as fh:
+                json.dump(self.data, fh)
+            os.replace(tmp, self.path)  # atomic replace
+            self._last_flush = time.time()
+
+    def start_autosave(self, interval: int = CHECKPOINT_SEC):
+        """Flush on a wall-clock timer, independent of `set()`. A single work item
+        (e.g. one `consistent`-model refit) can run for many minutes without ever
+        calling `set()`, so without this, anything already in `data` waits behind it
+        before reaching disk. This thread persists whatever is already checkpointed
+        every `interval` seconds regardless of what's still in flight."""
+        def _tick():
+            while True:
+                time.sleep(interval)
+                self.flush()
+        threading.Thread(target=_tick, daemon=True).start()
 
 
 # --- small metrics -------------------------------------------------------------------
@@ -150,6 +181,11 @@ def mean_policy_tv(game, opp: int, est_policy, true_policy) -> float:
     if not isets:
         return 0.0
     return sum(tv_distance(est.get(i, {}), true.get(i, {})) for i in isets) / len(isets)
+
+
+def _models_for(spec, game_name):
+    """Resolve a model list that may be a flat list or a per-game {game: [...]} map."""
+    return spec[game_name] if isinstance(spec, dict) else spec
 
 
 def build_model(name: str, game, hero: int, zoo: dict):
@@ -178,20 +214,22 @@ def detection_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     opp = 1 - hero
     nash = zoo["Nash"]
     targets = list(zoo)  # well-specified: every type is also a candidate
+    models = _models_for(cfg["models"], game.name)
     out = {}
     for ti, truth in enumerate(targets):
         key = f"{game.name}|detection|{truth}"
         if ckpt.has(key):
             out[truth] = ckpt.get(key)
             continue
-        _set_status(f"{game.name} detection: {truth} ({ti + 1}/{len(targets)})")
         per_model = {m: {"posterior_true": [], "map_correct": [], "tv": []}
-                     for m in cfg["models"]}
-        for seed in cfg["seeds"]:
+                     for m in models}
+        for si, seed in enumerate(cfg["seeds"]):
+            _set_status(f"{game.name} detection: {truth} ({ti + 1}/{len(targets)} types) "
+                        f"seed {si + 1}/{len(cfg['seeds'])}")
             rng = random.Random(1000 + seed)
             buf = collect_observations(game, hero, zoo[truth], cfg["detection_hands"],
                                        rng, hero_policy=nash)
-            for mname in cfg["models"]:
+            for mname in models:
                 model = build_model(mname, game, hero, zoo)
                 model.observe(buf)
                 rec = per_model[mname]
@@ -211,37 +249,57 @@ def detection_experiment(game, hero, zoo, cfg, ckpt) -> dict:
 def exploitation_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     nash = zoo["Nash"]
     targets = list(zoo)
+    seeds = cfg["seeds"]
+    models = _models_for(cfg.get("exploit_models", cfg["models"]), game.name)
     out = {}
     for ti, truth in enumerate(targets):
         refs = exploitation_references(game, hero, zoo[truth], nash)
         per_model = {}
-        for mname in cfg["models"]:
+        for mname in models:
             key = f"{game.name}|exploitation|{truth}|{mname}"
             if ckpt.has(key):
                 per_model[mname] = ckpt.get(key)
                 continue
-            _set_status(f"{game.name} exploitation: {truth} [{mname}] "
-                        f"({ti + 1}/{len(targets)} types)")
             means = []
             rep_curve = None
-            for seed in cfg["seeds"]:
-                rng = random.Random(2000 + seed)
-                model = build_model(mname, game, hero, zoo)
-                ex = AdaptiveExploiter(
-                    game, hero, model, nash_policy=nash,
-                    refit_every=cfg["refit_every"], safety=cfg["safety"],
-                    min_hands_before_exploit=cfg["min_hands_before_exploit"])
-                res = ex.run(stationary(zoo[truth]), cfg["exploit_hands"], rng)
-                means.append(res["mean_per_hand"])
-                if rep_curve is None:
-                    rep_curve = res["cumulative"]
+            for si, seed in enumerate(seeds):
+                # Per-seed checkpointing: a killed/resumed run only redoes the seed it
+                # was mid-way through, not the whole (type, model) cell.
+                seed_key = f"{key}|seed{seed}"
+                if ckpt.has(seed_key):
+                    seed_res = ckpt.get(seed_key)
+                else:
+                    rng = random.Random(2000 + seed)
+                    model = build_model(mname, game, hero, zoo)
+                    ex = AdaptiveExploiter(
+                        game, hero, model, nash_policy=nash,
+                        refit_every=cfg["refit_every"], safety=cfg["safety"],
+                        min_hands_before_exploit=cfg["min_hands_before_exploit"])
+
+                    def on_refit(i, num_hands, fit_seconds,
+                                 _truth=truth, _mname=mname, _ti=ti, _si=si):
+                        _set_status_throttled(
+                            f"{game.name} exploitation: {_truth} [{_mname}] "
+                            f"({_ti + 1}/{len(targets)} types) "
+                            f"seed {_si + 1}/{len(seeds)} hand {i}/{num_hands} "
+                            f"(last refit {fit_seconds:.1f}s)")
+
+                    res = ex.run(stationary(zoo[truth]), cfg["exploit_hands"], rng,
+                                 on_refit=on_refit)
+                    seed_res = {"mean_per_hand": res["mean_per_hand"]}
+                    if si == 0:
+                        seed_res["cumulative_seed0"] = _downsample(res["cumulative"], 400)
+                    ckpt.set(seed_key, seed_res, force_flush=True)
+                means.append(seed_res["mean_per_hand"])
+                if si == 0:
+                    rep_curve = seed_res.get("cumulative_seed0")
             result = {
                 "mean_per_hand": sum(means) / len(means),
                 "mean_per_hand_by_seed": means,
-                "cumulative_seed0": _downsample(rep_curve, 400),
+                "cumulative_seed0": rep_curve,
             }
             per_model[mname] = result
-            ckpt.set(key, result)
+            ckpt.set(key, result, force_flush=True)
         out[truth] = {"references": refs, "models": per_model}
     return out
 
@@ -271,7 +329,12 @@ def nonstationarity_experiment(game, hero, zoo, cfg, ckpt) -> dict:
                                refit_every=cfg["refit_every"], safety=cfg["safety"],
                                min_hands_before_exploit=cfg["min_hands_before_exploit"],
                                use_changepoint=use_cp)
-        res = ex.run(seg, ns["total"], rng)
+
+        def on_refit(i, num_hands, fit_seconds, _variant=variant):
+            _set_status_throttled(f"{game.name} non-stationarity: {_variant} "
+                        f"hand {i}/{num_hands} (last refit {fit_seconds:.1f}s)")
+
+        res = ex.run(seg, ns["total"], rng, on_refit=on_refit)
         after = res["profits"][ns["switch_at"]:]
         variant_result = {
             "mean_per_hand": res["mean_per_hand"],
@@ -393,6 +456,7 @@ def main():
         os.remove(ckpt_path)
         print(f"  --fresh: removed {ckpt_path}", flush=True)
     ckpt = Checkpoint(ckpt_path)
+    ckpt.start_autosave()
     _start_heartbeat()
 
     all_results = {}

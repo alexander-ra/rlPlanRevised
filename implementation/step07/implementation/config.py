@@ -38,7 +38,12 @@ SMOKE = {
     "min_hands_before_exploit": 25,
     "safety": 0.0,
     "seeds": [0, 1, 2],
+    # `models` = detection models (may be a flat list or a per-game {game: [...]} map).
+    # `exploit_models` = models run in the exploitation loop. The consistent model refits a
+    # convex program every `refit_every` hands, which is impractical in a long match, so it
+    # is kept OUT of exploitation and evaluated where its strength lies: recovery (detection).
     "models": ["type_based", "continuous"],   # consistent is opt-in (scipy + slower)
+    "exploit_models": ["type_based", "continuous"],
     "include_consistent": False,
     "include_level_k": True,
     "level_k_levels": [1, 2],
@@ -60,7 +65,12 @@ SCALE = {
     "min_hands_before_exploit": 100,
     "safety": 0.0,
     "seeds": [0, 1, 2, 3, 4],
-    "models": ["type_based", "continuous", "consistent"],
+    # Detection runs the consistent model on Kuhn (fast: one convex solve per item) but not
+    # on Leduc, where its sequence-form program is large and a per-item solve is very slow
+    # (README: "start with Kuhn only"). Exploitation excludes it on both games (see SMOKE).
+    "models": {"kuhn": ["type_based", "continuous", "consistent"],
+               "leduc": ["type_based", "continuous"]},
+    "exploit_models": ["type_based", "continuous"],
     "include_consistent": True,
     "include_level_k": True,
     "level_k_levels": [1, 2, 3],
