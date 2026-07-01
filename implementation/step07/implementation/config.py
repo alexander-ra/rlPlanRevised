@@ -42,7 +42,9 @@ SMOKE = {
     "include_consistent": False,
     "include_level_k": True,
     "level_k_levels": [1, 2],
-    "nonstationarity": {"first": "TightPassive", "second": "LooseAggressive",
+    # first/second are per-game: the zoo type names differ between Kuhn and Leduc.
+    "nonstationarity": {"first": {"kuhn": "TightPassive", "leduc": "Rock"},
+                        "second": {"kuhn": "LooseAggressive", "leduc": "Maniac"},
                         "switch_at": 1000, "total": 2000},
     "plot": True,
 }
@@ -62,7 +64,8 @@ SCALE = {
     "include_consistent": True,
     "include_level_k": True,
     "level_k_levels": [1, 2, 3],
-    "nonstationarity": {"first": "TightPassive", "second": "LooseAggressive",
+    "nonstationarity": {"first": {"kuhn": "TightPassive", "leduc": "Rock"},
+                        "second": {"kuhn": "LooseAggressive", "leduc": "Maniac"},
                         "switch_at": 10000, "total": 20000},
     "plot": True,
 }

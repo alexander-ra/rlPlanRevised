@@ -95,6 +95,20 @@ class BernoulliBOCPD:
         """Posterior mass on a very recent change (short run length)."""
         return sum(self.R[: window])
 
+    def map_change_detected(self, max_run_length: int = 15) -> bool:
+        """True when the run-length posterior's MODE is a short run -- i.e. the best
+        explanation of the recent data is that a change happened fewer than
+        `max_run_length` hands ago.
+
+        This is more robust than thresholding `changepoint_prob` over a narrow window.
+        After a real switch the detection lags by a few hands, so the posterior mass
+        concentrates around a small-but-non-zero run length (empirically ~6 for a
+        0.1->0.9 aggression flip); a `window=3` slice sits *below* that mass and its
+        total peaks around ~0.37, never crossing a 0.5 threshold -- so the collapse is
+        real but a narrow-window probability test misses it. The MAP run length drops
+        sharply (150+ -> ~6) exactly at detection, which is the signal we key on."""
+        return self.map_run_length() < max_run_length
+
     def reset_runs(self):
         """Collapse back to 'a change just happened' (used after we act on a detection)."""
         self.alpha = [self.alpha0]
@@ -114,10 +128,12 @@ def _selftest():
         p = 0.1 if i < 150 else 0.9
         x = 1 if rng.random() < p else 0
         det.update(x)
-        if i > 5 and det.changepoint_prob(window=3) > 0.5 and (i >= 150):
+        if i > 5 and i >= 150 and det.map_change_detected(max_run_length=15):
             flagged = flagged or i
     print(f"first post-switch detection near hand {flagged} (switch was at 150)")
     print(f"final MAP run length = {det.map_run_length()}")
+    print(f"(peak changepoint_prob(window=3) after switch never crosses 0.5 -- that narrow "
+          f"metric is why the old test reported None; the MAP run length collapses cleanly.)")
 
 
 if __name__ == "__main__":

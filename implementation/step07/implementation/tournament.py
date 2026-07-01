@@ -142,8 +142,13 @@ def exploitation_experiment(game, hero, zoo, cfg) -> dict:
 def nonstationarity_experiment(game, hero, zoo, cfg) -> dict:
     ns = cfg["nonstationarity"]
     nash = zoo["Nash"]
-    seg = switching([(0, zoo[ns["first"]]), (ns["switch_at"], zoo[ns["second"]])])
-    out = {"first": ns["first"], "second": ns["second"], "switch_at": ns["switch_at"],
+    # first/second may be a plain type name or a per-game {game_name: type_name} map,
+    # since the Kuhn and Leduc zoos use different type names.
+    def _resolve(spec):
+        return spec[game.name] if isinstance(spec, dict) else spec
+    first, second = _resolve(ns["first"]), _resolve(ns["second"])
+    seg = switching([(0, zoo[first]), (ns["switch_at"], zoo[second])])
+    out = {"first": first, "second": second, "switch_at": ns["switch_at"],
            "total": ns["total"], "variants": {}}
     for use_cp in (False, True):
         rng = random.Random(4242)

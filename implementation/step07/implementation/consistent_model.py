@@ -226,9 +226,17 @@ class ConsistentModel(OpponentModel):
         y0 = np.asarray(self.sf.uniform_realization(), dtype=float)
         y0 = np.clip(y0, 1e-9, 1.0)
 
-        res = minimize(neg_obj_and_grad, y0, jac=True, bounds=bounds,
-                       constraints=constraints, method="trust-constr",
-                       options={"maxiter": 500, "gtol": 1e-8, "xtol": 1e-10})
+        # trust-constr emits benign UserWarnings here: the treeplex flow constraints are
+        # linearly dependent (singular constraint Jacobian -> scipy falls back to SVD) and
+        # the log-objective is locally linear (delta_grad == 0). Both are handled correctly
+        # and the solution is validated (validate.py: "consistent recovers strategy"), so we
+        # silence just these to keep the harness/tournament output readable.
+        import warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=UserWarning, module="scipy.optimize")
+            res = minimize(neg_obj_and_grad, y0, jac=True, bounds=bounds,
+                           constraints=constraints, method="trust-constr",
+                           options={"maxiter": 500, "gtol": 1e-8, "xtol": 1e-10})
         y = np.clip(res.x, 1e-12, None)
         self._y = y
         self._table = self._behavioral_from_y(y)
