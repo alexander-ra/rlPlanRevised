@@ -43,6 +43,80 @@ from consistent_model import ConsistentModel
 from adaptive_exploiter import AdaptiveExploiter, stationary, switching, exploitation_references
 import config as cfgmod
 
+# --- lightweight progress + 30s heartbeat --------------------------------------------
+# The scale config runs for many minutes; without this, buffered stdout shows nothing until
+# the end. `_set_status` prints a flushed, timestamped checkpoint line; a daemon thread
+# re-prints the current status every HEARTBEAT_SEC so a long single step still pulses.
+import sys
+import threading
+
+HEARTBEAT_SEC = 30
+_T0 = time.time()
+_STATUS = "starting"
+
+
+def _elapsed() -> str:
+    s = int(time.time() - _T0)
+    return f"{s // 60:d}m{s % 60:02d}s"
+
+
+def _set_status(msg: str):
+    global _STATUS
+    _STATUS = msg
+    print(f"  [{_elapsed()}] {msg}", flush=True)
+
+
+def _start_heartbeat(interval: int = HEARTBEAT_SEC):
+    def _beat():
+        while True:
+            time.sleep(interval)
+            print(f"  [{_elapsed()}] ... still working: {_STATUS}", flush=True)
+    threading.Thread(target=_beat, daemon=True).start()
+
+
+# --- resumable checkpointing ---------------------------------------------------------
+# The scale run is long, so we persist partial results keyed by work-item. On restart the
+# tournament skips items already in the checkpoint and continues where it left off. Results
+# are flushed to disk every CHECKPOINT_SEC (and once more when each game finishes). The Nash
+# CFR training is already disk-cached separately (nash._cache/), so it is not redone either.
+CHECKPOINT_SEC = 300  # 5 minutes
+
+
+class Checkpoint:
+    def __init__(self, path: str, interval: int = CHECKPOINT_SEC):
+        self.path = path
+        self.interval = interval
+        self.data: dict = {}
+        self._last_flush = time.time()
+        if os.path.exists(path):
+            try:
+                with open(path, encoding="utf-8") as fh:
+                    self.data = json.load(fh)
+                if self.data:
+                    print(f"  [{_elapsed()}] resuming from checkpoint "
+                          f"({len(self.data)} items done): {path}", flush=True)
+            except Exception:
+                self.data = {}
+
+    def has(self, key: str) -> bool:
+        return key in self.data
+
+    def get(self, key: str):
+        return self.data[key]
+
+    def set(self, key: str, value, force_flush: bool = False):
+        self.data[key] = value
+        if force_flush or (time.time() - self._last_flush) >= self.interval:
+            self.flush()
+
+    def flush(self):
+        os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        tmp = self.path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(self.data, fh)
+        os.replace(tmp, self.path)  # atomic replace
+        self._last_flush = time.time()
+
 
 # --- small metrics -------------------------------------------------------------------
 def tv_distance(p: dict, q: dict) -> float:
@@ -81,12 +155,17 @@ def collect_observations(game, hero, opp_policy, hands, rng, hero_policy):
 
 
 # --- 1. detection --------------------------------------------------------------------
-def detection_experiment(game, hero, zoo, cfg) -> dict:
+def detection_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     opp = 1 - hero
     nash = zoo["Nash"]
     targets = list(zoo)  # well-specified: every type is also a candidate
     out = {}
-    for truth in targets:
+    for ti, truth in enumerate(targets):
+        key = f"{game.name}|detection|{truth}"
+        if ckpt.has(key):
+            out[truth] = ckpt.get(key)
+            continue
+        _set_status(f"{game.name} detection: {truth} ({ti + 1}/{len(targets)})")
         per_model = {m: {"posterior_true": [], "map_correct": [], "tv": []}
                      for m in cfg["models"]}
         for seed in cfg["seeds"]:
@@ -102,20 +181,28 @@ def detection_experiment(game, hero, zoo, cfg) -> dict:
                     rec["posterior_true"].append(post.get(truth, 0.0))
                     rec["map_correct"].append(1.0 if model.map_type() == truth else 0.0)
                 rec["tv"].append(mean_policy_tv(game, opp, model.predicted_policy(), zoo[truth]))
-        out[truth] = {m: {k: (sum(v) / len(v) if v else None) for k, v in d.items()}
-                      for m, d in per_model.items()}
+        result = {m: {k: (sum(v) / len(v) if v else None) for k, v in d.items()}
+                  for m, d in per_model.items()}
+        out[truth] = result
+        ckpt.set(key, result)
     return out
 
 
 # --- 2. exploitation -----------------------------------------------------------------
-def exploitation_experiment(game, hero, zoo, cfg) -> dict:
+def exploitation_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     nash = zoo["Nash"]
     targets = list(zoo)
     out = {}
-    for truth in targets:
+    for ti, truth in enumerate(targets):
         refs = exploitation_references(game, hero, zoo[truth], nash)
         per_model = {}
         for mname in cfg["models"]:
+            key = f"{game.name}|exploitation|{truth}|{mname}"
+            if ckpt.has(key):
+                per_model[mname] = ckpt.get(key)
+                continue
+            _set_status(f"{game.name} exploitation: {truth} [{mname}] "
+                        f"({ti + 1}/{len(targets)} types)")
             means = []
             rep_curve = None
             for seed in cfg["seeds"]:
@@ -129,17 +216,19 @@ def exploitation_experiment(game, hero, zoo, cfg) -> dict:
                 means.append(res["mean_per_hand"])
                 if rep_curve is None:
                     rep_curve = res["cumulative"]
-            per_model[mname] = {
+            result = {
                 "mean_per_hand": sum(means) / len(means),
                 "mean_per_hand_by_seed": means,
                 "cumulative_seed0": _downsample(rep_curve, 400),
             }
+            per_model[mname] = result
+            ckpt.set(key, result)
         out[truth] = {"references": refs, "models": per_model}
     return out
 
 
 # --- 3. non-stationarity -------------------------------------------------------------
-def nonstationarity_experiment(game, hero, zoo, cfg) -> dict:
+def nonstationarity_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     ns = cfg["nonstationarity"]
     nash = zoo["Nash"]
     # first/second may be a plain type name or a per-game {game_name: type_name} map,
@@ -151,6 +240,12 @@ def nonstationarity_experiment(game, hero, zoo, cfg) -> dict:
     out = {"first": first, "second": second, "switch_at": ns["switch_at"],
            "total": ns["total"], "variants": {}}
     for use_cp in (False, True):
+        variant = "changepoint" if use_cp else "static"
+        key = f"{game.name}|nonstationarity|{variant}"
+        if ckpt.has(key):
+            out["variants"][variant] = ckpt.get(key)
+            continue
+        _set_status(f"{game.name} non-stationarity: {variant}")
         rng = random.Random(4242)
         model = ContinuousModel(game, hero)
         ex = AdaptiveExploiter(game, hero, model, nash_policy=nash,
@@ -159,12 +254,14 @@ def nonstationarity_experiment(game, hero, zoo, cfg) -> dict:
                                use_changepoint=use_cp)
         res = ex.run(seg, ns["total"], rng)
         after = res["profits"][ns["switch_at"]:]
-        out["variants"]["changepoint" if use_cp else "static"] = {
+        variant_result = {
             "mean_per_hand": res["mean_per_hand"],
             "mean_after_switch": (sum(after) / len(after)) if after else None,
             "changepoints": res["changepoints"],
             "cumulative": _downsample(res["cumulative"], 600),
         }
+        out["variants"][variant] = variant_result
+        ckpt.set(key, variant_result)
     return out
 
 
@@ -178,28 +275,29 @@ def _downsample(seq, k):
 
 
 # --- driver --------------------------------------------------------------------------
-def run_game(game_name: str, cfg: dict) -> dict:
+def run_game(game_name: str, cfg: dict, ckpt: "Checkpoint") -> dict:
     game = make_game(game_name)
     hero = cfg["hero"]
-    print(f"\n=== {game_name.upper()} ({cfg['name']}) | hero=player {hero} ===")
+    print(f"\n=== {game_name.upper()} ({cfg['name']}) | hero=player {hero} ===", flush=True)
     t0 = time.time()
 
-    print("  building type zoo (this trains the Nash type via CFR) ...")
+    _set_status(f"{game_name}: building type zoo (trains Nash via CFR; disk-cached)")
     zoo = make_type_zoo(game, nash_iters=cfg["nash_iters"][game_name])
     if cfg["include_level_k"]:
         add_level_k_types(zoo, game, cfg["level_k_levels"])
-    print(f"  types: {list(zoo)}")
+    print(f"  types: {list(zoo)}", flush=True)
 
-    print("  [1/3] detection ...")
-    detection = detection_experiment(game, hero, zoo, cfg)
-    print("  [2/3] exploitation ...")
-    exploitation = exploitation_experiment(game, hero, zoo, cfg)
-    print("  [3/3] non-stationarity ...")
-    nonstat = nonstationarity_experiment(game, hero, zoo, cfg)
+    print("  [1/3] detection ...", flush=True)
+    detection = detection_experiment(game, hero, zoo, cfg, ckpt)
+    print("  [2/3] exploitation ...", flush=True)
+    exploitation = exploitation_experiment(game, hero, zoo, cfg, ckpt)
+    print("  [3/3] non-stationarity ...", flush=True)
+    nonstat = nonstationarity_experiment(game, hero, zoo, cfg, ckpt)
+    ckpt.flush()  # persist everything once the game is complete
 
     elapsed = time.time() - t0
     _print_summary(game_name, detection, exploitation, nonstat)
-    print(f"  ({game_name} done in {elapsed:.1f}s)")
+    print(f"  ({game_name} done in {elapsed:.1f}s)", flush=True)
 
     return {"game": game_name, "config": cfg["name"], "elapsed_sec": elapsed,
             "types": list(zoo), "detection": detection,
@@ -248,15 +346,29 @@ def main():
     parser.add_argument("--config", default="smoke", choices=list(cfgmod.CONFIGS))
     parser.add_argument("--game", default=None, help="override: run a single game")
     parser.add_argument("--no-plot", action="store_true")
+    parser.add_argument("--fresh", action="store_true",
+                        help="ignore any existing checkpoint and recompute from scratch")
     args = parser.parse_args()
 
     cfg = cfgmod.get_config(args.config)
     games = [args.game] if args.game else cfg["games"]
 
     os.makedirs(cfgmod.RESULTS_DIR, exist_ok=True)
+
+    # Resumable checkpoint (kept in the git-ignored _cache/). Keyed by config so smoke and
+    # scale don't collide; --game runs still share the config's checkpoint (they just fill
+    # different keys). --fresh wipes it to force a clean recompute.
+    ckpt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "_cache", f"tournament_{cfg['name']}.ckpt.json")
+    if args.fresh and os.path.exists(ckpt_path):
+        os.remove(ckpt_path)
+        print(f"  --fresh: removed {ckpt_path}", flush=True)
+    ckpt = Checkpoint(ckpt_path)
+    _start_heartbeat()
+
     all_results = {}
     for game_name in games:
-        result = run_game(game_name, cfg)
+        result = run_game(game_name, cfg, ckpt)
         all_results[game_name] = result
         path = os.path.join(cfgmod.RESULTS_DIR, f"{game_name}_{cfg['name']}.json")
         with open(path, "w", encoding="utf-8") as fh:
