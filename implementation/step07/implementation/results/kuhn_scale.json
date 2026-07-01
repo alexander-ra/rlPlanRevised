@@ -1,7 +1,7 @@
 {
   "game": "kuhn",
   "config": "scale",
-  "elapsed_sec": 102.15589594841003,
+  "elapsed_sec": 25.051100969314575,
   "types": [
     "AlwaysPass",
     "AlwaysBet",
