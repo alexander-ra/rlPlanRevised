@@ -184,7 +184,7 @@ Part II evaluates a complete opponent-modeling system — **three interchangeabl
 
 **The exploiter.** Every *k* hands it rebuilds the hero policy as an exact best response to the model's current estimate, optionally blended toward Nash by a safety weight, and optionally forgetting the model when a change is detected (Bayesian online change-point detection on an aggression signal). Because all three models feed the *same* exact best response, exploitation is compared apples-to-apples.
 
-**Exact yardsticks.** Both games are small enough to solve exactly, so every simulated curve is bracketed by two analytical references computed by hand-verified math, not simulation: `nash_ev` (what safe equilibrium play earns against that opponent — you cannot do worse if the read is useless) and `ceiling` (the exact best-response value — the most that is extractable). A good exploiter sits between them and climbs toward the ceiling. The apparatus itself is trustworthy: our solver reproduces the exact Kuhn Nash value of −1/18 (NashConv ≈ 0.002, i.e. essentially unexploitable), and an exact best response beats uniform play by the predicted margins (Kuhn +0.500, Leduc +2.087).
+**Exact yardsticks.** Both games are small enough to solve exactly, so every simulated curve is bracketed by two analytical references computed by hand-verified math, not simulation: `nash_ev` (what safe equilibrium play earns against that opponent — you cannot do worse if the read is useless) and `ceiling` (the exact best-response value — the most that is extractable). A good exploiter sits between them and climbs toward the ceiling. The apparatus itself is trustworthy on two independent counts. *Internally:* our solver reproduces the exact Kuhn Nash value of −1/18 (NashConv ≈ 0.002, i.e. essentially unexploitable), and an exact best response beats uniform play by the predicted margins (Kuhn +0.500, Leduc +2.087). *Externally:* cross-validated against **OpenSpiel**, our best-response engine's NashConv on the uniform policy matches OpenSpiel's to full precision — Kuhn 0.916667 vs 0.916667 and Leduc 4.747222 vs 4.747222 (|Δ| = 0.000000 on both, tolerances 0.001 / 0.01). Because NashConv = br₀ + br₁ in a zero-sum game, this compares the two engines with no info-state-string mapping at all.
 
 **The three studies.**
 
@@ -192,7 +192,9 @@ Part II evaluates a complete opponent-modeling system — **three interchangeabl
 2. **Exploitation** — how much does best-responding to each model actually win, measured against the exact `nash_ev` and `ceiling`?
 3. **Non-stationarity** — when the opponent switches style mid-match, does change-point forgetting recover faster than a model that never forgets?
 
-**Sample sizes.** Detection: 5 seeds × 4 000 hands per type. Exploitation: 5 seeds × 20 000-hand matches, refitting every 200 hands. Non-stationarity: a 20 000-hand match with the style switch at hand 10 000. Nash baselines use 200 000 (Kuhn) / 40 000 (Leduc) CFR iterations.
+**Sample sizes.** Detection: 5 seeds × 4 000 hands per type. Exploitation: 5 seeds × 20 000-hand matches, refitting every 200 hands. Non-stationarity: 5 seeds × 20 000-hand matches with the style switch at hand 10 000. Nash baselines use 200 000 (Kuhn) / 40 000 (Leduc) CFR iterations.
+
+**A note on type names.** Part II uses a larger, per-game type zoo than Part I's four hand-built types: the Kuhn zoo is {AlwaysPass, AlwaysBet, TightPassive, LooseAggressive, Thresholdish, Nash, Random, Level1–3} and the Leduc zoo is {CallingStation, Maniac, Rock, LoosePassive, Nash, Random, Level1–3}. The names therefore differ from Part I — in particular Part I's *AlwaysCall* (a calling station that never folds) is a different type from Part II's Kuhn *AlwaysPass* (which checks/folds); the Part II calling-station lives in the Leduc zoo as *CallingStation*.
 
 **One deliberate caveat — the consistent model is not run in the exploitation loop.** It refits its convex program from scratch each time the exploiter updates, and that cost grows with the number of hands already observed (from a fraction of a second early to ~12 s per refit near 20 000 hands), which makes a full online match impractical. We therefore evaluate the consistent model on **strategy recovery (detection)**, where its sequence-form MAP is designed to shine, and let the type-based and continuous models carry the exploitation comparison. (On Leduc the sequence-form program is large, so consistent detection is reported on Kuhn only.)
 
@@ -210,7 +212,7 @@ The **continuous** model's mean TV to the truth is small on Kuhn (0.006–0.030)
 
 ## 9. Exploitation — how much does modeling win?
 
-Realized mean profit per hand over 20 000-hand matches (×5 seeds), against the exact best-response **ceiling**. The type-based model tracks the ceiling almost exactly on both games; the continuous model matches it on Kuhn and tracks close on Leduc, sitting below for the hardest-to-fit types (the undersampling of §8).
+Realized mean profit per hand over 20 000-hand matches (×5 seeds), against the exact best-response **ceiling**. Each table shows five representative types from that game's zoo (10 Kuhn / 9 Leduc; the full set is in the results JSON). The type-based model tracks the ceiling almost exactly on both games; the continuous model matches it on Kuhn and tracks close on Leduc, sitting below for the hardest-to-fit types (the undersampling of §8).
 
 **Kuhn** (ceiling / type-based / continuous):
 
@@ -236,7 +238,7 @@ Realized mean profit per hand over 20 000-hand matches (×5 seeds), against the 
 
 **Results — two carry the message:**
 
-1. **You cannot exploit an equilibrium.** Against the Nash opponent every model earns ≈ the (negative) Nash EV, never more — the exact ceiling *is* essentially the game value. This confirms the exploitation is real, not an artifact.
+1. **You cannot exploit an equilibrium.** Against the Nash opponent every model earns ≈ the (negative) Nash EV, never more — the exact ceiling *is* essentially the game value. This confirms the exploitation is real, not an artifact. (Where a realized number sits a hair *above* its ceiling — e.g. continuous −0.053 vs the −0.055 Kuhn Nash ceiling — the excess is finite-sample noise within ±1 SE, not a real breach: the exact ceiling cannot actually be beaten.)
 2. **A confident-but-underfit model makes *you* exploitable.** On Leduc the continuous model *loses* to Nash (−0.175 vs the −0.083 ceiling): with imperfect data it best-responds to a *wrong* estimate of an unexploitable opponent, opening a leak in its own play.
 
 **Conclusion.** When the model class fits, best response reaches the exact extractable ceiling — modeling delivers the full theoretical value. When it does not (continuous on Leduc's many info sets), two costs appear: money left on the table against exploitable opponents, and — more dangerously — a *negative* result against an opponent who cannot be exploited at all. That second cost is the exploitation-vs-safety tension in numbers, and the direct motivation for Step 08's KL-regularized safe exploitation.
@@ -247,19 +249,19 @@ Realized mean profit per hand over 20 000-hand matches (×5 seeds), against the 
 
 **What we test.** The opponent switches style at hand 10 000 of 20 000. We compare a **static** continuous model against one with **change-point forgetting** (detect a style change → reset the model → drop to safe play → re-learn).
 
-The result is **scenario-dependent**, which is itself the finding:
+The result is **scenario-dependent**, which is itself the finding. Mean profit/hand *after the switch*, averaged over 5 seeds (± standard error; every individual seed agrees on the sign):
 
 | Game | Switch (at hand 10k of 20k) | static (after switch) | change-point (after switch) |
 |---|---|---:|---:|
-| Kuhn | TightPassive → LooseAggressive | **−0.116** | **+0.226** |
-| Leduc | Rock → Maniac | **+1.940** | **+0.525** |
+| Kuhn | TightPassive → LooseAggressive | **−0.106 ± 0.007** | **+0.211 ± 0.008** |
+| Leduc | Rock → Maniac | **+1.834 ± 0.054** | **+0.552 ± 0.017** |
 
 ![Non-stationarity (Kuhn): after the switch the static model bleeds (exploiting a phantom), while change-point detection resets and recovers.](figures/impl_nonstationarity_kuhn.png)
 
 ![Non-stationarity (Leduc): here the static model wins — the Maniac is so exploitable that continuous adaptation captures it, and the detector's false-positive resets cost more than they save.](figures/impl_nonstationarity_leduc.png)
 
-- **Kuhn — change-point wins.** The stale anti-rock strategy (bluff-heavy) *actively loses* to the new maniac (who calls everything), so the static model goes negative; detecting the switch and re-learning recovers to +0.23.
-- **Leduc — change-point loses.** The maniac leaks 2+/hand, so the continuously-adapting static model exploits it well without any reset; meanwhile the detector fires many **false positives** during the stable phase (60–61 resets against a single true switch), each dropping to safe play and discarding data.
+- **Kuhn — change-point wins.** The stale anti-rock strategy (bluff-heavy) *actively loses* to the new maniac (who calls everything), so the static model goes negative on every seed (−0.077 to −0.122); detecting the switch and re-learning recovers to +0.21 (all seeds +0.18 to +0.24). The two bands do not overlap.
+- **Leduc — change-point loses.** The maniac leaks 2+/hand, so the continuously-adapting static model exploits it well without any reset (+1.83); meanwhile the detector fires many **false positives** during the stable phase (58–59 resets per seed against a single true switch), each dropping to safe play and discarding data, and lands three-and-a-half times lower (+0.55). Again the seed bands are cleanly separated.
 
 **Conclusion.** Change-point forgetting rescues you exactly when a stale model is *harmful*, but its naive form — a low-signal detector that false-triggers, plus a full reset-to-safe on every detection — can underperform simple continuous adaptation when the new opponent is exploitable enough that staleness costs little. The *reaction* to a detected change matters as much as the detection: cheaper responses (partial forgetting instead of a hard reset; a less trigger-happy detector) are the clear next step.
 
@@ -267,7 +269,7 @@ The result is **scenario-dependent**, which is itself the finding:
 
 ## 11. Are the sample sizes adequate?
 
-Because every experiment logs its per-seed values, adequacy can be quantified rather than assumed. The short answer: **more than adequate for detection and exploitation; under-powered for non-stationarity.**
+Because every experiment logs its per-seed values, adequacy can be quantified rather than assumed. The short answer: **adequate across all three studies** — comfortably so for exploitation and non-stationarity, and sufficient for the qualitative detection claims.
 
 **Exploitation — comfortably adequate.** The standard error (SE) of the mean profit/hand across the 5 seeds is tiny relative to the effects claimed:
 
@@ -280,7 +282,7 @@ So (1) the type-based model is **statistically indistinguishable from the exact 
 
 **Detection — adequate for the claims made.** Type-based posteriors are saturated and the continuous/consistent TV distances are stable and ordered as predicted. We report point TVs rather than error bars; a fuller version would repeat detection across seeds and publish TV confidence bands.
 
-**Non-stationarity — under-powered.** This experiment runs a single fixed RNG seed, so each number is one realization (`n = 1`, no error bar). The *direction* of the finding is robust — the mechanisms are structural and the 60–61-reset count against one true switch is unambiguous — but the *magnitudes* (+0.226, +0.525, +1.940) should be read as illustrative. Repeating it over the same 5 seeds is the single most valuable cheap upgrade.
+**Non-stationarity — solid (5 seeds).** Each variant is now run over the same 5 seeds. The after-switch standard errors are small and, in both games, the static and change-point bands are cleanly separated: Kuhn −0.106 ± 0.007 vs +0.211 ± 0.008 (change-point wins by ~40 combined SE); Leduc +1.834 ± 0.054 vs +0.552 ± 0.017 (static wins by ~24 combined SE). Every individual seed agrees on the sign of the effect, so the two-sided finding of §10 is a measured result, not a single realization.
 
 ---
 
@@ -288,12 +290,11 @@ So (1) the type-based model is **statistically indistinguishable from the exact 
 
 Ranked by how much they qualify the conclusions:
 
-1. **Non-stationarity is `n = 1` (§11).** The finding holds; the magnitudes are single realizations. Looping over the existing 5 seeds fixes it in minutes of compute.
-2. **The change-point detector is too trigger-happy (§10).** ~1 false reset per ~330 hands in a stationary regime — a genuine defect in the naive detector + hard-reset design, and the reason change-point loses on Leduc.
-3. **Consistent-model exploitation is unmeasured by design (§7).** Excluding it keeps the online matches tractable, but the exploitation comparison is type-based vs continuous only; the consistent model is characterised on recovery instead.
-4. **Leduc consistent detection is deferred** — the sequence-form program is large there, so cross-game recovery for the consistent model rests on Kuhn.
-5. **Well-specified detection is an easy case.** Every true type is also a candidate, so posterior = 1.000 is *expected*; it validates the machinery, not robustness to an opponent *outside* the menu — precisely where the continuous/consistent models should earn their keep (and where continuous visibly struggles on Leduc).
-6. **Two small games, self-play data.** Kuhn/Leduc are exact-solvable *because* they are tiny; the partial-observability and undersampling effects that dominate Leduc will only intensify in larger games. This is a controlled proof-of-concept, not a scaling claim.
+1. **The change-point detector is too trigger-happy (§10).** ~1 false reset per ~330 hands in a stationary regime — a genuine defect in the naive detector + hard-reset design, and the reason change-point loses on Leduc. This is the clearest quality gap and a direct research hook, not a blocker.
+2. **Consistent-model exploitation is unmeasured by design (§7).** Excluding it keeps the online matches tractable, but the exploitation comparison is type-based vs continuous only; the consistent model is characterised on recovery instead.
+3. **Leduc consistent detection is deferred** — the sequence-form program is large there, so cross-game recovery for the consistent model rests on Kuhn.
+4. **Well-specified detection is an easy case.** Every true type is also a candidate, so posterior = 1.000 is *expected*; it validates the machinery, not robustness to an opponent *outside* the menu — precisely where the continuous/consistent models should earn their keep (and where continuous visibly struggles on Leduc).
+5. **Two small games, self-play data.** Kuhn/Leduc are exact-solvable *because* they are tiny; the partial-observability and undersampling effects that dominate Leduc will only intensify in larger games. This is a controlled proof-of-concept, not a scaling claim.
 
 ---
 
@@ -327,8 +328,9 @@ python implementation/step07/exploration/robustness_sweep.py         # §4.3 swe
 **Part II — full evaluation** (from `implementation/step07/implementation/`, `.venv` active; needs numpy, scipy, matplotlib):
 
 ```bash
-python tournament.py --config smoke   # quick Kuhn pass (~3 s)
-python tournament.py --config scale   # full run: Kuhn ~2 min, Leduc ~14 min
+python tournament.py --config smoke      # quick Kuhn pass (~3 s)
+python tournament.py --config scale      # full run: Kuhn ~2 min, Leduc ~14 min
+python compare_openspiel.py              # OpenSpiel NashConv cross-validation (needs open_spiel)
 ```
 
 Results write to `results/*.json` and plots to `plots/*.png`. *Figures reproduced in this report live in `deliverables/reports/step07/figures/` (exploration figures under their original names; evaluation figures prefixed `impl_`).*

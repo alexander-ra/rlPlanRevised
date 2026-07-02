@@ -1,7 +1,7 @@
 {
   "game": "kuhn",
   "config": "scale",
-  "elapsed_sec": 25.051100969314575,
+  "elapsed_sec": 7.193649768829346,
   "types": [
     "AlwaysPass",
     "AlwaysBet",
@@ -8513,10 +8513,38 @@
     "second": "LooseAggressive",
     "switch_at": 10000,
     "total": 20000,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
     "variants": {
       "static": {
-        "mean_per_hand": 0.0287,
-        "mean_after_switch": -0.1159,
+        "mean_per_hand": 0.0323,
+        "mean_per_hand_by_seed": [
+          0.0287,
+          0.0258,
+          0.04775,
+          0.0299,
+          0.02935
+        ],
+        "mean_after_switch": -0.10564,
+        "mean_after_switch_by_seed": [
+          -0.1159,
+          -0.1221,
+          -0.0775,
+          -0.0989,
+          -0.1138
+        ],
+        "n_changepoints_by_seed": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
         "changepoints": [],
         "cumulative": [
           -1.0,
@@ -9122,8 +9150,29 @@
         ]
       },
       "changepoint": {
-        "mean_per_hand": 0.1271,
-        "mean_after_switch": 0.2257,
+        "mean_per_hand": 0.12431,
+        "mean_per_hand_by_seed": [
+          0.1271,
+          0.1213,
+          0.1366,
+          0.1044,
+          0.13215
+        ],
+        "mean_after_switch": 0.211,
+        "mean_after_switch_by_seed": [
+          0.2257,
+          0.201,
+          0.21,
+          0.183,
+          0.2353
+        ],
+        "n_changepoints_by_seed": [
+          60,
+          58,
+          55,
+          55,
+          60
+        ],
         "changepoints": [
           399,
           799,

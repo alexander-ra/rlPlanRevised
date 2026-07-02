@@ -1,7 +1,7 @@
 {
   "game": "leduc",
   "config": "scale",
-  "elapsed_sec": 826.8442504405975,
+  "elapsed_sec": 49.95528960227966,
   "types": [
     "CallingStation",
     "Maniac",
@@ -7618,10 +7618,38 @@
     "second": "Maniac",
     "switch_at": 10000,
     "total": 20000,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
     "variants": {
       "static": {
-        "mean_per_hand": 1.3392,
-        "mean_after_switch": 1.9402,
+        "mean_per_hand": 1.30953,
+        "mean_per_hand_by_seed": [
+          1.3392,
+          1.40745,
+          1.25745,
+          1.2591,
+          1.28445
+        ],
+        "mean_after_switch": 1.8343399999999999,
+        "mean_after_switch_by_seed": [
+          1.9402,
+          2.0144,
+          1.7553,
+          1.7169,
+          1.7449
+        ],
+        "n_changepoints_by_seed": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
         "changepoints": [],
         "cumulative": [
           -3.0,
@@ -8227,8 +8255,29 @@
         ]
       },
       "changepoint": {
-        "mean_per_hand": 0.14615,
-        "mean_after_switch": 0.5253,
+        "mean_per_hand": 0.22471000000000002,
+        "mean_per_hand_by_seed": [
+          0.14615,
+          0.23695,
+          0.28715,
+          0.2671,
+          0.1862
+        ],
+        "mean_after_switch": 0.55184,
+        "mean_after_switch_by_seed": [
+          0.5253,
+          0.5773,
+          0.6124,
+          0.5025,
+          0.5417
+        ],
+        "n_changepoints_by_seed": [
+          61,
+          54,
+          60,
+          63,
+          57
+        ],
         "changepoints": [
           67,
           426,

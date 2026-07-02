@@ -308,6 +308,7 @@ def exploitation_experiment(game, hero, zoo, cfg, ckpt) -> dict:
 def nonstationarity_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     ns = cfg["nonstationarity"]
     nash = zoo["Nash"]
+    seeds = cfg["seeds"]
     # first/second may be a plain type name or a per-game {game_name: type_name} map,
     # since the Kuhn and Leduc zoos use different type names.
     def _resolve(spec):
@@ -315,35 +316,68 @@ def nonstationarity_experiment(game, hero, zoo, cfg, ckpt) -> dict:
     first, second = _resolve(ns["first"]), _resolve(ns["second"])
     seg = switching([(0, zoo[first]), (ns["switch_at"], zoo[second])])
     out = {"first": first, "second": second, "switch_at": ns["switch_at"],
-           "total": ns["total"], "variants": {}}
+           "total": ns["total"], "seeds": list(seeds), "variants": {}}
     for use_cp in (False, True):
         variant = "changepoint" if use_cp else "static"
-        key = f"{game.name}|nonstationarity|{variant}"
+        # `ns{N}` in the key versions the schema: it repeats the run over N seeds (the old
+        # single-seed keys are a different schema and are simply left orphaned on resume).
+        key = f"{game.name}|nonstationarity|{variant}|ns{len(seeds)}"
         if ckpt.has(key):
             out["variants"][variant] = ckpt.get(key)
             continue
-        _set_status(f"{game.name} non-stationarity: {variant}")
-        rng = random.Random(4242)
-        model = ContinuousModel(game, hero)
-        ex = AdaptiveExploiter(game, hero, model, nash_policy=nash,
-                               refit_every=cfg["refit_every"], safety=cfg["safety"],
-                               min_hands_before_exploit=cfg["min_hands_before_exploit"],
-                               use_changepoint=use_cp)
+        means, after_means, n_cps = [], [], []
+        rep_curve, rep_cps = None, None  # seed 0 is the representative curve for the plot
+        for si, seed in enumerate(seeds):
+            seed_key = f"{key}|seed{seed}"
+            if ckpt.has(seed_key):
+                seed_res = ckpt.get(seed_key)
+            else:
+                _set_status(f"{game.name} non-stationarity: {variant} "
+                            f"seed {si + 1}/{len(seeds)}")
+                # Seed base 4242 keeps seed 0 identical to the original single-seed run.
+                rng = random.Random(4242 + seed)
+                model = ContinuousModel(game, hero)
+                ex = AdaptiveExploiter(
+                    game, hero, model, nash_policy=nash,
+                    refit_every=cfg["refit_every"], safety=cfg["safety"],
+                    min_hands_before_exploit=cfg["min_hands_before_exploit"],
+                    use_changepoint=use_cp)
 
-        def on_refit(i, num_hands, fit_seconds, _variant=variant):
-            _set_status_throttled(f"{game.name} non-stationarity: {_variant} "
-                        f"hand {i}/{num_hands} (last refit {fit_seconds:.1f}s)")
+                def on_refit(i, num_hands, fit_seconds, _v=variant, _si=si):
+                    _set_status_throttled(
+                        f"{game.name} non-stationarity: {_v} "
+                        f"seed {_si + 1}/{len(seeds)} hand {i}/{num_hands} "
+                        f"(last refit {fit_seconds:.1f}s)")
 
-        res = ex.run(seg, ns["total"], rng, on_refit=on_refit)
-        after = res["profits"][ns["switch_at"]:]
+                res = ex.run(seg, ns["total"], rng, on_refit=on_refit)
+                after = res["profits"][ns["switch_at"]:]
+                seed_res = {
+                    "mean_per_hand": res["mean_per_hand"],
+                    "mean_after_switch": (sum(after) / len(after)) if after else None,
+                    "n_changepoints": len(res["changepoints"]),
+                }
+                if si == 0:  # keep the full curve + changepoints of one seed for plotting
+                    seed_res["cumulative"] = _downsample(res["cumulative"], 600)
+                    seed_res["changepoints"] = res["changepoints"]
+                ckpt.set(seed_key, seed_res, force_flush=True)
+            means.append(seed_res["mean_per_hand"])
+            if seed_res["mean_after_switch"] is not None:
+                after_means.append(seed_res["mean_after_switch"])
+            n_cps.append(seed_res["n_changepoints"])
+            if si == 0:
+                rep_curve = seed_res.get("cumulative")
+                rep_cps = seed_res.get("changepoints")
         variant_result = {
-            "mean_per_hand": res["mean_per_hand"],
-            "mean_after_switch": (sum(after) / len(after)) if after else None,
-            "changepoints": res["changepoints"],
-            "cumulative": _downsample(res["cumulative"], 600),
+            "mean_per_hand": sum(means) / len(means),
+            "mean_per_hand_by_seed": means,
+            "mean_after_switch": (sum(after_means) / len(after_means)) if after_means else None,
+            "mean_after_switch_by_seed": after_means,
+            "n_changepoints_by_seed": n_cps,
+            "changepoints": rep_cps or [],   # representative (seed 0) for the plot
+            "cumulative": rep_curve or [],    # representative (seed 0) for the plot
         }
         out["variants"][variant] = variant_result
-        ckpt.set(key, variant_result)
+        ckpt.set(key, variant_result, force_flush=True)
     return out
 
 
@@ -414,13 +448,16 @@ def _print_summary(game_name, detection, exploitation, nonstat):
             line += f" {blk['models'][m]['mean_per_hand']:>11.3f}"
         print(line)
 
+    n_seeds = len(nonstat.get("seeds", [])) or 1
     print(f"\n  -- non-stationarity ({game_name}): {nonstat['first']} -> {nonstat['second']}"
-          f" at hand {nonstat['switch_at']} --")
+          f" at hand {nonstat['switch_at']} (mean over {n_seeds} seeds) --")
     for variant, blk in nonstat["variants"].items():
         msa = blk["mean_after_switch"]
+        n_cps = blk.get("n_changepoints_by_seed", [len(blk.get("changepoints", []))])
+        cp_mean = sum(n_cps) / len(n_cps)
         print(f"  {variant:12s} mean/hand={blk['mean_per_hand']:+.3f} "
               f"after_switch={(f'{msa:+.3f}' if msa is not None else '-')} "
-              f"changepoints={blk['changepoints']}")
+              f"changepoints/seed={cp_mean:.0f} (per-seed {n_cps})")
 
 
 def main():
