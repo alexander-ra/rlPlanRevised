@@ -1,0 +1,78 @@
+{
+  "_comment": "All tunables for the NLHE 6-max blueprint. Nothing in code should hardcode these.",
+  "game": {
+    "num_players": 6,
+    "starting_stack": 200,
+    "small_blind": 1,
+    "big_blind": 2,
+    "ante": 0
+  },
+  "abstraction": {
+    "_note": "Narrowed for G6 memory fit; see DEVIATIONS.md and README G6 sizing.",
+    "raise_fractions": [1.0],
+    "include_allin": true,
+    "use_preflop_open": false,
+    "preflop_open_bb": 2.25,
+    "max_raises_per_street": 2
+  },
+  "buckets": {
+    "_note": "Postflop 200: chosen from the benchmark sweep (throughput flat across 100/200/400 once the insert race was fixed). 214M infosets, 15.6GB table, 1227 visits/infoset over 400h - a stable base for the planned self-play NN refinement.",
+    "preflop": 169,
+    "flop": 200,
+    "turn": 200,
+    "river": 200,
+    "flop_runout_samples": 200,
+    "kmeans_iters": 30,
+    "equity_opponent": "uniform_random"
+  },
+  "infoset_table": {
+    "_note": "Auto-sized by mccfr.build_table from the exact infoset count at 0.55 load; this value is a legacy fallback only.",
+    "capacity": 390000000,
+    "max_actions": 4,
+    "load_factor_target": 0.55
+  },
+  "mccfr": {
+    "n_workers": 12,
+    "batch_iters_per_call": 1000,
+    "regret_dtype": "float32",
+    "prune_enabled_after_fraction": 0.05,
+    "prune_threshold": -300000000.0,
+    "prune_skip_prob": 0.95,
+    "discount_interval": 20000000,
+    "discount_warmup_fraction": 0.20,
+    "planned_iterations": 5000000000
+  },
+  "checkpoint": {
+    "full_checkpoint_hours": 0.25,
+    "milestone_hours": 24,
+    "metrics_seconds": 30,
+    "status_seconds": 30,
+    "run_dir_budget_gb": 150
+  },
+  "eval": {
+    "interval_hours": 0.25,
+    "decks": 10000,
+    "pilot_decks": 2000,
+    "seat_rotations": 6,
+    "threads": 2,
+    "baselines": ["random", "calling_station", "tag"]
+  },
+  "distill": {
+    "interval_hours": 72,
+    "hidden": [1024, 1024, 1024, 1024],
+    "lr": 0.0003,
+    "batch_size": 4096,
+    "max_epochs": 40,
+    "early_stop_patience": 4
+  },
+  "dashboard": {
+    "port": 8777,
+    "status_poll_seconds": 10,
+    "series_poll_seconds": 60,
+    "checkpoint_stale_alert_hours": 4
+  },
+  "paths": {
+    "artifacts": "artifacts",
+    "runs": "runs"
+  }
+}

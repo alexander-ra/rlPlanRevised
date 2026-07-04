@@ -17,3 +17,13 @@ implementation/step01/logs/
 # Step 07 implementation: regenerable Nash CFR cache + run logs
 implementation/step07/implementation/_cache/
 implementation/step07/implementation/logs/
+
+# NLHE 6-max blueprint: large regenerable artifacts + training output
+implementation/nlhe/artifacts/
+implementation/nlhe/runs/
+# numba on-disk cache
+**/__pycache__/
+*.nbi
+*.nbc
+# cloudflared tunnel binary (large, downloadable)
+implementation/nlhe/tools/

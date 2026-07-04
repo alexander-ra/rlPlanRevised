@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NLHE Blueprint — Training</title>
+<style>
+  :root{--bg:#0e1116;--card:#171c24;--fg:#e6edf3;--mut:#8b949e;--ok:#2ea043;--warn:#d29922;--bad:#f85149;--line:#2f81f7;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 -apple-system,Segoe UI,Roboto,sans-serif;padding:14px}
+  h1{font-size:16px;margin:0 0 2px}
+  .sub{color:var(--mut);font-size:12px;margin-bottom:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .card{background:var(--card);border-radius:10px;padding:12px 14px}
+  .k{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+  .v{font-size:22px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-weight:600;font-size:13px}
+  .b-ok{background:rgba(46,160,67,.18);color:var(--ok)}
+  .b-warn{background:rgba(210,153,34,.18);color:var(--warn)}
+  .b-bad{background:rgba(248,81,73,.18);color:var(--bad)}
+  canvas{width:100%;height:120px;display:block}
+  .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+  .ct{color:var(--mut);font-size:12px;margin-bottom:6px}
+  .heat{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;max-width:420px}
+  .cell{aspect-ratio:1;border-radius:2px;font-size:8px;display:flex;align-items:center;justify-content:center;color:#0008}
+  .stale{color:var(--bad)!important}
+  a{color:var(--line)}
+</style>
+</head>
+<body>
+<h1>NLHE 6-Max Blueprint <span id="badge" class="badge b-warn">…</span></h1>
+<div class="sub" id="runline">loading…</div>
+
+<div class="grid" id="tiles"></div>
+
+<div class="charts">
+  <div class="card"><div class="ct">iterations / sec</div><canvas id="c_rate"></canvas></div>
+  <div class="card"><div class="ct">infosets touched (M)</div><canvas id="c_info"></canvas></div>
+  <div class="card"><div class="ct">RAM (GB)</div><canvas id="c_ram"></canvas></div>
+  <div class="card"><div class="ct">bb/100 vs baselines</div><canvas id="c_eval"></canvas></div>
+</div>
+
+<div class="card" style="margin-top:12px">
+  <div class="ct">preflop raise frequency (rows A→2 high card, cols A→2 low card; upper=suited)</div>
+  <div class="heat" id="heat"></div>
+</div>
+
+<script>
+const S=id=>document.getElementById(id);
+let metrics=[], evals=[];
+
+function fmt(n,d=0){if(n==null||isNaN(n))return"–";return Number(n).toLocaleString(undefined,{maximumFractionDigits:d})}
+function ageStr(s){if(s==null)return"–";s=Math.floor(s);let h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h}h ${m}m`:`${m}m`}
+
+async function j(u){try{const r=await fetch(u+'?t='+Date.now());if(!r.ok)return null;return await r.json()}catch(e){return null}}
+async function lines(u){try{const r=await fetch(u+'?t='+Date.now());if(!r.ok)return[];const t=await r.text();return t.trim().split('\n').filter(x=>x).map(x=>{try{return JSON.parse(x)}catch(e){return null}}).filter(x=>x)}catch(e){return[]}}
+
+function spark(id,xs,ys,color,fmtY){
+  const c=S(id),ctx=c.getContext('2d'),w=c.width=c.clientWidth*2,h=c.height=240;
+  ctx.scale(1,1);ctx.clearRect(0,0,w,h);
+  if(!ys.length)return;
+  const mn=Math.min(...ys),mx=Math.max(...ys),pad=20;
+  const X=i=>pad+i*(w-2*pad)/Math.max(ys.length-1,1);
+  const Y=v=>h-pad-((v-mn)/((mx-mn)||1))*(h-2*pad);
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();
+  ys.forEach((v,i)=>{i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v))});ctx.stroke();
+  ctx.fillStyle='#8b949e';ctx.font='18px sans-serif';
+  ctx.fillText((fmtY?fmtY(mx):mx),4,20);ctx.fillText((fmtY?fmtY(mn):mn),4,h-6);
+}
+
+function multiLine(id,series){ // series: [{ys,color,label}]
+  const c=S(id),ctx=c.getContext('2d'),w=c.width=c.clientWidth*2,h=c.height=240;
+  ctx.clearRect(0,0,w,h);
+  const all=series.flatMap(s=>s.ys);if(!all.length)return;
+  const mn=Math.min(...all,0),mx=Math.max(...all,0),pad=24;
+  const n=Math.max(...series.map(s=>s.ys.length),1);
+  const X=i=>pad+i*(w-2*pad)/Math.max(n-1,1);
+  const Y=v=>h-pad-((v-mn)/((mx-mn)||1))*(h-2*pad);
+  // zero line
+  ctx.strokeStyle='#30363d';ctx.beginPath();ctx.moveTo(pad,Y(0));ctx.lineTo(w-pad,Y(0));ctx.stroke();
+  series.forEach(s=>{ctx.strokeStyle=s.color;ctx.lineWidth=2;ctx.beginPath();
+    s.ys.forEach((v,i)=>{i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v))});ctx.stroke();});
+  ctx.font='16px sans-serif';let ly=18;
+  series.forEach(s=>{ctx.fillStyle=s.color;ctx.fillText(s.label,4,ly);ly+=18});
+}
+
+const RANKS="AKQJT98765432";
+function heat(pf){ // pf: {"AKs":0.8,...} raise freq
+  const g=S('heat');g.innerHTML='';
+  for(let i=0;i<13;i++)for(let k=0;k<13;k++){
+    const hi=RANKS[i],lo=RANKS[k];
+    let label,val;
+    if(i<k){label=hi+lo+'s';} else if(i>k){label=lo+hi+'o';} else {label=hi+lo;}
+    val=pf?pf[label]:null;
+    const d=document.createElement('div');d.className='cell';
+    const v=val==null?0:val;
+    d.style.background=`rgba(46,160,67,${0.12+0.8*v})`;
+    d.textContent=label;d.title=label+' = '+(val==null?'–':(v*100).toFixed(0)+'%');
+    g.appendChild(d);
+  }
+}
+
+async function tick(){
+  const st=await j('status.json');
+  if(st){
+    const state=st.state||'?';
+    const b=S('badge');
+    b.textContent=state;
+    b.className='badge '+(state==='TRAINING'?'b-ok':state==='STALLED'?'b-bad':'b-warn');
+    const ckAge=st.last_checkpoint?(Date.now()/1000-st.last_checkpoint.ts):null;
+    const stale=ckAge!=null&&ckAge>4*3600;
+    S('runline').textContent=`${st.run_id||''} · workers ${st.workers||'?'} · updated ${new Date().toLocaleTimeString()}`;
+    const tiles=[
+      ['iteration',fmt(st.iteration)],
+      ['iters/sec',fmt(st.iters_per_sec)],
+      ['prune rate',st.prune_rate!=null?(st.prune_rate*100).toFixed(0)+'%':'–'],
+      ['RAM',st.ram_gb!=null?st.ram_gb.toFixed(1)+' GB':'–'],
+      ['last checkpoint',`<span class="${stale?'stale':''}">${ageStr(ckAge)} ago</span>`],
+      ['next eval',st.next_eval_ts?ageStr(st.next_eval_ts-Date.now()/1000):'–'],
+      ['GPU job',st.gpu_job?`${st.gpu_job.name} ${Math.round((st.gpu_job.progress||0)*100)}%`:'idle'],
+    ];
+    S('tiles').innerHTML=tiles.map(([k,v])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  }else{
+    S('badge').textContent='NO DATA';S('badge').className='badge b-bad';
+  }
+}
+
+async function slow(){
+  metrics=await lines('metrics.jsonl');
+  const last=metrics.slice(-240);
+  spark('c_rate',null,last.map(m=>m.iters_per_sec||0),'#2f81f7',v=>fmt(v));
+  spark('c_info',null,last.map(m=>(m.infosets||0)/1e6),'#a371f7',v=>v.toFixed(0));
+  spark('c_ram',null,last.map(m=>m.ram_gb||0),'#3fb950',v=>v.toFixed(0));
+  const ev=await j('eval/index.json');
+  if(ev&&ev.length){
+    const names=['random','calling_station','tag','prev_milestone'];
+    const colors=['#8b949e','#d29922','#f85149','#2f81f7'];
+    multiLine('c_eval',names.map((nm,i)=>({label:nm,color:colors[i],ys:ev.map(e=>e[nm]!=null?e[nm]:null).filter(x=>x!=null)})));
+    const latest=ev[ev.length-1];
+    if(latest&&latest.preflop)heat(latest.preflop);
+  }
+}
+tick();slow();
+setInterval(tick,10000);
+setInterval(slow,60000);
+</script>
+</body>
+</html>
