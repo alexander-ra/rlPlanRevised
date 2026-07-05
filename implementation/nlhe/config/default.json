@@ -40,7 +40,8 @@
     "prune_skip_prob": 0.95,
     "discount_interval": 20000000,
     "discount_warmup_fraction": 0.20,
-    "planned_iterations": 5000000000
+    "planned_iterations": 5000000000,
+    "cfr_plus": 1
   },
   "checkpoint": {
     "full_checkpoint_hours": 0.25,
@@ -52,7 +53,7 @@
   "eval": {
     "interval_hours": 0.25,
     "decks": 10000,
-    "pilot_decks": 2000,
+    "pilot_decks": 25000,
     "seat_rotations": 6,
     "threads": 2,
     "baselines": ["random", "calling_station", "tag"]

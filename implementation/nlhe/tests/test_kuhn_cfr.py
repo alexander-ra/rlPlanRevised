@@ -39,10 +39,11 @@ def terminal_util(h, c0, c1, player):
 
 
 class Kuhn:
-    def __init__(self):
+    def __init__(self, cfr_plus=False):
         self.idx = {}  # (card, history) -> row
         self.regret = np.zeros((12, 2), dtype=np.float64)
         self.stratsum = np.zeros((12, 2), dtype=np.float64)
+        self.cfr_plus = cfr_plus  # C3: floor regrets at 0 after each update
 
     def _row(self, card, h):
         key = (card, h)
@@ -72,7 +73,8 @@ class Kuhn:
             node += strat[a] * u
         cf = p1 if player == 0 else p0
         for a in range(2):
-            self.regret[I][a] += cf * (util[a] - node)
+            r = self.regret[I][a] + cf * (util[a] - node)
+            self.regret[I][a] = max(r, 0.0) if self.cfr_plus else r
         return node
 
     def train(self, iters):
@@ -122,8 +124,10 @@ def _br_value(avg, responder):
     return best
 
 
-def test_kuhn_exploitability():
-    game = Kuhn()
+@pytest.mark.parametrize("cfr_plus", [False, True])
+def test_kuhn_exploitability(cfr_plus):
+    """G4.1: CFR converges to Nash on Kuhn in BOTH modes (stock and CFR+)."""
+    game = Kuhn(cfr_plus=cfr_plus)
     game.train(4000)
     avg = game.avg_strategy()
     nashconv = _br_value(avg, 0) + _br_value(avg, 1)

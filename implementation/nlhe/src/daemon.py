@@ -82,6 +82,12 @@ class Daemon:
                       self.art["kriver"], self.art["briver"], self.art["rank"],
                       self.art["binom"], self.art["perms"],
                       float(self.cfg["mccfr"]["prune_threshold"]))
+        # C3 CFR+ regret flooring: 0 = stock (negatives allowed), 1 = floor at 0.
+        # Under flooring the regret-prune path self-disables (regrets never < 0).
+        self._cfr_plus = int(self.cfg["mccfr"].get("cfr_plus", 0))
+        if self._cfr_plus:
+            print("CFR+ ON: regret flooring at 0 (prune path self-disabled)",
+                  flush=True)
 
     def _save_config(self):
         import subprocess
@@ -104,7 +110,7 @@ class Daemon:
         disc_int = m["discount_interval"]
         batch = m["batch_iters_per_call"] * self.cfg["mccfr"]["n_workers"]
         print("warming up JIT...", flush=True)
-        self.mccfr.run_batch(2000, self.gi, *self._args, False)
+        self.mccfr.run_batch(2000, self.gi, *self._args, False, self._cfr_plus)
         self.gi += 2000
         t0 = time.time()
         last_metrics = last_ckpt = last_ms = last_eval = t0
@@ -116,7 +122,7 @@ class Daemon:
         print(f"training from iter {self.gi:,}", flush=True)
         while not self.stop:
             prune_on = self.gi >= prune_after
-            self.mccfr.run_batch(batch, self.gi, *self._args, prune_on)
+            self.mccfr.run_batch(batch, self.gi, *self._args, prune_on, self._cfr_plus)
             self.gi += batch
             # LCFR discounting during warmup
             if self.gi >= next_disc and self.gi < warmup_end:

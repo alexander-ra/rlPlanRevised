@@ -152,9 +152,11 @@ def _sample(strat, n, r):
 @njit(cache=True)
 def traverse(st, traverser, rules, slot_key, regret, stratsum,
              kpre, bpre, kflop, bflop, kturn, bturn, kriver, briver,
-             rank, binom, perms, rng, prune_below, prune_on):
+             rank, binom, perms, rng, prune_below, prune_on, cfr_plus):
     """External-sampling linear-CFR traversal for one traverser. Returns the
-    traverser's counterfactual value at this node."""
+    traverser's counterfactual value at this node. cfr_plus=1 floors regrets at
+    0 after each update (C3): buried actions revive on first positive update;
+    the regret-prune path never fires under flooring (regrets never go negative)."""
     if st[EN.S_FIN] == 1:
         out = np.zeros(EN.N, dtype=np.int64)
         EN.payoffs_nb(st, rank, binom, out)
@@ -189,10 +191,14 @@ def traverse(st, traverser, rules, slot_key, regret, stratsum,
             util[a] = traverse(st2, traverser, rules, slot_key, regret, stratsum,
                                kpre, bpre, kflop, bflop, kturn, bturn,
                                kriver, briver, rank, binom, perms, rng,
-                               prune_below, prune_on)
+                               prune_below, prune_on, cfr_plus)
             node += strat[a] * util[a]
         for a in range(n):
-            regret[slot, a] += util[a] - node
+            if cfr_plus == 1:
+                r = regret[slot, a] + (util[a] - node)
+                regret[slot, a] = r if r > 0.0 else 0.0
+            else:
+                regret[slot, a] += util[a] - node
         return node
     else:
         for a in range(n):
@@ -203,7 +209,7 @@ def traverse(st, traverser, rules, slot_key, regret, stratsum,
         return traverse(st2, traverser, rules, slot_key, regret, stratsum,
                         kpre, bpre, kflop, bflop, kturn, bturn,
                         kriver, briver, rank, binom, perms, rng,
-                        prune_below, prune_on)
+                        prune_below, prune_on, cfr_plus)
 
 
 # ---------------------------------------------------------------------------
@@ -213,7 +219,7 @@ def traverse(st, traverser, rules, slot_key, regret, stratsum,
 @njit(nogil=True, parallel=True, cache=True)
 def run_batch(n_iters, start_iter, rules, slot_key, regret, stratsum,
               kpre, bpre, kflop, bflop, kturn, bturn, kriver, briver,
-              rank, binom, perms, prune_below, prune_on):
+              rank, binom, perms, prune_below, prune_on, cfr_plus=0):
     """Run n_iters external-sampling iterations in parallel over cores.
 
     Each iteration deals one hand (chance sampled once) and traverses for one
@@ -241,7 +247,7 @@ def run_batch(n_iters, start_iter, rules, slot_key, regret, stratsum,
         st = EN.new_hand_nb(rules, holes, board, button)
         traverse(st, traverser, rules, slot_key, regret, stratsum,
                  kpre, bpre, kflop, bflop, kturn, bturn, kriver, briver,
-                 rank, binom, perms, 0, prune_below, prune_on)
+                 rank, binom, perms, 0, prune_below, prune_on, cfr_plus)
 
 
 @njit(nogil=True, parallel=True, cache=True)
