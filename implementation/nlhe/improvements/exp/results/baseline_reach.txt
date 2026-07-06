@@ -1,0 +1,16 @@
+checkpoint: iter 11,206,180,000
+loaded table (4s)
+
+=== 1) PLAYOUT STUDY (200k hands, all seats = current strategy) ===
+hands ending on street: preflop 34.5%  flop 21.4%  turn 11.5%  river 32.6%
+hands REACHING the flop: 65.2%
+sampled decision points by street: preflop 61.6%  flop 18.8%  turn 11.4%  river 8.2%
+(2s)
+
+=== 2) COVERAGE SCAN (all 214M infosets) ===
+  street     infosets  regret_nz  strat_nz  strat>1  strat>10  strat>100  avg_mass
+ preflop    7,137,208      54.2%     46.8%    28.5%     16.0%       8.1%   41858.4
+    flop   54,461,000      34.3%     37.2%    25.7%     12.5%       5.6%    4851.7
+    turn   75,951,400      28.7%     32.5%    23.7%     11.9%       5.4%    4290.0
+   river   76,593,800      25.8%     29.5%    22.6%     12.0%       5.5%    5133.9
+(3s)
