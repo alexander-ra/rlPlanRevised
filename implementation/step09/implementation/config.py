@@ -51,7 +51,10 @@ SMOKE = {
         "seeds": [0],
     },
     # --- LOLA on IPD ---
-    "lola": {"gamma": 0.96, "lr": 1.0, "lr_opp": 1.0, "steps": 150},
+    # lr_opp is the LOLA look-ahead step. At 1.0 the finite-difference LOLA settles into an
+    # asymmetric partial-cooperation fixed point (~1.2/2.5); 5.0 reaches near-symmetric
+    # cooperation (~2.5-2.9). See EXECUTION_NOTES.
+    "lola": {"gamma": 0.96, "lr": 1.0, "lr_opp": 5.0, "steps": 150},
     "plot": True,
 }
 
@@ -71,11 +74,14 @@ SCALE = {
     },
     "coop": {
         "n_targets": 5,
-        "episodes": 12000,
-        "batch_episodes": 256,
+        # Emergent communication needs enough GRADIENT UPDATES (one per batch): 12000/256 = ~47
+        # updates leaves the channel unlearned. 20000/32 = ~625 updates lets the speaker->listener
+        # protocol emerge (comm ON -> ~1.0 vs OFF -> ~1/K). See EXECUTION_NOTES.
+        "episodes": 20000,
+        "batch_episodes": 32,
         "seeds": [0, 1, 2],
     },
-    "lola": {"gamma": 0.96, "lr": 1.0, "lr_opp": 1.0, "steps": 300},
+    "lola": {"gamma": 0.96, "lr": 1.0, "lr_opp": 5.0, "steps": 300},
     "plot": True,
 }
 

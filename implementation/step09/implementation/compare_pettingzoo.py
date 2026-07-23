@@ -20,11 +20,16 @@ from __future__ import annotations
 
 def check_mpe_reachable(steps: int = 5):
     try:
-        from pettingzoo.mpe import simple_spread_v3
+        # PettingZoo >= 1.26 removed MPE; it now lives in the separate `mpe2` package. Try the
+        # legacy in-tree path first, then fall back to mpe2.
+        try:
+            from pettingzoo.mpe import simple_spread_v3
+        except ImportError:
+            from mpe2 import simple_spread_v3
     except ImportError:
-        print("[SKIP] PettingZoo not installed. `pip install 'pettingzoo[mpe]'` to enable this "
-              "optional cross-environment check. The self-contained coop_env results "
-              "(CoopSignal, ClimbingGame) do not need it.")
+        print("[SKIP] MPE not installed. `pip install mpe2` (PettingZoo 1.26+ moved MPE out of "
+              "the main package) to enable this optional cross-environment check. The "
+              "self-contained coop_env results (CoopSignal, ClimbingGame) do not need it.")
         return None
 
     print("PettingZoo MPE simple_spread reachability check")
