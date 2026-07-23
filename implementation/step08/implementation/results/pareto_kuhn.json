@@ -1,0 +1,160 @@
+{
+  "game": "kuhn",
+  "hero": 0,
+  "game_value": -0.05555530504792569,
+  "rnr_canonical": [
+    {
+      "p": 0.0,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.055555555555555636,
+      "exploitability": 2.5050762994527354e-07
+    },
+    {
+      "p": 0.1,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.055555555555555636,
+      "exploitability": 2.5050762994527354e-07
+    },
+    {
+      "p": 0.2,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.055555555555555636,
+      "exploitability": 2.5050762994527354e-07
+    },
+    {
+      "p": 0.3,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.055555555555555636,
+      "exploitability": 2.5050762994527354e-07
+    },
+    {
+      "p": 0.4,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.05555555555555558,
+      "exploitability": 2.505076298897624e-07
+    },
+    {
+      "p": 0.5,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.05555555555555558,
+      "exploitability": 2.505076298897624e-07
+    },
+    {
+      "p": 0.6,
+      "exploitation_value": -0.04444444444444445,
+      "worst_case_value": -0.05555555555555558,
+      "exploitability": 2.505076298897624e-07
+    },
+    {
+      "p": 0.7,
+      "exploitation_value": 0.16666666666666663,
+      "worst_case_value": -0.49999999999999994,
+      "exploitability": 0.4444446949520743
+    },
+    {
+      "p": 0.8,
+      "exploitation_value": 0.16666666666666663,
+      "worst_case_value": -0.4999999999999999,
+      "exploitability": 0.44444469495207417
+    },
+    {
+      "p": 0.9,
+      "exploitation_value": 0.16666666666666663,
+      "worst_case_value": -0.4999999999999999,
+      "exploitability": 0.44444469495207417
+    },
+    {
+      "p": 1.0,
+      "exploitation_value": 0.16666666666666663,
+      "worst_case_value": -0.4999999999999999,
+      "exploitability": 0.44444469495207417
+    }
+  ],
+  "rnr_naive": [
+    {
+      "p": 0.0,
+      "exploitation_value": -0.046613606874723545,
+      "worst_case_value": -0.055878746476277386,
+      "exploitability": 0.0003234414283516951
+    },
+    {
+      "p": 0.1,
+      "exploitation_value": -0.02528561746224306,
+      "worst_case_value": -0.0994196562223959,
+      "exploitability": 0.04386435117447021
+    },
+    {
+      "p": 0.2,
+      "exploitation_value": -0.003957619618283337,
+      "worst_case_value": -0.14392853597963634,
+      "exploitability": 0.08837323093171065
+    },
+    {
+      "p": 0.3,
+      "exploitation_value": 0.017370386657156456,
+      "worst_case_value": -0.18843742756916673,
+      "exploitability": 0.13288212252124104
+    },
+    {
+      "p": 0.4,
+      "exploitation_value": 0.03869840136407593,
+      "worst_case_value": -0.2329463309909871,
+      "exploitability": 0.17739102594306141
+    },
+    {
+      "p": 0.5,
+      "exploitation_value": 0.060026424502475084,
+      "worst_case_value": -0.27745524624509765,
+      "exploitability": 0.22189994119717196
+    },
+    {
+      "p": 0.6,
+      "exploitation_value": 0.08135445607235386,
+      "worst_case_value": -0.3219641733314982,
+      "exploitability": 0.26640886828357246
+    },
+    {
+      "p": 0.7,
+      "exploitation_value": 0.10268249607371255,
+      "worst_case_value": -0.3664731122501885,
+      "exploitability": 0.3109178072022628
+    },
+    {
+      "p": 0.8,
+      "exploitation_value": 0.12401054450655091,
+      "worst_case_value": -0.4109820630011691,
+      "exploitability": 0.3554267579532434
+    },
+    {
+      "p": 0.9,
+      "exploitation_value": 0.14533860137086885,
+      "worst_case_value": -0.45549102558443955,
+      "exploitability": 0.39993572053651383
+    },
+    {
+      "p": 1.0,
+      "exploitation_value": 0.16666666666666663,
+      "worst_case_value": -0.4999999999999999,
+      "exploitability": 0.44444469495207417
+    }
+  ],
+  "points": {
+    "ganzfried": {
+      "exploitation_value": -0.04419456969825941,
+      "worst_case_value": -0.05605530504792572,
+      "exploitability": 0.0005000000000000282
+    },
+    "prime_safe": {
+      "exploitation_value": -0.04048701908829688,
+      "worst_case_value": -0.06347040626785078,
+      "exploitability": 0.007915101219925086
+    },
+    "adaptation": {
+      "exploitation_value": -0.04048701908829688,
+      "worst_case_value": -0.06347040626785078,
+      "exploitability": 0.007915101219925086
+    }
+  },
+  "epsilon_baseline": 0.00741510121992503,
+  "exploitee": "TightPassive"
+}

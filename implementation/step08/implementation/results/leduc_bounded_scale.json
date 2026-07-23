@@ -1,0 +1,384 @@
+{
+  "game": "leduc",
+  "config": "bounded_scale",
+  "game_value": -0.08616552229255232,
+  "cap_iters": 40,
+  "leduc_tol": 0.01,
+  "ses_predicate": "leduc_flop_rank(King)",
+  "methods": [
+    "nash",
+    "full_br",
+    "ses_subgame",
+    "rnr_0.5",
+    "ganzfried",
+    "prime_safe",
+    "adaptation"
+  ],
+  "converging_methods": [
+    "full_br",
+    "nash",
+    "ses_subgame"
+  ],
+  "table": {
+    "Rock": {
+      "nash": {
+        "exploitation_value": 0.20107138496784932,
+        "worst_case_value": -0.08926267096944487,
+        "safety_violation": 0.00309714867689255,
+        "safe": true,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.2
+      },
+      "full_br": {
+        "exploitation_value": 0.9369767695473248,
+        "worst_case_value": -1.6333333333333329,
+        "safety_violation": 1.5471678110407805,
+        "safe": false,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.1
+      },
+      "ses_subgame": {
+        "exploitation_value": 0.24676396822491248,
+        "worst_case_value": -0.1297090261423938,
+        "safety_violation": 0.04354350384984147,
+        "safe": false,
+        "iterations": 194,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 29.6
+      },
+      "rnr_0.5": {
+        "exploitation_value": 0.4940827010916662,
+        "worst_case_value": -0.8123685381533235,
+        "safety_violation": 0.7262030158607712,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.9
+      },
+      "ganzfried": {
+        "exploitation_value": 0.6238174819464881,
+        "worst_case_value": -0.8377897319259799,
+        "safety_violation": 0.7516242096334276,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.5
+      },
+      "prime_safe": {
+        "exploitation_value": 0.6354974510439454,
+        "worst_case_value": -0.7444348983150926,
+        "safety_violation": 0.6582693760225402,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      },
+      "adaptation": {
+        "exploitation_value": 0.6354974510439454,
+        "worst_case_value": -0.7444348983150926,
+        "safety_violation": 0.6582693760225402,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      }
+    },
+    "Maniac": {
+      "nash": {
+        "exploitation_value": 0.43805986770773514,
+        "worst_case_value": -0.08926267096944487,
+        "safety_violation": 0.00309714867689255,
+        "safe": true,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.2
+      },
+      "full_br": {
+        "exploitation_value": 2.1772383333333343,
+        "worst_case_value": -1.1000000000000012,
+        "safety_violation": 1.0138344777074488,
+        "safe": false,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.1
+      },
+      "ses_subgame": {
+        "exploitation_value": 0.6817630170179614,
+        "worst_case_value": -0.12956920740735353,
+        "safety_violation": 0.04340368511480121,
+        "safe": false,
+        "iterations": 211,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 33.5
+      },
+      "rnr_0.5": {
+        "exploitation_value": 2.049392507024979,
+        "worst_case_value": -0.8991922354890471,
+        "safety_violation": 0.8130267131964948,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.8
+      },
+      "ganzfried": {
+        "exploitation_value": 1.8060183229466493,
+        "worst_case_value": -0.637912957873961,
+        "safety_violation": 0.5517474355814086,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.9
+      },
+      "prime_safe": {
+        "exploitation_value": 1.8416417032318884,
+        "worst_case_value": -0.6566827452663575,
+        "safety_violation": 0.5705172229738051,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 3.0
+      },
+      "adaptation": {
+        "exploitation_value": 1.8416417032318884,
+        "worst_case_value": -0.6566827452663575,
+        "safety_violation": 0.5705172229738051,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.9
+      }
+    },
+    "LoosePassive": {
+      "nash": {
+        "exploitation_value": 0.44886897186448604,
+        "worst_case_value": -0.08926267096944487,
+        "safety_violation": 0.00309714867689255,
+        "safe": true,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.2
+      },
+      "full_br": {
+        "exploitation_value": 1.404759780092592,
+        "worst_case_value": -4.200000000000006,
+        "safety_violation": 4.113834477707454,
+        "safe": false,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.1
+      },
+      "ses_subgame": {
+        "exploitation_value": 0.5594132364552087,
+        "worst_case_value": -0.1334439199194709,
+        "safety_violation": 0.047278397626918586,
+        "safe": false,
+        "iterations": 400,
+        "converged": false,
+        "capped": false,
+        "solve_seconds": 78.5
+      },
+      "rnr_0.5": {
+        "exploitation_value": 1.2249963037492697,
+        "worst_case_value": -1.204976533414002,
+        "safety_violation": 1.1188110111214495,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      },
+      "ganzfried": {
+        "exploitation_value": 1.3060992946128243,
+        "worst_case_value": -1.2391127716218218,
+        "safety_violation": 1.1529472493292694,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.3
+      },
+      "prime_safe": {
+        "exploitation_value": 1.3094580401071154,
+        "worst_case_value": -1.3342798534380327,
+        "safety_violation": 1.2481143311454803,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.5
+      },
+      "adaptation": {
+        "exploitation_value": 1.3094580401071154,
+        "worst_case_value": -1.3342798534380327,
+        "safety_violation": 1.2481143311454803,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.3
+      }
+    },
+    "CallingStation": {
+      "nash": {
+        "exploitation_value": 0.5591114016850637,
+        "worst_case_value": -0.08926267096944487,
+        "safety_violation": 0.00309714867689255,
+        "safe": true,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.1
+      },
+      "full_br": {
+        "exploitation_value": 1.4640138888888885,
+        "worst_case_value": -0.9999999999999994,
+        "safety_violation": 0.9138344777074471,
+        "safe": false,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.1
+      },
+      "ses_subgame": {
+        "exploitation_value": 0.6631381245273885,
+        "worst_case_value": -0.12958892327354085,
+        "safety_violation": 0.04342340098098853,
+        "safe": false,
+        "iterations": 350,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 65.5
+      },
+      "rnr_0.5": {
+        "exploitation_value": 1.3063987681254756,
+        "worst_case_value": -0.7801386405886122,
+        "safety_violation": 0.6939731182960598,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      },
+      "ganzfried": {
+        "exploitation_value": 1.3415912364740141,
+        "worst_case_value": -0.9149871124214393,
+        "safety_violation": 0.8288215901288869,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.5
+      },
+      "prime_safe": {
+        "exploitation_value": 1.3633762776008422,
+        "worst_case_value": -0.6862761363957588,
+        "safety_violation": 0.6001106141032064,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      },
+      "adaptation": {
+        "exploitation_value": 1.3633762776008422,
+        "worst_case_value": -0.6862761363957588,
+        "safety_violation": 0.6001106141032064,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.5
+      }
+    },
+    "Nash": {
+      "nash": {
+        "exploitation_value": -0.08616552229255232,
+        "worst_case_value": -0.08926267096944487,
+        "safety_violation": 0.00309714867689255,
+        "safe": true,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.2
+      },
+      "full_br": {
+        "exploitation_value": -0.08256251208315175,
+        "worst_case_value": -0.8416666666666675,
+        "safety_violation": 0.7555011443741151,
+        "safe": false,
+        "iterations": 0,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 0.1
+      },
+      "ses_subgame": {
+        "exploitation_value": -0.09105202720778152,
+        "worst_case_value": -0.1293262245183813,
+        "safety_violation": 0.043160702225828976,
+        "safe": false,
+        "iterations": 76,
+        "converged": true,
+        "capped": false,
+        "solve_seconds": 10.8
+      },
+      "rnr_0.5": {
+        "exploitation_value": -0.12552603257697065,
+        "worst_case_value": -0.7952734100696499,
+        "safety_violation": 0.7091078877770975,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 3.0
+      },
+      "ganzfried": {
+        "exploitation_value": -0.08345734675657902,
+        "worst_case_value": -0.37628349356120516,
+        "safety_violation": 0.29011797126865285,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      },
+      "prime_safe": {
+        "exploitation_value": -0.08328992187913194,
+        "worst_case_value": -0.32468838741075234,
+        "safety_violation": 0.23852286511820003,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.6
+      },
+      "adaptation": {
+        "exploitation_value": -0.08328992187913194,
+        "worst_case_value": -0.32468838741075234,
+        "safety_violation": 0.23852286511820003,
+        "safe": false,
+        "iterations": 40,
+        "converged": false,
+        "capped": true,
+        "solve_seconds": 2.5
+      }
+    }
+  }
+}

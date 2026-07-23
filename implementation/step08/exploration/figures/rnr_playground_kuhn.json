@@ -1,0 +1,63 @@
+{
+  "game": "kuhn",
+  "exploitee": "TightPassive",
+  "game_value": -0.05554181646230755,
+  "rows": [
+    {
+      "p": 0.0,
+      "profit": -0.04685641319872774,
+      "exploitability": 0.00127897003894617
+    },
+    {
+      "p": 0.1,
+      "profit": -0.025504359338675286,
+      "exploitability": 0.04337294331301372
+    },
+    {
+      "p": 0.2,
+      "profit": -0.00415224900607003,
+      "exploitability": 0.08793764910970847
+    },
+    {
+      "p": 0.3,
+      "profit": 0.017199917799087805,
+      "exploitability": 0.13250243513013743
+    },
+    {
+      "p": 0.4,
+      "profit": 0.038552141076798274,
+      "exploitability": 0.17706730137430027
+    },
+    {
+      "p": 0.5,
+      "profit": 0.05990442082706143,
+      "exploitability": 0.22163224784219726
+    },
+    {
+      "p": 0.6,
+      "profit": 0.08125675704987712,
+      "exploitability": 0.2661972745338282
+    },
+    {
+      "p": 0.7,
+      "profit": 0.10260914974524557,
+      "exploitability": 0.3107623814491933
+    },
+    {
+      "p": 0.8,
+      "profit": 0.12396159891316663,
+      "exploitability": 0.3553275685882923
+    },
+    {
+      "p": 0.9,
+      "profit": 0.14531410455364033,
+      "exploitability": 0.39989283595112535
+    },
+    {
+      "p": 1.0,
+      "profit": 0.16666666666666663,
+      "exploitability": 0.44445818353769234
+    }
+  ],
+  "note": "naive p-blend, NOT canonical RNR (see implementation/rnr_solver.py)"
+}

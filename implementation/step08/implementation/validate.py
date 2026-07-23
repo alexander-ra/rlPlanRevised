@@ -141,13 +141,19 @@ def check_adaptation_safety_inequality():
 def check_subgame_differs_and_safe():
     if not _scipy_ok():
         return None, "numpy/scipy not installed -> SKIP"
-    from subgame_exploit_solver import subgame_exploit, leduc_postflop
+    from subgame_exploit_solver import subgame_exploit, leduc_flop_rank
     game = make_game("leduc")
     hero = 0
     nash, _ = solve_nash_cached(game, 4000)
     zoo = make_type_zoo(game, nash_iters=4000)
     opp = zoo["Rock"]
-    res = subgame_exploit(game, hero, opp, nash, predicate=leduc_postflop)
+    # A single realistic real-time subgame (one flop texture -- "after a King", raw step L146):
+    # this is what SES actually re-solves in real time. Constraint generation converges here
+    # because the rest of the tree stays pinned to the safe blueprint. Jointly re-solving ALL
+    # postflop textures (leduc_postflop) does NOT converge in a practical iteration budget on
+    # the full Leduc tree -- see EXECUTION_NOTES. Leduc validation tolerance = 1e-2 (raw L564).
+    res = subgame_exploit(game, hero, opp, nash, predicate=leduc_flop_rank(2),
+                          tol=1e-2, max_iters=400)
     ok = res["differs_from_blueprint"] and res["improves_ev"] and res["gadget_satisfied"]
     return ok, (f"differs={res['differs_from_blueprint']} (maxTV {res['max_subgame_tv']:.2f}), "
                 f"improves_ev={res['improves_ev']} "

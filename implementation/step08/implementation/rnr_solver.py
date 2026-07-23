@@ -62,6 +62,15 @@ def canonical_rnr(game, hero: int, opp_model, p: float, treeplex: "HeroTreeplex 
     obj = np.concatenate([-p * c_model, [-(1.0 - p)]])
 
     adv_rows, adv_b = [], []  # t - c_adv . x <= 0
+    # Seed one adversary cut so the auxiliary worst-case variable t is bounded on the FIRST
+    # solve. t is free and only bounded above by cuts (t <= c_adv . x); with no cuts the LP
+    # maximizes an unbounded t. Double-oracle needs a non-empty initial adversary set, so start
+    # with the opponent's BR to the hero's BR-vs-model (a natural first restricted adversary).
+    _init_hero = best_response_policy(game, hero, opp_model)
+    _seed_adv = best_response_policy(game, opp, _init_hero)
+    _c_seed = np.asarray(tp.payoff_vector(_seed_adv), dtype=float)
+    adv_rows.append(np.concatenate([-_c_seed, [1.0]]))
+    adv_b.append(0.0)
     x = None
     hero_pol = None
     for it in range(max_iters):

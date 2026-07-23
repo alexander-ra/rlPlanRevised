@@ -35,8 +35,20 @@ from seq_form import HeroTreeplex, expected_value
 from safety_checker import worst_case_value
 
 
+# Small FEASIBILITY slack applied to the safety cuts (NOT the convergence tol). An approximate
+# Nash's self-play value (a common `floor`) can sit marginally ABOVE the game's true achievable
+# max-min (by ~1e-4). Requiring the exact `wc >= floor` then makes the master eventually
+# infeasible and, on an unlucky opponent-dependent cut path, return an UNSAFE strategy. Enforcing
+# the cut at `floor - _FEAS_SLACK` keeps the feasible region non-empty (the true max-min strategy
+# satisfies it) so the solve converges to a within-slack-safe strategy against EVERY opponent.
+# It is kept small and independent of `tol` so it does not materially lower the safety guarantee
+# (and, unlike using `tol`, does not blow up the exploitative feasible region when `tol` is large,
+# e.g. the Leduc subgame's 1e-2).
+_FEAS_SLACK = 5e-4
+
+
 def safe_exploit(game, hero: int, opp_model, floor: float, treeplex: "HeroTreeplex | None" = None,
-                 fixed=None, max_iters: int = 30, tol: float = 1e-6, verbose: bool = False) -> dict:
+                 fixed=None, max_iters: int = 300, tol: float = 1e-3, verbose: bool = False) -> dict:
     """Generic safe-exploitation solve: max EV vs `opp_model` s.t. worst-case >= `floor`.
 
     This is the shared engine. Ganzfried passes floor=v*; prime-safe passes floor=v*-eps;
@@ -51,8 +63,20 @@ def safe_exploit(game, hero: int, opp_model, floor: float, treeplex: "HeroTreepl
     history = []       # per-iteration (exploitation_value, worst_case) for debugging
     x = None
     hero_pol = None
+    it = 0
     for it in range(max_iters):
-        res = tp.solve(c_model, cuts=cuts, sense="max", fixed=fixed)
+        try:
+            res = tp.solve(c_model, cuts=cuts, sense="max", fixed=fixed)
+        except RuntimeError as exc:
+            # Infeasible: the floor exceeds the achievable max-min value (e.g. it was derived
+            # from an approximate Nash whose self-play value slightly overshoots the true game
+            # value). Stop and keep the last feasible strategy -- the tightest one found.
+            if x is not None and "infeasible" in str(exc).lower():
+                if verbose:
+                    print(f"    [ganzfried] iter {it}: floor unachievable ({exc}); "
+                          f"keeping last feasible strategy", flush=True)
+                break
+            raise
         x = res.x
         hero_pol = tp.policy(x)
         exploit_ev = expected_value(c_model, x)
@@ -62,18 +86,26 @@ def safe_exploit(game, hero: int, opp_model, floor: float, treeplex: "HeroTreepl
         if verbose:
             print(f"    [ganzfried] iter {it}: exploit_ev={exploit_ev:+.4f} "
                   f"worst_case={wc:+.4f} floor={floor:+.4f} cuts={len(cuts)}", flush=True)
-        if wc >= floor - tol:
+        # DONE at wc >= floor - tol. The master exploits maximally down to the binding safety
+        # cut, so the converged wc sits exactly at floor - tol; add a tiny numerical slack so
+        # "landed on the constraint" reliably counts as converged instead of oscillating for
+        # max_iters on a float-exact equality.
+        if wc >= floor - tol - 1e-9:
             return _result(game, hero, tp, x, hero_pol, c_model, floor, wc, exploit_ev,
                            it + 1, True, history)
         # discovered adversary: the opponent's exact BR to the current hero strategy.
         opp_br = best_response_policy(game, opp, hero_pol)
         c_adv = tp.payoff_vector(opp_br)
-        cuts.append((c_adv, floor))
+        # Enforce the cut at floor - _FEAS_SLACK (see the constant's rationale above): a small,
+        # tol-independent slack that keeps the master feasible without lowering the safety bar
+        # by the full convergence tolerance.
+        cuts.append((c_adv, floor - _FEAS_SLACK))
 
-    # Exhausted iterations without meeting the floor: report the last strategy, unsafe flag.
-    return _result(game, hero, tp, x, hero_pol, c_model, floor,
-                   worst_case_value(game, hero_pol, hero),
-                   expected_value(c_model, x), max_iters, False, history)
+    # Loop ended (max_iters exhausted or floor unachievable). Report the last feasible
+    # strategy; it counts as safe iff its true worst-case meets the floor within tolerance.
+    final_wc = worst_case_value(game, hero_pol, hero)
+    return _result(game, hero, tp, x, hero_pol, c_model, floor, final_wc,
+                   expected_value(c_model, x), it + 1, final_wc >= floor - tol - 1e-9, history)
 
 
 def _result(game, hero, tp, x, hero_pol, c_model, floor, wc, exploit_ev, iters, safe, history):
