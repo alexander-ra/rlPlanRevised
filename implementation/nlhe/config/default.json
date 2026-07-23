@@ -56,7 +56,9 @@
     "pilot_decks": 25000,
     "seat_rotations": 6,
     "threads": 2,
-    "baselines": ["random", "calling_station", "tag"]
+    "baselines": ["random", "calling_station", "tag"],
+    "use_default_policy": 3,
+    "_use_default_policy_note": "0=uniform (old, buggy-TAG-adjacent behaviour), 3=sane-passive fallback on unseen nodes only (fold-if-facing/else-check; trained nodes unchanged) -- see exp/results/PB_fork_decision.md. Fixes the TAG-equity OOB bug + the uniform-fallback leak: TAG -968 (corrected) -> +8 (25k decks, seed 7)."
   },
   "distill": {
     "interval_hours": 72,

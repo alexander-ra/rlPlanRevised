@@ -399,3 +399,165 @@ Full report: `exp/deepcfr/REPORT.md` · design `exp/deepcfr/DESIGN.md` · resear
 1-min micro-run already matched tabular-45-min vs tag (−263.5 ±41). Final-adv-net > strategy-net
 everywhere (supports Phase 7A item 0). Runs: `exp/deepcfr/runs/20260705-212{4,7}_deepcfr-*_s7`,
 reports in `exp/results/`. Live daemon unaffected throughout (157k it/s, tripwire OK).
+
+---
+
+## Phase A — Fork-deciding diagnostics (2026-07-07; DEV-only; live untouched)
+
+Pilot finished (`DONE_MAXHOURS`, 2578 iters, flat adv_loss ~6.2k, TAG −897 @ 4k). Ran the plan's
+Phase-A diagnostics on a read-only copy of live checkpoint slot B @ iter 43,386,418,000
+(`exp/ckpt_live_43386418000`). Full package: `exp/results/PB_fork_decision.md` + `PA1/SUMMARY.md`
++ `PA2_deepcfr_rescue.json`. **Two findings reframe the fork.**
+
+### A-bug — TAG-equity out-of-bounds (fix verified, owner-gated adoption)
+LIVE `evalmatch._bucket_mean_equity` hardcodes the UNsuffixed `bucket_*.npy` (100 clusters) while
+the table/`player_bucket` use the config's 200-bucket files. TAG's `_seat_equity -> mflop[bucket]`
+indexes a len-100 array with bucket ids to 199 on **47–51% of postflop hand-keys** — a silent OOB
+read (numba bounds-check off). Reproduced (numba RNG seeded): LIVE-buggy TAG −415 vs −394 across
+two processes (OOB nondeterminism, same seed); DEV/minimal-fix **−968.2 bit-identical**. Only TAG
+affected (RANDOM/CS never read equity). **Every historical TAG number (dashboard, this LEDGER, the
+7-7-26 status doc) is ~2× too optimistic + partly noise.** Minimal fix = config-aware `_bfile`
+(as DEV already has); verified equal to DEV's −968.2. Owner-gated (LIVE eval change; eval-only,
+no table risk, no restart).
+
+### A1 — the leak is the uniform fallback, not the trained policy (25k, seed 7, corrected harness)
+| policy | fallback/purify | random | cs | tag |
+|---|---|---|---|---|
+| average | uniform (as-deployed) | +0.5 | +273 | **−979.6 (±42)** |
+| current | uniform | +57 | +361 | **−969.1 (±41)** |
+| current | purify 0.05 / 0.10 | +52/+57 | +362/+343 | −968.7 / −944.6 |
+| current | purify **argmax** | +96 | +298 | **+21.1 (±7)** |
+| current | **sane fallback**, mixed trained | +78 | +266 | **+8.2 (±8)** |
+
+Sane-passive fallback (fold-if-facing / else check on unseen nodes, trained mixes untouched) alone
+recovers −969 → +8. current-vs-average is a near non-issue (−980 vs −969). Partial purify does
+nothing (uniform row 0.25/action > threshold); only argmax/sane removes the sampled all-in tail.
+Reconciles Phase-1 A1/A2 FAIL (pot-odds heuristic commits chips blind; sane-passive never does).
+
+### A3 — generalizes across TAG variants (current policy, 25k)
+tag_thresh 0.40/0.45/0.50 → uniform −260/−625/−969 vs **sane +33/+24/+8**. Positive vs all three.
+
+### A2 — Deep CFR pilot rescue (final adv net, 25k, corrected harness)
+raw −915.2 (confirms the pilot −897 was real, not a harness bug) → **argmax +21.6** (ties tabular
+argmax). Net has 0 table-misses; only sampled tails hurt. Pilot's headline loss = same deployment
+artifact; its genuine open question is the flat adv_loss, which v2 fixes target.
+
+### New DEV eval capabilities (24 pytests green)
+`eval_ckpt.py` + `evalmatch.py`: `--policy {average,current}`, `--purify {off,argmax,<thresh>}`,
+`--defaults sane` (mode 3), `--tag-thresh`. Off-path byte-identical; `duplicate_match` is now
+policy-table-generic (pass `regret` for current, `stratsum` for average).
+
+**Recommendation (owner-gated fork):** Track S (stick + fix deployment + distill) strongly favored;
+Track R enriched restart NOT warranted to fix TAG (optional DEV-only ceiling test); Track N Deep
+CFR v2 re-motivated. **STOP for owner decision** per plan Phase B. Live untouched (tripwire
+214,143,408 held; daemon 145k it/s, ~43.8B iters at write time).
+
+---
+
+## Track S — S1 live-fix adoption (owner-approved 2026-07-07): TAG-equity bug + sane fallback
+
+Owner picked Track S for sure, deferred Track R. Applied the verified fix to LIVE, EVAL-ONLY
+(no daemon restart, no training-math change, no checkpoint touched — the eval subprocess
+re-imports `src/` fresh every cycle):
+
+1. Copied `src/default_policy.py` (A1/A2 code, identical DEV/LIVE already) into LIVE `src/`.
+2. Copied DEV's `src/evalmatch.py` into LIVE (clean superset diff: adds `use_defaults` 0-3,
+   `purify_mode`/`purify_thresh`, cfg-aware `_bucket_mean_equity` — fixes the OOB bug — and the
+   generic policy-table param). Also fixed `_bucket_mean_equity(buckets_cfg=None)` to default via
+   `_cfg_or_default` (was a hard-required arg in DEV; `distill.collect_dataset` calls it with zero
+   args in BOTH trees — would have broken distillation later; verified fix + re-tested, 24 passed).
+3. Copied DEV's `scripts/run_eval.py` (adds `--config` + reads `eval.use_default_policy`).
+4. `config/default.json`: added `eval.use_default_policy: 3` (sane-passive fallback: fold-if-facing
+   / else check on UNSEEN nodes only; trained nodes unchanged).
+
+**Verification:** JSON valid; LIVE pytest 15 passed; daemon untouched (tripwire 214,143,408,
+141.9k it/s, iter 44.16B — unaffected by the file swap). Manually invoked the REAL
+`scripts/run_eval.py` against the live run dir (the exact subprocess the daemon spawns every 15
+min) — **new real eval row: random +83.9 (±21), calling_station +297.7 (±34), tag +10.4 (±8)** at
+iter 44,159,004,000, 25k decks (`run_eval.py` always reads `eval.pilot_decks`, not `eval.decks` —
+the latter is a dead key per the Phase 0 note) — consistent with DEV's 25k finding (+8.2). Dashboard now reports
+truth going forward; every eval row before this one used the buggy 100-bucket TAG equity read and
+should be read as unreliable for TAG specifically (RANDOM/CS were never affected).
+
+Rollback: revert 3 files + the one config key (no checkpoint/table involved — reversible with
+zero data loss either direction).
+
+## Empty-table baseline + corrected dashboard chart (2026-07-07, DEV only)
+
+Owner request: a real "iteration 0" reference point (not just "current"), and make the
+corrected (post-bugfix) numbers the dashboard default with a toggle back to the raw history.
+
+- `improvements/exp/empty_table_eval.py` (new, DEV): evals an all-empty `slot_key` (every
+  lookup misses -> pure fallback policy) vs random/cs/tag, 25k decks seed 7. Two variants saved:
+  `exp/results/empty_table_sane.json` (defaults=3, the now-deployed policy: tag **-17.9**, cs
+  -8.5, random -25.0, CI~0 — near-deterministic since the fallback is pure one-hot) and
+  `empty_table_uniform.json` (defaults=0, old behaviour, for context: tag **-1384.7** — confirms
+  the old uniform-fallback-from-scratch is catastrophic, sane-passive costs only ~blinds).
+- `scripts/serve_dashboard.py`: new read-only `/api/eval_baseline` route serving
+  `empty_table_sane.json` (fixed path, no run_dir dependency).
+- `src/dashboard/index.html`: eval chart gets a 3rd toggle, **"corrected (2pt)" is now the
+  default** (was "25k-deck era"): plots empty-table (iter 0) -> latest real eval, both under the
+  corrected policy — directly comparable, 2 clean points. "25k-deck era"/"all evals" (relabelled
+  "pre-fix") retain the old raw-history view unchanged, one click away. `evalMode` replaces the
+  old `era25` boolean; `renderEval()` branches into a synthetic 2-row `rows` array for corrected
+  mode so every downstream panel (tag rolling-mean, CI-width chart, summary tiles) stays consistent
+  across all 3 modes.
+- Verified: `/api/eval_baseline` returns correct JSON (curl-tested against a live server instance);
+  inline JS syntax-checked (`node --check`); render logic runtime-tested with a mocked
+  DOM/Chart.js harness across all 3 modes (corrected gives exactly 2 points: iter 0 tag=-17.92 ->
+  current tag=+10.4; era25/all unchanged). DEV-only, dashboard v2 (port 8901) not currently running
+  a live instance — takes effect on next `serve_dashboard.py` launch, no LIVE files touched.
+
+## Fallback-fraction instrumentation + LIVE re-deploy (2026-07-07, owner-approved)
+
+Owner ask: measure what % of the blueprint's decisions per eval come from the untrained
+fallback policy (vs a genuinely trained table row) — "coverage-in-play", not static coverage.
+
+- `evalmatch._blueprint_strategy` now returns 1 (fallback path taken: unseen node, zero-mass
+  row, or A2 borrow) / 0 (real trained row). `_choose`/`play_hand`/`duplicate_match` thread a
+  `counts` int64[2] accumulator (blueprint-seat decisions only); `duplicate_match`'s 3rd return
+  value is now `{n_decisions, n_fallback, fallback_frac}` (was an unused `{}`).
+- Verified on the live checkpoint copy (`ckpt_live_43386418000`, sane fallback, 3k decks):
+  **fallback_frac 67-78%** across random/cs/tag — i.e. even at 43B+ iters, most of the
+  blueprint's IN-PLAY decisions are still the sane-passive default, not trained mass. Empty-table
+  control gives exactly 1.000 as expected. 24 DEV pytests still green.
+- `empty_table_eval.py` + `results/empty_table_sane.json` regenerated with `fallback_frac: 1.0`
+  per baseline.
+- `scripts/run_eval.py` now records `udp` (the `use_default_policy` regime, so pre/post-fix evals
+  are distinguishable by marker, not a hardcoded iteration cutoff) and `<baseline>_fallback` per
+  eval row.
+- **Re-deployed to LIVE** (`src/evalmatch.py`, `scripts/run_eval.py`): LIVE pytest 15 passed;
+  daemon undisturbed (tripwire held, iter 45.85B). Manually triggered the real production eval:
+  new row @ iter 45,752,436,000 — **tag +11.2 (±8.5), fallback 77.6%**; random +79.2 (78%), cs
+  +284.0 (67%). Confirms fallback is declining only very slowly (78% at 43.4B -> 77.6% at
+  45.75B) — consistent with the status doc's "coverage plateauing" finding, now visible per-eval
+  instead of only via periodic `measure_reach` scans.
+
+## Dashboard fix + fallback-% chart (2026-07-07, DEV only)
+
+Owner reported the "corrected (2pt)" view didn't render (root cause: their dashboard server
+predates the `/api/eval_baseline` route + the file didn't exist yet -> silent blank, no
+degradation path existed). Owner also wants the default view to be **iter-0 -> every post-fix
+eval** (a real trend), not just 2 points, plus a chart of what % of decisions are still
+fallback-driven per eval (now measurable — see above).
+
+- `renderEval()` rewritten: 'corrected' mode now builds `rows` from the baseline (if present)
+  **+ ALL post-fix evals** via `isCorrected(e) = e.udp===3 || (e.udp undefined && e.iteration >=
+  FIX_ITER)` — the OR-rescue handles the ~3h window where evals were already computed under the
+  fixed policy but recorded by the pre-instrumentation `run_eval.py` (no `udp` field yet).
+  Gracefully degrades: if the baseline is unavailable, still renders the post-fix trend (no
+  iter-0 anchor) with an explanatory note instead of blanking; if NEITHER is available, an early
+  return with no chart mutation (was the silent-blank failure mode — now paired with a rendered
+  note in every other case so "blank" only ever means "truly nothing recorded yet").
+- New `renderFallback(rows)` + `c_fallback` chart: 3 series (tag/cs/random) of `<name>_fallback`
+  over iteration, sourced from whatever `rows` the active mode already resolved (only populates
+  for rows carrying the new field — i.e. meaningfully only in 'corrected' mode for now).
+- **Verified with REAL rendering this time** (the earlier claim rested on a DOM/Chart.js mock
+  that couldn't have caught a missing-endpoint blank — lesson learned): built a throwaway run dir
+  with realistic pre-fix / marker-transition / properly-marked eval rows, served the actual
+  `serve_dashboard.py`, headless-Chrome-screenshotted three scenarios — (1) full data: 8-point
+  corrected trend + 5-point fallback chart, both matching the expected point counts exactly;
+  (2) baseline file removed (reproduces the reported bug's likely cause): confirmed graceful
+  7-point trend with the correct "no baseline" note, not a blank chart; screenshots inspected
+  directly, not just asserted. DEV-only; LIVE dashboard untouched (v1, unused, separate from
+  DEV's v2 which is what's actually served).
