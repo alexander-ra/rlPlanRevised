@@ -54,7 +54,12 @@ _R2 = np.array([3.0, 5.0, 0.0, 1.0])   # agent 2 payoff (mirror)
 CONFIG = {
     "gamma": 0.96,
     "lr": 1.0,
-    "lr_opp": 1.0,
+    # The LOLA look-ahead step. At the original default (1.0) the finite-difference LOLA
+    # settles into an ASYMMETRIC partial-cooperation fixed point (~1.2 / ~2.5) rather than the
+    # headline mutual cooperation -- the look-ahead is too small relative to this IPD's value
+    # scale. lr_opp=5.0 robustly reaches near-symmetric cooperation (~2.5-2.9 each) across seeds
+    # while lr_opp=0 still degenerates to the naive gradient (the guardrail). See EXECUTION_NOTES.
+    "lr_opp": 5.0,
     "steps": 200,
     "eps": 1e-4,
     "seed": 0,

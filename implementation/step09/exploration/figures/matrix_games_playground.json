@@ -1,0 +1,42 @@
+{
+  "config": {
+    "steps": 4000,
+    "lr": 0.1,
+    "init": [
+      0.5,
+      0.5
+    ],
+    "seed": 0,
+    "save_plot": true
+  },
+  "results": {
+    "prisoners_dilemma": {
+      "p_final": 0.002528690996126485,
+      "q_final": 0.002528129167309756,
+      "row_payoff": 1.0075774328156502,
+      "col_payoff": 1.0075802419597337,
+      "converged": true
+    },
+    "matching_pennies": {
+      "p_final": 0.5083054185952831,
+      "q_final": 0.49571871344972146,
+      "row_payoff": -0.0001422315077056765,
+      "col_payoff": 0.0001422315077056765,
+      "converged": false
+    },
+    "stag_hunt": {
+      "p_final": 0.0008521528316005664,
+      "q_final": 0.0008521391945027504,
+      "row_payoff": 2.9974464461165087,
+      "col_payoff": 2.9974464870278017,
+      "converged": true
+    },
+    "battle_of_the_sexes": {
+      "p_final": 0.002946636457443128,
+      "q_final": 0.0014491109610957193,
+      "row_payoff": 0.9956170625910278,
+      "col_payoff": 1.991221315172489,
+      "converged": true
+    }
+  }
+}
