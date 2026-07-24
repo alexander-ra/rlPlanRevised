@@ -69,17 +69,26 @@ def mc_shapley(n_players: int, value_function, n_perms: int = 2000, seed: int = 
 
 
 # --- coalition-value functions for SLS --------------------------------------------------
-def win_prob_coalition_values(game, state, n_rollouts: int = 300, policies=None, seed: int = 0):
+def win_prob_coalition_values(game, state, n_rollouts: int = 300, policies=None, seed: int = 0,
+                              rotate_start: bool = False):
     """v(S) = P(winner in S), estimated by random (or given-policy) rollouts from `state`.
-    Returns a dict {frozenset: prob}. One rollout batch scores every subset at once."""
+    Returns a dict {frozenset: prob}. One rollout batch scores every subset at once.
+
+    `rotate_start`: if True, each rollout starts from a uniformly-random ALIVE seat instead of
+    `state.current_player`. This removes the first-mover (seat-0) bias so a position that is
+    symmetric in chips scores symmetrically in win-probability (raw L559 target). Averaging over
+    the starting seat is the de-confounded estimate; leave False for the raw single-seat view."""
     from dataclasses import replace
 
     rng = np.random.default_rng(seed)
     n = game.n_players
+    alive0 = [p for p in range(n) if p not in state.eliminated]
     win_counts = np.zeros(n)
     total = 0
     for _ in range(n_rollouts):
         s = state
+        if rotate_start and alive0:
+            s = replace(s, current_player=int(alive0[int(rng.integers(len(alive0)))]))
         while not game.is_terminal(s):
             legal = game.legal_actions(s)
             if not legal:
@@ -93,7 +102,7 @@ def win_prob_coalition_values(game, state, n_rollouts: int = 300, policies=None,
                 a = policies[s.current_player](game, s, rng)
             else:
                 a = legal[int(rng.integers(len(legal)))]
-            s = game.apply(s, a)
+            s = game.apply(s, a, rng=rng)
         if s.winner is not None and 0 <= s.winner < n:
             win_counts[s.winner] += 1
             total += 1

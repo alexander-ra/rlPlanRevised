@@ -123,8 +123,7 @@ def verify_endgame_consistency(chips_per_player: int = 2, n_trials: int = 20, se
     cross-check flagged above.
     """
     import numpy as np
-
-    from sls_game import play_game
+    from dataclasses import replace
 
     game = SLSGame(n_players=2, chips_per_player=chips_per_player)
     pol = optimal_policy_factory(game)
@@ -136,10 +135,25 @@ def verify_endgame_consistency(chips_per_player: int = 2, n_trials: int = 20, se
     for t in range(n_trials):
         s0 = game.initial_state()
         predicted = optimal_winner(game, s0, memo)
-        final, _ = play_game(game, [pol, pol], seed=int(rng.integers(1 << 30)))
-        ok = (final.winner == predicted)
+        # Simulate optimal-vs-optimal with the DETERMINISTIC engine tie-break (apply rng=None),
+        # matching how `optimal_winner`'s minimax tree resolves ties. The policy rng only breaks
+        # ties among equally-winning MOVES. (play_game now injects a random deadlock tie-break for
+        # unbiased N-player evaluation; using it here would spuriously disagree with the minimax on
+        # coin-flip tie positions -- see EXECUTION_NOTES.md.)
+        s = s0
+        while not game.is_terminal(s):
+            legal = game.legal_actions(s)
+            if not legal:
+                nxt = game._next_with_chips([list(h) for h in s.hands], set(s.eliminated),
+                                            s.current_player)
+                if nxt is None:
+                    break
+                s = replace(s, current_player=nxt)
+                continue
+            s = game.apply(s, pol(game, s, rng))     # rng=None inside apply -> deterministic tie-break
+        ok = (s.winner == predicted)
         mismatches += 0 if ok else 1
-        details.append({"trial": t, "predicted": predicted, "played": final.winner, "ok": ok})
+        details.append({"trial": t, "predicted": predicted, "played": s.winner, "ok": ok})
     return {
         "chips_per_player": chips_per_player,
         "n_trials": n_trials,

@@ -60,6 +60,7 @@ class CoalitionAwareMAPPO:
     def _play_and_record(self, seed: int):
         game = self.game
         n = self.n_players
+        rng = np.random.default_rng(seed)   # tie-break rng (unbiased deadlock winner)
         buf = [{"obs": [], "act": [], "logp": [], "mask": [], "val": []} for _ in range(n)]
         state = game.initial_state()
         while not game.is_terminal(state):
@@ -80,7 +81,7 @@ class CoalitionAwareMAPPO:
             buf[p]["logp"].append(logp)
             buf[p]["mask"].append(mask)
             buf[p]["val"].append(val)
-            state = game.apply(state, action_index_to_move(game, state, idx))
+            state = game.apply(state, action_index_to_move(game, state, idx), rng=rng)
         return state, buf
 
     def _blended_rewards(self, state, buf, use_shapley: bool, alpha: float):

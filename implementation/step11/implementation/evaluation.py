@@ -22,7 +22,7 @@ from sls_game import SLSGame, SLSState, play_game, winner_rewards
 from sls_endgame import verify_endgame_consistency
 from coalition_detector import CoalitionDetector, make_cooperative_log, mean_offdiagonal_coalition
 from shapley import exact_shapley, glove_value, majority_value, win_prob_coalition_values, shapley_credit
-from agents import random_policy, default_baseline_pool
+from agents import random_policy, default_baseline_pool, coalition_pool
 from sls_egta import pairwise_matchup_matrix, analyze_meta_game
 
 
@@ -79,11 +79,13 @@ def run_shapley_check(cfg: dict) -> dict:
 
     game = SLSGame(n_players=cfg["n_players"], chips_per_player=cfg["chips_per_player"])
     R = cfg["shapley_rollouts"]
+    # rotate_start=True averages over the starting seat, removing the P0 first-mover confound so a
+    # chip-symmetric position yields ~equal credit (raw L559; see win_prob_coalition_values docstring).
     sym_vals, sym_wp = win_prob_coalition_values(game, _state_with_hands([5, 5, 5, 5]),
-                                                 n_rollouts=R, seed=cfg["seed"])
+                                                 n_rollouts=R, seed=cfg["seed"], rotate_start=True)
     sym_credit = shapley_credit(4, sym_vals)
     asym_vals, asym_wp = win_prob_coalition_values(game, _state_with_hands([8, 8, 1, 1]),
-                                                   n_rollouts=R, seed=cfg["seed"] + 1)
+                                                   n_rollouts=R, seed=cfg["seed"] + 1, rotate_start=True)
     asym_credit = shapley_credit(4, asym_vals)
 
     # symmetric spread (max-min) should be ~0; asymmetric strong-pair credit should exceed weak
@@ -133,11 +135,16 @@ def run_training_comparison(cfg: dict) -> dict:
 
 
 # --- 5. EGTA meta-game + spinning top ---------------------------------------------------
-def run_egta(cfg: dict, extra_policies=None, extra_names=None) -> dict:
-    """Projected pairwise meta-game over the baseline pool (+ any trained agents), spinning-top
-    decomposition + meta-Nash (raw L551-552, L561)."""
+def run_egta(cfg: dict, extra_policies=None, extra_names=None, pool_name: str = "baseline") -> dict:
+    """Projected pairwise meta-game over an agent pool (+ any trained agents), spinning-top
+    decomposition + meta-Nash (raw L551-552, L561).
+
+    `pool_name`: "baseline" (the skill-ladder tournament pool) or "coalition" (ally-different-
+    partner strategies, the cyclicity test for check 5). The pairwise matchup already de-seats
+    (shuffles seat assignment), and with the unbiased deadlock tie-break (see sls_game._most_chips)
+    the ratio now reflects strategy structure, not seat order."""
     game = SLSGame(n_players=cfg["n_players"], chips_per_player=cfg["chips_per_player"])
-    names, pool = default_baseline_pool()
+    names, pool = (coalition_pool() if pool_name == "coalition" else default_baseline_pool())
     if extra_policies:
         pool = pool + list(extra_policies)
         names = names + list(extra_names or [f"trained_{i}" for i in range(len(extra_policies))])

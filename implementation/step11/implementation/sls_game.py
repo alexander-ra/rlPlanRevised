@@ -135,11 +135,15 @@ class SLSGame:
         return actions
 
     # ---- transition -------------------------------------------------------------------
-    def apply(self, state: SLSState, action: tuple) -> SLSState:
+    def apply(self, state: SLSState, action: tuple, rng=None) -> SLSState:
         """Place one chip, resolve a possible capture, update eliminations, advance the turn.
 
         `action = (color, pile_target)` with `pile_target in range(len(piles))` (extend) or
         `== len(piles)` (new pile). Returns a new terminal-or-ongoing `SLSState`.
+
+        `rng`: optional numpy Generator used ONLY to break a most-chips deadlock/timeout tie
+        uniformly (see `_most_chips`). Pass it from play/eval/train loops for an unbiased winner;
+        omit it (exact endgame minimax) to keep the deterministic salt fallback.
         """
         if state.done:
             raise RuntimeError("apply() called on a terminal state.")
@@ -217,7 +221,7 @@ class SLSGame:
 
         if nxt is None:
             # NOTE (c): all-stuck deadlock -> tie-break by most total chips (hand + board)
-            winner = self._most_chips(hands, piles, alive)
+            winner = self._most_chips(hands, piles, alive, salt=turn_count, rng=rng)
             return replace(
                 state, hands=tuple(tuple(h) for h in hands), piles=tuple(tuple(pl) for pl in piles),
                 eliminated=frozenset(eliminated), current_player=p, done=True, winner=winner,
@@ -225,7 +229,7 @@ class SLSGame:
             )
 
         done = turn_count >= self.max_turns
-        winner = self._most_chips(hands, piles, alive) if done else None
+        winner = self._most_chips(hands, piles, alive, salt=turn_count, rng=rng) if done else None
         return replace(
             state, hands=tuple(tuple(h) for h in hands), piles=tuple(tuple(pl) for pl in piles),
             eliminated=frozenset(eliminated), current_player=nxt, done=done, winner=winner,
@@ -244,18 +248,33 @@ class SLSGame:
                 return q
         return None
 
-    def _most_chips(self, hands, piles, alive) -> int:
-        """Tie-break winner = alive player controlling the most total chips (hand + board)."""
+    def _most_chips(self, hands, piles, alive, salt: int = 0, rng=None) -> int:
+        """Tie-break winner = alive player controlling the most total chips (hand + board).
+
+        Ties among equal-chip leaders are broken FAIRLY, not by lowest index. The original
+        `total > best` scan silently handed every tie to the lowest-indexed player, which gave
+        seat 0 a large systematic advantage (~2x fair share on symmetric positions) and
+        confounded validation checks 3 and 5 (see EXECUTION_NOTES.md / WORKFLOW S0.1). The SLS
+        dynamics themselves are symmetric (mean end-chips per seat are flat) and ~99% of random
+        games end in a chip TIE, so the tied winner MUST be drawn uniformly:
+          - if an `rng` is supplied (the normal play/eval/train path), pick uniformly at random;
+          - else fall back to a `salt`-rotated deterministic pick (used by the exact endgame
+            minimax, which must stay reproducible -- ties there are rare/small).
+        A deterministic salt alone is insufficient: with 4 players cycling, any trajectory-derived
+        integer (turn_count, move sums) stays correlated with seat index, so genuine randomness is
+        required for an unbiased draw."""
         board = [0] * self.n_players
         for pl in piles:
             for chip in pl:
                 board[chip] += 1
-        best, best_q = -1, -1
-        for q in alive:
-            total = sum(hands[q]) + board[q]
-            if total > best:
-                best, best_q = total, q
-        return best_q
+        totals = [sum(hands[q]) + board[q] for q in range(self.n_players)]
+        best = max(totals[q] for q in alive)
+        tied = [q for q in alive if totals[q] == best]
+        if len(tied) == 1:
+            return tied[0]
+        if rng is not None:
+            return int(tied[int(rng.integers(len(tied)))])
+        return tied[salt % len(tied)]
 
 
 def play_game(game: SLSGame, policies, seed: int = 0):
@@ -279,7 +298,7 @@ def play_game(game: SLSGame, policies, seed: int = 0):
             continue
         p = state.current_player
         action = policies[p](game, state, rng)
-        state = game.apply(state, action)
+        state = game.apply(state, action, rng=rng)
     rewards = winner_rewards(game.n_players, state.winner)
     return state, rewards
 

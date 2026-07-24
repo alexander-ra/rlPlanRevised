@@ -87,10 +87,12 @@ def main():
             results.append(("training", ok4))
 
     # 5. spinning top ------------------------------------------------------------------
-    egta = run_egta(cfg)
+    # Use the COALITION pool (ally-different-partner strategies) -- the cyclicity question of
+    # raw L561. The baseline pool is a skill ladder by construction, so it cannot answer it.
+    egta = run_egta(cfg, pool_name="coalition")
     ok5 = egta["cyclic_dominates"]
-    print(f"[5] spinning top: transitive={egta['transitive_ratio']} cyclic={egta['cyclic_ratio']} "
-          f"cyclic>50%? {ok5}  -> {_status(ok5)}")
+    print(f"[5] spinning top (coalition pool): transitive={egta['transitive_ratio']} "
+          f"cyclic={egta['cyclic_ratio']} cyclic>50%? {ok5}  -> {_status(ok5)}")
     print(f"    meta-Nash mixture={egta['meta_nash_mixture']} num_active={egta['num_active']}")
     results.append(("spinning_top", ok5))
 

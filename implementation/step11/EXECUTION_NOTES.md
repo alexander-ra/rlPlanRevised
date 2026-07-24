@@ -165,3 +165,54 @@ because the seat-0 skill-ladder (above) dwarfs the coalition cycling. Check 5 st
 proxy-Shapley weakness (check 4 at scale). Both are documented, reproducible, and left as genuine
 findings for the engine-reconciliation + credit-signal work in consolidation — no thresholds were
 tweaked and no FAIL was silenced (WORKFLOW §0.1).
+
+---
+
+## Phase 4 refinement — de-confounding checks 3 & 5 (root cause found + fixed)
+
+### The seat-0 bias was a tie-break artifact, not first-mover order
+Diagnostic runs (chips=5, 4000 rollouts each) established:
+- **The dynamics are symmetric.** Mean end-chips per seat are flat: `[4.236, 4.245, 4.249, 4.247]`.
+- **~99.5% of random games end by DEADLOCK** (all alive players have empty hands; `_next_with_chips`
+  returns `None`) at ~28 turns — *not* by elimination and *not* by `max_turns` (raising `max_turns`
+  200→5000 changed nothing). The winner is therefore `_most_chips`, and chips are near-tied, so
+  almost every game is decided by the **tie-break**.
+- **The old `_most_chips` broke ties by lowest index** (`total > best` scan), handing seat 0 ~2× its
+  fair share. `rotate_start` on the win-prob rollouts made **no** difference (bias isn't first-mover);
+  a deterministic salt (`turn_count`) also failed (with 4 players cycling it stays index-correlated).
+
+### Fix: an unbiased *random* deadlock tie-break, threaded through the engine
+`sls_game.apply(..., rng=None)` now forwards an optional rng to `_most_chips`, which draws the tied
+winner **uniformly** when an rng is supplied (the play/eval/train paths pass theirs: `play_game`,
+`win_prob_coalition_values`, `coalition_mappo._play_and_record`). The exact 2-player **endgame
+minimax stays deterministic** (no rng → salt fallback), and `verify_endgame_consistency` was switched
+to a deterministic optimal-vs-optimal rollout so it matches the minimax tree (otherwise the new random
+tie-break spuriously disagreed with minimax on coin-flip positions — that briefly showed as 12 endgame
+mismatches before the fix).
+
+### Results (`validate.py --config smoke`): 3/5 → **4/5 PASS**
+- **Check 1 env: PASS** (0 endgame mismatches preserved; termination + zero-sum intact).
+- **Check 3 Shapley: FAIL → PASS.** Symmetric credit `[0.247,0.257,0.253,0.243]`, spread
+  **0.54 → 0.013**; asymmetric strong-pair dominance still holds. All-random winners are now uniform
+  (`[0.251,0.238,0.251,0.260]`, spread 0.022).
+- **Side effect — win rates de-inflated.** Hero-vs-random win rate fell from ~0.87 to ~0.41, i.e. the
+  earlier 0.87 was itself a seat-0 tie-break artifact (hero always sat in seat 0). The fair number is
+  ~0.41 (vs 0.25 random floor).
+- **Check 4 training: PASS at smoke** (shapley 0.004 > sparse 0.001) — but tiny/single-seed; the
+  Part-2 sweep characterizes it properly.
+
+### Check 5: coalition pool surfaces a large cyclic component (still honestly red)
+The matchup already de-seats (shuffles seats), so check 5's transitivity was **pool composition**:
+`default_baseline_pool` is a skill ladder. Added `coalition_pool()` = ally-different-partner strategies
+(`fixed_ally_1/2/3` + `betrayer_1` + `random`); `validate` check 5 now uses it. Measured cyclic ratio:
+- original single-agent baseline: **~0.07**; skill-ladder baseline pool: **~0.32**;
+- **coalition pool: ~0.57 (60 games/cell) to ~0.69 (200 games/cell)** — a large non-transitive
+  component, strongly confirming raw L561's *direction* (FFA coalition dynamics are substantially
+  cyclic), but **just under the strict >50%-dominance threshold** (cyclic² ≈ 0.48 < 0.5; transitive
+  still marginally larger). **Kept red — the pool was not tuned to cross the line.** Honest finding:
+  coalition strategies make SLS meaningfully non-transitive, near-balanced, but not cyclic-*dominant*
+  at this scale; the residual likely reflects the 2-type projection discarding 3-/4-player coalition
+  effects (raw L600 open confusion) — a consolidation-level question.
+
+Self-tests for all touched modules (`sls_game`, `sls_endgame`, `shapley`, `agents`, `evaluation`)
+still exit 0.

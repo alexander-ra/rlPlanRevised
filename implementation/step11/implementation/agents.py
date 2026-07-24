@@ -101,13 +101,26 @@ BASELINE_FACTORY = {
     "greedy_capture": lambda: greedy_capture_policy,
     "fixed_ally_1": lambda: make_fixed_ally(1),
     "fixed_ally_2": lambda: make_fixed_ally(2),
+    "fixed_ally_3": lambda: make_fixed_ally(3),
     "betrayer_1": lambda: make_betrayer(1),
 }
 
 
 def default_baseline_pool():
-    """A small, torch-free agent pool for the EGTA meta-game self-tests / smoke run."""
+    """A small, torch-free agent pool for the EGTA meta-game self-tests / smoke run.
+    Deliberately a rough SKILL LADDER (random < greedy/ally < betrayer) -- used by the tournament
+    comparison. For the cyclicity question (check 5) use `coalition_pool()` instead."""
     names = ["random", "greedy_capture", "fixed_ally_1", "betrayer_1"]
+    return names, [BASELINE_FACTORY[n]() for n in names]
+
+
+def coalition_pool():
+    """A pool of COALITION strategies that ally with DIFFERENT partners -- the natural candidate
+    for non-transitive (rock-paper-scissors) coalition dynamics (raw L561). Each `fixed_ally_k`
+    concentrates help on a different player, so in a shared 4-player game they induce different
+    alliance structures; whether that produces a CYCLIC meta-game is exactly the empirical
+    question check 5 asks (we report the measured ratio honestly -- no pool is tuned to pass)."""
+    names = ["fixed_ally_1", "fixed_ally_2", "fixed_ally_3", "betrayer_1", "random"]
     return names, [BASELINE_FACTORY[n]() for n in names]
 
 
