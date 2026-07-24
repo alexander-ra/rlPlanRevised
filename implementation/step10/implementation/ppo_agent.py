@@ -133,7 +133,13 @@ class PPOAgent:
                 new_lp = logsoft.gather(1, act_t[mb].unsqueeze(1)).squeeze(1)
                 entropy = -(probs * logsoft).sum(dim=-1).mean()   # illegal terms are 0*(-1e9)=0
                 adv = ret_t[mb] - values.detach()
-                adv = (adv - adv.mean()) / (adv.std() + 1e-8)
+                # biased std (unbiased=False): a size-1 minibatch has dof<=0, and the default
+                # unbiased std returns NaN there -> it poisons the advantage, the loss, the
+                # gradients and finally the weights (observed as NaN logits crashing `act` on the
+                # SCALE config, where T often leaves a size-1 remainder past the minibatch bound).
+                # Biased std returns 0 for a lone sample, so it just centers -- no NaN. For normal
+                # minibatches biased vs unbiased differ by ~sqrt(n/(n-1))≈1, negligible here.
+                adv = (adv - adv.mean()) / (adv.std(unbiased=False) + 1e-8)
                 ratio = torch.exp(new_lp - oldlp_t[mb])
                 surr1 = ratio * adv
                 surr2 = torch.clamp(ratio, 1 - hp["clip"], 1 + hp["clip"]) * adv

@@ -119,6 +119,22 @@ def check_league_exploitability_decreases():
 
 # --- EGTA meta-Nash <= best individual, on the trained league (torch) ----------------
 def check_league_meta_nash():
+    # OBSERVED ON A REAL RUN (2026-07-24) -- this check is a DELIBERATELY-KEPT RED (WORKFLOW
+    # 0.1), not a bug. The raw step (L490) predicts the meta-Nash MIXTURE is no more exploitable
+    # than the best single agent ("mixing over a diverse population is safer"). On Leduc that
+    # prediction does NOT hold at this budget, for an instructive reason:
+    #   * Leduc's empirical meta-game is MOSTLY TRANSITIVE (spinning-top ratio ~0.45), so its
+    #     meta-Nash COLLAPSES TO A PURE STRATEGY -- one dominant agent, participation ratio 1.00
+    #     across seeds 0/1/2. There is no mixing, hence no diversity dividend to exploit.
+    #   * meta-Nash picks the agent that BEATS THE POPULATION (the round-robin "king"), which is
+    #     NOT the same as the LEAST-EXPLOITABLE agent in the full game. Early in training the king
+    #     is more exploitable than a more defensive peer, so meta > best_individual (FAIL).
+    #   * With more training the king converges to also being the safest (seed 1 @ 30 epochs:
+    #     meta == best == 1.416, and exploitability roughly halves), so it would then PASS -- but
+    #     via single-agent selection, still NOT via mixing. Forcing a green here would falsely
+    #     read as "mixing helped." Kept red as the honest negative finding for Contribution #3:
+    #     meta-Nash-of-the-empirical-game != least-exploitable mixture, and on a transitive game
+    #     EGTA gives no mixing benefit at all. (Probe: implementation/EXECUTION_NOTES.md.)
     from ppo_agent import torch_available
     if not torch_available():
         return None, "torch not installed -> SKIP"
@@ -131,7 +147,9 @@ def check_league_meta_nash():
     rep_ = league.final_report()["egta"]
     ok = rep_["meta_nash_no_worse_than_best_individual"]
     return ok, (f"league meta-Nash exploitability={rep_['meta_nash_exploitability']} <= best "
-                f"individual={rep_['best_individual_exploitability']}? {ok}")
+                f"individual={rep_['best_individual_exploitability']}? {ok} "
+                f"[KEPT-RED negative finding: meta-Nash is pure on transitive Leduc; the "
+                f"population-king != the least-exploitable agent -- see the function NOTE]")
 
 
 # --- league meta-Nash exploitability comparable to PSRO on Leduc (raw L491-492) ------
