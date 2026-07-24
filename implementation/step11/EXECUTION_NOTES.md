@@ -216,3 +216,59 @@ The matchup already de-seats (shuffles seats), so check 5's transitivity was **p
 
 Self-tests for all touched modules (`sls_game`, `sls_endgame`, `shapley`, `agents`, `evaluation`)
 still exit 0.
+
+---
+
+## Phase 4 investigation — WHEN do coalitions emerge? (the `sweep.py` grid)
+
+To settle whether "coalitions don't emerge from proxy-Shapley at scale" was a real effect or a
+single-seed/mis-tuned artifact, `sweep.py` runs a **5-seed paired** grid over
+`alpha × credit_mode × synergy` at two tiers, reporting the paired gap
+`gap = coalition_score(shapley) − coalition_score(sparse)` with error bars (`results/sweep_*.json`,
+`plots/sweep_coalition_gap.png`). A new `credit_mode="counterfactual"` (win-probability-share Shapley,
+refreshed per batch under the current policies) was added to test the README's #1 suspected fix.
+
+### Headline cells (5 seeds; `**` = mean gap > 2·SE)
+
+| tier (chips/games) | credit | alpha | synergy | gap (shapley−sparse) | sig |
+|---|---|---|---|---|---|
+| **scale** (7 / 1500) | proxy | **0.0** | 0.3 | **+0.0376 ± 0.0103** | ** (≈4.4× sparse) |
+| scale | proxy | 0.0 | 0.1 | +0.0305 ± 0.0130 | ** |
+| scale | counterfactual | 0.0 | – | +0.0128 ± 0.0026 | ** |
+| scale | counterfactual | 0.1 | – | +0.0036 ± 0.0016 | ** |
+| scale | proxy | 0.1 | 0.1 | +0.0023 ± 0.0011 | ** |
+| scale | *any* | ≥0.3 | * | −0.001 … −0.004 | – (negative) |
+| smoke (5 / 400) | proxy | 0.0 | 0.1 | +0.0024 ± 0.0008 | ** (tiny) |
+| smoke | *any* | ≥0.3 | * | ~0 … −0.003 | – |
+
+(sparse baseline coalition score: smoke 0.0073, scale 0.0109.)
+
+### Findings — this OVERTURNS the earlier "coalitions don't emerge at scale" read
+1. **`alpha` is the dominant knob, and the earlier default was in the dead zone.** Coalitions emerge
+   (significantly, up to **~4.4× the sparse baseline**) **only at low `alpha`** (≈0, i.e. heavy weight
+   on the coalition credit). At **`alpha ≥ 0.3` the gap is negative** in *every* cell — the sparse
+   winner-takes-all term suppresses the coalition signal. The original single-config runs used the
+   default **`alpha=0.3`**, which is exactly the suppressed regime — that, not a fundamental failure,
+   is why check 4 looked null/flippy.
+2. **The effect GROWS with game size, opposite to the naive read.** At smoke (chips=5) every gap is
+   tiny (≤0.003); at scale (chips=7, longer training) the low-`alpha` gaps are ~10× larger (~0.038).
+   The earlier "smoke-positive / scale-null" was an artifact of holding `alpha=0.3` at both — at
+   `alpha=0`, **scale ≫ smoke**.
+3. **The expensive counterfactual credit is NOT required.** The counterfactual arm is positive and
+   significant at low `alpha` (validating it works), but the **cheap critic-value proxy at `alpha=0`
+   is the *larger* signal** (+0.038 vs +0.013 at scale), and higher `synergy` (0.3) helps at the
+   extreme. So the fix is "weight the coalition credit heavily", not "compute a truer credit."
+4. **Coalitions vs winning is a genuine trade-off.** Pure coalition credit (`alpha=0`) drops win-rate
+   to ~0.29 (near the 0.25 random floor); moderate `alpha` keeps win-rate ~0.52. This matches raw
+   L560 (coalition-*forming* is the primary target, winning secondary) — you buy coalition behavior
+   with competitive performance.
+
+### Recommendation (for consolidation, not silently applied)
+Lower the training-blend default from `alpha=0.3` toward `alpha≈0.05–0.1` if the goal is coalition
+formation — evidence-based, but a config/design choice left to the human. The `alpha=0.3` default and
+its (honest) marginal check-4 result are unchanged here (WORKFLOW §0.1: report, don't rig).
+
+**Net after the whole refinement:** the two check-3/5 FAILs were traced to a real engine artifact and
+fixed (check 3 now PASS; check 5 hugely improved, honestly still red under strict dominance), and the
+check-4 "coalitions don't emerge" question is answered: **they do — robustly and significantly — in the
+low-`alpha`, larger-game regime; the earlier null was a mis-set blend weight.**

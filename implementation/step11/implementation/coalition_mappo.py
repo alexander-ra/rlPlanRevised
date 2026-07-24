@@ -84,34 +84,68 @@ class CoalitionAwareMAPPO:
             state = game.apply(state, action_index_to_move(game, state, idx), rng=rng)
         return state, buf
 
-    def _blended_rewards(self, state, buf, use_shapley: bool, alpha: float):
-        """Per-player reward vector R (raw L476-493)."""
+    def _blended_rewards(self, state, buf, use_shapley: bool, alpha: float,
+                         credit_mode: str = "proxy", synergy: float = 0.1, cf_credit=None):
+        """Per-player reward vector R = alpha*sparse + (1-alpha)*credit_centered (raw L476-493).
+
+        `credit_mode`:
+          - "proxy"          : Shapley credit from the critic value estimates recorded THIS game
+                               (cheap, per-game; the default / README caveat L462-464).
+          - "counterfactual" : `cf_credit`, a per-BATCH Shapley credit computed from actual
+                               win-probability share under the current policies (see
+                               `_counterfactual_credit`) -- the README's #1 suspected stronger signal.
+        `synergy` tunes the proxy coalition-value synergy bonus (sweep axis)."""
         n = self.n_players
         sparse = winner_rewards(n, state.winner)
         if not use_shapley:
             return sparse
-        # proxy agent values = mean recorded critic value per agent (0 if it never moved)
-        agent_values = np.array([float(np.mean(buf[p]["val"])) if buf[p]["val"] else 0.0
-                                 for p in range(n)])
-        credit = shapley_credit_from_values(agent_values)     # sums to ~1
-        credit_centered = credit - credit.mean()              # center -> zero-sum blend
+        if credit_mode == "counterfactual":
+            credit_centered = cf_credit if cf_credit is not None else np.zeros(n)
+        else:
+            # proxy agent values = mean recorded critic value per agent (0 if it never moved)
+            agent_values = np.array([float(np.mean(buf[p]["val"])) if buf[p]["val"] else 0.0
+                                     for p in range(n)])
+            credit = shapley_credit_from_values(agent_values, synergy)   # sums to ~1
+            credit_centered = credit - credit.mean()                     # center -> zero-sum blend
         return alpha * sparse + (1.0 - alpha) * credit_centered
+
+    def _counterfactual_credit(self, n_rollouts: int, seed: int) -> np.ndarray:
+        """Per-batch coalition credit = Shapley of v(S)=P(winner in S), estimated by rollouts from
+        the initial state under the CURRENT (greedy) policies. Centered to sum to zero. This is
+        the 'true win-probability-share' signal (vs the critic-value proxy); refreshed each batch
+        as the policies improve, per the README's 'use the rollout value at lower frequency'."""
+        from shapley import win_prob_coalition_values, shapley_credit
+        s0 = self.game.initial_state()
+        pols = self.policies(greedy=True)
+        vals, _ = win_prob_coalition_values(self.game, s0, n_rollouts=n_rollouts, policies=pols,
+                                            seed=seed, rotate_start=True)
+        credit = shapley_credit(self.n_players, vals)
+        return credit - credit.mean()
 
     # ---- training loop ------------------------------------------------------------------
     def train(self, n_games: int = 2000, batch_games: int = 128, use_shapley: bool = True,
-              alpha: float = 0.3, seed: int = 0):
+              alpha: float = 0.3, seed: int = 0, credit_mode: str = "proxy",
+              synergy: float = 0.1, cf_rollouts: int = 150):
         """Self-play for `n_games`, PPO-updating every `batch_games`. Returns a history dict with
-        per-batch mean coalition score, mean winner reward, and losses."""
+        per-batch mean coalition score, mean winner reward, and losses.
+
+        `credit_mode` ("proxy"|"counterfactual"), `synergy`, `cf_rollouts` feed the sweep
+        (sweep.py): they select which coalition-credit signal shapes the reward and how strong it
+        is. The counterfactual credit is refreshed once per batch under the current policies."""
         rng = np.random.default_rng(seed)
         n = self.n_players
         history = {"coalition_score": [], "value_loss": [], "win_counts": np.zeros(n),
-                   "n_games": n_games, "use_shapley": use_shapley, "alpha": alpha}
+                   "n_games": n_games, "use_shapley": use_shapley, "alpha": alpha,
+                   "credit_mode": credit_mode, "synergy": synergy}
         batch = [{"obs": [], "act": [], "logp": [], "mask": [], "ret": []} for _ in range(n)]
         coal_scores = []
         games_since_update = 0
+        cf_credit = None
         for g in range(n_games):
+            if use_shapley and credit_mode == "counterfactual" and games_since_update == 0:
+                cf_credit = self._counterfactual_credit(cf_rollouts, seed=seed + g + 1)
             state, buf = self._play_and_record(int(rng.integers(1 << 30)))
-            R = self._blended_rewards(state, buf, use_shapley, alpha)
+            R = self._blended_rewards(state, buf, use_shapley, alpha, credit_mode, synergy, cf_credit)
             if state.winner is not None and 0 <= state.winner < n:
                 history["win_counts"][state.winner] += 1
             coal_scores.append(mean_offdiagonal_coalition(n, state.move_log))

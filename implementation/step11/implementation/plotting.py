@@ -98,14 +98,64 @@ def plot_coalition_graph(plt, matrix, path: str):
     plt.close(fig)
 
 
+def plot_sweep(plt, reports: dict, path: str):
+    """Coalition-emergence sweep: paired gap (shapley - sparse coalition score) vs alpha, one line
+    per credit series, error bars = 1 SE, faceted by tier. `reports` = {tier: sweep_report}."""
+    tiers = list(reports.keys())
+    fig, axes = plt.subplots(1, len(tiers), figsize=(6.2 * len(tiers), 4.4), squeeze=False)
+    for ax, tier in zip(axes[0], tiers):
+        rep = reports[tier]
+        cells = rep["cells"]
+        # series key: "counterfactual" or "proxy syn=X"
+        series = {}
+        for c in cells:
+            key = "counterfactual" if c["credit_mode"] == "counterfactual" else f"proxy syn={c['synergy']:.1f}"
+            series.setdefault(key, []).append(c)
+        for key, cs in sorted(series.items()):
+            cs = sorted(cs, key=lambda c: c["alpha"])
+            xs = [c["alpha"] for c in cs]
+            ys = [c["gap_mean"] for c in cs]
+            es = [c["gap_se"] or 0.0 for c in cs]
+            ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3, label=key)
+        ax.axhline(0.0, color="gray", lw=0.8, ls="--")
+        ax.set_xlabel("alpha  (sparse<->credit blend; 0 = pure coalition credit)")
+        ax.set_ylabel("coalition-score gap  (shapley - sparse)")
+        ax.set_title(f"[{tier}] chips={rep['chips_per_player']} train={rep['train_games']} "
+                     f"seeds={rep['n_seeds']}\nsparse baseline score={rep['sparse_coalition_score_mean']:.4f}")
+        ax.legend(fontsize=8)
+    fig.suptitle("When do coalitions emerge? paired gap > 0 = Shapley beats sparse", fontsize=11)
+    fig.tight_layout()
+    fig.savefig(path, dpi=120)
+    plt.close(fig)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="smoke", choices=["smoke", "scale"])
+    ap.add_argument("--sweep", default=None, choices=["smoke", "scale", "both"],
+                    help="plot the coalition-emergence sweep from results/sweep_<tier>.json instead")
     args = ap.parse_args()
 
     plt = _mpl()
     if plt is None:
         print("[SKIP] matplotlib not installed -> no plots. (tournament/validate still run.)")
+        return
+
+    if args.sweep:
+        res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
+        tiers = ["smoke", "scale"] if args.sweep == "both" else [args.sweep]
+        reports = {}
+        for t in tiers:
+            p = os.path.join(res_dir, f"sweep_{t}.json")
+            if os.path.exists(p):
+                with open(p, encoding="utf-8") as f:
+                    reports[t] = json.load(f)
+        if not reports:
+            print("[SKIP] no results/sweep_*.json found -- run sweep.py first.")
+            return
+        out = _out_dir()
+        plot_sweep(plt, reports, os.path.join(out, "sweep_coalition_gap.png"))
+        print(f"wrote sweep plot ({', '.join(reports)}) to {out}/sweep_coalition_gap.png")
         return
 
     from config import get_config

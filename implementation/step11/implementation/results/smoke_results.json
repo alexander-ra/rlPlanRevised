@@ -79,15 +79,15 @@
     "glove_ok": true,
     "majority_ok": true,
     "symmetric_credit": [
-      0.593,
-      0.24,
-      0.113,
-      0.053
+      0.247,
+      0.257,
+      0.253,
+      0.243
     ],
-    "symmetric_spread": 0.54,
+    "symmetric_spread": 0.013,
     "asymmetric_credit": [
-      0.687,
-      0.313,
+      0.503,
+      0.497,
       0.0,
       0.0
     ],
@@ -97,46 +97,46 @@
   },
   "training": {
     "sparse": {
-      "mean_coalition_score": 0.006666666666666667,
+      "mean_coalition_score": 0.00125,
       "coalition_score_curve": [
         0.005208333333333333,
-        0.013020833333333334,
-        0.015625,
         0.0,
-        0.0078125,
+        0.0,
+        0.0,
+        0.0,
         0.0
       ],
-      "win_rate_vs_random": 0.8633,
+      "win_rate_vs_random": 0.44,
       "win_counts_during_training": [
-        235,
-        86,
-        45,
-        34
+        99,
+        95,
+        103,
+        103
       ]
     },
     "shapley": {
-      "mean_coalition_score": 0.010833333333333332,
+      "mean_coalition_score": 0.004166666666666667,
       "coalition_score_curve": [
         0.005208333333333333,
         0.0,
-        0.015625,
-        0.0234375,
-        0.0234375,
-        0.0
+        0.0078125,
+        0.0,
+        0.0,
+        0.013020833333333332
       ],
-      "win_rate_vs_random": 0.8733,
+      "win_rate_vs_random": 0.4133,
       "win_counts_during_training": [
-        223,
-        93,
-        54,
-        30
+        105,
+        94,
+        90,
+        111
       ]
     },
     "shapley_higher_coalition": true
   },
   "egta": {
-    "transitive_ratio": 0.9976,
-    "cyclic_ratio": 0.069,
+    "transitive_ratio": 0.9675,
+    "cyclic_ratio": 0.2529,
     "cyclic_dominates": false,
     "meta_nash_mixture": [
       0.0,
@@ -155,26 +155,26 @@
     "pairwise_matrix": [
       [
         0.0,
+        0.244,
         0.133,
-        0.044,
-        -0.067
+        -0.022
+      ],
+      [
+        -0.244,
+        0.0,
+        -0.156,
+        -0.156
       ],
       [
         -0.133,
+        0.156,
         0.0,
-        -0.111,
-        -0.222
+        -0.156
       ],
       [
-        -0.044,
-        0.111,
-        0.0,
-        -0.133
-      ],
-      [
-        0.067,
-        0.222,
-        0.133,
+        0.022,
+        0.156,
+        0.156,
         0.0
       ]
     ]

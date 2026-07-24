@@ -47,6 +47,29 @@ SCALE = {
 
 CONFIGS = {"smoke": SMOKE, "scale": SCALE}
 
+
+# --- coalition-emergence sweep (sweep.py) -------------------------------------------------
+# Maps WHEN coalition-aware training beats the sparse baseline on the coalition score. Every cell
+# runs `n_seeds` PAIRED seeds (same seeds for the sparse baseline) so the gap carries error bars --
+# the smoke->scale single-seed flip (EXECUTION_NOTES Phase-4) needs this to separate signal/noise.
+# Axes: alpha (sparse<->credit blend), credit_mode (proxy vs counterfactual win-prob-share),
+# synergy (proxy only). `scale` uses fewer train_games than SCALE (raw L495 says the DIRECTION shows
+# well before 6000 games) to keep the grid tractable.
+SWEEP = {
+    "alphas": [0.0, 0.1, 0.3, 0.5, 0.7],
+    "credit_modes": ["proxy", "counterfactual"],
+    "synergies": [0.1, 0.3],          # proxy only (counterfactual ignores synergy)
+    "n_seeds": 5,
+    "tiers": {
+        "smoke": {"chips_per_player": 5, "train_games": 400, "batch_games": 64,
+                  "ppo": {"hidden": 128, "lr": 3e-4, "epochs": 3, "minibatch": 512},
+                  "eval_winrate_games": 200, "cf_rollouts": 120},
+        "scale": {"chips_per_player": 7, "train_games": 1500, "batch_games": 128,
+                  "ppo": {"hidden": 256, "lr": 3e-4, "epochs": 4, "minibatch": 1024},
+                  "eval_winrate_games": 400, "cf_rollouts": 150},
+    },
+}
+
 RUNTIME_NOTES = """
 Rough runtime estimates (VERIFY on your machine -- nothing was run here):
   SMOKE (CPU):
