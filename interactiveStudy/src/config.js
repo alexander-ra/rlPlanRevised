@@ -37,6 +37,7 @@ const STEP_REPORTS = {
   step_07: { folder: 'step07', summary: ['en'],       report: ['en'] },
   step_08: { folder: 'step08', summary: ['en'],       report: ['en'] },
   step_09: { folder: 'step09', summary: ['en'],       report: ['en'] },
+  step_10: { folder: 'step10', summary: ['en'],       report: ['en'] },
 };
 
 /* Build the EN/BG download-button markup for a set of available languages.
