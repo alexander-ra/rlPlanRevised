@@ -58,3 +58,76 @@ Ran all four scripts from `implementation/step11/exploration/`. Stdout-only (no 
 4. **Directional coalition lessons survive the seat bias** — the ally pair still concentrates wins
    (0.736) and the betrayer still beats the loyal partner; the strong pair's value ≈ 1. The *magnitude*
    is confounded by seat order, but the form-exploit-break story holds.
+
+---
+
+## Phase 4 — Implementation
+
+Ran the [implementation README](implementation/README.md) runbook from
+`implementation/step11/implementation/`. Artifacts: `results/smoke_results.json`, `plots/*.png`
+(coalition_timeline, shapley_attribution, spinning_top, coalition_graph). Scale run launched in the
+background (see the bottom of this file).
+
+### Module self-tests — 9/9 exit 0
+
+`sls_game`, `sls_endgame`, `state_encoding`, `coalition_detector`, `shapley`, `agents`, `sls_egta`,
+`sls_ppo` (torch), `coalition_mappo` (torch) all ran and exited 0. Notes:
+- `sls_game` 20-game winners `[11,2,2,5]`, `sls_endgame` mismatches=0, `state_encoding` obs_dim=71 /
+  action_dim=44 round-trip OK, `coalition_detector` strongest pair `(0,1,10.0)`, `shapley` reference
+  games exact, `agents` zero-sum, `sls_ppo`/`coalition_mappo` finite losses.
+- `sls_egta` self-test (tiny pool) already showed transitive `0.783` > cyclic `0.622` — an early
+  signal of the check-5 result below.
+
+### `validate.py --config smoke` — 3/5 PASS (11 s)
+
+| # | Check | Result | Verdict |
+|---|---|---|---|
+| 1 | SLS env (endgame vs engine minimax / termination / zero-sum) | 0 mismatches, terminated, zero-sum | **PASS** |
+| 2 | Coalition detection (planted `{0,1}`) | strongest_pair = `[0,1]` | **PASS** |
+| 3 | Shapley | glove ✓, majority ✓, asym-dominates ✓, **sym_spread = 0.54 (< 0.15?)** | **FAIL** |
+| 4 | Coalition-aware training | shapley_score `0.011` > sparse_score `0.007` (win 0.873 vs 0.863) | **PASS** |
+| 5 | Spinning top | **transitive = 0.9976, cyclic = 0.069, cyclic > 50%? No** | **FAIL** |
+
+### Tournament comparison (smoke, `results/smoke_results.json`)
+
+| Method | WinRate vs Random | Coalition Score |
+|---|---|---|
+| Random baseline | 0.250 | 0.000 |
+| MAPPO (sparse reward) | 0.863 | 0.007 |
+| MAPPO + Shapley (this step) | 0.873 | **0.011** |
+
+→ **Primary target met (raw L560):** Shapley agents' coalition score > sparse agents'. Win-rate
+improvement is marginal (0.873 vs 0.863) and secondary, as the raw step says.
+
+### §0.1 reconciliation of the two red FAILs — shared root cause
+
+Both FAILs trace to the **seat-0 / first-mover advantage** first seen in Phase 2, and I suspect the
+engine, not the predictions:
+
+- **The evidence it is structural, not noise:** in `coalition_by_hand` Q1 the *same* fixed-ally
+  strategy scored 0.493 in seat 0 vs 0.243 in seat 1; symmetric Shapley positions give
+  `[0.593,0.24,0.113,0.053]`; all-random winners `[94,42,33,31]`; 20-game engine self-test `[11,2,2,5]`.
+  The advantage is monotone in seat order and independent of strategy → a pure turn-order effect.
+- **Mechanism (engine, `sls_game.py`):** NOTE (a) *"capturer plays next"* (line 214) lets a capturing
+  player keep the turn, and P0 — always seat 0 (`current_player=0` initial) — gets the first capture
+  chances; many games reach `max_turns` and are decided by NOTE (c) the *most-total-chips* tie-break
+  (`_most_chips`), which rewards the early-capture accumulator (again P0). These are the exact
+  simplifications the README's "Likely to break" list says to reconcile with De Carufel & Jerade
+  **first** — "far more likely a rule gap than a solver bug."
+- **Why it fails check 3:** a symmetric *position* is not symmetric in *outcome* under a strong
+  first-mover edge, so win-prob-share credit spreads to 0.54, not < 0.15. Raising `shapley_rollouts`
+  will **not** fix a 0.54 structural spread (this is not MC borderline).
+- **Why it fails check 5:** a dominant turn-order advantage makes the meta-game a near-perfect
+  *skill ladder* (transitive 0.9976), burying the coalition rock-paper-scissors the step predicts.
+  The cyclic signal cannot emerge while seat order dictates ~2× the fair win share.
+
+**Decision (WORKFLOW §0.1 + prior-step precedent):** keep both FAILs **red**. Fixing them requires an
+SLS turn-model change (which rule is faithful to the paper — e.g. rotating the start seat, or dropping
+"capturer-plays-next") — a substantive design decision that belongs in the human's **consolidation /
+engine-reconciliation** pass against De Carufel & Jerade, not a silent threshold tweak here. Step 10
+likewise shipped an honest red FAIL. The Shapley machinery and detector themselves are sound (checks
+2, 3-reference-games, and the exact toys all pass); the seat bias is upstream of them in the engine.
+
+### Static picture confirmed
+No SKIPs (torch present); every suite ran for real. `results/smoke_results.json` + 4 PNGs written.
+Smoke training is ~seconds (tiny nets), far under the config's conservative estimate.

@@ -1,0 +1,182 @@
+{
+  "config": "smoke",
+  "config_values": {
+    "name": "smoke",
+    "n_players": 4,
+    "chips_per_player": 5,
+    "train_games": 400,
+    "batch_games": 64,
+    "alpha": 0.3,
+    "ppo": {
+      "hidden": 128,
+      "lr": 0.0003,
+      "epochs": 3,
+      "minibatch": 512
+    },
+    "eval_winrate_games": 300,
+    "egta_games_per_cell": 60,
+    "endgame_chips": 2,
+    "endgame_trials": 20,
+    "shapley_rollouts": 300,
+    "seed": 0
+  },
+  "env": {
+    "endgame_mismatches": 0,
+    "endgame_passed": true,
+    "random_games": 100,
+    "all_terminated": true,
+    "all_zero_sum": true
+  },
+  "detector": {
+    "planted_allies": [
+      0,
+      1
+    ],
+    "strongest_pair": [
+      0,
+      1
+    ],
+    "strongest_score": 10.0,
+    "identified_correct_pair": true,
+    "coalition_matrix": [
+      [
+        0.0,
+        10.0,
+        -1.0,
+        -1.0
+      ],
+      [
+        10.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "shapley": {
+    "glove_shapley": [
+      0.6667,
+      0.1667,
+      0.1667
+    ],
+    "majority_shapley": [
+      0.3333,
+      0.3333,
+      0.3333
+    ],
+    "glove_ok": true,
+    "majority_ok": true,
+    "symmetric_credit": [
+      0.593,
+      0.24,
+      0.113,
+      0.053
+    ],
+    "symmetric_spread": 0.54,
+    "asymmetric_credit": [
+      0.687,
+      0.313,
+      0.0,
+      0.0
+    ],
+    "asym_strong_pair_credit": 1.0,
+    "asym_weak_pair_credit": 0.0,
+    "asym_strong_dominates": true
+  },
+  "training": {
+    "sparse": {
+      "mean_coalition_score": 0.006666666666666667,
+      "coalition_score_curve": [
+        0.005208333333333333,
+        0.013020833333333334,
+        0.015625,
+        0.0,
+        0.0078125,
+        0.0
+      ],
+      "win_rate_vs_random": 0.8633,
+      "win_counts_during_training": [
+        235,
+        86,
+        45,
+        34
+      ]
+    },
+    "shapley": {
+      "mean_coalition_score": 0.010833333333333332,
+      "coalition_score_curve": [
+        0.005208333333333333,
+        0.0,
+        0.015625,
+        0.0234375,
+        0.0234375,
+        0.0
+      ],
+      "win_rate_vs_random": 0.8733,
+      "win_counts_during_training": [
+        223,
+        93,
+        54,
+        30
+      ]
+    },
+    "shapley_higher_coalition": true
+  },
+  "egta": {
+    "transitive_ratio": 0.9976,
+    "cyclic_ratio": 0.069,
+    "cyclic_dominates": false,
+    "meta_nash_mixture": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "participation": 1.0,
+    "num_active": 1,
+    "agent_names": [
+      "random",
+      "greedy_capture",
+      "fixed_ally_1",
+      "betrayer_1"
+    ],
+    "pairwise_matrix": [
+      [
+        0.0,
+        0.133,
+        0.044,
+        -0.067
+      ],
+      [
+        -0.133,
+        0.0,
+        -0.111,
+        -0.222
+      ],
+      [
+        -0.044,
+        0.111,
+        0.0,
+        -0.133
+      ],
+      [
+        0.067,
+        0.222,
+        0.133,
+        0.0
+      ]
+    ]
+  }
+}
