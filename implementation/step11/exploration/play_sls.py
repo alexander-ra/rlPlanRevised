@@ -113,8 +113,11 @@ def main():
             final, _ = play_game(game, pols, seed=seed)
             lengths.append(final.turn_count)
             winners.append(final.winner)
-        wc = np.bincount(np.array(winners), minlength=4)
+        warr = np.array(winners)
+        no_winner = int((warr < 0).sum())           # games ended by the max_turns tie-break (winner=-1)
+        wc = np.bincount(warr[warr >= 0], minlength=4)
         print(f"  {name:32s}: mean_len={np.mean(lengths):5.1f}  win_counts={wc.tolist()} "
+              f"no_winner={no_winner} "
               f"(PREDICT random ~uniform [50,50,50,50]; greedy P0 slightly above 50 -- to verify)")
 
 
