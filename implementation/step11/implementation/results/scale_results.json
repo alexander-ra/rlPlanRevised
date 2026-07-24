@@ -1,0 +1,262 @@
+{
+  "config": "scale",
+  "config_values": {
+    "name": "scale",
+    "n_players": 4,
+    "chips_per_player": 7,
+    "train_games": 6000,
+    "batch_games": 128,
+    "alpha": 0.3,
+    "ppo": {
+      "hidden": 256,
+      "lr": 0.0003,
+      "epochs": 4,
+      "minibatch": 1024
+    },
+    "eval_winrate_games": 1000,
+    "egta_games_per_cell": 300,
+    "endgame_chips": 3,
+    "endgame_trials": 40,
+    "shapley_rollouts": 1000,
+    "seed": 0
+  },
+  "env": {
+    "endgame_mismatches": 0,
+    "endgame_passed": true,
+    "random_games": 100,
+    "all_terminated": true,
+    "all_zero_sum": true
+  },
+  "detector": {
+    "planted_allies": [
+      0,
+      1
+    ],
+    "strongest_pair": [
+      0,
+      1
+    ],
+    "strongest_score": 10.0,
+    "identified_correct_pair": true,
+    "coalition_matrix": [
+      [
+        0.0,
+        10.0,
+        -1.0,
+        -1.0
+      ],
+      [
+        10.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "shapley": {
+    "glove_shapley": [
+      0.6667,
+      0.1667,
+      0.1667
+    ],
+    "majority_shapley": [
+      0.3333,
+      0.3333,
+      0.3333
+    ],
+    "glove_ok": true,
+    "majority_ok": true,
+    "symmetric_credit": [
+      0.592,
+      0.216,
+      0.125,
+      0.067
+    ],
+    "symmetric_spread": 0.525,
+    "asymmetric_credit": [
+      0.655,
+      0.345,
+      0.0,
+      0.0
+    ],
+    "asym_strong_pair_credit": 1.0,
+    "asym_weak_pair_credit": 0.0,
+    "asym_strong_dominates": true
+  },
+  "training": {
+    "sparse": {
+      "mean_coalition_score": 0.003361111111111111,
+      "coalition_score_curve": [
+        0.037760416666666664,
+        0.0234375,
+        0.03776041666666667,
+        0.018229166666666664,
+        0.013020833333333332,
+        0.013020833333333332,
+        0.014322916666666668,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "win_rate_vs_random": 0.829,
+      "win_counts_during_training": [
+        4681,
+        752,
+        295,
+        272
+      ]
+    },
+    "shapley": {
+      "mean_coalition_score": 0.0015555555555555553,
+      "coalition_score_curve": [
+        0.037760416666666664,
+        0.0013020833333333333,
+        0.009114583333333334,
+        0.01171875,
+        0.00390625,
+        0.00390625,
+        0.00390625,
+        0.0,
+        0.0013020833333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "win_rate_vs_random": 0.827,
+      "win_counts_during_training": [
+        4662,
+        808,
+        319,
+        211
+      ]
+    },
+    "shapley_higher_coalition": false
+  },
+  "egta": {
+    "transitive_ratio": 0.9515,
+    "cyclic_ratio": 0.3076,
+    "cyclic_dominates": false,
+    "meta_nash_mixture": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "participation": 1.0,
+    "num_active": 1,
+    "agent_names": [
+      "random",
+      "greedy_capture",
+      "fixed_ally_1",
+      "betrayer_1"
+    ],
+    "pairwise_matrix": [
+      [
+        0.0,
+        0.193,
+        0.004,
+        -0.111
+      ],
+      [
+        -0.193,
+        0.0,
+        -0.233,
+        -0.184
+      ],
+      [
+        -0.004,
+        0.233,
+        0.0,
+        -0.16
+      ],
+      [
+        0.111,
+        0.184,
+        0.16,
+        0.0
+      ]
+    ]
+  }
+}

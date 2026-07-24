@@ -131,3 +131,37 @@ likewise shipped an honest red FAIL. The Shapley machinery and detector themselv
 ### Static picture confirmed
 No SKIPs (torch present); every suite ran for real. `results/smoke_results.json` + 4 PNGs written.
 Smoke training is ~seconds (tiny nets), far under the config's conservative estimate.
+
+### Scale run (`results/scale_results.json`) — the headline does NOT survive scale-up
+
+Ran `tournament.py --config scale` (chips=7, `train_games=6000`, bigger nets, `eval_winrate_games=1000`,
+`egta_games_per_cell=300`). It finished in **minutes, not the ~1.5–2.5 h** the config conservatively
+predicted — SLS rollouts are light and the nets are small. Plots regenerated with `--config scale`;
+since `plotting.py` uses fixed filenames, the committed `plots/*.png` now reflect the **scale** config
+(the smoke PNGs were transient); `results/` keeps **both** JSONs.
+
+| Method | WinRate vs Random (scale) | Coalition Score (scale) |
+|---|---|---|
+| Random baseline | 0.250 | 0.000 |
+| MAPPO (sparse reward) | 0.829 | **0.003** |
+| MAPPO + Shapley (this step) | 0.827 | **0.002** |
+
+**Check 4 flips to FAIL at scale (§0.1 — a real finding, kept red).** At smoke the Shapley agent's
+coalition score beat sparse (0.011 > 0.007); at scale the two collapse into noise and the direction
+**reverses** (0.002 vs 0.003 → "Shapley > sparse? **False**"), and both are ~4–5× smaller than at
+smoke. This is precisely the risk called out in the README "Likely to break" #4: the training reward
+uses `proxy_coalition_values` (a synergy-weighted sum of critic value estimates), **not** the true
+counterfactual win-probability, and the proxy is too weak to separate the populations once training is
+longer / the game is bigger. So the primary thesis signal (raw L560) is **positive at smoke, null at
+scale** — the honest headline. Suspected fixes (deferred to consolidation): use the rollout-based
+counterfactual coalition value at lower frequency, or tune `alpha` / the credit normalization.
+
+**Check 5 trends toward the prediction but does not reach it.** Cyclic ratio rises with scale
+(`0.069 → 0.308`; transitive `0.998 → 0.951`), i.e. a richer trained population injects more
+non-transitivity — the direction raw L561 predicts — but the meta-game is **still transitive-dominant**,
+because the seat-0 skill-ladder (above) dwarfs the coalition cycling. Check 5 stays **red**.
+
+**Net.** Two independent effects compound: (i) the engine seat-0 bias (checks 3 & 5), and (ii) the
+proxy-Shapley weakness (check 4 at scale). Both are documented, reproducible, and left as genuine
+findings for the engine-reconciliation + credit-signal work in consolidation — no thresholds were
+tweaked and no FAIL was silenced (WORKFLOW §0.1).
