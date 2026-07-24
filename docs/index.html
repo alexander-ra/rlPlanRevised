@@ -2899,8 +2899,30 @@ const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 /* ===== Per-Phase Checkpoint count (texts come from t()) ===== */
 const PHASE_CHECKPOINT_COUNTS = { 1: 2, 2: 2, 3: 2, 4: 2, 5: 2 };
 
-/* ===== Report Availability (stepId → reports folder name) ===== */
-const STEP_REPORTS = { step_01: 'step01', step_02: 'step02', step_03: 'step03', step_04: 'step04' };
+/* ===== Deliverable Availability (stepId → { folder, summary langs, report langs }) =====
+   summary/report list the languages whose PDFs actually exist, so the UI only renders
+   buttons that resolve. Steps 05-06 have a summary but no implementation report; steps
+   05-09 are English-only until the BG translation pass lands. */
+const STEP_REPORTS = {
+  step_01: { folder: 'step01', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_02: { folder: 'step02', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_03: { folder: 'step03', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_04: { folder: 'step04', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_05: { folder: 'step05', summary: ['en'],       report: [] },
+  step_06: { folder: 'step06', summary: ['en'],       report: [] },
+  step_07: { folder: 'step07', summary: ['en'],       report: ['en'] },
+  step_08: { folder: 'step08', summary: ['en'],       report: ['en'] },
+  step_09: { folder: 'step09', summary: ['en'],       report: ['en'] },
+};
+
+/* Build the EN/BG download-button markup for a set of available languages.
+   hrefFor(lang) returns the PDF URL; btnClass/styleAttr let each call site match its own CSS. */
+function deliverableButtons(langs, hrefFor, btnClass, styleAttr, suffix) {
+  const label = { en: '🇬🇧 EN', bg: '🇧🇬 BG' };
+  return langs.map(l =>
+    `<a href="${hrefFor(l)}" target="_blank" rel="noopener noreferrer" class="${btnClass}"${styleAttr}>${label[l]}${suffix || ''}</a>`
+  ).join('');
+}
 const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
 const SUMMARY_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/summaries';
 const STUDY_PLAN_URL_EN = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/studyPlan/studyPlanEN.pdf';
@@ -3903,11 +3925,23 @@ function renderStep(stepId) {
   const contentEl = document.getElementById('content');
   contentEl.innerHTML = html;
 
-  // Download widget
-  const reportFolder = STEP_REPORTS[stepId];
-  if (reportFolder) {
-    const stepMeta = STEP_META[currentStepIndex];
+  // Download widget — only render columns/buttons whose PDFs actually exist
+  const rep = STEP_REPORTS[stepId];
+  if (rep) {
+    const reportFolder = rep.folder;
     const c = getPhaseColors(stepMeta.phase);
+    const _dlStyle = ` style="--btn-color:${c.border}"`;
+    const _dlCol = (title, desc, btns) => btns
+      ? `<div class="dl-widget-col">
+          <div class="dl-widget-col-title">${title}</div>
+          <div class="dl-widget-col-desc">${desc}</div>
+          <div class="dl-widget-btns">${btns}</div>
+        </div>`
+      : '';
+    const _summaryBtns = deliverableButtons(rep.summary,
+      l => `${SUMMARY_BASE_URL}/${reportFolder}_${l}.pdf`, 'dl-widget-btn', _dlStyle, ' ↓');
+    const _reportBtns = deliverableButtons(rep.report,
+      l => `${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_${l}.pdf`, 'dl-widget-btn', _dlStyle, ' ↓');
     const wrap = document.createElement('div');
     wrap.className = 'dl-widget';
     wrap.innerHTML = `
@@ -3916,22 +3950,8 @@ function renderStep(stepId) {
         <span>${t('deliverables_label')}</span>
       </div>
       <div class="dl-widget-body">
-        <div class="dl-widget-col">
-          <div class="dl-widget-col-title">${t('study_summary')}</div>
-          <div class="dl-widget-col-desc">${t('summary_desc')}</div>
-          <div class="dl-widget-btns">
-            <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDEC\uD83C\uDDE7 EN \u2193</a>
-            <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDE7\uD83C\uDDEC BG \u2193</a>
-          </div>
-        </div>
-        <div class="dl-widget-col">
-          <div class="dl-widget-col-title">${t('impl_report')}</div>
-          <div class="dl-widget-col-desc">${t('report_desc')}</div>
-          <div class="dl-widget-btns">
-            <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDEC\uD83C\uDDE7 EN \u2193</a>
-            <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDE7\uD83C\uDDEC BG \u2193</a>
-          </div>
-        </div>
+        ${_dlCol(t('study_summary'), t('summary_desc'), _summaryBtns)}
+        ${_dlCol(t('impl_report'), t('report_desc'), _reportBtns)}
       </div>`;
     contentEl.insertBefore(wrap, contentEl.firstChild);
   }
@@ -4236,24 +4256,26 @@ function buildStepCard(step, i) {
     : st === 'active'
     ? `<span class="step-status step-status--active" title="${t('status_active')}"></span>`
     : `<span class="step-status step-status--upcoming" title="${t('status_upcoming')}"></span>`;
-  const hasReport = !!STEP_REPORTS[step.id];
-  const reportFolder = STEP_REPORTS[step.id];
+  const info = STEP_REPORTS[step.id];
+  const hasReport = !!info;
   const reportBadge = hasReport ? `<span class="sc-report-badge" title="${t('report_badge_title')}">PDF</span>` : '';
   const progress = getStepCheckboxCounts(step.id);
   const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
   const progressHtml = progress.total > 0
     ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
     : '';
-  const dlHtml = reportFolder ? `
-    <div class="sc-dl-row" onclick="event.stopPropagation()">
-      <span class="sc-dl-label">${t('sc_summary_label')}</span>
-      <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
-      <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
-      <span class="sc-dl-sep">|</span>
-      <span class="sc-dl-label">${t('sc_report_label')}</span>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
-    </div>` : '';
+  let dlHtml = '';
+  if (info) {
+    const groups = [];
+    if (info.summary.length) groups.push(
+      `<span class="sc-dl-label">${t('sc_summary_label')}</span>` +
+      deliverableButtons(info.summary, l => `${SUMMARY_BASE_URL}/${info.folder}_${l}.pdf`, 'sc-dl-btn', ''));
+    if (info.report.length) groups.push(
+      `<span class="sc-dl-label">${t('sc_report_label')}</span>` +
+      deliverableButtons(info.report, l => `${REPORT_BASE_URL}/${info.folder}/${info.folder}_report_${l}.pdf`, 'sc-dl-btn', ''));
+    dlHtml = `
+    <div class="sc-dl-row" onclick="event.stopPropagation()">${groups.join('<span class="sc-dl-sep">|</span>')}</div>`;
+  }
   return `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
     <div class="sc-top"><span class="sc-num">${icon} ${t('step_prefix')} ${step.num}</span><span class="sc-badges">${reportBadge}</span></div>
     <div class="sc-title">${getStepTitle(step)}</div>

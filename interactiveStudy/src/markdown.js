@@ -152,11 +152,23 @@ function renderStep(stepId) {
   const contentEl = document.getElementById('content');
   contentEl.innerHTML = html;
 
-  // Download widget
-  const reportFolder = STEP_REPORTS[stepId];
-  if (reportFolder) {
-    const stepMeta = STEP_META[currentStepIndex];
+  // Download widget — only render columns/buttons whose PDFs actually exist
+  const rep = STEP_REPORTS[stepId];
+  if (rep) {
+    const reportFolder = rep.folder;
     const c = getPhaseColors(stepMeta.phase);
+    const _dlStyle = ` style="--btn-color:${c.border}"`;
+    const _dlCol = (title, desc, btns) => btns
+      ? `<div class="dl-widget-col">
+          <div class="dl-widget-col-title">${title}</div>
+          <div class="dl-widget-col-desc">${desc}</div>
+          <div class="dl-widget-btns">${btns}</div>
+        </div>`
+      : '';
+    const _summaryBtns = deliverableButtons(rep.summary,
+      l => `${SUMMARY_BASE_URL}/${reportFolder}_${l}.pdf`, 'dl-widget-btn', _dlStyle, ' ↓');
+    const _reportBtns = deliverableButtons(rep.report,
+      l => `${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_${l}.pdf`, 'dl-widget-btn', _dlStyle, ' ↓');
     const wrap = document.createElement('div');
     wrap.className = 'dl-widget';
     wrap.innerHTML = `
@@ -165,22 +177,8 @@ function renderStep(stepId) {
         <span>${t('deliverables_label')}</span>
       </div>
       <div class="dl-widget-body">
-        <div class="dl-widget-col">
-          <div class="dl-widget-col-title">${t('study_summary')}</div>
-          <div class="dl-widget-col-desc">${t('summary_desc')}</div>
-          <div class="dl-widget-btns">
-            <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDEC\uD83C\uDDE7 EN \u2193</a>
-            <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDE7\uD83C\uDDEC BG \u2193</a>
-          </div>
-        </div>
-        <div class="dl-widget-col">
-          <div class="dl-widget-col-title">${t('impl_report')}</div>
-          <div class="dl-widget-col-desc">${t('report_desc')}</div>
-          <div class="dl-widget-btns">
-            <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDEC\uD83C\uDDE7 EN \u2193</a>
-            <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="dl-widget-btn" style="--btn-color:${c.border}">\uD83C\uDDE7\uD83C\uDDEC BG \u2193</a>
-          </div>
-        </div>
+        ${_dlCol(t('study_summary'), t('summary_desc'), _summaryBtns)}
+        ${_dlCol(t('impl_report'), t('report_desc'), _reportBtns)}
       </div>`;
     contentEl.insertBefore(wrap, contentEl.firstChild);
   }

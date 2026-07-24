@@ -28,7 +28,7 @@ expectation and reconcile it with what happened — those gaps are the most inst
 the step.
 
 **Where this sits in the thesis.** Steps 2–8 lived entirely inside **two-player zero-sum**
-games: there is a value $v^\*$, a Nash strategy secures it against *any* opponent, and CFR
+games: there is a value $v^*$, a Nash strategy secures it against *any* opponent, and CFR
 provably converges to it. Step 9 is the pivot into the **multi-agent** world, where those three
 comforts weaken or vanish. It carries three thesis hooks. **LOLA** — differentiating through an
 opponent's *learning step* — is *dynamic* opponent modeling, the moving-target complement to
@@ -45,7 +45,7 @@ here and left open for the thesis to attack.
 In single-agent RL (Steps 1 and 6) an agent learns by trial and error against a **fixed**
 world. Formally it faces a stationary Markov decision process: the transition law
 $P(s' \mid s,a)$ and reward $R(s,a)$ do not change while the agent trains, which is exactly what
-lets a fixed optimal value function $Q^\*$ exist for the agent to converge toward. In Steps 2–8
+lets a fixed optimal value function $Q^*$ exist for the agent to converge toward. In Steps 2–8
 we went one level up and computed **equilibria** — strategies that are optimal against a
 *perfectly rational* opponent who has already finished reasoning.
 
@@ -54,7 +54,7 @@ same time in a shared world**, so from any one agent's seat the "environment" �
 *includes the other agents* — **keeps changing** as everyone updates. This is
 **non-stationarity**, and it breaks the assumption underneath single-agent RL. From agent $i$'s
 perspective the effective transition and reward depend on the other agents' policies
-$\pi_{-i}$, and those are moving every update, so the target $Q^\*$ that agent $i$ chases is
+$\pi_{-i}$, and those are moving every update, so the target $Q^*$ that agent $i$ chases is
 itself in motion. It also creates two problems that simply do not exist for a lone agent:
 **coordination** (how do cooperating agents learn to act together without being told how?) and
 **credit assignment** (when the team succeeds, whose actions mattered?).
@@ -106,7 +106,7 @@ does **not** survive is the *guarantees*. CFR's counterfactual decomposition nee
 perfect recall, which general Markov games (loops, simultaneous moves, $N>2$) do not provide, so
 "average strategy $\to$ Nash" no longer holds; MARL falls back to gradient/value learning whose
 convergence is not guaranteed (hence the cycling of §4). Most consequentially, the **minimax
-value anchor** disappears: in two-player zero-sum a Nash strategy guarantees $v^\*$ against any
+value anchor** disappears: in two-player zero-sum a Nash strategy guarantees $v^*$ against any
 opponent — the fact that made Step 8's safe exploitation coherent — and for $N>2$ there is no
 such single value. That missing anchor is the precise gap Contribution #2 inherits.
 

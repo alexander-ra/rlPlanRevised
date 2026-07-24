@@ -264,7 +264,7 @@ classical recipe is consistent. It is not.
 
 The cleanest counterexample is rock-paper-scissors. Suppose the modeler reasons over a set of
 *sampled* candidate strategies and always responds to some average of them. If the true strategy
-$\sigma^\* = (0.8, 0.1, 0.1)$ lies **outside** the region those samples can combine to, the
+$\sigma^* = (0.8, 0.1, 0.1)$ lies **outside** the region those samples can combine to, the
 model — being always a weighted average of the samples — simply **cannot reach it**, no matter
 how much data arrives. That much is intuitive. The deeper result is that the method can fail
 **even when the truth lies inside** the achievable region: with the true strategy sitting at the

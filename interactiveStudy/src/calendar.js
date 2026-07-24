@@ -166,24 +166,26 @@ function buildStepCard(step, i) {
     : st === 'active'
     ? `<span class="step-status step-status--active" title="${t('status_active')}"></span>`
     : `<span class="step-status step-status--upcoming" title="${t('status_upcoming')}"></span>`;
-  const hasReport = !!STEP_REPORTS[step.id];
-  const reportFolder = STEP_REPORTS[step.id];
+  const info = STEP_REPORTS[step.id];
+  const hasReport = !!info;
   const reportBadge = hasReport ? `<span class="sc-report-badge" title="${t('report_badge_title')}">PDF</span>` : '';
   const progress = getStepCheckboxCounts(step.id);
   const progressPct = progress.total > 0 ? Math.round((progress.checked / progress.total) * 100) : 0;
   const progressHtml = progress.total > 0
     ? `<div class="sc-progress"><div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${progressPct}%;background:${c.border}"></div></div><span class="sc-progress-text">${progress.checked}/${progress.total}</span></div>`
     : '';
-  const dlHtml = reportFolder ? `
-    <div class="sc-dl-row" onclick="event.stopPropagation()">
-      <span class="sc-dl-label">${t('sc_summary_label')}</span>
-      <a href="${SUMMARY_BASE_URL}/${reportFolder}_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
-      <a href="${SUMMARY_BASE_URL}/${reportFolder}_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
-      <span class="sc-dl-sep">|</span>
-      <span class="sc-dl-label">${t('sc_report_label')}</span>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_en.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDEC\uD83C\uDDE7 EN</a>
-      <a href="${REPORT_BASE_URL}/${reportFolder}/${reportFolder}_report_bg.pdf" target="_blank" rel="noopener noreferrer" class="sc-dl-btn">\uD83C\uDDE7\uD83C\uDDEC BG</a>
-    </div>` : '';
+  let dlHtml = '';
+  if (info) {
+    const groups = [];
+    if (info.summary.length) groups.push(
+      `<span class="sc-dl-label">${t('sc_summary_label')}</span>` +
+      deliverableButtons(info.summary, l => `${SUMMARY_BASE_URL}/${info.folder}_${l}.pdf`, 'sc-dl-btn', ''));
+    if (info.report.length) groups.push(
+      `<span class="sc-dl-label">${t('sc_report_label')}</span>` +
+      deliverableButtons(info.report, l => `${REPORT_BASE_URL}/${info.folder}/${info.folder}_report_${l}.pdf`, 'sc-dl-btn', ''));
+    dlHtml = `
+    <div class="sc-dl-row" onclick="event.stopPropagation()">${groups.join('<span class="sc-dl-sep">|</span>')}</div>`;
+  }
   return `<div class="sc" onclick="navigateTo('${step.id}')" style="border-left:4px solid ${c.border}">
     <div class="sc-top"><span class="sc-num">${icon} ${t('step_prefix')} ${step.num}</span><span class="sc-badges">${reportBadge}</span></div>
     <div class="sc-title">${getStepTitle(step)}</div>

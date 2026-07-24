@@ -23,8 +23,30 @@ const BASE_TOTAL_DAYS = STEP_META.reduce((s, m) => s + m.days, 0); // 232
 /* ===== Per-Phase Checkpoint count (texts come from t()) ===== */
 const PHASE_CHECKPOINT_COUNTS = { 1: 2, 2: 2, 3: 2, 4: 2, 5: 2 };
 
-/* ===== Report Availability (stepId → reports folder name) ===== */
-const STEP_REPORTS = { step_01: 'step01', step_02: 'step02', step_03: 'step03', step_04: 'step04' };
+/* ===== Deliverable Availability (stepId → { folder, summary langs, report langs }) =====
+   summary/report list the languages whose PDFs actually exist, so the UI only renders
+   buttons that resolve. Steps 05-06 have a summary but no implementation report; steps
+   05-09 are English-only until the BG translation pass lands. */
+const STEP_REPORTS = {
+  step_01: { folder: 'step01', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_02: { folder: 'step02', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_03: { folder: 'step03', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_04: { folder: 'step04', summary: ['en', 'bg'], report: ['en', 'bg'] },
+  step_05: { folder: 'step05', summary: ['en'],       report: [] },
+  step_06: { folder: 'step06', summary: ['en'],       report: [] },
+  step_07: { folder: 'step07', summary: ['en'],       report: ['en'] },
+  step_08: { folder: 'step08', summary: ['en'],       report: ['en'] },
+  step_09: { folder: 'step09', summary: ['en'],       report: ['en'] },
+};
+
+/* Build the EN/BG download-button markup for a set of available languages.
+   hrefFor(lang) returns the PDF URL; btnClass/styleAttr let each call site match its own CSS. */
+function deliverableButtons(langs, hrefFor, btnClass, styleAttr, suffix) {
+  const label = { en: '🇬🇧 EN', bg: '🇧🇬 BG' };
+  return langs.map(l =>
+    `<a href="${hrefFor(l)}" target="_blank" rel="noopener noreferrer" class="${btnClass}"${styleAttr}>${label[l]}${suffix || ''}</a>`
+  ).join('');
+}
 const REPORT_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/reports';
 const SUMMARY_BASE_URL = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/summaries';
 const STUDY_PLAN_URL_EN = 'https://github.com/alexander-ra/rlPlanRevised/raw/master/deliverables/studyPlan/studyPlanEN.pdf';
