@@ -1,0 +1,36 @@
+[smoke] sparse baselines over 5 seeds ...
+[smoke] 15 cells x 5 seeds ...
+  [ 1/15] proxy          alpha=0.0 syn=0.1  gap=+0.0024+/-0.0008 **
+  [ 2/15] proxy          alpha=0.0 syn=0.3  gap=+0.0008+/-0.0026 +
+  [ 3/15] proxy          alpha=0.1 syn=0.1  gap=+0.0008+/-0.0031 +
+  [ 4/15] proxy          alpha=0.1 syn=0.3  gap=+0.0003+/-0.0016 +
+  [ 5/15] proxy          alpha=0.3 syn=0.1  gap=-0.0018+/-0.0013 -
+  [ 6/15] proxy          alpha=0.3 syn=0.3  gap=-0.0028+/-0.0019 -
+  [ 7/15] proxy          alpha=0.5 syn=0.1  gap=-0.0018+/-0.0012 -
+  [ 8/15] proxy          alpha=0.5 syn=0.3  gap=-0.0031+/-0.0016 -
+  [ 9/15] proxy          alpha=0.7 syn=0.1  gap=-0.0002+/-0.0022 -
+  [10/15] proxy          alpha=0.7 syn=0.3  gap=-0.0022+/-0.0019 -
+  [11/15] counterfactual alpha=0.0 syn=0.1  gap=+0.0028+/-0.0022 +
+  [12/15] counterfactual alpha=0.1 syn=0.1  gap=-0.0005+/-0.0021 -
+  [13/15] counterfactual alpha=0.3 syn=0.1  gap=+0.0012+/-0.0021 +
+  [14/15] counterfactual alpha=0.5 syn=0.1  gap=-0.0004+/-0.0023 -
+  [15/15] counterfactual alpha=0.7 syn=0.1  gap=-0.0010+/-0.0022 -
+[smoke] done in 410.8s. sparse_score=0.0073. best gap +0.0028 at counterfactual alpha=0.0 syn=0.1 (sig+=False). wrote C:\Users\UserNIK\projects\rlPlanRevised\implementation\step11\implementation\results\sweep_smoke.json
+[scale] sparse baselines over 5 seeds ...
+[scale] 15 cells x 5 seeds ...
+  [ 1/15] proxy          alpha=0.0 syn=0.1  gap=+0.0305+/-0.0130 **
+  [ 2/15] proxy          alpha=0.0 syn=0.3  gap=+0.0376+/-0.0103 **
+  [ 3/15] proxy          alpha=0.1 syn=0.1  gap=+0.0023+/-0.0011 **
+  [ 4/15] proxy          alpha=0.1 syn=0.3  gap=-0.0011+/-0.0026 -
+  [ 5/15] proxy          alpha=0.3 syn=0.1  gap=-0.0016+/-0.0017 -
+  [ 6/15] proxy          alpha=0.3 syn=0.3  gap=-0.0034+/-0.0009 -
+  [ 7/15] proxy          alpha=0.5 syn=0.1  gap=-0.0019+/-0.0013 -
+  [ 8/15] proxy          alpha=0.5 syn=0.3  gap=-0.0022+/-0.0013 -
+  [ 9/15] proxy          alpha=0.7 syn=0.1  gap=-0.0033+/-0.0025 -
+  [10/15] proxy          alpha=0.7 syn=0.3  gap=-0.0035+/-0.0024 -
+  [11/15] counterfactual alpha=0.0 syn=0.1  gap=+0.0128+/-0.0026 **
+  [12/15] counterfactual alpha=0.1 syn=0.1  gap=+0.0036+/-0.0016 **
+  [13/15] counterfactual alpha=0.3 syn=0.1  gap=-0.0015+/-0.0028 -
+  [14/15] counterfactual alpha=0.5 syn=0.1  gap=-0.0004+/-0.0007 -
+  [15/15] counterfactual alpha=0.7 syn=0.1  gap=-0.0003+/-0.0023 -
+[scale] done in 1897.7s. sparse_score=0.0109. best gap +0.0376 at proxy alpha=0.0 syn=0.3 (sig+=True). wrote C:\Users\UserNIK\projects\rlPlanRevised\implementation\step11\implementation\results\sweep_scale.json

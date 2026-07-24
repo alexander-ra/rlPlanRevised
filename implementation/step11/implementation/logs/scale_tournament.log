@@ -1,0 +1,19 @@
+[env] 2-player endgame + termination + zero-sum ...
+    {'endgame_mismatches': 0, 'endgame_passed': True, 'random_games': 100, 'all_terminated': True, 'all_zero_sum': True}
+[detector] coalition detection on a planted cooperative log ...
+   identified correct pair? True
+[shapley] exact reference games + symmetric/asymmetric SLS credit ...
+    glove_ok True majority_ok True asym_strong_dominates True
+[training] coalition-aware (Shapley) vs sparse MAPPO ... (needs torch; may be slow)
+[egta] projected pairwise meta-game + spinning top + meta-Nash ...
+    transitive_ratio=0.9515 cyclic_ratio=0.3076 cyclic_dominates=False
+
+=== Comparison (raw L533-538) -- PREDICTIONS to verify ===
+  Method                        WinRate vs Random  Coalition Score
+  ----------------------------------------------------------------
+  Random baseline                           0.250            0.000
+  MAPPO (sparse reward)                     0.829            0.003
+  MAPPO + Shapley (this step)               0.827            0.002
+  -> Shapley coalition score > sparse? False (raw L560 target: True)
+
+wrote C:\Users\UserNIK\projects\rlPlanRevised\implementation\step11\implementation\results\scale_results.json
