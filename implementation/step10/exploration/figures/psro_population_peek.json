@@ -1,0 +1,23 @@
+{
+  "game": "leduc",
+  "rounds": 10,
+  "exploitability": [
+    4.74722,
+    6.83333,
+    4.601,
+    5.83478,
+    3.72975,
+    5.8,
+    5.06682,
+    5.48265,
+    3.6366,
+    3.56905
+  ],
+  "final_pop_size": 11,
+  "active_policies": 5,
+  "effective_size": {
+    "active": 5,
+    "participation_ratio": 3.033
+  },
+  "meta_game_transitive_ratio": 0.45305
+}

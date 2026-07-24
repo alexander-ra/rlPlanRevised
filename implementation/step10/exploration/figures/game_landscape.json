@@ -1,0 +1,17 @@
+{
+  "rock_paper_scissors": {
+    "transitive_ratio": 0.0,
+    "three_cycles": 1,
+    "size": 3
+  },
+  "skill_ladder": {
+    "transitive_ratio": 1.0,
+    "three_cycles": 0,
+    "size": 4
+  },
+  "psro_leduc_metagame": {
+    "transitive_ratio": 0.45676,
+    "three_cycles": 27,
+    "size": 9
+  }
+}

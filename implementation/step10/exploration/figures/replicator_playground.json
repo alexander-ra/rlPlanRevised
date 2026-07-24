@@ -1,0 +1,108 @@
+{
+  "prisoners_dilemma": {
+    "predict": "Cooperator share -> 0 (defection dominates); converges.",
+    "runs": [
+      {
+        "x0": [
+          0.5,
+          0.5
+        ],
+        "final": [
+          0.0,
+          1.0
+        ],
+        "converged": true,
+        "orbit_radius": 0.7071
+      },
+      {
+        "x0": [
+          0.9,
+          0.1
+        ],
+        "final": [
+          0.0,
+          1.0
+        ],
+        "converged": true,
+        "orbit_radius": 0.7071
+      }
+    ]
+  },
+  "hawk_dove": {
+    "predict": "Converges to interior ESS p(Hawk)=V/C=0.5.",
+    "runs": [
+      {
+        "x0": [
+          0.2,
+          0.8
+        ],
+        "final": [
+          0.5,
+          0.5
+        ],
+        "converged": true,
+        "orbit_radius": 0.0
+      },
+      {
+        "x0": [
+          0.9,
+          0.1
+        ],
+        "final": [
+          0.5,
+          0.5
+        ],
+        "converged": true,
+        "orbit_radius": 0.0
+      }
+    ]
+  },
+  "rock_paper_scissors": {
+    "predict": "Orbits (1/3,1/3,1/3) forever; NEVER converges.",
+    "runs": [
+      {
+        "x0": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "final": [
+          0.244,
+          0.345,
+          0.411
+        ],
+        "converged": false,
+        "orbit_radius": 0.1194
+      }
+    ]
+  },
+  "stag_hunt": {
+    "predict": "Converges to all-Stag OR all-Hare depending on x0 (two basins).",
+    "runs": [
+      {
+        "x0": [
+          0.8,
+          0.2
+        ],
+        "final": [
+          1.0,
+          0.0
+        ],
+        "converged": true,
+        "orbit_radius": 0.7071
+      },
+      {
+        "x0": [
+          0.2,
+          0.8
+        ],
+        "final": [
+          0.0,
+          1.0
+        ],
+        "converged": true,
+        "orbit_radius": 0.7071
+      }
+    ]
+  }
+}
