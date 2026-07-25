@@ -61,7 +61,7 @@ def train_decision_transformer(model: DecisionTransformer, tensors: dict, epochs
             opt.zero_grad()
             loss.backward()
             opt.step()
-            total += float(loss) * int(b_mask.sum())
+            total += float(loss.detach()) * int(b_mask.sum())
             count += int(b_mask.sum())
         avg = total / max(1, count)
         history.append(avg)
@@ -150,7 +150,24 @@ def main():
                                   low_return=min(TARGET_RETURNS), device=device)
     for card, m in sorted(ls.items()):
         print(f"  card {card}: P(bet|high)={m['p_bet_high']:.2f}  P(bet|low)={m['p_bet_low']:.2f}")
-    print("\n(All numbers above are PREDICTIONS to verify in the run session.)")
+
+    # RUN-SESSION ADDITION: persist both experiments so `plotting.py` can draw the real
+    # figures from measured data. Without this nothing on disk backs the plots and the only
+    # PNG-producing code path was plotting's own self-test on HARD-CODED numbers -- which
+    # would have put a fabricated figure in the repo (WORKFLOW section 0).
+    import json
+    import os
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
+    os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, f"dt_experiments_{cfg['name']}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({
+            "profile": cfg["name"],
+            "impossible_return": IMPOSSIBLE_RETURN,
+            "return_conditioning": {str(R): m for R, m in rc.items()},
+            "luck_vs_skill": {str(c): m for c, m in ls.items()},
+        }, f, indent=2)
+    print(f"\nsaved -> {path}")
 
 
 if __name__ == "__main__":

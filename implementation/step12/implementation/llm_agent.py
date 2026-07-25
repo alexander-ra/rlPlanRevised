@@ -98,7 +98,26 @@ class ScriptedReasonerClient(LLMClient):
 
     @staticmethod
     def _extract_card(text: str) -> int:
+        """Read the stub's own hole card out of the prompt.
+
+        RUN-SESSION FIX (2026-07-25). This used to scan the WHOLE prompt for the first card
+        name, which silently broke the `gametheory` prompt style: its instruction text itself
+        names every card ("with the King bet/call for value; with the Jack you must sometimes
+        BLUFF ..."), so the scan always matched "Jack" first and the stub played EVERY hand as
+        a Jack. That produced a fake result in the comparison table (LLM-gametheory 1.667 vs
+        0.833 chips) that looked like a finding about game-theory prompting but was pure prompt
+        contamination. Anchor on the explicit "Your private card: X." line first.
+        """
         low = text.lower()
+        m = re.search(r"your private card\s*[:=]\s*([a-z0-9]+)", low)
+        if m:
+            tok = m.group(1)
+            for cid, name in _CARD_NAME.items():
+                if tok.startswith(name.lower()[0]):
+                    return cid
+            if tok[:1] in {"1", "2", "3"}:
+                return int(tok[0])
+        # Fall back to the old whole-text scan only if the anchored line is absent.
         for cid, name in _CARD_NAME.items():
             if name.lower() in low:
                 return cid

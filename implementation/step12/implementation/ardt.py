@@ -31,6 +31,33 @@ implement is the single-sided pessimistic-over-outcomes proxy, which is the trac
 approximation for our offline mixed-opponent Kuhn data. Both points are on the verify-list in
 targetedReading/summary.md and must be checked against Sections 3-4 of arXiv:2407.18414.
 
+>>> MATH FLAG B -- RESOLVED against the paper on a real run (2026-07-25) <<<
+Checked against the ARDT PDF (arXiv:2407.18414), Section 3 + Algorithm 1. The flag above was
+CORRECT about tau, and understated how much simpler this proxy is:
+
+  1. tau DIRECTION CONFIRMED. Eq. (6) defines the ER loss  L^a_ER(u) = E[ |a - 1(u > 0)| * u^2 ],
+     and Eq. (7) states  lim_{a->0} g_a(x) = min(...)  and  lim_{a->1} g_a(x) = max(...).
+     So LOW alpha == the MIN == pessimistic. The raw step's "tau=0.9 is pessimistic" IS inverted;
+     EXPECTILE_TAU = 0.1 below is on the correct side.
+  2. THE PAPER USES alpha = 0.01 (Algorithm 1, line 1) -- 10x more aggressive than our 0.1.
+     `tau_sweep.py` sweeps 0.01 alongside 0.1/0.5/0.9 for exactly this reason.
+  3. ARDT IS TWO COUPLED NETWORKS, not one. It alternately fits a minimax estimator Q~_nu and a
+     maximin estimator Q_omega using the PAIRED losses Eq. (8) l^a(nu) and Eq. (9) l^{1-a}(omega)
+     -- note alpha on one and (1-alpha) on the other, which is how min and max come out of the
+     same estimator family. The fixed point satisfies Eq. (10)/(11) (nested min over adversary
+     actions, max over protagonist actions).
+  4. THE RELABEL TARGET IS Q~(s_t, a_t), A STATE-ACTION VALUE (Algorithm 1, line 7:
+     R~_t = Q~_nu(s_t, a_t)). MinimaxReturnEstimator below is state -> scalar, so relabel_returns
+     conditions on V(s) and CANNOT distinguish "this state is bad" from "THIS ACTION in this state
+     is bad" -- which is the discrimination ARDT relies on to pick the robust action. This is the
+     most likely reason our ARDT underperforms the paper's, and the top candidate fix for Step 13.
+  5. MISSED WARM-UP. Algorithm 1 line 2 initializes both networks with the ORIGINAL returns-to-go
+     ("guaranteeing accurate value function approximation at terminal states"); we train from
+     scratch.
+
+Conclusion: keep EXPECTILE_TAU on the low side (correct per Eq. 7), read targets #3-4 as a test of
+the SIMPLIFIED proxy, not of ARDT as published.
+
 Guarded by torch. All printed numbers are PREDICTIONS to verify (WORKFLOW section 0).
 
 NOTE (per implementation/WORKFLOW.md): written but NOT executed here.
@@ -104,7 +131,7 @@ def train_minimax_estimator(estimator: MinimaxReturnEstimator, tensors: dict,
             opt.zero_grad()
             loss.backward()
             opt.step()
-            total += float(loss) * len(idx)
+            total += float(loss.detach()) * len(idx)
         avg = total / max(1, n)
         history.append(avg)
         if (ep + 1) % log_every == 0 or ep == 0:
@@ -222,7 +249,7 @@ def _selftest():
             opt.zero_grad()
             expectile_loss(p.expand_as(y), y, tau).backward()
             opt.step()
-        print(f"expectile tau={tau} ({label}) -> {float(p):+.3f} "
+        print(f"expectile tau={tau} ({label}) -> {float(p.detach()):+.3f} "
               f"(expect low<mean(-1.6)<high)")
     print("expectile_loss finite:", np.isfinite(float(lo)) and np.isfinite(float(hi)))
 

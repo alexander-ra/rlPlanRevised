@@ -1,0 +1,17 @@
+﻿train_dt: profile=SMOKE device=cuda
+[DT] epoch   1/15  loss=0.5095
+[DT] epoch  10/15  loss=0.1041
+
+== Experiment 1: return conditioning (exploitability in CHIPS; predictions) ==
+  target R=-2.0: exploitability=0.7482 chips, bluffJ=1.00, valueK=0.59
+  target R=-1.0: exploitability=1.8503 chips, bluffJ=0.00, valueK=0.19
+  target R=+1.0: exploitability=0.7469 chips, bluffJ=1.00, valueK=0.62
+  target R=+2.0: exploitability=0.8228 chips, bluffJ=1.00, valueK=0.65
+  target R=+3.0 (IMPOSSIBLE/OOD): exploitability=0.8169 chips, bluffJ=1.00, valueK=0.66
+
+== Experiment 2: luck vs skill (root P(bet) by card; predictions) ==
+  card 1: P(bet|high)=1.00  P(bet|low)=1.00
+  card 2: P(bet|high)=0.02  P(bet|low)=0.02
+  card 3: P(bet|high)=0.65  P(bet|low)=0.59
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\dt_experiments_SMOKE.json

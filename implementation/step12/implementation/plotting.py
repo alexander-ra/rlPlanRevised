@@ -110,18 +110,112 @@ def plot_exploitability_bars(rows: list, path: str | None = None) -> str | None:
     return path
 
 
-def _selftest():
-    print("plotting self-test")
-    print("-" * 40)
-    print(f"matplotlib available: {plots_available()}")
-    if plots_available():
-        p = plot_exploitability_bars([
-            {"agent": "Nash-CFR", "exploitability_chips": 0.001},
-            {"agent": "DT", "exploitability_chips": 0.20},
-            {"agent": "ARDT", "exploitability_chips": 0.05},
-        ])
-        print(f"wrote demo figure -> {p}")
+def plot_tau_sweep(sweep: dict, path: str | None = None) -> str | None:
+    """sweep: the dict written by tau_sweep.py -> results/tau_sweep_<profile>.json."""
+    if not plots_available():
+        print("matplotlib unavailable; skipping tau-sweep plot.")
+        return None
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    taus = sorted(float(t) for t in sweep["taus"])
+    cells = sweep["taus"]
+    expl = [cells[_key(cells, t)]["exploitability"]["mean"] for t in taus]
+    err = [cells[_key(cells, t)]["exploitability"]["se"] for t in taus]
+    tgt = [cells[_key(cells, t)]["robust_target"]["mean"] for t in taus]
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.errorbar(taus, expl, yerr=err, marker="o", capsize=4, label="ARDT exploitability")
+    ax.axhline(sweep["dt_baseline"]["mean"], ls="--", color="tab:red",
+               label=f"vanilla DT ({sweep['dt_baseline']['mean']:.3f})")
+    ax.axhline(sweep["nash_reference"]["mean"], ls=":", color="tab:green",
+               label=f"Nash ({sweep['nash_reference']['mean']:.3f})")
+    ax.set_xscale("log")
+    ax.set_xlabel("expectile tau  (low = pessimistic / minimax side, per ARDT Eq. 7)")
+    ax.set_ylabel("exploitability (chips)")
+    ax.set_title("ARDT: exploitability vs expectile tau")
+    ax.grid(True, alpha=0.3)
+    ax2 = ax.twinx()
+    ax2.plot(taus, tgt, marker="s", color="tab:purple", alpha=0.5,
+             label="mean relabel target")
+    ax2.set_ylabel("mean relabel target (chips)", color="tab:purple")
+    lines, labels = ax.get_legend_handles_labels()
+    l2, lb2 = ax2.get_legend_handles_labels()
+    ax.legend(lines + l2, labels + lb2, fontsize=8, loc="best")
+    path = path or os.path.join(_results_dir(), "tau_sweep.png")
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+    return path
+
+
+def _key(cells: dict, t: float) -> str:
+    """Match a float tau back to its JSON string key."""
+    for k in cells:
+        if abs(float(k) - t) < 1e-12:
+            return k
+    raise KeyError(t)
+
+
+def _load(name: str):
+    import json
+    p = os.path.join(_results_dir(), name)
+    if not os.path.isfile(p):
+        return None
+    with open(p, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def main():
+    """Draw every figure from MEASURED results on disk.
+
+    RUN-SESSION REWRITE (2026-07-25). This module previously had only a `_selftest()` that
+    plotted HARD-CODED numbers ({"DT": 0.20, "ARDT": 0.05}) into results/. That was the only
+    PNG-producing code path in the whole step, so following the runbook would have committed a
+    FABRICATED figure -- a direct WORKFLOW section 0 violation. The self-test is gone; figures
+    now come only from results/*.json written by real runs.
+    """
+    import argparse
+
+    ap = argparse.ArgumentParser(description="Render Step 12 figures from measured results.")
+    ap.add_argument("--profile", default=os.environ.get("STEP12_PROFILE", "SMOKE").upper())
+    args = ap.parse_args()
+    prof = args.profile
+
+    print(f"plotting: profile={prof}  matplotlib={plots_available()}")
+    wrote, missing = [], []
+
+    dt_exp = _load(f"dt_experiments_{prof}.json")
+    if dt_exp:
+        rc = {float(k): v for k, v in dt_exp["return_conditioning"].items()}
+        ls = {int(k): v for k, v in dt_exp["luck_vs_skill"].items()}
+        wrote += [p for p in (plot_return_conditioning(rc), plot_bet_prob_by_card(ls)) if p]
+    else:
+        missing.append(f"dt_experiments_{prof}.json  (run: python train_dt.py)")
+
+    comp = _load(f"comparison_{prof}.json")
+    if comp:
+        p = plot_exploitability_bars(comp["rows"])
+        if p:
+            wrote.append(p)
+    else:
+        missing.append(f"comparison_{prof}.json  (run: python comparison_table.py)")
+
+    sweep = _load(f"tau_sweep_{prof}.json")
+    if sweep:
+        p = plot_tau_sweep(sweep)
+        if p:
+            wrote.append(p)
+    else:
+        missing.append(f"tau_sweep_{prof}.json  (run: python tau_sweep.py)")
+
+    for p in wrote:
+        print(f"  wrote {os.path.basename(p)}")
+    for m in missing:
+        print(f"  SKIP  missing {m}")
+    print(f"{len(wrote)} figure(s) written to {_results_dir()}")
 
 
 if __name__ == "__main__":
-    _selftest()
+    main()

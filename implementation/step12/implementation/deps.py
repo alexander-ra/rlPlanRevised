@@ -65,6 +65,45 @@ for _label, _path, _required in (
         sys.path.append(_path)
 
 
+# --- pin Step 12's own same-named modules against mid-run sys.path hijacking ----------
+# RUN-SESSION FIX (2026-07-25). Appending (above) is NOT sufficient on its own.
+# `step02/evaluate/best_response.py` and `step02/evaluate/exploitability.py` each run
+#     sys.path.insert(0, <step02 dir>)
+# at MODULE level -- their own standalone-script bootstrap. Step 12 imports those two
+# lazily (inside `evaluation.py`'s functions), so that insert fires in the MIDDLE of a run
+# and pushes step02 AHEAD of this folder on sys.path. Any later bare `import config` then
+# resolves to step02/config.py, and `from config import active_config` dies with
+#     ImportError: cannot import name 'active_config' from 'config' (.../step02/config.py)
+# which is exactly what `comparison_table.py` and `validate.py` hit on the first real run.
+#
+# Pre-loading our own config under the canonical name puts it in sys.modules before any
+# hijack can happen, so every later `from config import ...` hits the cache and is immune
+# to path ORDER. `config.py` is the only name step12 shares with the step02 root, so it is
+# the only one that needs pinning. (Side effect: if step02's own scripts were run in-process
+# afterwards, their `from config import CFR_CONFIG` would see ours -- we never do that.)
+import importlib.util as _ilu  # noqa: E402
+
+
+def _pin_local_module(name: str) -> None:
+    """Load `<this folder>/<name>.py` as the canonical `name` in sys.modules."""
+    if name in sys.modules:
+        return
+    _p = os.path.join(_HERE, f"{name}.py")
+    if not os.path.isfile(_p):
+        return
+    _spec = _ilu.spec_from_file_location(name, _p)
+    _mod = _ilu.module_from_spec(_spec)
+    sys.modules[name] = _mod          # register BEFORE exec so self-imports resolve
+    try:
+        _spec.loader.exec_module(_mod)
+    except Exception:                  # never let pinning break the import of deps
+        sys.modules.pop(name, None)
+        raise
+
+
+_pin_local_module("config")
+
+
 # --- torch guard: prefer step09's, fall back to a local copy -------------------------
 try:  # step09/implementation/learners.py
     from learners import torch_available, require_torch  # type: ignore  # noqa: F401

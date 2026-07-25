@@ -88,7 +88,7 @@ def train_bc(model: "BehavioralCloning", tensors: dict, epochs: int = 30,
             opt.zero_grad()
             loss.backward()
             opt.step()
-            total += float(loss) * len(idx)
+            total += float(loss.detach()) * len(idx)
         avg = total / max(1, n)
         history.append(avg)
         if (ep + 1) % log_every == 0 or ep == 0:

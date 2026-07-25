@@ -1,0 +1,81 @@
+﻿tau_sweep: profile=SMOKE device=cuda taus=[0.01, 0.1, 0.5, 0.9] seeds=[0, 1, 2]
+(paper alpha = 0.01, Alg.1 line 1; our authored default = 0.1; 0.9 = the raw step's inverted claim, kept as the control)
+==============================================================================
+[DT] epoch   1/15  loss=0.5776
+[seed 0] DT(mixed data) = 0.7266 chips
+[ARDT/expectile tau=0.01] epoch   1/20  loss=0.4916
+[ARDT/expectile tau=0.01] epoch  20/20  loss=0.0232
+[DT] epoch   1/15  loss=0.5802
+[DT] epoch  10/15  loss=0.4669
+[seed 0] ARDT tau=0.01  = 0.4702 chips (  470.2 mbb/h)  mean relabel target=-0.615
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.6042
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1734
+[DT] epoch   1/15  loss=0.5802
+[DT] epoch  10/15  loss=0.4669
+[seed 0] ARDT tau=0.1   = 0.4815 chips (  481.5 mbb/h)  mean relabel target=-0.305
+[ARDT/expectile tau=0.5] epoch   1/20  loss=0.7802
+[ARDT/expectile tau=0.5] epoch  20/20  loss=0.4352
+[DT] epoch   1/15  loss=0.5804
+[DT] epoch  10/15  loss=0.4667
+[seed 0] ARDT tau=0.5   = 0.4753 chips (  475.3 mbb/h)  mean relabel target=+0.239
+[ARDT/expectile tau=0.9] epoch   1/20  loss=0.5652
+[ARDT/expectile tau=0.9] epoch  20/20  loss=0.2219
+[DT] epoch   1/15  loss=0.5780
+[DT] epoch  10/15  loss=0.4667
+[seed 0] ARDT tau=0.9   = 0.3819 chips (  381.9 mbb/h)  mean relabel target=+0.896
+[DT] epoch   1/15  loss=0.5520
+[seed 1] DT(mixed data) = 0.7300 chips
+[ARDT/expectile tau=0.01] epoch   1/20  loss=0.3323
+[ARDT/expectile tau=0.01] epoch  20/20  loss=0.0220
+[DT] epoch   1/15  loss=0.5756
+[DT] epoch  10/15  loss=0.4474
+[seed 1] ARDT tau=0.01  = 0.5526 chips (  552.6 mbb/h)  mean relabel target=-0.606
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.4847
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1643
+[DT] epoch   1/15  loss=0.5756
+[DT] epoch  10/15  loss=0.4469
+[seed 1] ARDT tau=0.1   = 0.5621 chips (  562.1 mbb/h)  mean relabel target=-0.395
+[ARDT/expectile tau=0.5] epoch   1/20  loss=0.7624
+[ARDT/expectile tau=0.5] epoch  20/20  loss=0.4112
+[DT] epoch   1/15  loss=0.5762
+[DT] epoch  10/15  loss=0.4466
+[seed 1] ARDT tau=0.5   = 0.5433 chips (  543.3 mbb/h)  mean relabel target=+0.201
+[ARDT/expectile tau=0.9] epoch   1/20  loss=0.6138
+[ARDT/expectile tau=0.9] epoch  20/20  loss=0.2143
+[DT] epoch   1/15  loss=0.5745
+[DT] epoch  10/15  loss=0.4473
+[seed 1] ARDT tau=0.9   = 0.3346 chips (  334.6 mbb/h)  mean relabel target=+0.843
+[DT] epoch   1/15  loss=0.5440
+[seed 2] DT(mixed data) = 0.7363 chips
+[ARDT/expectile tau=0.01] epoch   1/20  loss=0.3051
+[ARDT/expectile tau=0.01] epoch  20/20  loss=0.0224
+[DT] epoch   1/15  loss=0.5679
+[DT] epoch  10/15  loss=0.4621
+[seed 2] ARDT tau=0.01  = 0.4842 chips (  484.2 mbb/h)  mean relabel target=-0.658
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.4781
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1642
+[DT] epoch   1/15  loss=0.5679
+[DT] epoch  10/15  loss=0.4613
+[seed 2] ARDT tau=0.1   = 0.4678 chips (  467.8 mbb/h)  mean relabel target=-0.352
+[ARDT/expectile tau=0.5] epoch   1/20  loss=0.7790
+[ARDT/expectile tau=0.5] epoch  20/20  loss=0.4193
+[DT] epoch   1/15  loss=0.5684
+[DT] epoch  10/15  loss=0.4608
+[seed 2] ARDT tau=0.5   = 0.4529 chips (  452.9 mbb/h)  mean relabel target=+0.140
+[ARDT/expectile tau=0.9] epoch   1/20  loss=0.6539
+[ARDT/expectile tau=0.9] epoch  20/20  loss=0.2261
+[DT] epoch   1/15  loss=0.5677
+[DT] epoch  10/15  loss=0.4613
+[seed 2] ARDT tau=0.9   = 0.4427 chips (  442.7 mbb/h)  mean relabel target=+0.822
+
+   tau   expl(chips)    +/- se     mbb/h  relabel target
+--------------------------------------------------------
+  0.01        0.5023    0.0255     502.3          -0.626
+   0.1        0.5038    0.0294     503.8          -0.351
+   0.5        0.4905    0.0272     490.5          +0.193
+   0.9        0.3864    0.0313     386.4          +0.854
+--------------------------------------------------------
+    DT        0.7310    0.0029     731.0      (baseline)
+  Nash        0.0173    0.0032      17.3     (anchor ~0)
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\tau_sweep_SMOKE.json  (85.5s)

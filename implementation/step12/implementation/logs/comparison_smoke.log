@@ -1,0 +1,22 @@
+﻿comparison_table: profile=SMOKE device=cuda llm_backend=stub
+[DT] epoch   1/15  loss=0.5107
+[DT] epoch  10/15  loss=0.1035
+[BC] epoch   1/15  loss=0.6566
+[BC] epoch  10/15  loss=0.3418
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.5573
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1731
+[DT] epoch   1/15  loss=0.5821
+[DT] epoch  10/15  loss=0.4654
+
+agent          expl(chips) expl(mbb/h)  bluffJ  valueK  illegal   adapt
+-----------------------------------------------------------------------
+Nash-CFR            0.0162        16.2    0.23    0.68                 
+LLM-plain           0.8333       833.3    1.00    1.00       0%   +0.00
+LLM-cot             0.8333       833.3    1.00    1.00       0%   +0.00
+LLM-gametheory      0.8333       833.3    1.00    1.00       0%   +0.00
+DT                  0.6709       670.9    1.00    0.69                 
+BC                  0.0546        54.6    0.22    0.74                 
+ARDT                0.4585       458.5    0.40    0.43                 
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\comparison_SMOKE.json
+(All numbers are from THIS run; record them in EXECUTION_NOTES.md next session.)

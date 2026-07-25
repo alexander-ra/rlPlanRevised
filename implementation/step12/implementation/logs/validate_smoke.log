@@ -1,0 +1,22 @@
+﻿validate: profile=SMOKE device=cuda (targets are raw L458-463; numbers are predictions)
+==============================================================================
+[DT] epoch   1/15  loss=0.5059
+[DT] epoch  10/15  loss=0.1035
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.4694
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1732
+[DT] epoch   1/15  loss=0.5939
+[DT] epoch  10/15  loss=0.4716
+[DT] epoch   1/15  loss=0.5710
+[DT] epoch  10/15  loss=0.2054
+[FAIL] 1. DT high-RTG < low-RTG exploitability
+        high(+2)=0.6981 chips (698.1 mbb/h) vs low(-2)=0.6928 chips (692.8 mbb/h)
+[PASS] 2. DT action varies by card (luck)
+        root P(bet) by card J/Q/K = 1.00/0.03/0.70; spread=0.97
+[PASS] 3. ARDT < standard DT (mixed data, vs Nash)
+        ARDT=0.5034 chips (503.4 mbb/h) vs DT=0.7212 chips (721.2 mbb/h)
+[FAIL] 4. ARDT within ~50 mbb/h of Nash
+        ARDT=0.5034 chips (503.4 mbb/h), Nash=0.0162 chips (16.2 mbb/h), tol=0.05 chips (aspirational; may need SCALE). gap=0.4872 chips
+[PASS] 5. LLM honestly more exploitable than Nash
+        LLM(scripted-reasoner(offline-stub))=0.8333 chips (833.3 mbb/h) > Nash=0.0162 chips (16.2 mbb/h); bluff(J)=1.00, illegal=0%
+==============================================================================
+summary: 3 PASS / 2 FAIL / 0 SKIP  (of 5)

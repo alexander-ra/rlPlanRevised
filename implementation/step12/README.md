@@ -107,9 +107,15 @@ choice Step 11 made for its PPO.
 
 - [x] Scaffold (this README + `implementation/deps.py` + the four phase folders)
 - [x] `intuition/intuition.md`
-- [x] `exploration/` (code + README) — **written, not executed**
-- [x] `targetedReading/summary.md`
-- [x] `implementation/` (code + README + validation harness) — **written, not executed**
-- [ ] `EXECUTION_NOTES.md` — deferred (needs verified runs)
+- [x] `exploration/` (code + README) — **executed 2026-07-25**
+- [x] `targetedReading/summary.md` — **MATH FLAG B resolved against the ARDT PDF**
+- [x] `implementation/` (code + README + validation harness) — **executed at SMOKE 2026-07-25**
+- [x] [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) — Phase 2 + Phase 4 (SMOKE) measured-vs-predicted
+- [ ] Real-model LLM rows — LM Studio installed, roster downloading (stub-only so far)
+- [ ] SCALE profile run
 - [ ] `consolidation/` — deferred (human-written after runs)
-- [ ] `deliverables/reports/step12/` — deferred (out of scope this session)
+- [ ] `deliverables/reports/step12/` — deferred
+
+**Run status (SMOKE, 2026-07-25):** `validate.py` = **3 PASS / 2 FAIL / 0 SKIP**. Targets #1 and #4
+are honestly red — see [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) for the §0.1 reconciliations.
+Headline: **BC (0.055 chips) ≪ ARDT (0.459) < DT (0.671) < LLM-stub (0.833)**, Nash = 0.016.

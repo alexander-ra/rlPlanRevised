@@ -85,6 +85,33 @@ Arxiv ids are given so the exact source can be pulled in the run session.
 > over the pooled outcome distribution as my proxy does. This is the single most important thing
 > to reconcile before trusting the ARDT numbers.
 
+> **✅ RESOLVED — checked against the ARDT PDF on a real run (2026-07-25).** Verdict: the flag was
+> **right on the τ direction, and understated the structural gap.**
+>
+> 1. **τ direction — CONFIRMED.** ARDT's ER loss is **Eq. (6)**:
+>    `L^α_ER(u) = E_u[ |α − 𝟙(u > 0)| · u² ]`, and **Eq. (7)** states the convention explicitly:
+>    `lim_{α→0} g_α(x) = min_{y:ρ(y|x)>0} h(x,y)` and `lim_{α→1} g_α(x) = max_{y:ρ(y|x)>0} h(x,y)`.
+>    So **α→0 is the minimum (pessimistic)** side — the raw step's "τ=0.9 = pessimistic" (raw
+>    L347-360) **is inverted**, exactly as flagged. Our low-τ default is on the correct side.
+> 2. **The paper's actual value is α = 0.01** (Algorithm 1, line 1), i.e. **10× more aggressive
+>    than our `EXPECTILE_TAU = 0.1`**. `tau_sweep.py` therefore sweeps `0.01` alongside our default.
+> 3. **The structural simplification is larger than "single- vs two-sided".** ARDT is a *coupled
+>    two-network* scheme: it alternately fits a minimax estimator `Q̃_ν` and a maximin estimator
+>    `Q_ω` with the paired losses **Eq. (8)** `ℓ^α(ν)` and **Eq. (9)** `ℓ^{1−α}(ω)` — note the
+>    **α on one and 1−α on the other**, which is how min and max are obtained from the *same*
+>    estimator family. Their fixed point satisfies **Eq. (10)**
+>    `Q̃_ν*(τ_{0:t−1}, s_t, a_t) = min_{ā∈D} Q_ω*(τ_{0:t−1}, s_t, a_t, ā)` and **Eq. (11)**
+>    `Q_ω*(…, a_t, ā_t) = E_{s_{t+1}}[ max_{a'∈D} Q̃_ν*(τ_{0:t}, s_{t+1}, a') + r_t ]`.
+> 4. **The relabel target is a state-ACTION value, not a state value.** Algorithm 1 line 7 builds
+>    `D_worst` with **`R̃_t = Q̃_ν(s_t, a_t)`**. Our `MinimaxReturnEstimator` is `state → scalar`
+>    and `relabel_returns` conditions on `V(s)`, dropping the action argument — so our proxy cannot
+>    distinguish "this state is bad" from "**this action** in this state is bad", which is precisely
+>    the discrimination ARDT needs to pick the robust action. **This is the most likely reason our
+>    ARDT under-performs the paper's**, and is the top candidate fix for Step 13.
+> 5. **Missed warm-up step.** Algorithm 1 line 2 initializes both networks **with the original
+>    returns-to-go**; the text notes this "guarantee[s] accurate value function approximation at
+>    terminal states." We train the expectile head from scratch — worth adding.
+
 ### 4. TextArena — Guertler et al., 2025 (arXiv:2504.11442)
 **Need it for:** the optional `textarena_agent.py` and framing LLM-agent evaluation.
 - **What it is (§1-3):** 57+ competitive **text** games (negotiation, deduction, board/word
@@ -143,9 +170,12 @@ Arxiv ids are given so the exact source can be pulled in the run session.
 
 1. **MATH FLAG A:** reconcile the coin-flip suboptimality gap with Paster's Theorem 2.1 — exact
    bounded quantity (regret vs competitive ratio) and its coverage assumptions.
-2. **MATH FLAG B (highest priority):** confirm the expectile objective and **τ direction** in
+2. ~~**MATH FLAG B (highest priority):** confirm the expectile objective and **τ direction** in
    ARDT §4; decide whether the pessimistic side is low-τ (my default `0.1`) or the raw step's
-   `0.9`, and whether the min-expectile is taken over the **adversary branch** specifically.
+   `0.9`, and whether the min-expectile is taken over the **adversary branch** specifically.~~
+   **✅ DONE 2026-07-25** — low-τ is pessimistic (Eq. 6/7), paper uses α=0.01 (Alg. 1), and the
+   min is taken over the adversary branch via the coupled Eq. (8)/(9) networks on **state-action**
+   pairs. See the resolution block above.
 3. **DT extrapolation:** does Chen et al. actually report gains from conditioning on returns
    **above** the data max, or only up to it? (Sets the expectation for the impossible-+3 probe.)
 4. **ARDT coverage → Nash:** the precise theorem statement linking full data coverage to

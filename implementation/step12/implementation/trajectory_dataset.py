@@ -251,8 +251,13 @@ class PokerTrajectoryDataset:
         out = {}
         for s in (0, 1):
             arr = np.array(by_seat[s], dtype=np.float64) if by_seat[s] else np.array([0.0])
-            out[s] = {"n": len(by_seat[s]), "mean": float(arr.mean()),
-                      "std": float(arr.std())}
+            n = len(by_seat[s])
+            # RUN-SESSION ADDITION: a Kuhn hand's return has std ~1.3, so the sample mean is a
+            # NOISY estimate of the game value (SE ~ 1.3/sqrt(n)). Reporting the mean alone
+            # against -1/18 invites a false alarm: at n=1000 a reading of -0.128 is only ~1.7 SE
+            # from the true value. Always read `mean` together with `se`.
+            out[s] = {"n": n, "mean": float(arr.mean()), "std": float(arr.std()),
+                      "se": float(arr.std() / n ** 0.5) if n else float("nan")}
         out["nash_value_seat0"] = -1.0 / 18.0
         return out
 
@@ -281,8 +286,11 @@ def _selftest():
                                 n_trajectories=2000, cfr_iters=2000, seed=0)
     print(f"generated {len(ds.trajectories)} trajectories; state_dim={ds.state_dim}")
     stats = ds.return_stats()
-    print(f"seat0 mean return = {stats[0]['mean']:+.4f} (target approx {stats['nash_value_seat0']:+.4f})")
-    print(f"seat1 mean return = {stats[1]['mean']:+.4f} (target approx {-stats['nash_value_seat0']:+.4f})")
+    for s, tgt in ((0, stats["nash_value_seat0"]), (1, -stats["nash_value_seat0"])):
+        z = abs(stats[s]["mean"] - tgt) / stats[s]["se"] if stats[s]["se"] else float("nan")
+        print(f"seat{s} mean return = {stats[s]['mean']:+.4f} +/- {stats[s]['se']:.4f} (se, "
+              f"n={stats[s]['n']}) vs target {tgt:+.4f} -> {z:.1f} SE away "
+              f"{'OK' if z < 3 else 'INVESTIGATE'}")
     t = ds.to_tensors()
     print(f"tensors: states{t['states'].shape} actions{t['actions'].shape} "
           f"rtg{t['returns_to_go'].shape} mask sum={t['mask'].sum():.0f}")

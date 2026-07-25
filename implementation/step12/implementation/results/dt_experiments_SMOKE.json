@@ -1,0 +1,45 @@
+{
+  "profile": "SMOKE",
+  "impossible_return": 3.0,
+  "return_conditioning": {
+    "-2.0": {
+      "exploitability_chips": 0.7482221122672137,
+      "bluff_freq_J": 0.9983870983123779,
+      "value_bet_freq_K": 0.5916455388069153
+    },
+    "-1.0": {
+      "exploitability_chips": 1.8502502986121365,
+      "bluff_freq_J": 0.0017655225237831473,
+      "value_bet_freq_K": 0.19450640678405762
+    },
+    "1.0": {
+      "exploitability_chips": 0.7469257101714979,
+      "bluff_freq_J": 0.9983358979225159,
+      "value_bet_freq_K": 0.6244754195213318
+    },
+    "2.0": {
+      "exploitability_chips": 0.8228343274261766,
+      "bluff_freq_J": 0.9980766773223877,
+      "value_bet_freq_K": 0.6517225503921509
+    },
+    "3.0": {
+      "exploitability_chips": 0.8169132080263926,
+      "bluff_freq_J": 0.9979104399681091,
+      "value_bet_freq_K": 0.6642539501190186
+    }
+  },
+  "luck_vs_skill": {
+    "1": {
+      "p_bet_high": 0.9980766773223877,
+      "p_bet_low": 0.9983870983123779
+    },
+    "2": {
+      "p_bet_high": 0.018326424062252045,
+      "p_bet_low": 0.015459990128874779
+    },
+    "3": {
+      "p_bet_high": 0.6517225503921509,
+      "p_bet_low": 0.5916455388069153
+    }
+  }
+}
