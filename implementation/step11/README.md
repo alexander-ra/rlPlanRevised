@@ -72,8 +72,8 @@ session:
 | [`targetedReading/`](targetedReading/) | 3 — Targeted Reading | `summary.md`: VIP-only notes on the five core papers (Sharan & Adak, De Carufel & Jerade, Bakhtin piKL, Chalkiadakis book ch2-4, Wang Shapley-Q) + supplementary, with cited sections/equations, three worked **Math Flags** (Shapley by hand, core-LP emptiness, piKL), a synthesis, and a verify-list. |
 | [`implementation/`](implementation/) | 4 — Implementation | The full build: `sls_game` + `sls_endgame` + `state_encoding`; the 🔴 core `coalition_detector` + `shapley` + `sls_ppo` + `coalition_mappo` + `sls_egta`; `agents` baselines; `config`/`evaluation`/`tournament`/`plotting`/`validate` — plus a README with the verification runbook, predictions, and a static self-review. |
 
-*(Phase 5 `consolidation/`, `EXECUTION_NOTES.md`, and `deliverables/reports/step11/` are
-intentionally absent this session — they depend on verified run results.)*
+*(Phase 5 `consolidation/`, `EXECUTION_NOTES.md`, and `deliverables/reports/step11/` were authored in
+later sessions once the code had been executed and results verified — see the build status below.)*
 
 ---
 
@@ -124,7 +124,11 @@ help/harm matrices — nothing is imported from it.
 - [x] `intuition/intuition.md`
 - [x] `exploration/` (code + README) — **written, not executed**
 - [x] `targetedReading/summary.md`
-- [x] `implementation/` (code + README + validation harness) — **written, not executed**
-- [ ] `EXECUTION_NOTES.md` — deferred to the post-run session (needs verified results)
-- [ ] `consolidation/` — deferred to the post-run session (needs verified results)
-- [ ] `deliverables/reports/step11/` — deferred to the post-run session (needs verified results)
+- [x] `implementation/` (code + README + validation harness) — **executed**; artifacts in `implementation/results/` + `implementation/plots/`
+- [x] `EXECUTION_NOTES.md` — measured-vs-predicted dev log (seat-0 tie-break fix + `alpha` sweep)
+- [x] `consolidation/` — `onePager.md` + `learningLog.md`, drafted from verified run artifacts
+- [x] `deliverables/reports/step11/` — EN report (`report_en.md`) + summary (`summary/summaryEn.md`) +
+  `figures/` (5 experiment PNGs copied + manifest) + `summary/` conceptual-diagram scripts. **Human
+  steps remaining:** run `summary/make_*_figure.py` (needs matplotlib) for the 4 conceptual PNGs, then
+  `python3 scripts/build_reports.py --step step11 --lang en` for the two PDFs (pandoc + tectonic not
+  present on the authoring machine).
