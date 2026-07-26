@@ -96,6 +96,227 @@ ordering, but reproduce the same structure: flat elsewhere, spike at −1, `expl
 
 ---
 
+## Phase 2b — Real-model wiring (gpt-oss-20b)
+
+LM Studio **0.4.20** installed via winget (`ElementLabs.LMStudio`). Note: the GUI must be launched
+**once by hand** before `lms bootstrap` works ("Cannot find LM Studio installation"), and a GUI app
+cannot be started from a non-interactive session — so this step needs a human click, and that is
+where the session stalled until the owner opened it. Server: `lms server start` on port 1234.
+
+**Served id ≠ preset id.** `GET /v1/models` reports **`openai/gpt-oss-20b`**, publisher-qualified;
+the authored preset guessed the bare `"gpt-oss-20b"`. Presets corrected, and the client now raises a
+helpful error listing what *is* served instead of a bare 404.
+
+### Two authored predictions about reasoning models — one wrong, one still open
+
+| Prediction (authored) | Measured on gpt-oss-20b | Verdict |
+|---|---|---|
+| Reasoning arrives mixed into `content`; `max_tokens=256` truncates before the `Action:` line ⇒ inflated illegal rate | LM Studio returns a **separate `reasoning` field**; `content` holds just the answer (`**Action: BET**`). 99 completion tokens (30 reasoning), `finish_reason=stop`, **0 truncations** at 256 | ❌ **prediction wrong for gpt-oss** — the split channel makes the small budget safe |
+| Long CoT inflates latency | ~2.4–3.0 s/call warm | ⚠️ modest here; still expected to bite on OpenThinker3 (inline `<think>`) |
+
+The `<think>`-stripping and `max_tokens` knobs were kept anyway — they are needed for the *inline*
+reasoning style (OpenThinker3), just not for gpt-oss. `max_tokens` is now per-preset (512 for
+gpt-oss/Qwen, 4096 for OpenThinker3) and truncations are counted rather than silently mis-scored.
+
+### The bug only a real model could expose — every seat-1 prompt was mis-narrated
+
+`_describe_history` labelled action index 0 as **"You"** unconditionally, i.e. it assumed the agent
+always sits in seat 0. But the agent is queried at **all 12** Kuhn info sets, **six of which belong
+to seat 1**. History `"b"` therefore rendered as:
+
+```
+Your private card: King.
+Betting so far: You bet.        <- WRONG: that was the OPPONENT's bet
+You are facing a bet.           <- ...so the prompt contradicts itself
+```
+
+**Measured consequence (gpt-oss-20b, temperature 0): it FOLDED THE KING to a bet** — a strictly
+dominated play. After the fix (`who = "You" iff i % 2 == len(history) % 2`) it calls. The offline
+stub is blind to this (it reads only the card and a "facing a bet" flag), so **no amount of
+stub-based testing could have caught it** — and it would have silently corrupted half of every LLM
+row. Any seat-1 LLM number taken before this fix is invalid.
+
+**Post-fix gpt-oss-20b strategy (temp 0, all 12 info sets, 0% illegal, 0 truncated):**
+
+| Card | root | facing bet | after opp. check | check-then-bet |
+|---|---|---|---|---|
+| J | PASS | PASS | PASS | PASS |
+| Q | **BET** | BET | PASS | BET |
+| K | BET | BET | BET | BET |
+
+Coherent, and honestly non-Nash in two specific ways: it **over-bets the Queen at the root** (Kuhn
+Nash never bets Q first) and **never bluffs the Jack** (Nash bluffs J with probability α > 0). That
+is the "LLMs fail informatively" result the step is after — a *named* deviation, not a leaderboard
+number.
+
+### Methodology finding: you cannot measure an LLM's mixed strategy at temperature 0
+
+The SMOKE profile sets `llm_temperature = 0.0` — a sensible default when the backend is the
+deterministic offline stub, and **the wrong setting for a real model**. Three runs of *the same*
+config against gpt-oss-20b produced:
+
+| run | samples | expl plain | expl CoT | expl game-theory | bluff(J) game-theory | adapt |
+|---|---|---|---|---|---|---|
+| 1 | 4 | 0.4583 | 0.3750 | 0.3333 | **0.75** | +0.00 |
+| 2 | 4 | 0.5833 | 0.2917 | 0.3333 | **0.25** | +1.00 |
+| 3 | **24** | 0.3333 | 0.4931 | 0.4931 | **1.00** | +0.04 |
+
+Raising the sample count from 4 to 24 did **not** stabilise it, which rules out simple Bernoulli
+noise and identifies the real mechanism: **at temperature 0 the model plays a PURE strategy.** Every
+one of the N samples at an info set returns the same action, so the estimated frequency degenerates
+to exactly 0.0 or 1.0 and `bluff(J)` can only ever read 0 or 1 — never Nash's 0.23. Exploitability
+then becomes a *lottery over which pure strategy the model happened to land on* that run (MoE
+routing under batched serving is not bit-reproducible, so it does not even land on the same one).
+
+**Consequence: every LLM frequency in the SMOKE-default table is an artifact of temperature, not a
+property of the model.** Measuring a mixed strategy requires `temperature > 0` (SCALE already uses
+0.7). Added `STEP12_LLM_TEMP` and `STEP12_LLM_SAMPLES` overrides; the headline LLM measurement is
+re-run at temperature 0.7 with 24 samples. This is a *measurement-protocol* result and it applies
+to the whole LLM-vs-Nash comparison, so it carries directly into Step 14's evaluation framework:
+**a single greedy-decode run cannot characterise an LLM's strategy in a game that requires mixing.**
+
+**Confirmed by the re-run (gpt-oss-20b, temperature 0.7, 24 samples):** every frequency is now
+genuinely intermediate rather than 0/1 — `bluff(J)` = 0.00 / 0.08 / **0.46**, `adapt` = +0.67 /
++0.79 / +0.25 — so the mixed strategy is measurable exactly as the diagnosis predicted. **And the
+illegal-move rate became nonzero (1%)**, which retires an open prediction: the authored README
+expected "a nonzero illegal-move rate with a real model", and at temperature 0 we measured a flat
+0%. The prediction was right, but it only manifests *under sampling* — greedy decoding hides it.
+
+### OpenThinker3-7B: the reasoning-tuned model is a different animal
+
+This is the model the `<think>`/`max_tokens` guards were written for, and unlike gpt-oss it does
+put its trace **inline** in `content` (field `reasoning_content` exists but is empty — note the name
+differs from gpt-oss's `reasoning`; the client now checks both).
+
+**Measured cost per single Kuhn decision** (temperature 0.7):
+
+| | gpt-oss-20b | OpenThinker3-7B | ratio |
+|---|---|---|---|
+| completion tokens | 99 | **~6,500** | **66×** |
+| latency | ~2.8 s | **34–43 s** | ~13× |
+
+**At the authored `max_tokens=4096` it never finishes thinking.** Three probes all returned
+`finish_reason=length`, ~18,000 characters of open `<think>` with **no `</think>` and no action
+committed**. It needs ~6,500 completion tokens, and the request only fits if the model is *loaded*
+with a bigger context (`lms load openthinker3-7b --context-length 32768`; the 8192 default leaves
+no room). Preset raised to `max_tokens=16000`, with the load requirement documented next to it.
+
+**A measurement-honesty bug in my own earlier fix.** The first version of the `<think>` handling
+fell back to scanning the *whole* string when `</think>` was missing, so it scraped a poker verb out
+of the unfinished monologue and returned a confident `BET` — reporting `parsed_ok=True` and
+`illegal=0%` for a model that had **not answered at all**. That is precisely the "invent a
+plausible-looking result" failure §0 warns about, introduced while fixing something else. Now an
+unclosed `<think>` returns `None` and is counted as unparseable, which is the honest reading.
+
+Two smaller real deviations: OpenThinker3 writes **`Action/PASS`** rather than the requested
+`Action: PASS` (the separator class now accepts `/` and `=`, since punctuation drift is not an
+illegal *move*), and it sometimes ends with prose only ("...by passing!") with no directive at all —
+which correctly counts as unparseable. On the King-first-to-act probe it concluded **PASS**, i.e. it
+checks the best hand.
+
+**Scope decision (owner-approved).** A full 3-style × 24-sample pass is 864 calls ≈ **9 hours** for
+this model. Measured instead on the **CoT row only at n=12** (~288 calls, ~1.5 h), which preserves
+the scientifically interesting comparison — OpenThinker3-7B is a reasoning-SFT of the *same*
+Qwen2.5-7B base, so CoT-vs-CoT isolates the effect of reasoning tuning. The `plain` and
+`gametheory` rows are left **unmeasured and reported as absent**, not defaulted. Added
+`STEP12_LLM_STYLES` for this.
+
+### Operational: exactly ONE loaded instance per model, and never rely on JIT
+
+Three separate failure modes, one underlying lesson.
+
+1. **JIT auto-load is unreliable.** Two runs died on
+   `HTTP 400: Failed to load model … Engine protocol startup was aborted`, while an explicit
+   `lms load` of the *same* model succeeded in **3.6 s**. Requests arriving while another model is
+   loading or serving trigger it.
+2. **Killing a run mid-request poisons the server; only a server restart clears it.** Batch runs hung
+   indefinitely — **~2 CPU-seconds consumed over 24–33 minutes**, GPU pinned at 0%, model `IDLE`,
+   and the client's 180 s timeout never fired (the socket stayed open, so there was nothing to time
+   out on). CPU time matched "CFR finished, then blocked on the very first HTTP request."
+   Ad-hoc single requests still succeeded throughout, which is what made it look like a client bug.
+   *Wrong first diagnosis:* I blamed duplicate instances (`lms load X` does add a second `X:2`
+   rather than reusing X, and tidying that up did coincide with the one successful run). Removing
+   the duplicate did **not** fix it — the next run wedged identically with exactly one instance
+   loaded. The actual cause is stale server-side state from the runs I had killed mid-request: with
+   `PARALLEL 4`, the orphaned connections hold every slot and new requests queue forever.
+   **`lms server stop && lms server start` fixed it immediately** — a validation run then completed
+   end-to-end in under a minute.
+   **Protocol: after any killed/crashed run, restart the server, `lms unload --all`, `lms load
+   <model> --ttl <n>`, confirm `lms ps` shows exactly one row, then run.**
+3. **Buffered output hides all of this.** Under `Tee-Object` the hung run produced a **0-byte log**
+   for 33 minutes — indistinguishable from "still starting up". Running `python -u` with a direct
+   `>` redirect made the header appear immediately, which is how the second hang was caught in
+   minutes instead of half an hour.
+
+None of this is a defect in the step's own code, but all of it is required to get a trustworthy
+real-model measurement, so it belongs in the runbook for Step 13's larger sweeps.
+
+### Real-model results — the roster measured (temperature 0.7)
+
+Protocol: `STEP12_PROFILE=SMOKE`, temperature **0.7** (mandatory — see the temperature finding
+above), exactly one model instance loaded, server restarted between models. Files:
+`results/comparison_SMOKE_<model>.json`, one bar figure per backend.
+
+| Backend | style | expl (chips) | bluff J | value-bet K | illegal | adapt |
+|---|---|---|---|---|---|---|
+| **Nash-CFR** (reference) | — | **0.0162** | 0.23 | 0.68 | — | — |
+| **BC** (best learned) | — | **0.020–0.065** | 0.20–0.24 | 0.65–0.71 | — | — |
+| gpt-oss-20b (n=24) | plain | 0.2760 | 0.00 | 1.00 | 0% | +0.67 |
+| gpt-oss-20b (n=24) | **CoT** | **0.2500** | 0.08 | 1.00 | 1% | +0.79 |
+| gpt-oss-20b (n=24) | game-theory | 0.3316 | 0.46 | 1.00 | 1% | +0.25 |
+| Qwen2.5-7B (n=24) | plain | 0.3125 | 0.00 | 1.00 | 0% | +0.00 |
+| Qwen2.5-7B (n=24) | CoT | 0.3183 | 0.58 | 1.00 | 0% | +0.42 |
+| Qwen2.5-7B (n=24) | game-theory | 0.3032 | 0.50 | 1.00 | 0% | +0.21 |
+| OpenThinker3-7B (n=12) | CoT | 0.2882 | **0.33** | 1.00 | **16%** | **+0.92** |
+| ARDT | — | 0.42–0.52 | 0.34–0.40 | 0.39–0.43 | — | — |
+| DT | — | 0.62–0.85 | 1.00 | 0.61–0.75 | — | — |
+
+**1. Scale buys nothing here.** Qwen2.5-**7B** (0.303–0.318) matches gpt-oss-**20B** (0.250–0.332)
+despite being ~3× smaller. Kuhn does not reward knowledge or scale; it rewards *mixing at the right
+frequency*, which none of them do.
+
+**2. Every LLM beats both trained sequence models, and all lose badly to BC.** The ordering is
+**Nash (0.016) < BC (0.02–0.07) ≪ LLM (0.25–0.33) < ARDT (0.42–0.52) < DT (0.62–0.85)**. A zero-shot
+LLM with no training and no search is less exploitable than the Decision Transformer this step is
+built around — while plain behavioral cloning, the dumbest baseline present, is ~15× better than any
+LLM and lands within 0.004 chips of Nash on its best run.
+
+**3. Two failures are universal across models and prompts.** Every backend value-bets the King at
+**1.00** where Nash mixes at 0.68, and **no model bluffs the Jack at all under the plain prompt**
+(0.00 for both gpt-oss and Qwen). LLMs play the *ranking* of hands correctly and the *frequencies*
+wrongly — they cannot mix.
+
+**4. Reasoning tuning: a real but expensive improvement (the base-vs-SFT pair).** OpenThinker3-7B is
+a reasoning-SFT of the *same* Qwen2.5-7B base, so the CoT rows isolate the effect:
+
+| CoT row | expl | bluff J (Nash 0.23) | illegal | adapt | tokens/decision |
+|---|---|---|---|---|---|
+| Qwen2.5-7B (base) | 0.3183 | 0.58 | 0% | +0.42 | ~100 |
+| OpenThinker3-7B (reasoning-SFT) | **0.2882** | **0.33** | **16%** | **+0.92** | ~6,500 |
+
+Reasoning tuning **improved every strategic metric** — lower exploitability, bluff frequency far
+closer to Nash (0.58 → 0.33 vs 0.23), strongest opponent adaptation of any run (+0.92) — and paid
+for it with a **16% illegal-move rate** and **65× the tokens**. *Caveat: n=12 and a single style, so
+this is one clean observation, not a tight interval; the other two styles were not run (~9 h).*
+
+**5. The illegal-move prediction is confirmed, and only by the honest parser.** The authored README
+predicted "a nonzero illegal-move rate with a real model". Measured: 0% (Qwen), 1% (gpt-oss), **16%
+(OpenThinker3)**. The 16% is real unparseable output — replies whose `<think>` never closed, plus
+prose-only endings with no action directive — and it would have read as a **false 0%** under the
+first version of my `<think>` fix, which scraped a verb out of unfinished reasoning.
+
+### Transient 400s ⇒ the client now retries
+
+A full comparison pass is 150+ sequential requests. The first gpt-oss run died at ~90 calls with
+`HTTP 400`; the identical request succeeded seconds later — LM Studio JIT-unloads an idle model and
+a request arriving mid-reload is rejected. Not a defect in our code, but fatal to a multi-minute
+batch. `OpenAICompatClient` now retries transient HTTP/transport failures 3× with exponential
+backoff, surfaces the **response body** in the error (the original handler only did so for 404, which
+is why the first failure was opaque), and counts `transient_errors`. The model is also pinned with
+`lms load --ttl 7200` so it cannot unload mid-run.
+
+---
+
 ## Phase 4 — Implementation (SMOKE)
 
 Ran the [implementation README](implementation/README.md) runbook from

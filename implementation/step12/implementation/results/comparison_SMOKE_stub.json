@@ -1,6 +1,7 @@
 {
   "profile": "SMOKE",
-  "timestamp": "2026-07-25T22:27:20",
+  "llm": "stub",
+  "timestamp": "2026-07-26T07:02:06",
   "config": {
     "name": "SMOKE",
     "game": "kuhn",
@@ -69,28 +70,28 @@
     },
     {
       "agent": "DT",
-      "exploitability_chips": 0.6709453665638869,
-      "exploitability_mbb_per_hand": 670.945366563887,
-      "bluff_freq_J": 0.9984418749809265,
-      "value_bet_freq_K": 0.6861442923545837,
+      "exploitability_chips": 0.7991817400980281,
+      "exploitability_mbb_per_hand": 799.1817400980281,
+      "bluff_freq_J": 0.9972172975540161,
+      "value_bet_freq_K": 0.6417415142059326,
       "illegal_rate": null,
       "adaptation_delta": null
     },
     {
       "agent": "BC",
-      "exploitability_chips": 0.05458663949461743,
-      "exploitability_mbb_per_hand": 54.58663949461743,
-      "bluff_freq_J": 0.21883711218833923,
-      "value_bet_freq_K": 0.7359920740127563,
+      "exploitability_chips": 0.05503636415873629,
+      "exploitability_mbb_per_hand": 55.03636415873629,
+      "bluff_freq_J": 0.19766543805599213,
+      "value_bet_freq_K": 0.6750727891921997,
       "illegal_rate": null,
       "adaptation_delta": null
     },
     {
       "agent": "ARDT",
-      "exploitability_chips": 0.45851923901964575,
-      "exploitability_mbb_per_hand": 458.51923901964574,
-      "bluff_freq_J": 0.39524564146995544,
-      "value_bet_freq_K": 0.4260968565940857,
+      "exploitability_chips": 0.46913069521378975,
+      "exploitability_mbb_per_hand": 469.13069521378975,
+      "bluff_freq_J": 0.32559576630592346,
+      "value_bet_freq_K": 0.3513855040073395,
       "illegal_rate": null,
       "adaptation_delta": null
     }

@@ -1,0 +1,20 @@
+﻿comparison_table: profile=SMOKE device=cuda llm_backend=openai
+[DT] epoch   1/15  loss=0.4813
+[DT] epoch  10/15  loss=0.1084
+[BC] epoch   1/15  loss=0.6341
+[BC] epoch  10/15  loss=0.3435
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.5491
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1732
+[DT] epoch   1/15  loss=0.5779
+[DT] epoch  10/15  loss=0.4657
+
+agent          expl(chips) expl(mbb/h)  bluffJ  valueK  illegal   adapt
+-----------------------------------------------------------------------
+Nash-CFR            0.0162        16.2    0.23    0.68                 
+LLM-cot             0.2882       288.2    0.33    1.00      16%   +0.92
+DT                  0.8497       849.7    1.00    0.64                 
+BC                  0.0512        51.2    0.20    0.67                 
+ARDT                0.4167       416.7    0.34    0.39                 
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\comparison_SMOKE_openthinker3-7b.json
+(All numbers are from THIS run; record them in EXECUTION_NOTES.md next session.)

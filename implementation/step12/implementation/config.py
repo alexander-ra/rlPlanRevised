@@ -39,17 +39,33 @@ LLM_STUB = {"backend": "stub"}
 
 # OpenAI-compatible local servers. base_url defaults assume LM Studio (port 1234); for Ollama use
 # "http://localhost:11434/v1". api_key is unused by local servers (kept for OpenRouter/OpenAI).
+# MODEL IDS VERIFIED AGAINST A RUNNING SERVER (2026-07-25, LM Studio 0.4.20).
+# `GET /v1/models` reports the PUBLISHER-QUALIFIED id (e.g. "openai/gpt-oss-20b"), not the bare
+# name these presets originally guessed ("gpt-oss-20b"). A wrong id fails at request time, so
+# `llm_agent.make_client` now resolves ids against /v1/models and reports what IS served.
+#
+# max_tokens is a per-preset knob (added in the run session): the client default of 256 is fine
+# for gpt-oss -- it returns its chain-of-thought in a SEPARATE `reasoning` field, so `content`
+# holds just the answer (~99 completion tokens measured) -- but a model that emits <think> INLINE
+# needs far more headroom or it gets truncated before the "Action:" line and is scored illegal.
 LLM_GPT_OSS_20B = {
     "backend": "openai", "base_url": "http://localhost:1234/v1",
-    "model": "gpt-oss-20b", "api_key": None, "timeout": 180.0,
+    "model": "openai/gpt-oss-20b", "api_key": None, "timeout": 180.0, "max_tokens": 512,
 }
 LLM_QWEN25_7B = {
     "backend": "openai", "base_url": "http://localhost:1234/v1",
-    "model": "qwen2.5-7b-instruct", "api_key": None, "timeout": 180.0,
+    "model": "qwen2.5-7b-instruct", "api_key": None, "timeout": 180.0, "max_tokens": 512,
 }
 LLM_OPENTHINKER3_7B = {
     "backend": "openai", "base_url": "http://localhost:1234/v1",
-    "model": "openthinker3-7b", "api_key": None, "timeout": 240.0,  # long CoT -> higher timeout
+    "model": "openthinker3-7b", "api_key": None, "timeout": 600.0,  # long CoT -> higher timeout
+    # MEASURED 2026-07-25: this model needs ~6,500 completion tokens to close its <think> block on
+    # a single Kuhn decision (gpt-oss needs 99). At max_tokens=4096 it NEVER closed </think> on any
+    # probe -- 18k chars of unfinished monologue, no action committed. 16000 gives headroom.
+    # NOTE: it must also be LOADED with a big context or the request cannot fit:
+    #     lms load openthinker3-7b --context-length 32768
+    # (the 8192 default leaves no room for a 16k completion).
+    "max_tokens": 16000,
 }
 
 LLM_ROSTER = {
@@ -127,6 +143,34 @@ def active_config() -> dict:
         if llm_key not in LLM_ROSTER:
             raise ValueError(f"Unknown STEP12_LLM={llm_key!r}; choose from {sorted(LLM_ROSTER)}")
         cfg["llm_preset"] = LLM_ROSTER[llm_key]
+    # RUN-SESSION ADDITION: STEP12_LLM_SAMPLES overrides how many times each info set is queried
+    # to estimate the LLM's mixed strategy. This matters more than it looks: at the SMOKE default
+    # of 4, every per-info-set probability is 4 Bernoulli draws (SE up to 0.25), and real models
+    # are NOT bit-deterministic even at temperature 0 (MoE routing under batching). Two identical
+    # gpt-oss runs measured bluff(J) = 0.75 and 0.25 for the same prompt style. Raise this before
+    # quoting any LLM frequency as a result.
+    samples = os.environ.get("STEP12_LLM_SAMPLES")
+    if samples:
+        cfg["llm_samples"] = int(samples)
+    # STEP12_LLM_TEMP overrides sampling temperature. IMPORTANT for real models: SMOKE defaults to
+    # 0.0 because that makes the offline STUB reproducible -- but at temperature 0 a real LLM plays
+    # a PURE strategy, so all N samples at an info set return the same action and the measured
+    # "frequency" degenerates to exactly 0.0 or 1.0. Measured on gpt-oss-20b: bluff(J) came out
+    # 0.75, 0.25 and 1.00 on three runs of the same config, because exploitability then depends on
+    # WHICH pure strategy the model happened to land on. To measure a mixed strategy you need
+    # temperature > 0 (SCALE uses 0.7).
+    temp = os.environ.get("STEP12_LLM_TEMP")
+    if temp:
+        cfg["llm_temperature"] = float(temp)
+    # STEP12_LLM_STYLES restricts which prompt styles are measured, e.g. "cot" or "plain,cot".
+    # Needed because cost per style is wildly model-dependent: a full 3-style x 24-sample pass is
+    # ~16 min on gpt-oss but ~9 HOURS on OpenThinker3-7B (~6,500 completion tokens and ~38 s per
+    # single decision). Restricting to the CoT row keeps the base-vs-reasoning-tuned comparison
+    # against Qwen2.5-7B affordable; unmeasured styles are simply absent from the results file
+    # rather than silently defaulted.
+    styles = os.environ.get("STEP12_LLM_STYLES")
+    if styles:
+        cfg["llm_styles"] = [s.strip() for s in styles.split(",") if s.strip()]
     return cfg
 
 

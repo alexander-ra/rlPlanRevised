@@ -194,13 +194,22 @@ def main():
     else:
         missing.append(f"dt_experiments_{prof}.json  (run: python train_dt.py)")
 
-    comp = _load(f"comparison_{prof}.json")
-    if comp:
-        p = plot_exploitability_bars(comp["rows"])
-        if p:
-            wrote.append(p)
+    # Results are tagged by LLM backend (comparison_<profile>_<llm>.json); render one bar chart
+    # per backend so the stub and each real model keep their own figure.
+    import glob
+    comps = sorted(glob.glob(os.path.join(_results_dir(), f"comparison_{prof}_*.json")))
+    if comps:
+        import json
+        for cpath in comps:
+            with open(cpath, encoding="utf-8") as f:
+                comp = json.load(f)
+            tag = comp.get("llm", "unknown")
+            p = plot_exploitability_bars(
+                comp["rows"], os.path.join(_results_dir(), f"exploitability_bars_{tag}.png"))
+            if p:
+                wrote.append(p)
     else:
-        missing.append(f"comparison_{prof}.json  (run: python comparison_table.py)")
+        missing.append(f"comparison_{prof}_*.json  (run: python comparison_table.py)")
 
     sweep = _load(f"tau_sweep_{prof}.json")
     if sweep:

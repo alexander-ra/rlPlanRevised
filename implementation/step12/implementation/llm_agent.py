@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 import urllib.request
 import urllib.error
 from dataclasses import dataclass, field
@@ -137,31 +138,93 @@ class OpenAICompatClient(LLMClient):
     """
 
     def __init__(self, base_url: str, model: str, api_key: str | None = None,
-                 timeout: float = 120.0):
+                 timeout: float = 120.0, max_tokens: int = 256, retries: int = 3,
+                 backoff: float = 2.0):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.api_key = api_key
         self.timeout = timeout
+        self.max_tokens = max_tokens          # per-preset default (see config.py)
+        self.retries = retries
+        self.backoff = backoff
         self.name = f"openai-compat:{model}"
+        self.truncated = 0                    # replies cut off by max_tokens (diagnostic)
+        self.transient_errors = 0             # retried HTTP/transport blips (diagnostic)
+
+    def list_models(self) -> list:
+        """Model ids the server actually serves (`GET /v1/models`)."""
+        req = urllib.request.Request(f"{self.base_url}/models", method="GET")
+        if self.api_key:
+            req.add_header("Authorization", f"Bearer {self.api_key}")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+        return [m["id"] for m in body.get("data", [])]
 
     def chat(self, system: str, user: str, temperature: float = 0.7,
-             max_tokens: int = 256) -> str:
+             max_tokens: int | None = None) -> str:
         url = f"{self.base_url}/chat/completions"
         payload = {
             "model": self.model,
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": user}],
             "temperature": temperature,
-            "max_tokens": max_tokens,
+            "max_tokens": max_tokens or self.max_tokens,
         }
         data = json.dumps(payload).encode("utf-8")
         headers = {"Content-Type": "application/json"}
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-            body = json.loads(resp.read().decode("utf-8"))
-        return body["choices"][0]["message"]["content"]
+        # RETRY (run-session addition). A comparison-table pass is 150+ sequential requests, and a
+        # local server WILL hiccup: LM Studio JIT-unloads an idle model and a request arriving
+        # mid-reload comes back 400. That killed a full gpt-oss run at ~90 calls in; the identical
+        # request succeeded moments later. One transient blip must not throw away minutes of work.
+        body = None
+        last_err = None
+        for attempt in range(self.retries + 1):
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    body = json.loads(resp.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as e:
+                detail = ""
+                try:
+                    detail = e.read().decode("utf-8", "replace")[:300]
+                except Exception:
+                    pass
+                if e.code == 404:
+                    try:
+                        served = self.list_models()
+                    except Exception:
+                        served = ["<could not query /v1/models>"]
+                    raise RuntimeError(
+                        f"Model {self.model!r} is not served by {self.base_url}. "
+                        f"Available: {served}. Update the preset in config.py."
+                    ) from e
+                last_err = RuntimeError(f"HTTP {e.code} from {url}: {detail}")
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
+                last_err = RuntimeError(f"transport error to {url}: {e!r}")
+            if attempt < self.retries:
+                self.transient_errors += 1
+                time.sleep(self.backoff * (2 ** attempt))
+        if body is None:
+            raise last_err or RuntimeError("chat() failed with no diagnostic")
+
+        choice = body["choices"][0]
+        msg = choice.get("message", {})
+        content = msg.get("content") or ""
+        # Reasoning models split the trace off into `reasoning` (gpt-oss via LM Studio does this,
+        # measured 2026-07-25) or leave it INLINE in <think>...</think>. If the split-off variant
+        # returns an empty content -- e.g. the answer got cut before it left the reasoning channel
+        # -- fall back to the trace so parse_action still has something to work with.
+        if not content.strip():
+            # Field name varies by server/model: gpt-oss via LM Studio uses `reasoning`,
+            # OpenThinker3 reports `reasoning_content` (and puts its real trace INLINE in
+            # `content` as <think>...</think>). Check both before giving up.
+            content = msg.get("reasoning") or msg.get("reasoning_content") or ""
+        if choice.get("finish_reason") == "length":
+            self.truncated += 1
+        return content
 
 
 class HFLocalClient(LLMClient):
@@ -213,7 +276,7 @@ def make_client(spec: dict | None) -> LLMClient:
     backend = spec["backend"]
     if backend == "openai":
         return OpenAICompatClient(spec["base_url"], spec["model"], spec.get("api_key"),
-                                  spec.get("timeout", 120.0))
+                                  spec.get("timeout", 120.0), spec.get("max_tokens", 256))
     if backend == "hf":
         return HFLocalClient(spec["model"], spec.get("device", "cuda"),
                              spec.get("max_new_tokens", 256), spec.get("dtype", "bfloat16"))
@@ -300,8 +363,29 @@ class KuhnPokerLLMAgent:
     def parse_action(text: str, legal_actions=(_PASS, _BET)):
         """Robustly extract a Kuhn action id from an LLM reply, or None if unmappable."""
         low = text.lower()
+        # RUN-SESSION FIX: strip an INLINE chain-of-thought before parsing. Reasoning-tuned
+        # models (OpenThinker3) wrap their trace in <think>...</think> inside `content`, and the
+        # trace routinely rehearses BOTH actions ("if I bet ... but folding is safer"). Since we
+        # take the LAST match, a trailing thought would override the model's actual answer. Keep
+        # the post-</think> answer; if the trace never closed (truncated), fall back to the whole
+        # string so a cut-off reply still yields an action rather than a false "illegal move".
+        if "<think>" in low:
+            if "</think>" not in low:
+                # The reasoning block never closed => the model was still thinking when it hit
+                # the token cap and NEVER COMMITTED to an action. Scraping a poker verb out of
+                # that unfinished monologue (the first version of this fix did) manufactures an
+                # answer the model did not give, and reports illegal=0% for a model that in fact
+                # failed to reply. Measured on OpenThinker3-7B: 18k chars of open <think>, no
+                # </think>, yet a confident-looking "BET". Return None -> counted as unparseable.
+                return None
+            low = low.split("</think>")[-1]
+            if not low.strip():
+                return None
         # Prefer an explicit 'action:' directive (use the LAST one).
-        matches = re.findall(r"action\s*[:\-]\s*([a-z\-]+)", low)
+        # Separator class includes "/" and "=": OpenThinker3 emits "Action/PASS" rather than the
+        # requested "Action: PASS". That is the same explicit directive with different
+        # punctuation, so counting it illegal would overstate the illegal-move rate.
+        matches = re.findall(r"action\s*[:\-/=]\s*([a-z\-]+)", low)
         candidates = list(matches)
         if not candidates:
             # else fall back to the last poker verb mentioned anywhere
@@ -322,11 +406,24 @@ class KuhnPokerLLMAgent:
 
     @staticmethod
     def _describe_history(history: str) -> str:
+        """Narrate the betting so far from the ACTING player's point of view.
+
+        RUN-SESSION FIX (2026-07-25). This used to label index 0 as "You" unconditionally,
+        i.e. it assumed the agent always sits in seat 0. But the agent is queried at ALL 12 Kuhn
+        info sets, six of which belong to seat 1, so every second-player prompt was mis-narrated.
+        The worst case was history "b", which rendered as "Betting so far: You bet." together
+        with "You are facing a bet." -- self-contradictory. Measured effect on gpt-oss-20b at
+        temperature 0: it FOLDED THE KING to a bet (a strictly dominated play). After the fix it
+        calls. Any second-player LLM number taken before this fix is invalid.
+
+        The player to act is `len(history) % 2`; the action at index i was taken by `i % 2`.
+        """
         if history == "":
             return "You act first, before any bets."
+        actor = len(history) % 2
         parts = []
         for i, ch in enumerate(history):
-            who = "You" if i % 2 == 0 else "Opponent"  # seat 0 acts first
+            who = "You" if i % 2 == actor else "Opponent"
             parts.append(f"{who} {'bet' if ch == 'b' else 'checked/passed'}")
         return "Betting so far: " + "; ".join(parts) + "."
 

@@ -1,0 +1,22 @@
+﻿comparison_table: profile=SMOKE device=cuda llm_backend=openai
+[DT] epoch   1/15  loss=0.5012
+[DT] epoch  10/15  loss=0.1029
+[BC] epoch   1/15  loss=0.6387
+[BC] epoch  10/15  loss=0.3375
+[ARDT/expectile tau=0.1] epoch   1/20  loss=0.5165
+[ARDT/expectile tau=0.1] epoch  20/20  loss=0.1733
+[DT] epoch   1/15  loss=0.5815
+[DT] epoch  10/15  loss=0.4649
+
+agent          expl(chips) expl(mbb/h)  bluffJ  valueK  illegal   adapt
+-----------------------------------------------------------------------
+Nash-CFR            0.0162        16.2    0.23    0.68                 
+LLM-plain           0.2760       276.0    0.00    1.00       0%   +0.67
+LLM-cot             0.2500       250.0    0.08    1.00       1%   +0.79
+LLM-gametheory      0.3316       331.6    0.46    1.00       1%   +0.25
+DT                  0.7192       719.2    1.00    0.68                 
+BC                  0.0651        65.1    0.20    0.67                 
+ARDT                0.4803       480.3    0.36    0.40                 
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\comparison_SMOKE_openai_gpt-oss-20b.json
+(All numbers are from THIS run; record them in EXECUTION_NOTES.md next session.)

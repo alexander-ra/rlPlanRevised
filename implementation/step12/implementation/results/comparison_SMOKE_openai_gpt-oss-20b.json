@@ -1,0 +1,99 @@
+{
+  "profile": "SMOKE",
+  "llm": "openai_gpt-oss-20b",
+  "timestamp": "2026-07-26T08:46:00",
+  "config": {
+    "name": "SMOKE",
+    "game": "kuhn",
+    "seed": 0,
+    "n_trajectories": 5000,
+    "cfr_iters": 5000,
+    "exploit_frac": 0.5,
+    "hidden_size": 32,
+    "n_layer": 2,
+    "n_head": 4,
+    "max_ep_len": 8,
+    "dt_epochs": 15,
+    "estimator_epochs": 20,
+    "bc_epochs": 15,
+    "batch_size": 128,
+    "lr": 0.001,
+    "expectile_tau": 0.1,
+    "dt_target_return": 2.0,
+    "llm_styles": [
+      "plain",
+      "cot",
+      "gametheory"
+    ],
+    "llm_temperature": 0.7,
+    "llm_samples": 24
+  },
+  "rows": [
+    {
+      "agent": "Nash-CFR",
+      "exploitability_chips": 0.01623696354275931,
+      "exploitability_mbb_per_hand": 16.23696354275931,
+      "bluff_freq_J": 0.22891312846317782,
+      "value_bet_freq_K": 0.6804760356239234,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "LLM-plain",
+      "exploitability_chips": 0.2760416666666665,
+      "exploitability_mbb_per_hand": 276.0416666666665,
+      "bluff_freq_J": 0.0,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.003472222222222222,
+      "adaptation_delta": 0.6666666666666666,
+      "backend": "openai-compat:openai/gpt-oss-20b"
+    },
+    {
+      "agent": "LLM-cot",
+      "exploitability_chips": 0.2499999999999999,
+      "exploitability_mbb_per_hand": 249.9999999999999,
+      "bluff_freq_J": 0.08333333333333333,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.010416666666666666,
+      "adaptation_delta": 0.7916666666666666,
+      "backend": "openai-compat:openai/gpt-oss-20b"
+    },
+    {
+      "agent": "LLM-gametheory",
+      "exploitability_chips": 0.33159722222222215,
+      "exploitability_mbb_per_hand": 331.5972222222222,
+      "bluff_freq_J": 0.4583333333333333,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.013888888888888888,
+      "adaptation_delta": 0.25,
+      "backend": "openai-compat:openai/gpt-oss-20b"
+    },
+    {
+      "agent": "DT",
+      "exploitability_chips": 0.7192457182768317,
+      "exploitability_mbb_per_hand": 719.2457182768317,
+      "bluff_freq_J": 0.9984785914421082,
+      "value_bet_freq_K": 0.6809203028678894,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "BC",
+      "exploitability_chips": 0.065088243285392,
+      "exploitability_mbb_per_hand": 65.08824328539201,
+      "bluff_freq_J": 0.20401740074157715,
+      "value_bet_freq_K": 0.6669591069221497,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "ARDT",
+      "exploitability_chips": 0.48032851696115486,
+      "exploitability_mbb_per_hand": 480.32851696115483,
+      "bluff_freq_J": 0.36004096269607544,
+      "value_bet_freq_K": 0.3975560963153839,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    }
+  ]
+}

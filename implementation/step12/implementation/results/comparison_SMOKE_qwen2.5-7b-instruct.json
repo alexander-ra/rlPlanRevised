@@ -1,0 +1,99 @@
+{
+  "profile": "SMOKE",
+  "llm": "qwen2.5-7b-instruct",
+  "timestamp": "2026-07-26T10:35:18",
+  "config": {
+    "name": "SMOKE",
+    "game": "kuhn",
+    "seed": 0,
+    "n_trajectories": 5000,
+    "cfr_iters": 5000,
+    "exploit_frac": 0.5,
+    "hidden_size": 32,
+    "n_layer": 2,
+    "n_head": 4,
+    "max_ep_len": 8,
+    "dt_epochs": 15,
+    "estimator_epochs": 20,
+    "bc_epochs": 15,
+    "batch_size": 128,
+    "lr": 0.001,
+    "expectile_tau": 0.1,
+    "dt_target_return": 2.0,
+    "llm_styles": [
+      "plain",
+      "cot",
+      "gametheory"
+    ],
+    "llm_temperature": 0.7,
+    "llm_samples": 24
+  },
+  "rows": [
+    {
+      "agent": "Nash-CFR",
+      "exploitability_chips": 0.01623696354275931,
+      "exploitability_mbb_per_hand": 16.23696354275931,
+      "bluff_freq_J": 0.22891312846317782,
+      "value_bet_freq_K": 0.6804760356239234,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "LLM-plain",
+      "exploitability_chips": 0.3125,
+      "exploitability_mbb_per_hand": 312.5,
+      "bluff_freq_J": 0.0,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.0,
+      "adaptation_delta": 0.0,
+      "backend": "openai-compat:qwen2.5-7b-instruct"
+    },
+    {
+      "agent": "LLM-cot",
+      "exploitability_chips": 0.31828703703703715,
+      "exploitability_mbb_per_hand": 318.2870370370371,
+      "bluff_freq_J": 0.5833333333333334,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.0,
+      "adaptation_delta": 0.4166666666666667,
+      "backend": "openai-compat:qwen2.5-7b-instruct"
+    },
+    {
+      "agent": "LLM-gametheory",
+      "exploitability_chips": 0.30324074074074064,
+      "exploitability_mbb_per_hand": 303.24074074074065,
+      "bluff_freq_J": 0.5,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.0,
+      "adaptation_delta": 0.20833333333333331,
+      "backend": "openai-compat:qwen2.5-7b-instruct"
+    },
+    {
+      "agent": "DT",
+      "exploitability_chips": 0.7294501101358792,
+      "exploitability_mbb_per_hand": 729.4501101358792,
+      "bluff_freq_J": 0.9982572197914124,
+      "value_bet_freq_K": 0.6131235361099243,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "BC",
+      "exploitability_chips": 0.019891135566072547,
+      "exploitability_mbb_per_hand": 19.891135566072546,
+      "bluff_freq_J": 0.23718681931495667,
+      "value_bet_freq_K": 0.7082937955856323,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "ARDT",
+      "exploitability_chips": 0.47991751955404166,
+      "exploitability_mbb_per_hand": 479.91751955404163,
+      "bluff_freq_J": 0.37016546726226807,
+      "value_bet_freq_K": 0.41033831238746643,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    }
+  ]
+}

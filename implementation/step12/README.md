@@ -111,11 +111,21 @@ choice Step 11 made for its PPO.
 - [x] `targetedReading/summary.md` — **MATH FLAG B resolved against the ARDT PDF**
 - [x] `implementation/` (code + README + validation harness) — **executed at SMOKE 2026-07-25**
 - [x] [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) — Phase 2 + Phase 4 (SMOKE) measured-vs-predicted
-- [ ] Real-model LLM rows — LM Studio installed, roster downloading (stub-only so far)
+- [x] **Real-model LLM rows** — all 3 roster models measured (gpt-oss-20b, Qwen2.5-7B, OpenThinker3-7B)
+- [ ] OpenThinker3 `plain` / `gametheory` rows — skipped (~9 h at ~38 s/decision); CoT row measured
 - [ ] SCALE profile run
 - [ ] `consolidation/` — deferred (human-written after runs)
 - [ ] `deliverables/reports/step12/` — deferred
 
-**Run status (SMOKE, 2026-07-25):** `validate.py` = **3 PASS / 2 FAIL / 0 SKIP**. Targets #1 and #4
-are honestly red — see [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) for the §0.1 reconciliations.
-Headline: **BC (0.055 chips) ≪ ARDT (0.459) < DT (0.671) < LLM-stub (0.833)**, Nash = 0.016.
+**Run status (SMOKE, 2026-07-25/26):** `validate.py` = **3 PASS / 2 FAIL / 0 SKIP**. Targets #1 and
+#4 are honestly red — see [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) for the §0.1 reconciliations.
+
+**Headline (exploitability in chips, lower = closer to Nash):**
+**Nash-CFR 0.016 < BC 0.02–0.07 ≪ LLM 0.25–0.33 < ARDT 0.42–0.52 < DT 0.62–0.85.**
+Plain behavioral cloning beats every method this step is about; a zero-shot LLM beats the Decision
+Transformer. A 7B model matches a 20B one. Every LLM value-bets the King at 1.00 (Nash: 0.68) and
+none bluffs the Jack under a plain prompt — they get hand *ranking* right and *frequencies* wrong.
+
+> ⚠️ **Measurement protocol:** LLM rows **must** be run at `temperature > 0`. At temperature 0 a
+> model plays a pure strategy, so every measured frequency collapses to 0.0 or 1.0 and
+> exploitability becomes a lottery. Use `STEP12_LLM_TEMP=0.7` with `STEP12_LLM_SAMPLES≥24`.

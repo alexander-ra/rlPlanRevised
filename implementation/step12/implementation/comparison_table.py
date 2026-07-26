@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 
 import deps  # noqa: F401
@@ -100,12 +101,28 @@ def print_table(rows: list) -> None:
               f"{r['value_bet_freq_K']:>8.2f}{illegal:>9}{adapt:>8}")
 
 
+def llm_tag(cfg: dict) -> str:
+    """Short filename-safe tag for the LLM backend in use.
+
+    RUN-SESSION FIX: results were keyed by PROFILE ONLY, so every backend wrote to the same
+    `comparison_SMOKE.json`. The gpt-oss run silently overwrote the offline-stub run, and
+    sweeping the roster (gpt-oss -> qwen -> openthinker) would have left only the LAST model's
+    numbers on disk while the earlier ones vanished. Tag the file with the backend.
+    """
+    preset = cfg.get("llm_preset") or {}
+    if preset.get("backend", "stub") == "stub":
+        return "stub"
+    model = str(preset.get("model", "unknown"))
+    return re.sub(r"[^A-Za-z0-9._-]", "_", model)
+
+
 def save_results(rows: list, cfg: dict, path: str | None = None) -> str:
     if path is None:
         out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
         os.makedirs(out_dir, exist_ok=True)
-        path = os.path.join(out_dir, f"comparison_{cfg['name']}.json")
-    payload = {"profile": cfg["name"], "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        path = os.path.join(out_dir, f"comparison_{cfg['name']}_{llm_tag(cfg)}.json")
+    payload = {"profile": cfg["name"], "llm": llm_tag(cfg),
+               "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
                "config": {k: cfg[k] for k in cfg if k != "llm_preset"}, "rows": rows}
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)

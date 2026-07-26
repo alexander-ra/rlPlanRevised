@@ -1,0 +1,77 @@
+{
+  "profile": "SMOKE",
+  "llm": "openthinker3-7b",
+  "timestamp": "2026-07-26T13:47:24",
+  "config": {
+    "name": "SMOKE",
+    "game": "kuhn",
+    "seed": 0,
+    "n_trajectories": 5000,
+    "cfr_iters": 5000,
+    "exploit_frac": 0.5,
+    "hidden_size": 32,
+    "n_layer": 2,
+    "n_head": 4,
+    "max_ep_len": 8,
+    "dt_epochs": 15,
+    "estimator_epochs": 20,
+    "bc_epochs": 15,
+    "batch_size": 128,
+    "lr": 0.001,
+    "expectile_tau": 0.1,
+    "dt_target_return": 2.0,
+    "llm_styles": [
+      "cot"
+    ],
+    "llm_temperature": 0.7,
+    "llm_samples": 12
+  },
+  "rows": [
+    {
+      "agent": "Nash-CFR",
+      "exploitability_chips": 0.01623696354275931,
+      "exploitability_mbb_per_hand": 16.23696354275931,
+      "bluff_freq_J": 0.22891312846317782,
+      "value_bet_freq_K": 0.6804760356239234,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "LLM-cot",
+      "exploitability_chips": 0.2881944444444444,
+      "exploitability_mbb_per_hand": 288.1944444444444,
+      "bluff_freq_J": 0.3333333333333333,
+      "value_bet_freq_K": 1.0,
+      "illegal_rate": 0.1597222222222222,
+      "adaptation_delta": 0.9166666666666666,
+      "backend": "openai-compat:openthinker3-7b"
+    },
+    {
+      "agent": "DT",
+      "exploitability_chips": 0.84974777907713,
+      "exploitability_mbb_per_hand": 849.74777907713,
+      "bluff_freq_J": 0.9982183575630188,
+      "value_bet_freq_K": 0.6352850198745728,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "BC",
+      "exploitability_chips": 0.05115697837103872,
+      "exploitability_mbb_per_hand": 51.15697837103872,
+      "bluff_freq_J": 0.1969844102859497,
+      "value_bet_freq_K": 0.665132462978363,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    },
+    {
+      "agent": "ARDT",
+      "exploitability_chips": 0.41667773282907916,
+      "exploitability_mbb_per_hand": 416.67773282907916,
+      "bluff_freq_J": 0.34416380524635315,
+      "value_bet_freq_K": 0.3870198726654053,
+      "illegal_rate": null,
+      "adaptation_delta": null
+    }
+  ]
+}
