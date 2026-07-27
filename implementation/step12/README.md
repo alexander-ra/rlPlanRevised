@@ -122,9 +122,17 @@ choice Step 11 made for its PPO.
       (only 31–54% of the 936 info sets are ever reached, so no full enumeration needed)
 - [x] **[`SCOUTING_REPORT.md`](SCOUTING_REPORT.md)** — mini-report on all follow-on work
       (method advances, findings, the four measurement artefacts caught, limitations)
+- [x] **[`consolidation/`](consolidation/)** — [`onePager.md`](consolidation/onePager.md) (measured
+      table + reconciliations R0–R8 + handoff threads) and
+      [`learningLog.md`](consolidation/learningLog.md) (first-person reflection)
+- [x] **`deliverables/reports/step12/`** — `report_en.md`, `summary/summaryEn.md`, 12 figures, and
+      **built PDFs**: `step12_report_en.pdf` + `deliverables/summaries/step12_en.pdf`
 - [ ] Leduc Stage 1+ — exact exploitability (needs the step02/step03 `cfr` collision solved)
-- [ ] `consolidation/` — deferred (human-written after runs)
-- [ ] `deliverables/reports/step12/` — deferred
+- [ ] A second model on Leduc — the largest outstanding caveat on the Leduc conclusions
+- [ ] BG translations — EN-only matches steps 05–11; BG additionally needs Liberation/DejaVu fonts
+
+**Step 12 is complete** against [WORKFLOW.md](../WORKFLOW.md) §8 — all five phases authored,
+executed, verified and written up. Remaining items above are documented extensions, not gaps.
 
 **Run status (SMOKE, 2026-07-25/26):** `validate.py` = **3 PASS / 2 FAIL / 0 SKIP**. Targets #1 and
 #4 are honestly red — see [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) for the §0.1 reconciliations.

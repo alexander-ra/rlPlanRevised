@@ -764,6 +764,30 @@ mostly luck. **Return conditioning actively destroys information here.** ARDT re
 (0.459 < 0.671) but nowhere near BC. That ordering (BC ≪ ARDT < DT < LLM) is the honest story of
 this step, and it is *not* the one the raw step anticipated.
 
+> **§0.1 note added during the deliverables pass (2026-07-27) — the table above is superseded by a
+> later re-run, and the gap is training variance.** The numbers above come from the FIRST stub run,
+> taken before results were tagged per backend. The committed artifact
+> `results/comparison_SMOKE_stub.json` (timestamp `2026-07-26T07:02:06`) is a later re-run of the
+> **same config**, and it is what the deliverables cite:
+>
+> | Method | this table (1st run) | committed JSON (re-run) |
+> |---|---|---|
+> | Nash-CFR | 0.0162 | 0.0162 (identical — CFR is seeded) |
+> | BC | 0.0546 | **0.0550** |
+> | ARDT | 0.4585 | **0.4691** |
+> | DT | 0.6709 | **0.7992** |
+> | LLM (stub) | 0.8333 | 0.8333 (identical — the stub is deterministic) |
+>
+> The two deterministic rows reproduce **exactly**, which localises the difference: the dataset and
+> CFR are seeded, but each `comparison_table.py` invocation **retrains** the neural models, and the
+> torch RNG state differs between invocations. So DT exploitability moves **0.671 → 0.799** across
+> re-runs of an identical configuration — a ~19% swing, larger than several effects discussed
+> elsewhere in this file. **Consequence: single-run DT/BC/ARDT numbers carry meaningful training
+> variance and should not be compared at 3 decimal places across runs.** The qualitative ordering
+> (BC ≪ ARDT < DT < LLM) is unaffected — BC still beats the DT by 14×. Neither table is wrong; the
+> original is kept per §0.1 and the committed JSON is authoritative because it is the artifact on
+> disk.
+
 ### MATH FLAG B — RESOLVED, and the two halves disagree
 
 **Definition (settled, twice).** ARDT **Eq. (6)** `L^α_ER(u) = E[|α − 1(u>0)|·u²]` with **Eq. (7)**

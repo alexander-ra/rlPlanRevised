@@ -150,6 +150,235 @@ def plot_tau_sweep(sweep: dict, path: str | None = None) -> str | None:
     return path
 
 
+def plot_leak_decomposition(dec: dict, path: str | None = None) -> str | None:
+    """dec: results/decomposition_<model>_<style>_<method>.json (experiment A2).
+
+    The headline point: deviation magnitude and COST are nearly uncorrelated. Plots each info set's
+    share of total exploitability next to how far it deviates from Nash, so the King node (huge
+    deviation, ~0 cost) and the `2p` Queen node (large cost) sit side by side.
+    """
+    if not plots_available():
+        print("matplotlib unavailable; skipping leak-decomposition plot.")
+        return None
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    base = dec["baseline_exploitability_chips"]
+    rows = dec["info_sets"]
+    order = sorted(rows, key=lambda i: rows[i]["delta_nash"], reverse=True)
+    share = [100.0 * rows[i]["delta_nash"] / base for i in order]
+    dev = [rows[i]["deviation"] for i in order]
+    y = range(len(order))
+
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11, 5), sharey=True)
+    ax.barh(list(y), share, color="tab:red", alpha=0.85)
+    ax.set_yticks(list(y))
+    ax.set_yticklabels(order, fontfamily="monospace")
+    ax.invert_yaxis()
+    ax.set_xlabel("share of total exploitability (%)")
+    ax.set_title(f"Where the loss is  (total {base:.3f} chips)")
+    ax.grid(True, axis="x", alpha=0.3)
+    ax2.barh(list(y), dev, color="tab:blue", alpha=0.85)
+    ax2.set_xlabel("|P(bet) - Nash|")
+    ax2.set_title("How far from Nash")
+    ax2.grid(True, axis="x", alpha=0.3)
+    fig.suptitle(f"{dec.get('model', '?')} — deviation size does not predict cost", fontsize=11)
+    path = path or os.path.join(_results_dir(), "leak_decomposition.png")
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+    return path
+
+
+def plot_stated_vs_executed(freqs: list, path: str | None = None) -> str | None:
+    """freqs: list of results/frequency_elicitation_<model>.json dicts (experiment B4).
+
+    Left: stated vs executed vs Nash per info set. Right: exploitability of each model's PLAYED
+    strategy against the strategy built from its own STATED frequencies.
+    """
+    if not plots_available():
+        print("matplotlib unavailable; skipping stated-vs-executed plot.")
+        return None
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    # Two rows rather than one wide strip: at page width a 3-panel row shrinks to ~2 inches tall
+    # and the axis labels become unreadable in the built PDF.
+    fig = plt.figure(figsize=(11, 8))
+    gs = fig.add_gridspec(2, len(freqs), height_ratios=[1.15, 1.0], hspace=0.45, wspace=0.25)
+    axes = [fig.add_subplot(gs[0, i]) for i in range(len(freqs))]
+    axes.append(fig.add_subplot(gs[1, :]))
+    isets = list(freqs[0]["nash"].keys())
+    x = range(len(isets))
+    for ax, d in zip(axes, freqs):
+        ax.plot(list(x), [d["nash"][i] for i in isets], "k--o", ms=4, label="Nash", lw=1.4)
+        ax.plot(list(x), [d["executed"][i] for i in isets], "-s", ms=4,
+                color="tab:green", label="executed (played)")
+        ax.plot(list(x), [(d["stated"][i] if d["stated"][i] is not None else float("nan"))
+                          for i in isets], "-^", ms=4, color="tab:orange", label="stated (asked)")
+        ax.set_xticks(list(x))
+        ax.set_xticklabels(isets, rotation=60, ha="right", fontfamily="monospace", fontsize=8)
+        ax.set_ylabel("P(bet)")
+        ax.set_ylim(-0.05, 1.05)
+        ax.set_title(f"{d['model']}\nMAE stated {d['mae_stated_vs_nash']:.2f} vs "
+                     f"executed {d['mae_executed_vs_nash']:.2f}", fontsize=9)
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=8)
+
+    ax = axes[-1]
+    labels, played, stated = [], [], []
+    for d in freqs:
+        labels.append(d["model"].split("/")[-1][:14])
+        played.append(d["exploitability_chips"]["executed"])
+        stated.append(d["exploitability_chips"]["stated_if_played"])
+    xs = range(len(labels))
+    ax.bar([i - 0.2 for i in xs], played, width=0.4, color="tab:green", label="as played")
+    ax.bar([i + 0.2 for i in xs], stated, width=0.4, color="tab:orange", label="if it played what it says")
+    ax.axhline(freqs[0]["exploitability_chips"]["nash"], ls=":", color="k", label="Nash")
+    ax.set_xticks(list(xs))
+    ax.set_xticklabels(labels, fontsize=10)
+    ax.set_ylabel("exploitability (chips)")
+    ax.set_title("Playing what they SAY would be far worse than what they DO", fontsize=10)
+    ax.grid(True, axis="y", alpha=0.3)
+    ax.legend(fontsize=9)
+    for i, (pv, sv) in enumerate(zip(played, stated)):
+        ax.text(i - 0.2, pv, f" {pv:.3f}", ha="center", va="bottom", fontsize=8)
+        ax.text(i + 0.2, sv, f" {sv:.3f}", ha="center", va="bottom", fontsize=8)
+
+    path = path or os.path.join(_results_dir(), "stated_vs_executed.png")
+    fig.savefig(path, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
+def plot_exploitation_frontier(expl: dict, path: str | None = None) -> str | None:
+    """expl: results/exploitation_<model>.json (experiment B6) -- the safe-exploitation trade-off."""
+    if not plots_available():
+        print("matplotlib unavailable; skipping exploitation-frontier plot.")
+        return None
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    rows = expl["rows"]
+    names = list(rows)
+    opps = list(rows[names[0]]["vs"])
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12, 4.6))
+
+    for n in names:
+        ax.scatter(rows[n]["exploitability_chips"], rows[n]["mean_chips_per_hand_vs_zoo"],
+                   s=90, label=n)
+        ax.annotate(n, (rows[n]["exploitability_chips"],
+                        rows[n]["mean_chips_per_hand_vs_zoo"]),
+                    textcoords="offset points", xytext=(8, 4), fontsize=8)
+    ax.set_xlabel("exploitability (chips) — lower is safer")
+    ax.set_ylabel("mean chips/hand vs the zoo — higher exploits more")
+    ax.set_title("Exploitation vs exploitability")
+    ax.grid(True, alpha=0.3)
+
+    w = 0.38
+    xs = range(len(opps))
+    for k, n in enumerate(names):
+        vals = [rows[n]["vs"][o]["mean_chips_per_hand"] for o in opps]
+        ax2.bar([i + (k - 0.5) * w for i in xs], vals, width=w, label=n)
+    ax2.axhline(0, color="k", lw=0.8)
+    ax2.set_xticks(list(xs))
+    ax2.set_xticklabels(opps, rotation=25, ha="right", fontsize=8)
+    ax2.set_ylabel("chips/hand won")
+    ax2.set_title("Per-opponent: the gain is only vs passive/random")
+    ax2.grid(True, axis="y", alpha=0.3)
+    ax2.legend(fontsize=8)
+
+    path = path or os.path.join(_results_dir(), "exploitation_frontier.png")
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+    return path
+
+
+def plot_leduc_illegal_taxonomy(tax: dict, path: str | None = None) -> str | None:
+    """tax: results/leduc_illegal_taxonomy_<model>.json -- one misconception, not confusion."""
+    if not plots_available():
+        print("matplotlib unavailable; skipping Leduc illegal-taxonomy plot.")
+        return None
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    cats = tax["categories"]
+    cnames = list(cats)
+    sits = sorted(tax["by_situation"], key=lambda s: tax["by_situation"][s]["mean_illegal_mass"])
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11.5, 4.4))
+
+    ax.bar(cnames, [cats[c]["mean_mass_all"] for c in cnames],
+           color=["tab:red", "tab:blue", "tab:grey"])
+    ax.set_ylabel("mean probability mass")
+    ax.set_title(f"Illegal-action intent by category\n(total {tax['mean_illegal_mass']:.3f} over "
+                 f"{tax['info_sets']} info sets)", fontsize=9)
+    ax.tick_params(axis="x", labelsize=8)
+    ax.grid(True, axis="y", alpha=0.3)
+
+    ax2.barh(sits, [tax["by_situation"][s]["mean_illegal_mass"] for s in sits], color="tab:red")
+    ax2.set_xlabel("mean illegal mass")
+    ax2.set_title("Localised: only round 2 with nothing due", fontsize=9)
+    ax2.grid(True, axis="x", alpha=0.3)
+    for i, s in enumerate(sits):
+        ax2.text(tax["by_situation"][s]["mean_illegal_mass"], i,
+                 f"  n={tax['by_situation'][s]['n']}", va="center", fontsize=8)
+
+    path = path or os.path.join(_results_dir(), "leduc_illegal_taxonomy.png")
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+    return path
+
+
+def plot_leduc_return_conditioning(st0: dict, path: str | None = None) -> str | None:
+    """st0: results/leduc_stage0.json -- return conditioning does not steer on Leduc either."""
+    if not plots_available():
+        print("matplotlib unavailable; skipping Leduc return-conditioning plot.")
+        return None
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    tg = st0["targets"]
+    xs = sorted(float(k) for k in tg)
+    ys = [tg[_tkey(tg, x)]["chips_per_hand"] for x in xs]
+    es = [tg[_tkey(tg, x)]["se"] for x in xs]
+    shares = [tg[_tkey(tg, x)]["data_share"] for x in xs]
+    modal = float(st0["modal_return"])
+
+    fig, ax = plt.subplots(figsize=(8, 4.6))
+    ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3, lw=1.4, color="tab:blue",
+                label="DT vs near-Nash")
+    ax.axvline(modal, ls="--", color="tab:red", alpha=0.7,
+               label=f"modal return ({modal:+.0f}, {max(shares):.0%} of steps)")
+    ood = [x for x in xs if tg[_tkey(tg, x)]["data_share"] == 0.0]
+    for o in ood:
+        ax.axvline(o, ls=":", color="tab:grey", label=f"impossible ({o:+.0f})")
+    ax.set_xlabel("target return-to-go (chips)")
+    ax.set_ylabel("chips/hand vs near-Nash")
+    ax.set_title(f"Leduc: no steering (Pearson r = {st0['trend_pearson']:+.3f}), "
+                 f"no notch at the modal return")
+    ax.grid(True, alpha=0.3)
+    ax.legend(fontsize=8)
+    path = path or os.path.join(_results_dir(), "leduc_return_conditioning.png")
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+    return path
+
+
+def _tkey(tg: dict, x: float) -> str:
+    for k in tg:
+        if abs(float(k) - x) < 1e-12:
+            return k
+    raise KeyError(x)
+
+
 def _key(cells: dict, t: float) -> str:
     """Match a float tau back to its JSON string key."""
     for k in cells:
@@ -218,6 +447,57 @@ def main():
             wrote.append(p)
     else:
         missing.append(f"tau_sweep_{prof}.json  (run: python tau_sweep.py)")
+
+    # --- follow-on experiments (A2 / B4 / B6) and Leduc -------------------------------
+    import glob
+    import json
+
+    def _load_glob(pattern):
+        out = []
+        for p in sorted(glob.glob(os.path.join(_results_dir(), pattern))):
+            with open(p, encoding="utf-8") as f:
+                out.append(json.load(f))
+        return out
+
+    decs = _load_glob("decomposition_*.json")
+    if decs:
+        p = plot_leak_decomposition(decs[0])
+        if p:
+            wrote.append(p)
+    else:
+        missing.append("decomposition_*.json  (run: python exploitability_decomposition.py)")
+
+    freqs = _load_glob("frequency_elicitation_*.json")
+    if freqs:
+        p = plot_stated_vs_executed(freqs)
+        if p:
+            wrote.append(p)
+    else:
+        missing.append("frequency_elicitation_*.json  (run: python frequency_elicitation.py)")
+
+    expls = _load_glob("exploitation_*.json")
+    if expls:
+        p = plot_exploitation_frontier(expls[0])
+        if p:
+            wrote.append(p)
+    else:
+        missing.append("exploitation_*.json  (run: python exploitation_vs_zoo.py)")
+
+    taxes = _load_glob("leduc_illegal_taxonomy_*.json")
+    if taxes:
+        p = plot_leduc_illegal_taxonomy(taxes[0])
+        if p:
+            wrote.append(p)
+    else:
+        missing.append("leduc_illegal_taxonomy_*.json  (run: python leduc_illegal_taxonomy.py)")
+
+    st0 = _load("leduc_stage0.json")
+    if st0:
+        p = plot_leduc_return_conditioning(st0)
+        if p:
+            wrote.append(p)
+    else:
+        missing.append("leduc_stage0.json  (run: python leduc_stage0.py)")
 
     for p in wrote:
         print(f"  wrote {os.path.basename(p)}")
