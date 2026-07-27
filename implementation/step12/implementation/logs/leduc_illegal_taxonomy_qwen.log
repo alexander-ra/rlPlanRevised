@@ -1,0 +1,29 @@
+﻿Leduc illegal-action taxonomy: model=qwen2.5-7b-instruct style=plain info_sets=220 (reach-sampled from 1500 playouts)
+==================================================================================
+mean illegal mass over 220 info sets = 0.2340 (468s)
+
+category             mean mass  applies to   mean where it applies
+------------------------------------------------------------------
+FOLD_WHEN_FREE          0.2340      112 sets                  0.4596
+RAISE_AT_CAP            0.0000       36 sets                  0.0001
+NON_ACTION              0.0001      220 sets                  0.0001
+------------------------------------------------------------------
+TOTAL                   0.2340
+-> dominant failure: FOLD_WHEN_FREE (100% of all illegal mass)
+
+situation                      mean illegal mass   info sets
+------------------------------------------------------------
+round1/facing bet                         0.0002          23
+round1/nothing due                        0.0086          12
+round2/facing bet                         0.0000          85
+round2/nothing due                        0.5138         100
+
+worst individual info sets:
+  2:5|cc/            legal=[1, 2] illegal=0.994 mass={F:0.99 C:0.01 R:0.00}
+  3:4|cc/            legal=[1, 2] illegal=0.994 mass={F:0.99 C:0.01 R:0.00}
+  3:5|cc/            legal=[1, 2] illegal=0.994 mass={F:0.99 C:0.01 R:0.00}
+  2:4|crc/           legal=[1, 2] illegal=0.992 mass={F:0.99 C:0.01 R:0.00}
+  0:5|cc/            legal=[1, 2] illegal=0.990 mass={F:0.99 C:0.01 R:0.00}
+  0:4|cc/            legal=[1, 2] illegal=0.990 mass={F:0.99 C:0.01 R:0.00}
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\leduc_illegal_taxonomy_qwen2.5-7b-instruct.json

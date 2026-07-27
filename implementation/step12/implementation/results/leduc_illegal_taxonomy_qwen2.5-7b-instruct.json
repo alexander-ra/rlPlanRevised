@@ -1,0 +1,3859 @@
+{
+  "game": "leduc",
+  "model": "qwen2.5-7b-instruct",
+  "style": "plain",
+  "temperature": 0.7,
+  "info_sets": 220,
+  "mean_illegal_mass": 0.23404515362486028,
+  "categories": {
+    "FOLD_WHEN_FREE": {
+      "mean_mass_all": 0.23396814861394918,
+      "applies_to": 112,
+      "mean_where_applies": 0.4595802919202573
+    },
+    "RAISE_AT_CAP": {
+      "mean_mass_all": 2.0633682538481063e-05,
+      "applies_to": 36,
+      "mean_where_applies": 0.00012609472662405096
+    },
+    "NON_ACTION": {
+      "mean_mass_all": 5.637132837265687e-05,
+      "applies_to": 220,
+      "mean_where_applies": 5.637132837265687e-05
+    }
+  },
+  "dominant": "FOLD_WHEN_FREE",
+  "by_situation": {
+    "round1/nothing due": {
+      "mean_illegal_mass": 0.008607609724969087,
+      "n": 12
+    },
+    "round1/facing bet": {
+      "mean_illegal_mass": 0.00021907820833220532,
+      "n": 23
+    },
+    "round2/nothing due": {
+      "mean_illegal_mass": 0.5137940333903377,
+      "n": 100
+    },
+    "round2/facing bet": {
+      "mean_illegal_mass": 2.5886387579035054e-05,
+      "n": 85
+    }
+  },
+  "rows": [
+    {
+      "info_set": "2:5|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9944042881099225,
+        "CALL": 0.005552774926159499,
+        "RAISE": 1.5704751008869223e-05
+      },
+      "non_action": 2.163817769531889e-05,
+      "illegal_mass": 0.9944259262876178
+    },
+    {
+      "info_set": "3:4|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9944042881099225,
+        "CALL": 0.005552774926159499,
+        "RAISE": 1.5704751008869223e-05
+      },
+      "non_action": 2.163817769531889e-05,
+      "illegal_mass": 0.9944259262876178
+    },
+    {
+      "info_set": "3:5|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 21,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9944042881099225,
+        "CALL": 0.005552774926159499,
+        "RAISE": 1.5704751008869223e-05
+      },
+      "non_action": 2.163817769531889e-05,
+      "illegal_mass": 0.9944259262876178
+    },
+    {
+      "info_set": "2:4|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9915661465761866,
+        "CALL": 0.008393460325730545,
+        "RAISE": 1.2051015156914417e-05
+      },
+      "non_action": 2.3018464941074287e-05,
+      "illegal_mass": 0.9915891650411277
+    },
+    {
+      "info_set": "0:5|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 15,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9900796379904582,
+        "CALL": 0.009875226489748822,
+        "RAISE": 9.95719875836919e-06
+      },
+      "non_action": 2.6199460012469907e-05,
+      "illegal_mass": 0.9901058374504706
+    },
+    {
+      "info_set": "0:4|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 10,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9900796379904582,
+        "CALL": 0.009875226489748822,
+        "RAISE": 9.95719875836919e-06
+      },
+      "non_action": 2.6199460012469907e-05,
+      "illegal_mass": 0.9901058374504706
+    },
+    {
+      "info_set": "3:5|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9898347553064565,
+        "CALL": 0.010108572421092704,
+        "RAISE": 1.9612338900691623e-05
+      },
+      "non_action": 2.9284953823930567e-05,
+      "illegal_mass": 0.9898640402602804
+    },
+    {
+      "info_set": "1:4|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 16,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9859364890521952,
+        "CALL": 0.01399083025642295,
+        "RAISE": 3.457634519687618e-05
+      },
+      "non_action": 2.741318508014806e-05,
+      "illegal_mass": 0.9859639022372754
+    },
+    {
+      "info_set": "3:5|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 14,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9838531875139275,
+        "CALL": 0.0160896847444959,
+        "RAISE": 2.1680990242773206e-05
+      },
+      "non_action": 2.5989780175922714e-05,
+      "illegal_mass": 0.9838791772941033
+    },
+    {
+      "info_set": "2:5|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 12,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9833820826648116,
+        "CALL": 0.016576888938056315,
+        "RAISE": 1.2409046333085959e-05
+      },
+      "non_action": 1.9905672562260143e-05,
+      "illegal_mass": 0.9834019883373739
+    },
+    {
+      "info_set": "3:4|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9819364098646306,
+        "CALL": 0.018008619446416813,
+        "RAISE": 2.220572610087517e-05
+      },
+      "non_action": 2.2894054739884288e-05,
+      "illegal_mass": 0.9819593039193705
+    },
+    {
+      "info_set": "2:4|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9815131959038746,
+        "CALL": 0.018429631365255578,
+        "RAISE": 2.0864228855105438e-05
+      },
+      "non_action": 2.560102935383886e-05,
+      "illegal_mass": 0.9815387969332284
+    },
+    {
+      "info_set": "1:4|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9801818929634006,
+        "CALL": 0.019767516854338616,
+        "RAISE": 1.2432440880902855e-05
+      },
+      "non_action": 2.7215491865362177e-05,
+      "illegal_mass": 0.980209108455266
+    },
+    {
+      "info_set": "1:4|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9780570182961259,
+        "CALL": 0.021893810669305024,
+        "RAISE": 1.4144301575928774e-05
+      },
+      "non_action": 2.3401210062160475e-05,
+      "illegal_mass": 0.9780804195061881
+    },
+    {
+      "info_set": "2:4|crrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9746952832333972,
+        "CALL": 0.0248781670788289,
+        "RAISE": 0.00039137466961880403
+      },
+      "non_action": 2.3268411569228955e-05,
+      "illegal_mass": 0.9747185516449663
+    },
+    {
+      "info_set": "0:4|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9737234975688771,
+        "CALL": 0.026226159238636887,
+        "RAISE": 1.1957450077721148e-05
+      },
+      "non_action": 2.5702401107969117e-05,
+      "illegal_mass": 0.9737491999699851
+    },
+    {
+      "info_set": "0:5|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9712755087727378,
+        "CALL": 0.028677704553013116,
+        "RAISE": 7.031225816575703e-06
+      },
+      "non_action": 2.66610645633911e-05,
+      "illegal_mass": 0.9713021698373012
+    },
+    {
+      "info_set": "1:4|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9692212539445999,
+        "CALL": 0.030731459142621865,
+        "RAISE": 1.1787603791838414e-05
+      },
+      "non_action": 2.20924564837873e-05,
+      "illegal_mass": 0.9692433464010837
+    },
+    {
+      "info_set": "0:5|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 12,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9650089438718247,
+        "CALL": 0.034929553174581525,
+        "RAISE": 2.1077399846424676e-05
+      },
+      "non_action": 2.520644520901785e-05,
+      "illegal_mass": 0.9650341503170337
+    },
+    {
+      "info_set": "1:5|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9640892756385612,
+        "CALL": 0.03584676575960401,
+        "RAISE": 1.6959974577416793e-05
+      },
+      "non_action": 3.1542973222570164e-05,
+      "illegal_mass": 0.9641208186117838
+    },
+    {
+      "info_set": "2:4|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9636921706863456,
+        "CALL": 0.036220057747167037,
+        "RAISE": 3.995121448031986e-05
+      },
+      "non_action": 3.421720628118734e-05,
+      "illegal_mass": 0.9637263878926268
+    },
+    {
+      "info_set": "0:4|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9620336882638348,
+        "CALL": 0.03791785836949686,
+        "RAISE": 9.532092174813476e-06
+      },
+      "non_action": 2.573698260295976e-05,
+      "illegal_mass": 0.9620594252464378
+    },
+    {
+      "info_set": "1:5|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9501211856580036,
+        "CALL": 0.049793221737082394,
+        "RAISE": 3.6653848847761175e-05
+      },
+      "non_action": 3.053881344321783e-05,
+      "illegal_mass": 0.9501517244714468
+    },
+    {
+      "info_set": "1:5|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9337007959393225,
+        "CALL": 0.06623455942094368,
+        "RAISE": 1.2806236617484774e-05
+      },
+      "non_action": 3.113656460166413e-05,
+      "illegal_mass": 0.9337319325039242
+    },
+    {
+      "info_set": "1:2|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 15,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9299877372536837,
+        "CALL": 0.06991440748979379,
+        "RAISE": 2.2453171723396672e-05
+      },
+      "non_action": 4.6427971487102015e-05,
+      "illegal_mass": 0.9300341652251708
+    },
+    {
+      "info_set": "0:3|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9268949669034067,
+        "CALL": 0.07304669136896555,
+        "RAISE": 5.069253403118795e-06
+      },
+      "non_action": 3.077196297830606e-05,
+      "illegal_mass": 0.926925738866385
+    },
+    {
+      "info_set": "1:3|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 11,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9229787154617463,
+        "CALL": 0.07693678548564638,
+        "RAISE": 1.186561852107937e-05
+      },
+      "non_action": 4.3984442540407915e-05,
+      "illegal_mass": 0.9230226999042866
+    },
+    {
+      "info_set": "3:5|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9199597442193584,
+        "CALL": 0.07992528198277658,
+        "RAISE": 5.4308056354240606e-05
+      },
+      "non_action": 3.562109692686619e-05,
+      "illegal_mass": 0.9199953653162853
+    },
+    {
+      "info_set": "3:4|rrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9123903985414241,
+        "CALL": 0.08746393799516315,
+        "RAISE": 7.651654990577048e-05
+      },
+      "non_action": 4.152951406741328e-05,
+      "illegal_mass": 0.9124319280554916
+    },
+    {
+      "info_set": "3:5|rrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9123903985414241,
+        "CALL": 0.08746393799516315,
+        "RAISE": 7.651654990577048e-05
+      },
+      "non_action": 4.152951406741328e-05,
+      "illegal_mass": 0.9124319280554916
+    },
+    {
+      "info_set": "0:3|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 19,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.9114163756396485,
+        "CALL": 0.08848988755996601,
+        "RAISE": 1.6225401151258477e-05
+      },
+      "non_action": 4.549341530241151e-05,
+      "illegal_mass": 0.911461869054951
+    },
+    {
+      "info_set": "0:3|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.8761118246255523,
+        "CALL": 0.1237467263403513,
+        "RAISE": 6.092355627344694e-05
+      },
+      "non_action": 4.41777701670062e-05,
+      "illegal_mass": 0.8761560023957192
+    },
+    {
+      "info_set": "1:3|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.8761118246255523,
+        "CALL": 0.1237467263403513,
+        "RAISE": 6.092355627344694e-05
+      },
+      "non_action": 4.41777701670062e-05,
+      "illegal_mass": 0.8761560023957192
+    },
+    {
+      "info_set": "4:3|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.856696667872265,
+        "CALL": 0.13186607321445742,
+        "RAISE": 0.0113395910365263
+      },
+      "non_action": 3.7763995234431506e-05,
+      "illegal_mass": 0.8567344318674994
+    },
+    {
+      "info_set": "5:2|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 15,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.8446081091349449,
+        "CALL": 0.09946975131599595,
+        "RAISE": 0.05579920645411169
+      },
+      "non_action": 3.803535036410914e-05,
+      "illegal_mass": 0.844646144485309
+    },
+    {
+      "info_set": "5:3|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.8446081091349449,
+        "CALL": 0.09946975131599595,
+        "RAISE": 0.05579920645411169
+      },
+      "non_action": 3.803535036410914e-05,
+      "illegal_mass": 0.844646144485309
+    },
+    {
+      "info_set": "1:2|crrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.831737733186078,
+        "CALL": 0.16704617918635867,
+        "RAISE": 0.0011269166583678812
+      },
+      "non_action": 3.324331535140184e-05,
+      "illegal_mass": 0.8317709765014294
+    },
+    {
+      "info_set": "4:3|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 16,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.827573911960169,
+        "CALL": 0.1375471779781497,
+        "RAISE": 0.03474622849570893
+      },
+      "non_action": 5.1490520018942177e-05,
+      "illegal_mass": 0.827625402480188
+    },
+    {
+      "info_set": "4:2|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 15,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.8159332172327596,
+        "CALL": 0.12590296113358326,
+        "RAISE": 0.05802047103670794
+      },
+      "non_action": 4.845761904343161e-05,
+      "illegal_mass": 0.8159816748518031
+    },
+    {
+      "info_set": "1:2|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 12,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.7875375543207722,
+        "CALL": 0.21227170554304128,
+        "RAISE": 8.103916489473347e-05
+      },
+      "non_action": 6.555697277736081e-05,
+      "illegal_mass": 0.7876031112935495
+    },
+    {
+      "info_set": "1:2|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 12,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.775002045457294,
+        "CALL": 0.22460585411302958,
+        "RAISE": 0.00029075815391644026
+      },
+      "non_action": 5.3677309652897705e-05,
+      "illegal_mass": 0.7750557227669469
+    },
+    {
+      "info_set": "1:3|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.775002045457294,
+        "CALL": 0.22460585411302958,
+        "RAISE": 0.00029075815391644026
+      },
+      "non_action": 5.3677309652897705e-05,
+      "illegal_mass": 0.7750557227669469
+    },
+    {
+      "info_set": "0:3|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.775002045457294,
+        "CALL": 0.22460585411302958,
+        "RAISE": 0.00029075815391644026
+      },
+      "non_action": 5.3677309652897705e-05,
+      "illegal_mass": 0.7750557227669469
+    },
+    {
+      "info_set": "0:5|rrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.7722986667246334,
+        "CALL": 0.22739798831359204,
+        "RAISE": 0.00015322257930782987
+      },
+      "non_action": 8.589842999434919e-05,
+      "illegal_mass": 0.7723845651546278
+    },
+    {
+      "info_set": "1:3|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.7458749034135075,
+        "CALL": 0.2539528261374053,
+        "RAISE": 5.47916571108544e-05
+      },
+      "non_action": 7.003054112124099e-05,
+      "illegal_mass": 0.7459449339546287
+    },
+    {
+      "info_set": "1:4|crrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.7159497923940796,
+        "CALL": 0.28350292653781634,
+        "RAISE": 0.0003885801390583075
+      },
+      "non_action": 8.366455608826734e-05,
+      "illegal_mass": 0.7160334569501678
+    },
+    {
+      "info_set": "1:2|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.6730495687031696,
+        "CALL": 0.3267483781248793,
+        "RAISE": 7.351215946504281e-05
+      },
+      "non_action": 6.802994687496637e-05,
+      "illegal_mass": 0.6731175986500445
+    },
+    {
+      "info_set": "3:0|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 14,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.6154826683738275,
+        "CALL": 0.37052663301440547,
+        "RAISE": 0.013766736159062636
+      },
+      "non_action": 9.947120109503121e-05,
+      "illegal_mass": 0.6155821395749225
+    },
+    {
+      "info_set": "2:1|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 18,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.5727181115561009,
+        "CALL": 0.3959802058273876,
+        "RAISE": 0.031034545278611273
+      },
+      "non_action": 0.00011462883194498385,
+      "illegal_mass": 0.5728327403880459
+    },
+    {
+      "info_set": "5:2|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.5688981260650348,
+        "CALL": 0.24142578383147964,
+        "RAISE": 0.18946793715377566
+      },
+      "non_action": 6.0076181294976365e-05,
+      "illegal_mass": 0.5689582022463298
+    },
+    {
+      "info_set": "5:3|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 12,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.5104858980010241,
+        "CALL": 0.43482251779275116,
+        "RAISE": 0.05440116781617684
+      },
+      "non_action": 0.00012484754475587673,
+      "illegal_mass": 0.5106107455457799
+    },
+    {
+      "info_set": "0:3|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.4950170852150826,
+        "CALL": 0.5045967353769143,
+        "RAISE": 0.0001898991511237761
+      },
+      "non_action": 0.00011081157132673331,
+      "illegal_mass": 0.49512789678640934
+    },
+    {
+      "info_set": "5:2|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.44121308561206996,
+        "CALL": 0.5113053329254443,
+        "RAISE": 0.047228157301415545
+      },
+      "non_action": 9.217583449267344e-05,
+      "illegal_mass": 0.4413052614465626
+    },
+    {
+      "info_set": "0:4|crc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.41420198733264996,
+        "CALL": 0.5834230054514998,
+        "RAISE": 0.0021259979496816893
+      },
+      "non_action": 0.0001450118067430099,
+      "illegal_mass": 0.414346999139393
+    },
+    {
+      "info_set": "3:1|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 10,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.3986319979246462,
+        "CALL": 0.5797342742479503,
+        "RAISE": 0.021332835437867972
+      },
+      "non_action": 0.00012898706469780164,
+      "illegal_mass": 0.39876098498934404
+    },
+    {
+      "info_set": "2:0|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 13,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.3986319979246462,
+        "CALL": 0.5797342742479503,
+        "RAISE": 0.021332835437867972
+      },
+      "non_action": 0.00012898706469780164,
+      "illegal_mass": 0.39876098498934404
+    },
+    {
+      "info_set": "5:1|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.2998621174631914,
+        "CALL": 0.434111781438377,
+        "RAISE": 0.26574419616194755
+      },
+      "non_action": 6.089233574497484e-05,
+      "illegal_mass": 0.2999230097989364
+    },
+    {
+      "info_set": "4:1|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.2998621174631914,
+        "CALL": 0.434111781438377,
+        "RAISE": 0.26574419616194755
+      },
+      "non_action": 6.089233574497484e-05,
+      "illegal_mass": 0.2999230097989364
+    },
+    {
+      "info_set": "2:5|crc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.28868016932177504,
+        "CALL": 0.7046160918691435,
+        "RAISE": 0.006420134908845874
+      },
+      "non_action": 0.00015693415551248043,
+      "illegal_mass": 0.2888371034772875
+    },
+    {
+      "info_set": "4:1|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 14,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.2864539124798781,
+        "CALL": 0.21520036105392135,
+        "RAISE": 0.4981012248839763
+      },
+      "non_action": 6.455712452302403e-05,
+      "illegal_mass": 0.28651846960440114
+    },
+    {
+      "info_set": "5:0|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 15,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.2864539124798781,
+        "CALL": 0.21520036105392135,
+        "RAISE": 0.4981012248839763
+      },
+      "non_action": 6.455712452302403e-05,
+      "illegal_mass": 0.28651846960440114
+    },
+    {
+      "info_set": "5:2|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.26077140849636443,
+        "CALL": 0.30609607022348523,
+        "RAISE": 0.43286068173854475
+      },
+      "non_action": 8.555889901625078e-05,
+      "illegal_mass": 0.26085696739538067
+    },
+    {
+      "info_set": "4:2|rrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.24944370183433034,
+        "CALL": 0.7067599919529363,
+        "RAISE": 0.043437377311068115
+      },
+      "non_action": 0.0001734648649302466,
+      "illegal_mass": 0.2496171666992606
+    },
+    {
+      "info_set": "0:3|crrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.18896580459104154,
+        "CALL": 0.8082279675132267,
+        "RAISE": 0.002536303828506599
+      },
+      "non_action": 0.0001421771495134485,
+      "illegal_mass": 0.189107981740555
+    },
+    {
+      "info_set": "2:0|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.16819876473152306,
+        "CALL": 0.7882501503429435,
+        "RAISE": 0.04321466822767196
+      },
+      "non_action": 0.00013706852777017225,
+      "illegal_mass": 0.16833583325929324
+    },
+    {
+      "info_set": "4:1|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.14134719536591306,
+        "CALL": 0.7402607129774544,
+        "RAISE": 0.1179659960769248
+      },
+      "non_action": 0.00019780907608365743,
+      "illegal_mass": 0.14154500444199672
+    },
+    {
+      "info_set": "4:0|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.13973595814211004,
+        "CALL": 0.18366051331024336,
+        "RAISE": 0.6763921725843854
+      },
+      "non_action": 4.902107971664364e-05,
+      "illegal_mass": 0.13978497922182667
+    },
+    {
+      "info_set": "0:1|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.12601562366196445,
+        "CALL": 0.37013102547579896,
+        "RAISE": 0.5033981917886924
+      },
+      "non_action": 9.36099616938216e-05,
+      "illegal_mass": 0.12610923362365828
+    },
+    {
+      "info_set": "5:0|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.09434441377751411,
+        "CALL": 0.807543012727478,
+        "RAISE": 0.09766190348444026
+      },
+      "non_action": 0.00021551946839556456,
+      "illegal_mass": 0.09455993324590968
+    },
+    {
+      "info_set": "2:3|crrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.08483357905404762,
+        "CALL": 0.7429811107464309,
+        "RAISE": 0.17185259467434208
+      },
+      "non_action": 9.308015877367853e-05,
+      "illegal_mass": 0.0849266592128213
+    },
+    {
+      "info_set": "2:0|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.08396151611479165,
+        "CALL": 0.8331369624725178,
+        "RAISE": 0.08256355042820698
+      },
+      "non_action": 0.0001580463197497495,
+      "illegal_mass": 0.0841195624345414
+    },
+    {
+      "info_set": "3:1|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.08396151611479165,
+        "CALL": 0.8331369624725178,
+        "RAISE": 0.08256355042820698
+      },
+      "non_action": 0.0001580463197497495,
+      "illegal_mass": 0.0841195624345414
+    },
+    {
+      "info_set": "3:0|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.08344468756722798,
+        "CALL": 0.8378282420644445,
+        "RAISE": 0.07838793225244904
+      },
+      "non_action": 0.0001587167499369788,
+      "illegal_mass": 0.08360340431716495
+    },
+    {
+      "info_set": "0:2|crc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.07986748100848105,
+        "CALL": 0.9137399440447944,
+        "RAISE": 0.006066180081782447
+      },
+      "non_action": 0.00019051264336507638,
+      "illegal_mass": 0.08005799365184613
+    },
+    {
+      "info_set": "1:3|crc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.07986748100848105,
+        "CALL": 0.9137399440447944,
+        "RAISE": 0.006066180081782447
+      },
+      "non_action": 0.00019051264336507638,
+      "illegal_mass": 0.08005799365184613
+    },
+    {
+      "info_set": "2:1|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0785375175716956,
+        "CALL": 0.8369846807241774,
+        "RAISE": 0.08410998957452294
+      },
+      "non_action": 0.00014563701767112466,
+      "illegal_mass": 0.07868315458936671
+    },
+    {
+      "info_set": "5:4|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 11,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.05840010152658521,
+        "CALL": 0.5469901163841028,
+        "RAISE": 0.39409911447561335
+      },
+      "non_action": 0.0001435165761681783,
+      "illegal_mass": 0.05854361810275339
+    },
+    {
+      "info_set": "2:3|crc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.05814812701786997,
+        "CALL": 0.5410738053147269,
+        "RAISE": 0.4001160410883106
+      },
+      "non_action": 0.00022786476855890406,
+      "illegal_mass": 0.058375991786428875
+    },
+    {
+      "info_set": "5:4|crrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.05617259922024099,
+        "CALL": 0.5021374058734303,
+        "RAISE": 0.44136508516412365
+      },
+      "non_action": 8.512695714689173e-05,
+      "illegal_mass": 0.05625772617738788
+    },
+    {
+      "info_set": "3:2|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.05432846630262672,
+        "CALL": 0.9124497600921286,
+        "RAISE": 0.03290196797249511
+      },
+      "non_action": 0.00012209473296449232,
+      "illegal_mass": 0.05445056103559121
+    },
+    {
+      "info_set": "2:3|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.05432846630262672,
+        "CALL": 0.9124497600921286,
+        "RAISE": 0.03290196797249511
+      },
+      "non_action": 0.00012209473296449232,
+      "illegal_mass": 0.05445056103559121
+    },
+    {
+      "info_set": "3:1|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 11,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.05250822179656926,
+        "CALL": 0.9436717160753406,
+        "RAISE": 0.003544883194975916
+      },
+      "non_action": 0.0001659239591688823,
+      "illegal_mass": 0.052674145755738144
+    },
+    {
+      "info_set": "1:0|crc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.04700351995940993,
+        "CALL": 0.9240171700535159,
+        "RAISE": 0.028641894049586985
+      },
+      "non_action": 0.00013856767452812376,
+      "illegal_mass": 0.047142087633938054
+    },
+    {
+      "info_set": "4:2|crrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.04480031913442805,
+        "CALL": 0.7837900492349804,
+        "RAISE": 0.17105620791242898
+      },
+      "non_action": 0.00013446444228156867,
+      "illegal_mass": 0.04493478357670962
+    },
+    {
+      "info_set": "5:2|crrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.04480031913442805,
+        "CALL": 0.7837900492349804,
+        "RAISE": 0.17105620791242898
+      },
+      "non_action": 0.00013446444228156867,
+      "illegal_mass": 0.04493478357670962
+    },
+    {
+      "info_set": "4:0|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.039113840924336174,
+        "CALL": 0.3054631171284515,
+        "RAISE": 0.6551940395248265
+      },
+      "non_action": 5.735466590653747e-05,
+      "illegal_mass": 0.039171195590242715
+    },
+    {
+      "info_set": "5:4|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.03706985103594061,
+        "CALL": 0.9475387019971988,
+        "RAISE": 0.014923153482292334
+      },
+      "non_action": 0.00023251277891647243,
+      "illegal_mass": 0.03730236381485708
+    },
+    {
+      "info_set": "1:0|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 15,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.036552864501458206,
+        "CALL": 0.7823696254697828,
+        "RAISE": 0.18059534533928615
+      },
+      "non_action": 0.00014421225308243127,
+      "illegal_mass": 0.03669707675454064
+    },
+    {
+      "info_set": "0:1|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 18,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.036552864501458206,
+        "CALL": 0.7823696254697828,
+        "RAISE": 0.18059534533928615
+      },
+      "non_action": 0.00014421225308243127,
+      "illegal_mass": 0.03669707675454064
+    },
+    {
+      "info_set": "0|",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 261,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.036528758375249194,
+        "CALL": 0.7544857103453021,
+        "RAISE": 0.2086682668777057
+      },
+      "non_action": 0.00011919596925715911,
+      "illegal_mass": 0.03664795434450635
+    },
+    {
+      "info_set": "5:1|rc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.03070929746415263,
+        "CALL": 0.25983276831227226,
+        "RAISE": 0.709265928966694
+      },
+      "non_action": 5.544349017055966e-05,
+      "illegal_mass": 0.03076474095432319
+    },
+    {
+      "info_set": "5:0|crrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.02951053065029332,
+        "CALL": 0.42412909429185,
+        "RAISE": 0.5461148938141845
+      },
+      "non_action": 5.9452148177490005e-05,
+      "illegal_mass": 0.02956998279847081
+    },
+    {
+      "info_set": "0:1|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 13,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.02744859903494779,
+        "CALL": 0.9571020617665975,
+        "RAISE": 0.014990061358193925
+      },
+      "non_action": 0.00026073864232842737,
+      "illegal_mass": 0.027709337677276215
+    },
+    {
+      "info_set": "3:0|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.02705991958954599,
+        "CALL": 0.9697515089189052,
+        "RAISE": 0.0029163208527602444
+      },
+      "non_action": 0.000143079994963107,
+      "illegal_mass": 0.027202999584509096
+    },
+    {
+      "info_set": "3:2|crrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.02582682002479678,
+        "CALL": 0.9158633380494667,
+        "RAISE": 0.057902838352401204
+      },
+      "non_action": 0.00016336700730971236,
+      "illegal_mass": 0.025990187032106492
+    },
+    {
+      "info_set": "5:4|rrc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.024217205694670934,
+        "CALL": 0.9627773837332245,
+        "RAISE": 0.01271397414164731
+      },
+      "non_action": 0.00013109788737464219,
+      "illegal_mass": 0.024348303582045577
+    },
+    {
+      "info_set": "1|",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 251,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.022805019964992665,
+        "CALL": 0.7759430474011183,
+        "RAISE": 0.20093813729120472
+      },
+      "non_action": 0.00011467807039484478,
+      "illegal_mass": 0.02291969803538751
+    },
+    {
+      "info_set": "3:2|rc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 12,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.022107267488994022,
+        "CALL": 0.9728450716021402,
+        "RAISE": 0.004672410936726521
+      },
+      "non_action": 0.0002139501421535776,
+      "illegal_mass": 0.0223212176311476
+    },
+    {
+      "info_set": "2:3|cc/",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 10,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.020740551766020035,
+        "CALL": 0.8289482116338593,
+        "RAISE": 0.14996783955832876
+      },
+      "non_action": 0.00011470597176854344,
+      "illegal_mass": 0.02085525773778858
+    },
+    {
+      "info_set": "3:0|crrc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.01918989407219622,
+        "CALL": 0.9619252067956556,
+        "RAISE": 0.018556000883268423
+      },
+      "non_action": 0.0001764432013941052,
+      "illegal_mass": 0.019366337273590325
+    },
+    {
+      "info_set": "1|c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 148,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.015824953041947438,
+        "CALL": 0.8697437547605942,
+        "RAISE": 0.11419112106176535
+      },
+      "non_action": 0.00011027536825212377,
+      "illegal_mass": 0.01593522841019956
+    },
+    {
+      "info_set": "0|c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 118,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.015824953041947438,
+        "CALL": 0.8697437547605942,
+        "RAISE": 0.11419112106176535
+      },
+      "non_action": 0.00011027536825212377,
+      "illegal_mass": 0.01593522841019956
+    },
+    {
+      "info_set": "4:1|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.013998761320912469,
+        "CALL": 0.11825280013424282,
+        "RAISE": 0.8676210856763711
+      },
+      "non_action": 3.4831163031207464e-05,
+      "illegal_mass": 0.014033592483943676
+    },
+    {
+      "info_set": "5:0|cc/c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.013998761320912469,
+        "CALL": 0.11825280013424282,
+        "RAISE": 0.8676210856763711
+      },
+      "non_action": 3.4831163031207464e-05,
+      "illegal_mass": 0.014033592483943676
+    },
+    {
+      "info_set": "2|",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 268,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0024237670248116153,
+        "CALL": 0.7433562677000838,
+        "RAISE": 0.25389712451429414
+      },
+      "non_action": 0.00012330392604660968,
+      "illegal_mass": 0.002547070950858225
+    },
+    {
+      "info_set": "3|",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 246,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0024237670248116153,
+        "CALL": 0.7433562677000838,
+        "RAISE": 0.25389712451429414
+      },
+      "non_action": 0.00012330392604660968,
+      "illegal_mass": 0.002547070950858225
+    },
+    {
+      "info_set": "4|c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 132,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0014728036580567943,
+        "CALL": 0.042037271529267894,
+        "RAISE": 0.9564059657453345
+      },
+      "non_action": 3.78233518510434e-05,
+      "illegal_mass": 0.0015106270099078376
+    },
+    {
+      "info_set": "5|",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 227,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0012558177096652255,
+        "CALL": 0.06822804021578717,
+        "RAISE": 0.93040361554886
+      },
+      "non_action": 4.4393372867301034e-05,
+      "illegal_mass": 0.0013002110825325265
+    },
+    {
+      "info_set": "2|c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 136,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.001122681675053161,
+        "CALL": 0.8600403358205484,
+        "RAISE": 0.13860950858774146
+      },
+      "non_action": 0.00010268588527445183,
+      "illegal_mass": 0.0012253675603276129
+    },
+    {
+      "info_set": "3|c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 109,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0011003671548682446,
+        "CALL": 0.8956001098332828,
+        "RAISE": 0.10305194599528666
+      },
+      "non_action": 0.00012238972332991675,
+      "illegal_mass": 0.0012227568781981613
+    },
+    {
+      "info_set": "5|c",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 137,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.001030328379760685,
+        "CALL": 0.0277362009562793,
+        "RAISE": 0.9711549869803542
+      },
+      "non_action": 3.781829597287609e-05,
+      "illegal_mass": 0.001068146675733561
+    },
+    {
+      "info_set": "5|crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 23,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.47183785166463504,
+        "CALL": 0.5273788513535056,
+        "RAISE": 0.0007351686306545508
+      },
+      "non_action": 2.2279853234423295e-05,
+      "illegal_mass": 0.0007574484838889741
+    },
+    {
+      "info_set": "4|crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 22,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.47183785166463504,
+        "CALL": 0.5273788513535056,
+        "RAISE": 0.0007351686306545508
+      },
+      "non_action": 2.2279853234423295e-05,
+      "illegal_mass": 0.0007574484838889741
+    },
+    {
+      "info_set": "0|rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 43,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.5243138180215222,
+        "CALL": 0.4751169273226026,
+        "RAISE": 0.0005228042216715128
+      },
+      "non_action": 2.142434978763994e-05,
+      "illegal_mass": 0.0005442285714591528
+    },
+    {
+      "info_set": "1|rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 37,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.4375004898755821,
+        "CALL": 0.5619726010339542,
+        "RAISE": 0.00047997636218919483
+      },
+      "non_action": 2.170914184871505e-05,
+      "illegal_mass": 0.0005016855040379099
+    },
+    {
+      "info_set": "1|crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 19,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.5802937511183102,
+        "CALL": 0.4191989568244094,
+        "RAISE": 0.00046613814707379065
+      },
+      "non_action": 1.946532340280176e-05,
+      "illegal_mass": 0.0004856034704765924
+    },
+    {
+      "info_set": "0|crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 21,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.5802937511183102,
+        "CALL": 0.4191989568244094,
+        "RAISE": 0.00046613814707379065
+      },
+      "non_action": 1.946532340280176e-05,
+      "illegal_mass": 0.0004856034704765924
+    },
+    {
+      "info_set": "4|",
+      "legal": [
+        1,
+        2
+      ],
+      "visits": 247,
+      "round": 1,
+      "facing_bet": false,
+      "mass": {
+        "FOLD": 0.0003911936881511985,
+        "CALL": 0.04441941257972561,
+        "RAISE": 0.9550994648593537
+      },
+      "non_action": 4.0762702768717976e-05,
+      "illegal_mass": 0.00043195639091991644
+    },
+    {
+      "info_set": "2|crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 21,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.35496312232088,
+        "CALL": 0.6447030037858921,
+        "RAISE": 0.00028566785423134096
+      },
+      "non_action": 2.329369884137754e-05,
+      "illegal_mass": 0.0003089615530727185
+    },
+    {
+      "info_set": "3|crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 19,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.35496312232088,
+        "CALL": 0.6447030037858921,
+        "RAISE": 0.00028566785423134096
+      },
+      "non_action": 2.329369884137754e-05,
+      "illegal_mass": 0.0003089615530727185
+    },
+    {
+      "info_set": "5|rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 34,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.17735531203045954,
+        "CALL": 0.822405975479655,
+        "RAISE": 0.00019224979582711736
+      },
+      "non_action": 2.3325825509820628e-05,
+      "illegal_mass": 0.00021557562133693798
+    },
+    {
+      "info_set": "4:1|cc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9169830247811788,
+        "CALL": 0.08286241253555637,
+        "RAISE": 0.00013401156989368315
+      },
+      "non_action": 1.2292553037762763e-05,
+      "illegal_mass": 0.0001463041229314459
+    },
+    {
+      "info_set": "1:0|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.10369628550594504,
+        "CALL": 0.8893983283971107,
+        "RAISE": 0.006661147038443484
+      },
+      "non_action": 0.00010442359575233627,
+      "illegal_mass": 0.00010442359575233627
+    },
+    {
+      "info_set": "3:4|rrc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9967642231409682,
+        "CALL": 0.003173204649487564,
+        "RAISE": 3.962859417120568e-05
+      },
+      "non_action": 2.1682180537846835e-05,
+      "illegal_mass": 6.131077470905252e-05
+    },
+    {
+      "info_set": "2:3|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.06709225904824316,
+        "CALL": 0.9292224130566265,
+        "RAISE": 0.0035323382987834866
+      },
+      "non_action": 6.105146921548727e-05,
+      "illegal_mass": 6.105146921548727e-05
+    },
+    {
+      "info_set": "2|rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 52,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.10824024323530022,
+        "CALL": 0.8916850338911488,
+        "RAISE": 3.6956762508852496e-05
+      },
+      "non_action": 1.9733722705228787e-05,
+      "illegal_mass": 5.669048521408128e-05
+    },
+    {
+      "info_set": "3|rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 35,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.10824024323530022,
+        "CALL": 0.8916850338911488,
+        "RAISE": 3.6956762508852496e-05
+      },
+      "non_action": 1.9733722705228787e-05,
+      "illegal_mass": 5.669048521408128e-05
+    },
+    {
+      "info_set": "1|cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 64,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.033766004189398076,
+        "CALL": 0.8078132920599559,
+        "RAISE": 0.15822095042809653
+      },
+      "non_action": 5.6083244850267426e-05,
+      "illegal_mass": 5.6083244850267426e-05
+    },
+    {
+      "info_set": "0|cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 61,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.033766004189398076,
+        "CALL": 0.8078132920599559,
+        "RAISE": 0.15822095042809653
+      },
+      "non_action": 5.6083244850267426e-05,
+      "illegal_mass": 5.6083244850267426e-05
+    },
+    {
+      "info_set": "4:5|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.11485916897624289,
+        "CALL": 0.6862009791204257,
+        "RAISE": 0.1987572329308256
+      },
+      "non_action": 5.3561947093357784e-05,
+      "illegal_mass": 5.3561947093357784e-05
+    },
+    {
+      "info_set": "0|r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 117,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.026546632714912085,
+        "CALL": 0.7410062249543637,
+        "RAISE": 0.232271867435211
+      },
+      "non_action": 5.202419300415719e-05,
+      "illegal_mass": 5.202419300415719e-05
+    },
+    {
+      "info_set": "1|r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 120,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.026546632714912085,
+        "CALL": 0.7410062249543637,
+        "RAISE": 0.232271867435211
+      },
+      "non_action": 5.202419300415719e-05,
+      "illegal_mass": 5.202419300415719e-05
+    },
+    {
+      "info_set": "4|cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 70,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.0008344410528474748,
+        "CALL": 0.47602269731400787,
+        "RAISE": 0.5229344348913569
+      },
+      "non_action": 5.02728373295741e-05,
+      "illegal_mass": 5.02728373295741e-05
+    },
+    {
+      "info_set": "5|cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 68,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.0008344410528474748,
+        "CALL": 0.47602269731400787,
+        "RAISE": 0.5229344348913569
+      },
+      "non_action": 5.02728373295741e-05,
+      "illegal_mass": 5.02728373295741e-05
+    },
+    {
+      "info_set": "3|cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 54,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.000535367053864635,
+        "CALL": 0.8692295009363388,
+        "RAISE": 0.1300852636528098
+      },
+      "non_action": 4.987576539388534e-05,
+      "illegal_mass": 4.987576539388534e-05
+    },
+    {
+      "info_set": "2|cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 69,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.000535367053864635,
+        "CALL": 0.8692295009363388,
+        "RAISE": 0.1300852636528098
+      },
+      "non_action": 4.987576539388534e-05,
+      "illegal_mass": 4.987576539388534e-05
+    },
+    {
+      "info_set": "3:2|rc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.061321079315060166,
+        "CALL": 0.9385683505802603,
+        "RAISE": 2.5267237768539697e-05
+      },
+      "non_action": 4.4797843539993225e-05,
+      "illegal_mass": 4.4797843539993225e-05
+    },
+    {
+      "info_set": "5|r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 117,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.00262033590187669,
+        "CALL": 0.35428919934729736,
+        "RAISE": 0.6429281714847805
+      },
+      "non_action": 4.348710667293539e-05,
+      "illegal_mass": 4.348710667293539e-05
+    },
+    {
+      "info_set": "3:2|rrc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.044714843194170725,
+        "CALL": 0.9394943181669636,
+        "RAISE": 0.015692231749501098
+      },
+      "non_action": 4.1201137914706755e-05,
+      "illegal_mass": 4.1201137914706755e-05
+    },
+    {
+      "info_set": "3:2|crc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.09282521164609668,
+        "CALL": 0.9063813850425794,
+        "RAISE": 0.0006917778224482068
+      },
+      "non_action": 3.826496897773322e-05,
+      "illegal_mass": 3.826496897773322e-05
+    },
+    {
+      "info_set": "3:2|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.28901397985362115,
+        "CALL": 0.5628518655410926,
+        "RAISE": 0.14795768435628665
+      },
+      "non_action": 3.7583356275216864e-05,
+      "illegal_mass": 3.7583356275216864e-05
+    },
+    {
+      "info_set": "5:2|cc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.960843317437602,
+        "CALL": 0.039116141514286266,
+        "RAISE": 2.115539487396482e-05
+      },
+      "non_action": 1.4717352238989551e-05,
+      "illegal_mass": 3.587274711295437e-05
+    },
+    {
+      "info_set": "2:3|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.39584278665915584,
+        "CALL": 0.5857965536564707,
+        "RAISE": 0.018220972912132958
+      },
+      "non_action": 3.5371679240537504e-05,
+      "illegal_mass": 3.5371679240537504e-05
+    },
+    {
+      "info_set": "2|r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 101,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.003446372520475614,
+        "CALL": 0.7647006614673504,
+        "RAISE": 0.23169650318991097
+      },
+      "non_action": 3.528489452890519e-05,
+      "illegal_mass": 3.528489452890519e-05
+    },
+    {
+      "info_set": "3|r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 112,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.003446372520475614,
+        "CALL": 0.7647006614673504,
+        "RAISE": 0.23169650318991097
+      },
+      "non_action": 3.528489452890519e-05,
+      "illegal_mass": 3.528489452890519e-05
+    },
+    {
+      "info_set": "1:4|rrc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9759095594841554,
+        "CALL": 0.02304579420573236,
+        "RAISE": 0.0010009825013315508
+      },
+      "non_action": 3.517487406795912e-05,
+      "illegal_mass": 3.517487406795912e-05
+    },
+    {
+      "info_set": "1:3|rrc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.8580022635316784,
+        "CALL": 0.13597831160624643,
+        "RAISE": 0.005957961312470817
+      },
+      "non_action": 3.47852418980803e-05,
+      "illegal_mass": 3.47852418980803e-05
+    },
+    {
+      "info_set": "5:0|rc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.49325474816138976,
+        "CALL": 0.4933926514083089,
+        "RAISE": 0.013272494973640121
+      },
+      "non_action": 3.4394379057450125e-05,
+      "illegal_mass": 3.4394379057450125e-05
+    },
+    {
+      "info_set": "1:4|crrc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9030403354196721,
+        "CALL": 0.09105176127317638,
+        "RAISE": 0.005854801408899694
+      },
+      "non_action": 3.422807267516575e-05,
+      "illegal_mass": 3.422807267516575e-05
+    },
+    {
+      "info_set": "5:4|cc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.11264458167141618,
+        "CALL": 0.8873004456044963,
+        "RAISE": 1.0006877492293582e-05
+      },
+      "non_action": 2.3814230664934882e-05,
+      "illegal_mass": 3.382110815722847e-05
+    },
+    {
+      "info_set": "3:0|rrc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9312023396924032,
+        "CALL": 0.06875747292606854,
+        "RAISE": 2.0832496314725185e-05
+      },
+      "non_action": 1.2517193072465812e-05,
+      "illegal_mass": 3.3349689387191e-05
+    },
+    {
+      "info_set": "2:3|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.3216282881068464,
+        "CALL": 0.5669896285756476,
+        "RAISE": 0.1112350415356698
+      },
+      "non_action": 3.2362878302580316e-05,
+      "illegal_mass": 3.2362878302580316e-05
+    },
+    {
+      "info_set": "2:0|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.8131563185955283,
+        "CALL": 0.17543320313707333,
+        "RAISE": 0.011342768717010428
+      },
+      "non_action": 3.20895587794496e-05,
+      "illegal_mass": 3.20895587794496e-05
+    },
+    {
+      "info_set": "4:3|crc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.8158602809214762,
+        "CALL": 0.15239023305226376,
+        "RAISE": 0.03168431467908231
+      },
+      "non_action": 3.060768463278645e-05,
+      "illegal_mass": 3.060768463278645e-05
+    },
+    {
+      "info_set": "4|r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 153,
+      "round": 1,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.0018825062979964439,
+        "CALL": 0.3121675016654024,
+        "RAISE": 0.6858142225081766
+      },
+      "non_action": 2.933213261547498e-05,
+      "illegal_mass": 2.933213261547498e-05
+    },
+    {
+      "info_set": "4:1|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.060498213008487955,
+        "CALL": 0.1583260997545203,
+        "RAISE": 0.781085653258996
+      },
+      "non_action": 2.878025852375364e-05,
+      "illegal_mass": 2.878025852375364e-05
+    },
+    {
+      "info_set": "4:0|rrc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.024751487142666114,
+        "CALL": 0.2306035651232781,
+        "RAISE": 0.7445367707640912
+      },
+      "non_action": 2.8021401802019277e-05,
+      "illegal_mass": 2.8021401802019277e-05
+    },
+    {
+      "info_set": "5:2|rc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9520329391369907,
+        "CALL": 0.047934091327265504,
+        "RAISE": 1.5614012581169508e-05
+      },
+      "non_action": 1.1869929594000705e-05,
+      "illegal_mass": 2.7483942175170213e-05
+    },
+    {
+      "info_set": "3:0|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.28738506286121673,
+        "CALL": 0.3485906291250941,
+        "RAISE": 0.3639005723646731
+      },
+      "non_action": 2.660249926270698e-05,
+      "illegal_mass": 2.660249926270698e-05
+    },
+    {
+      "info_set": "2:1|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.28738506286121673,
+        "CALL": 0.3485906291250941,
+        "RAISE": 0.3639005723646731
+      },
+      "non_action": 2.660249926270698e-05,
+      "illegal_mass": 2.660249926270698e-05
+    },
+    {
+      "info_set": "3:1|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.28738506286121673,
+        "CALL": 0.3485906291250941,
+        "RAISE": 0.3639005723646731
+      },
+      "non_action": 2.660249926270698e-05,
+      "illegal_mass": 2.660249926270698e-05
+    },
+    {
+      "info_set": "5:4|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.4912796074494518,
+        "CALL": 0.4707225466646926,
+        "RAISE": 0.037854330247381204
+      },
+      "non_action": 2.6506649121802215e-05,
+      "illegal_mass": 2.6506649121802215e-05
+    },
+    {
+      "info_set": "4:5|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 10,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.4912796074494518,
+        "CALL": 0.4707225466646926,
+        "RAISE": 0.037854330247381204
+      },
+      "non_action": 2.6506649121802215e-05,
+      "illegal_mass": 2.6506649121802215e-05
+    },
+    {
+      "info_set": "5:0|crrc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.7046216275221145,
+        "CALL": 0.2935910899342918,
+        "RAISE": 0.0017352651322770326
+      },
+      "non_action": 2.6366802571582897e-05,
+      "illegal_mass": 2.6366802571582897e-05
+    },
+    {
+      "info_set": "5:3|rc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.8312409808727642,
+        "CALL": 0.1658508063936758,
+        "RAISE": 0.002861793851073963
+      },
+      "non_action": 2.624878900577554e-05,
+      "illegal_mass": 2.624878900577554e-05
+    },
+    {
+      "info_set": "2:0|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.44923085091120896,
+        "CALL": 0.23765852787384187,
+        "RAISE": 0.3130016923831017
+      },
+      "non_action": 2.510840001776217e-05,
+      "illegal_mass": 2.510840001776217e-05
+    },
+    {
+      "info_set": "3:1|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.44923085091120896,
+        "CALL": 0.23765852787384187,
+        "RAISE": 0.3130016923831017
+      },
+      "non_action": 2.510840001776217e-05,
+      "illegal_mass": 2.510840001776217e-05
+    },
+    {
+      "info_set": "2:1|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.44923085091120896,
+        "CALL": 0.23765852787384187,
+        "RAISE": 0.3130016923831017
+      },
+      "non_action": 2.510840001776217e-05,
+      "illegal_mass": 2.510840001776217e-05
+    },
+    {
+      "info_set": "5:4|rc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.057784488952232926,
+        "CALL": 0.942174064318159,
+        "RAISE": 6.9883716558015745e-06
+      },
+      "non_action": 1.7652751269892663e-05,
+      "illegal_mass": 2.4641122925694238e-05
+    },
+    {
+      "info_set": "5:3|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.5191019191160127,
+        "CALL": 0.09418472020539566,
+        "RAISE": 0.38663486761338434
+      },
+      "non_action": 2.463981207406966e-05,
+      "illegal_mass": 2.463981207406966e-05
+    },
+    {
+      "info_set": "3:4|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9576043626597064,
+        "CALL": 0.02987617814137406,
+        "RAISE": 0.012480268087495965
+      },
+      "non_action": 2.3600519021369527e-05,
+      "illegal_mass": 2.3600519021369527e-05
+    },
+    {
+      "info_set": "3:4|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9955058051514615,
+        "CALL": 0.003706492468740598,
+        "RAISE": 0.0007625390563496411
+      },
+      "non_action": 2.3223371851555896e-05,
+      "illegal_mass": 2.3223371851555896e-05
+    },
+    {
+      "info_set": "3:5|rrc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9859781102944717,
+        "CALL": 0.013934394115951165,
+        "RAISE": 6.158329817024455e-05
+      },
+      "non_action": 2.2941116146225747e-05,
+      "illegal_mass": 2.2941116146225747e-05
+    },
+    {
+      "info_set": "5:4|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.30913792961931713,
+        "CALL": 0.3771011410668401,
+        "RAISE": 0.313595343276613
+      },
+      "non_action": 2.254517957826341e-05,
+      "illegal_mass": 2.254517957826341e-05
+    },
+    {
+      "info_set": "4:5|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.30913792961931713,
+        "CALL": 0.3771011410668401,
+        "RAISE": 0.313595343276613
+      },
+      "non_action": 2.254517957826341e-05,
+      "illegal_mass": 2.254517957826341e-05
+    },
+    {
+      "info_set": "2:0|cc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.8941603675823973,
+        "CALL": 0.10580894138737368,
+        "RAISE": 5.611023588916214e-06
+      },
+      "non_action": 1.6196467891615015e-05,
+      "illegal_mass": 2.180749148053123e-05
+    },
+    {
+      "info_set": "5:0|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.5613476348438585,
+        "CALL": 0.20599923912868812,
+        "RAISE": 0.23254614732355583
+      },
+      "non_action": 2.1728963818702243e-05,
+      "illegal_mass": 2.1728963818702243e-05
+    },
+    {
+      "info_set": "0:4|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9694947420655267,
+        "CALL": 0.024796455907794748,
+        "RAISE": 0.005675802015061351
+      },
+      "non_action": 2.156523462137188e-05,
+      "illegal_mass": 2.156523462137188e-05
+    },
+    {
+      "info_set": "1:5|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9694947420655267,
+        "CALL": 0.024796455907794748,
+        "RAISE": 0.005675802015061351
+      },
+      "non_action": 2.156523462137188e-05,
+      "illegal_mass": 2.156523462137188e-05
+    },
+    {
+      "info_set": "2:0|rc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9151136782710171,
+        "CALL": 0.08485685102529089,
+        "RAISE": 8.295822113881569e-06
+      },
+      "non_action": 1.3194592292014202e-05,
+      "illegal_mass": 2.149041440589577e-05
+    },
+    {
+      "info_set": "2:5|crc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9964565168415658,
+        "CALL": 0.0035213904113319465,
+        "RAISE": 3.6163424468847433e-06
+      },
+      "non_action": 1.7529982385492528e-05,
+      "illegal_mass": 2.114632483237727e-05
+    },
+    {
+      "info_set": "0:4|rrc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.991431666916491,
+        "CALL": 0.008526278961136629,
+        "RAISE": 1.902746685228767e-05
+      },
+      "non_action": 2.098286932425599e-05,
+      "illegal_mass": 2.098286932425599e-05
+    },
+    {
+      "info_set": "1:5|rrc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.991431666916491,
+        "CALL": 0.008526278961136629,
+        "RAISE": 1.902746685228767e-05
+      },
+      "non_action": 2.098286932425599e-05,
+      "illegal_mass": 2.098286932425599e-05
+    },
+    {
+      "info_set": "0:4|rc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9929773352168204,
+        "CALL": 0.006986312225100905,
+        "RAISE": 1.3968147980658628e-05
+      },
+      "non_action": 2.049327132636347e-05,
+      "illegal_mass": 2.049327132636347e-05
+    },
+    {
+      "info_set": "4:3|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.6456076686597619,
+        "CALL": 0.13112519129977135,
+        "RAISE": 0.2231926898796296
+      },
+      "non_action": 2.046738640610053e-05,
+      "illegal_mass": 2.046738640610053e-05
+    },
+    {
+      "info_set": "3:0|cc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.8601934064857772,
+        "CALL": 0.13977714249272508,
+        "RAISE": 3.4800785377765504e-06
+      },
+      "non_action": 1.684374223793767e-05,
+      "illegal_mass": 2.032382077571422e-05
+    },
+    {
+      "info_set": "1:3|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9309489151964258,
+        "CALL": 0.06058001084473301,
+        "RAISE": 0.008434208404395706
+      },
+      "non_action": 1.9924437895217558e-05,
+      "illegal_mass": 1.9924437895217558e-05
+    },
+    {
+      "info_set": "3:5|crc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9923481346693364,
+        "CALL": 0.007606035251931266,
+        "RAISE": 2.451963298238879e-05
+      },
+      "non_action": 1.9732361453434922e-05,
+      "illegal_mass": 1.9732361453434922e-05
+    },
+    {
+      "info_set": "0:5|crc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9928760613711737,
+        "CALL": 0.007099029181915225,
+        "RAISE": 3.220508478755781e-06
+      },
+      "non_action": 1.959412748245642e-05,
+      "illegal_mass": 1.959412748245642e-05
+    },
+    {
+      "info_set": "4:2|cc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9904389659286099,
+        "CALL": 0.009540442890705937,
+        "RAISE": 8.890930382653572e-06
+      },
+      "non_action": 1.0499932111410882e-05,
+      "illegal_mass": 1.9390862494064452e-05
+    },
+    {
+      "info_set": "1:0|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.2808588757749072,
+        "CALL": 0.32510701146424326,
+        "RAISE": 0.39389616449437903
+      },
+      "non_action": 1.8424556216009325e-05,
+      "illegal_mass": 1.8424556216009325e-05
+    },
+    {
+      "info_set": "1:4|crc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9888378242802114,
+        "CALL": 0.011138188382439315,
+        "RAISE": 3.170050019355274e-06
+      },
+      "non_action": 1.8398220274621564e-05,
+      "illegal_mass": 1.8398220274621564e-05
+    },
+    {
+      "info_set": "2:5|crc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9886029621740671,
+        "CALL": 0.009020447116806338,
+        "RAISE": 0.0023537037180824203
+      },
+      "non_action": 1.8177962252346213e-05,
+      "illegal_mass": 1.8177962252346213e-05
+    },
+    {
+      "info_set": "0:2|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9002518638147936,
+        "CALL": 0.08087947162432443,
+        "RAISE": 0.018826720686805753
+      },
+      "non_action": 1.7687205562227513e-05,
+      "illegal_mass": 1.7687205562227513e-05
+    },
+    {
+      "info_set": "2:4|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9961016083983641,
+        "CALL": 0.0029846008644709814,
+        "RAISE": 0.0008942240759306749
+      },
+      "non_action": 1.766860208367397e-05,
+      "illegal_mass": 1.766860208367397e-05
+    },
+    {
+      "info_set": "3:4|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9974841560802177,
+        "CALL": 0.0024266709009096274,
+        "RAISE": 7.016713573851247e-05
+      },
+      "non_action": 1.764170925921557e-05,
+      "illegal_mass": 1.764170925921557e-05
+    },
+    {
+      "info_set": "2:4|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9934456098937229,
+        "CALL": 0.004320445237368775,
+        "RAISE": 0.0022128150190509634
+      },
+      "non_action": 1.7571482572512144e-05,
+      "illegal_mass": 1.7571482572512144e-05
+    },
+    {
+      "info_set": "0:5|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 9,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9951584284747341,
+        "CALL": 0.004316579462736366,
+        "RAISE": 0.0005050647507227031
+      },
+      "non_action": 1.7205762054053506e-05,
+      "illegal_mass": 1.7205762054053506e-05
+    },
+    {
+      "info_set": "4:2|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.862116774640529,
+        "CALL": 0.09866796120241778,
+        "RAISE": 0.039166244818396194
+      },
+      "non_action": 1.67111197033352e-05,
+      "illegal_mass": 1.67111197033352e-05
+    },
+    {
+      "info_set": "2:4|cc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9972526841363796,
+        "CALL": 0.0027305349146251206,
+        "RAISE": 3.3817009712404773e-06
+      },
+      "non_action": 1.2628481532031463e-05,
+      "illegal_mass": 1.601018250327194e-05
+    },
+    {
+      "info_set": "0:4|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 8,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9927932974325121,
+        "CALL": 0.006612935022319888,
+        "RAISE": 0.0005746125661783202
+      },
+      "non_action": 1.5993982501004766e-05,
+      "illegal_mass": 1.5993982501004766e-05
+    },
+    {
+      "info_set": "5:3|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.546674491212542,
+        "CALL": 0.11595683875266373,
+        "RAISE": 0.3372962232772238
+      },
+      "non_action": 1.5977796627506335e-05,
+      "illegal_mass": 1.5977796627506335e-05
+    },
+    {
+      "info_set": "0:5|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 5,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9962087976557703,
+        "CALL": 0.0036587979405729976,
+        "RAISE": 0.00011442673273628474
+      },
+      "non_action": 1.58929064100212e-05,
+      "illegal_mass": 1.58929064100212e-05
+    },
+    {
+      "info_set": "1:4|cc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9940314940700697,
+        "CALL": 0.0052189039079820945,
+        "RAISE": 0.0007314634716026623
+      },
+      "non_action": 1.546244326685139e-05,
+      "illegal_mass": 1.546244326685139e-05
+    },
+    {
+      "info_set": "2:1|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.7114963452662543,
+        "CALL": 0.1654794577457249,
+        "RAISE": 0.12295161520496035
+      },
+      "non_action": 1.5088212221655605e-05,
+      "illegal_mass": 1.5088212221655605e-05
+    },
+    {
+      "info_set": "0:3|rrc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9934517166123272,
+        "CALL": 0.006531936483492413,
+        "RAISE": 5.270133937868692e-06
+      },
+      "non_action": 9.705360758583166e-06,
+      "illegal_mass": 1.4975494696451858e-05
+    },
+    {
+      "info_set": "3:5|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9967604985047129,
+        "CALL": 0.002829150011283996,
+        "RAISE": 0.0003940903943996191
+      },
+      "non_action": 1.490332876951803e-05,
+      "illegal_mass": 1.490332876951803e-05
+    },
+    {
+      "info_set": "0:5|cc/cr",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 6,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9958418406899505,
+        "CALL": 0.004128525533370643,
+        "RAISE": 1.2833916673341136e-05
+      },
+      "non_action": 1.4902975230509852e-05,
+      "illegal_mass": 1.4902975230509852e-05
+    },
+    {
+      "info_set": "1:3|cc/crr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9764998051466438,
+        "CALL": 0.02348268075442583,
+        "RAISE": 1.6881331521007967e-06
+      },
+      "non_action": 1.2183173645222198e-05,
+      "illegal_mass": 1.3871306797322994e-05
+    },
+    {
+      "info_set": "0:3|cc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9953658038047107,
+        "CALL": 0.004619527373085636,
+        "RAISE": 2.866907459286176e-06
+      },
+      "non_action": 1.0645827813583382e-05,
+      "illegal_mass": 1.3512735272869558e-05
+    },
+    {
+      "info_set": "2:1|cc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9731309403054345,
+        "CALL": 0.026854288674977553,
+        "RAISE": 1.838542818246163e-06
+      },
+      "non_action": 9.98137887398448e-06,
+      "illegal_mass": 1.1819921692230643e-05
+    },
+    {
+      "info_set": "5:2|rc/r",
+      "legal": [
+        0,
+        1,
+        2
+      ],
+      "visits": 7,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.7408347372407535,
+        "CALL": 0.06637589529448346,
+        "RAISE": 0.1927451290411246
+      },
+      "non_action": 1.116933576826008e-05,
+      "illegal_mass": 1.116933576826008e-05
+    },
+    {
+      "info_set": "1:2|cc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9950321062879937,
+        "CALL": 0.004956629576416543,
+        "RAISE": 4.541036257367789e-07
+      },
+      "non_action": 9.582514328051207e-06,
+      "illegal_mass": 1.0036617953787985e-05
+    },
+    {
+      "info_set": "1:3|rc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9961284174928914,
+        "CALL": 0.0038601930892824357,
+        "RAISE": 4.978637194351685e-07
+      },
+      "non_action": 9.488156475090692e-06,
+      "illegal_mass": 9.98602019452586e-06
+    },
+    {
+      "info_set": "1:2|rc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 3,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9961284174928914,
+        "CALL": 0.0038601930892824357,
+        "RAISE": 4.978637194351685e-07
+      },
+      "non_action": 9.488156475090692e-06,
+      "illegal_mass": 9.98602019452586e-06
+    },
+    {
+      "info_set": "3:5|crc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.999289551968712,
+        "CALL": 0.0007007314846334378,
+        "RAISE": 6.671740745474373e-07
+      },
+      "non_action": 8.891322033140248e-06,
+      "illegal_mass": 9.558496107687685e-06
+    },
+    {
+      "info_set": "2:5|rc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 2,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9997011661920517,
+        "CALL": 0.00029054989916312495,
+        "RAISE": 2.3173754669850673e-07
+      },
+      "non_action": 8.174123485123843e-06,
+      "illegal_mass": 8.405861031822349e-06
+    },
+    {
+      "info_set": "1:4|crc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9994607265703055,
+        "CALL": 0.0005313466393075147,
+        "RAISE": 6.885901340815488e-07
+      },
+      "non_action": 7.095695756558949e-06,
+      "illegal_mass": 7.784285890640499e-06
+    },
+    {
+      "info_set": "1:4|rc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 1,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9996397938885418,
+        "CALL": 0.00035246734934700263,
+        "RAISE": 1.5136231465277208e-07
+      },
+      "non_action": 7.139692579316366e-06,
+      "illegal_mass": 7.291054893969138e-06
+    },
+    {
+      "info_set": "0:4|rc/rr",
+      "legal": [
+        0,
+        1
+      ],
+      "visits": 4,
+      "round": 2,
+      "facing_bet": true,
+      "mass": {
+        "FOLD": 0.9996397938885418,
+        "CALL": 0.00035246734934700263,
+        "RAISE": 1.5136231465277208e-07
+      },
+      "non_action": 7.139692579316366e-06,
+      "illegal_mass": 7.291054893969138e-06
+    }
+  ],
+  "timestamp": "2026-07-27T15:51:33"
+}

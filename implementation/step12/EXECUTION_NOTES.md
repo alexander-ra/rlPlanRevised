@@ -615,6 +615,36 @@ nothing is due and checking is free, it puts **p=0.983 on FOLD**. Folding a free
 dominated, and this is the Leduc analogue of Kuhn's illegal-move rate — a direct measure of rules
 comprehension, and far worse here than Kuhn's 0–1%.
 
+### Illegal-action taxonomy — ONE misconception, not diffuse confusion
+
+Reach-sampled 220 Leduc info sets, reading the raw 3-action mass *without* masking:
+
+| category | mean mass | applies to | mean where it applies |
+|---|---|---|---|
+| **FOLD_WHEN_FREE** | **0.2340** | 112 sets | **0.4596** |
+| RAISE_AT_CAP | 0.0000 | 36 sets | 0.0001 |
+| NON_ACTION (format failure) | 0.0001 | 220 sets | 0.0001 |
+
+**FOLD_WHEN_FREE is 100% of the illegal mass.** Rules comprehension is otherwise essentially
+perfect: the model **never** tries to raise past the 2-raise cap (0.0000 over 36 applicable sets)
+and effectively always emits a valid action token (0.0001 non-action). By situation:
+
+| situation | mean illegal mass | info sets |
+|---|---|---|
+| round 1 / facing a bet | 0.0002 | 23 |
+| round 1 / nothing due | 0.0086 | 12 |
+| round 2 / facing a bet | 0.0000 | 85 |
+| **round 2 / nothing due** | **0.5138** | 100 |
+
+Sharply localised: **in the second betting round with nothing due it wants to fold ~51% of the
+time**, rising to **0.99** at the worst info sets — every one of which is a weak unpaired hand
+against a high board (`2:5|cc/` Queen vs King board, `3:4|cc/` Queen vs King, `0:4|cc/` Jack vs
+King). It conflates *"my hand is weak"* with *"I should fold"*, forgetting that checking is free;
+folding a free check is strictly dominated. The near-zero rate in round 1 (0.86%) shows this is
+**board-texture-triggered, not a rules gap** — there is no board to look weak against before the
+flop. A one-line prompt fix ("you may check for free") would likely remove most of it, which makes
+this a *prompting* finding rather than a capability ceiling.
+
 **Net scouting read:** LLM poker competence degrades sharply from Kuhn to Leduc. On the toy game
 LLMs looked competitive with trained sequence models and better than Nash at punishing weak
 opponents; one street and one board card later they are no better than the DT, cannot exploit

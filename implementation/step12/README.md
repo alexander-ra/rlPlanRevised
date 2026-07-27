@@ -120,6 +120,8 @@ choice Step 11 made for its PPO.
 - [ ] SCALE profile run
 - [x] **Leduc LLM scouting** — chips/hand vs near-Nash + zoo, lazy cached logprob policy
       (only 31–54% of the 936 info sets are ever reached, so no full enumeration needed)
+- [x] **[`SCOUTING_REPORT.md`](SCOUTING_REPORT.md)** — mini-report on all follow-on work
+      (method advances, findings, the four measurement artefacts caught, limitations)
 - [ ] Leduc Stage 1+ — exact exploitability (needs the step02/step03 `cfr` collision solved)
 - [ ] `consolidation/` — deferred (human-written after runs)
 - [ ] `deliverables/reports/step12/` — deferred
