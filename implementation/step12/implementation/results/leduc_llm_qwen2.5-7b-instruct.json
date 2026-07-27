@@ -1,0 +1,43 @@
+{
+  "game": "leduc",
+  "model": "qwen2.5-7b-instruct",
+  "style": "plain",
+  "temperature": 0.7,
+  "hands_vs_nash": 600,
+  "vs_nash_chips_per_hand": -0.4633333333333333,
+  "vs_nash_se": 0.13200582198159685,
+  "dt_reference": -0.4542,
+  "info_sets_queried": 507,
+  "info_sets_total": 936,
+  "mean_unmapped_mass": 0.20639817554923112,
+  "zoo": {
+    "CallingStation": {
+      "llm": 0.31,
+      "llm_se": 0.14034689166490294,
+      "nash": 0.6694
+    },
+    "Maniac": {
+      "llm": -0.6275,
+      "llm_se": 0.27013304013948386,
+      "nash": 0.57525
+    },
+    "Rock": {
+      "llm": -0.06,
+      "llm_se": 0.17321518409192654,
+      "nash": 0.3398
+    },
+    "LoosePassive": {
+      "llm": 0.2225,
+      "llm_se": 0.1596323412564008,
+      "nash": 0.5888
+    },
+    "Random": {
+      "llm": -0.2,
+      "llm_se": 0.18748333259252675,
+      "nash": 0.7352
+    }
+  },
+  "zoo_mean_llm": -0.071,
+  "zoo_mean_nash": 0.5816899999999999,
+  "timestamp": "2026-07-27T12:05:22"
+}

@@ -61,6 +61,28 @@ from llm_agent import _VERB_TO_ACTION, _PASS, _BET, KuhnPokerLLMAgent
 _NEUTRAL = re.compile(r"^[\s\*_#`>\-\.:\"']*$")
 
 
+def map_token(norm: str, verb_map: dict):
+    """Map a normalised token to an action, allowing PARTIAL tokens.
+
+    RUN-SESSION FIX (2026-07-27). Exact matching against whole words silently fails whenever the
+    tokenizer splits an action word. Measured on qwen2.5-7b in Leduc: `RAISE` tokenises as ' RA'
+    and `FOLD` as ' F', while `CALL`/`CHECK` stay whole -- so exact matching discarded **70% of the
+    probability mass** and INVERTED the policy (the model wanted to raise with p=0.95 at the root;
+    the decoder scored it as calling ~97% of the time). Kuhn never exposed this because ' BET' and
+    ' PASS' happen to be single tokens for these models.
+
+    A partial token is attributed only if it is a prefix of exactly ONE action's vocabulary --
+    e.g. 'ra'->raise, 'f'->fold. Ambiguous prefixes stay unmapped: in Kuhn 'c' could begin 'call'
+    (BET) or 'check' (PASS), so it must NOT be guessed.
+    """
+    if not norm:
+        return None
+    if norm in verb_map:
+        return verb_map[norm]
+    hits = {a for word, a in verb_map.items() if word.startswith(norm)}
+    return hits.pop() if len(hits) == 1 else None
+
+
 def action_distribution(tokens: list, legal_actions=(_PASS, _BET)) -> tuple:
     """[(token, prob), ...] -> ({action: prob}, unmapped_mass, neutral_mass).
 
@@ -74,8 +96,8 @@ def action_distribution(tokens: list, legal_actions=(_PASS, _BET)) -> tuple:
     for tok, prob in tokens:
         norm = re.sub(r"[^a-z\-]", "", tok.strip().lower())
         norm = norm.replace("all-in", "allin")
-        if norm in _VERB_TO_ACTION:
-            a = _VERB_TO_ACTION[norm]
+        a = map_token(norm, _VERB_TO_ACTION)
+        if a is not None:
             if a in per_action:
                 per_action[a] += prob
             else:

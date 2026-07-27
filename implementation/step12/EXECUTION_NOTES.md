@@ -543,6 +543,84 @@ time this session a small-sample pattern looked like a discovery (see also the s
 Phase 2 and the retracted B5 "in-context learning" result); the standing lesson is that no
 performance claim in this step is safe below ~10³ hands.
 
+---
+
+## Phase 4d — Leduc LLM scouting (Stage 1-lite)
+
+Deliberately cheap, per the owner's framing that LLM play is *scouting the field*, not a thesis
+contribution. Two choices kept it so:
+
+- **No exact exploitability.** Scored by chips/hand vs near-Nash — the same yardstick
+  `leduc_stage0.py` used for the DT, so LLM and DT are directly comparable — which sidesteps the
+  step02/step03 `cfr` collision entirely.
+- **No 936-info-set enumeration.** The policy queries lazily and caches by info-set string, so
+  reach probability does the subsetting for free.
+
+### Two porting complications (both real, both fixed)
+
+**1. Leduc card ids are 0–5, not ranks 0–2.** `rank = card // 2` (0,1=J; 2,3=Q; 4,5=K), matching
+`state_encoding.py:167`. The first deal is `(0,1,2)`, which *looks* like ranks, so the prompt code
+worked until a King (id 4/5) appeared and raised `KeyError: 5`. The subtler half: the "does your
+card pair the board" check compared card **ids**, so it would have told the model a Jack never
+pairs the other Jack. Fixed; verified over all 120 deals × 6 lines (0 failures, pair message
+correctly shown 72×). **The encoder already used `// 2`, so Stage 0's DT results are unaffected.**
+
+**2. Tokenizer-split action words INVERTED the measured policy.** qwen2.5-7b tokenises
+`RAISE → ' RA'` and `FOLD → ' F'` while `CALL`/`CHECK` stay whole. Exact whole-word matching
+discarded **70% of the probability mass** and read a model that wanted to raise at **p=0.953** as
+calling ~97% of the time. The first Leduc run therefore produced a confident, plausible, and
+**entirely wrong** result (−0.83 chips/hand, losing to every zoo archetype) — discarded.
+
+Fixed with prefix-aware matching (`map_token`), which attributes a partial token **only when it
+prefixes exactly one action**. Critical safety property, verified: in Kuhn `'c'` could begin `call`
+(BET) or `check` (PASS), so it must stay unmapped rather than be guessed — it does. The Kuhn A1
+self-test is byte-identical, so **all earlier Kuhn results stand** (their unmapped mass was already
+0.02%). Kuhn never exposed this because `' BET'`/`' PASS'` happen to be single tokens.
+
+### Result (qwen2.5-7b, plain, temp 0.7, 600 hands vs near-Nash, seats alternated)
+
+| | chips/hand vs near-Nash |
+|---|---|
+| **LLM (qwen2.5-7b)** | **−0.463 ± 0.132** |
+| DT (return-conditioned, modal target) | −0.454 |
+| Nash vs Nash | 0 by construction |
+
+| opponent | LLM | ± SE | Nash |
+|---|---|---|---|
+| CallingStation | +0.310 | 0.140 | +0.669 |
+| LoosePassive | +0.223 | 0.160 | +0.589 |
+| Rock | −0.060 | 0.173 | +0.340 |
+| Random | −0.200 | 0.188 | +0.735 |
+| Maniac | −0.628 | 0.270 | +0.575 |
+| **MEAN** | **−0.071** | | **+0.582** |
+
+**1. The LLM's Kuhn advantage evaporates.** On Kuhn a zero-shot LLM clearly beat the trained DT
+(0.25–0.33 vs 0.62–0.85 exploitability). On Leduc the two are **statistically indistinguishable**
+(−0.463 ± 0.132 vs −0.454), both bleeding ~0.46 chips/hand to near-Nash.
+
+**2. Its exploitation collapses.** On Kuhn the LLM *out-exploited* Nash against the zoo (0.177 vs
+0.110 chips/hand). On Leduc it manages **−0.071 vs Nash's +0.582** — it cannot beat weak opponents
+at all, losing even to **Random** (−0.200) and to Maniac (−0.628). Kuhn's "loose aggression prints
+against passive opponents" does not survive two streets and a board card.
+
+**3. Only a third to a half of the info sets are ever needed.** 293 distinct info sets (**31.3%**
+of 936) covered 600 hands vs near-Nash; 507 (**54.2%**) covered every match including the zoo.
+Reach probability does the subsetting automatically, so full enumeration is unnecessary —
+confirming the owner's instinct and making Leduc LLM measurement affordable.
+
+**4. Substantial illegal-action intent (~25% of probability mass).** After the tokenizer fix the
+residual unmapped mass is **not** a decoding artefact — it is the model wanting to take actions
+that are not legal. It is dominated by **folding when folding is illegal**: at `'2:5|rc/'`, where
+nothing is due and checking is free, it puts **p=0.983 on FOLD**. Folding a free check is strictly
+dominated, and this is the Leduc analogue of Kuhn's illegal-move rate — a direct measure of rules
+comprehension, and far worse here than Kuhn's 0–1%.
+
+**Net scouting read:** LLM poker competence degrades sharply from Kuhn to Leduc. On the toy game
+LLMs looked competitive with trained sequence models and better than Nash at punishing weak
+opponents; one street and one board card later they are no better than the DT, cannot exploit
+anybody, and want to make illegal folds a quarter of the time. Any optimism from the Kuhn table
+should be read as a property of Kuhn.
+
 ### Transient 400s ⇒ the client now retries
 
 A full comparison pass is 150+ sequential requests. The first gpt-oss run died at ~90 calls with

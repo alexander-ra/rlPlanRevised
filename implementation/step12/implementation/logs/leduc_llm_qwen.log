@@ -1,0 +1,20 @@
+﻿Leduc LLM scouting: model=qwen2.5-7b-instruct style=plain hands=600
+==============================================================================
+vs near-Nash : -0.4633 +/- 0.1320 chips/hand  (600 hands, seats alternated)
+   reference : DT (return-conditioned, modal target) -0.4542; Nash vs Nash = 0 by construction
+   info sets queried: 293 distinct (of 936 total = 31.3%) in 622s
+   unmapped logprob mass: 0.2501
+
+vs the exploitable zoo (400 hands each):
+opponent                 LLM   +/- se        Nash
+-------------------------------------------------
+CallingStation        0.3100   0.1403      0.6694
+Maniac               -0.6275   0.2701      0.5753
+Rock                 -0.0600   0.1732      0.3398
+LoosePassive          0.2225   0.1596      0.5888
+Random               -0.2000   0.1875      0.7352
+-------------------------------------------------
+MEAN                 -0.0710               0.5817
+
+total distinct info sets queried: 507 of 936 (54.2%) -- lazy caching means reach probability does the subsetting.
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\leduc_llm_qwen2.5-7b-instruct.json

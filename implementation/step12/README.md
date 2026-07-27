@@ -118,6 +118,8 @@ choice Step 11 made for its PPO.
       masking bug found and fixed); no exploitability/LLM on Leduc yet
 - [ ] OpenThinker3 `plain` / `gametheory` rows — skipped (~9 h at ~38 s/decision); CoT row measured
 - [ ] SCALE profile run
+- [x] **Leduc LLM scouting** — chips/hand vs near-Nash + zoo, lazy cached logprob policy
+      (only 31–54% of the 936 info sets are ever reached, so no full enumeration needed)
 - [ ] Leduc Stage 1+ — exact exploitability (needs the step02/step03 `cfr` collision solved)
 - [ ] `consolidation/` — deferred (human-written after runs)
 - [ ] `deliverables/reports/step12/` — deferred
