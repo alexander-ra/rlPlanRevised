@@ -78,10 +78,16 @@ def make_cfr_policy(game, iters: int = 30000, seed: int = 0):
     `nash.solve_nash(make_game("leduc"), iters)` (documented -- SCALE extension).
     """
     if game.name != "kuhn":
-        raise NotImplementedError(
-            "make_cfr_policy currently generates Kuhn data. For Leduc (SCALE), generate "
-            "near-Nash play with step07's nash.solve_nash(make_game('leduc'), iters)."
-        )
+        # RUN-SESSION EXTENSION (Stage 0, 2026-07-27): Leduc now works, via step07's CFR exactly
+        # as the original error message directed. NOTE the second return value differs by game:
+        #   kuhn  -> step02 `node_map` (info_set -> InfoSetNode), consumed by the exact metric
+        #   leduc -> step07 CFR `table` (info_set -> {action: prob}); there is no step02 metric
+        #            for Leduc (step03 owns that, and `deps.py` deliberately keeps step03's
+        #            colliding `cfr` package off sys.path), so callers must not assume node_map.
+        from nash import solve_nash_cached
+
+        policy, table = solve_nash_cached(game, iters)
+        return policy, table
     from cfr.cfr_trainer import KuhnTrainer
 
     random.seed(seed)  # KuhnTrainer uses module-level random.shuffle; seed for reproducibility

@@ -112,8 +112,13 @@ choice Step 11 made for its PPO.
 - [x] `implementation/` (code + README + validation harness) — **executed at SMOKE 2026-07-25**
 - [x] [`EXECUTION_NOTES.md`](EXECUTION_NOTES.md) — Phase 2 + Phase 4 (SMOKE) measured-vs-predicted
 - [x] **Real-model LLM rows** — all 3 roster models measured (gpt-oss-20b, Qwen2.5-7B, OpenThinker3-7B)
+- [x] **Deeper LLM investigation** — A1 logprob extraction (validated), A2 leak decomposition,
+      B4 frequency elicitation, B5 opponent modelling, B6 exploitation-vs-zoo, C10 head-to-head
+- [x] **Leduc Stage 0** — encoder/dataset/DT port + return-conditioning sweep (legal-action
+      masking bug found and fixed); no exploitability/LLM on Leduc yet
 - [ ] OpenThinker3 `plain` / `gametheory` rows — skipped (~9 h at ~38 s/decision); CoT row measured
 - [ ] SCALE profile run
+- [ ] Leduc Stage 1+ — exact exploitability (needs the step02/step03 `cfr` collision solved)
 - [ ] `consolidation/` — deferred (human-written after runs)
 - [ ] `deliverables/reports/step12/` — deferred
 

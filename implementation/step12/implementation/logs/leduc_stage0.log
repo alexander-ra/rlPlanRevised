@@ -1,0 +1,42 @@
+﻿Leduc Stage 0: trajectories=40000 cfr_iters=20000 epochs=40 device=cuda
+==============================================================================
+data: 40000 trajectories, state_dim=35, actions=3, built in 1s
+  seat0 mean return = -0.1149 +/- 0.0248
+  seat1 mean return = +0.1149 +/- 0.0248
+  return-to-go: 15 distinct values; MODAL = -1 (20.1% of steps)  [Kuhn: 4 values, modal -1 at 41.7%]
+[DT] epoch   1/40  loss=0.4479
+[DT] epoch  10/40  loss=0.2352
+[DT] epoch  20/40  loss=0.2174
+[DT] epoch  30/40  loss=0.2033
+[DT] epoch  40/40  loss=0.2064
+
+target return -> chips/hand vs near-Nash (4000 hands each, seats alternated)
+  target R    chips/hand   +/- se  illegal mass  data share
+-----------------------------------------------------------
+       -13       -0.2767   0.1044        0.0016       0.5%
+       -11       -0.3280   0.1048        0.0013       0.3%
+        -9       -0.3350   0.0911        0.0001       3.4%
+        -7       -0.3922   0.0778        0.0000       3.8%
+        -5       -0.8780   0.0594        0.0002       8.5%
+        -3       -0.6088   0.0409        0.0058       9.7%
+        -1       -0.4542   0.0247        0.0006      20.1%  <-- MODAL
+         0       -0.8005   0.0703        0.0000      17.4%
+         1       -0.5138   0.0774        0.0001      13.7%
+         3       -0.5605   0.0892        0.0002       8.3%
+         5       -0.4660   0.0995        0.0003       7.4%
+         7       -0.2860   0.0972        0.0002       3.3%
+         9       -0.3302   0.0982        0.0002       2.8%
+        11       -0.3698   0.0977        0.0001       0.3%
+        13       -0.3693   0.0980        0.0002       0.5%
+        15       -0.3655   0.0974        0.0003       0.0%  <-- IMPOSSIBLE/OOD
+-----------------------------------------------------------
+return-conditioning trend (in-distribution targets only):
+  slope = +0.00140 chips per unit of target return
+  Pearson r = +0.062   Spearman rho = -0.054
+  best real target R=-13 -> -0.2767; IMPOSSIBLE R=+15 -> -0.3655 (saturates/degrades)
+  -> No monotone steering on Leduc either; the Kuhn null result generalises.
+performance spread across targets = 0.6013 chips/hand
+modal target R=-1: -0.4542 vs mean of others -0.4587  -> gap -0.0044 (-0.2 SE)
+-> NO NOTCH: the Kuhn collapse at the modal return does NOT reproduce on Leduc's 15-value payoff ladder -- evidence it was a small-payoff-alphabet artefact.
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\leduc_stage0.json  (total 355s)

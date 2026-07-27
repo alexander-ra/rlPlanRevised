@@ -464,6 +464,85 @@ King, catastrophically wrong on one Queen node, incapable of stating what they d
 exploitative-by-default rather than adaptive. **Every one of those is invisible in a single
 exploitability number**, which is the methodological argument for Step 14's evaluation framework.
 
+---
+
+## Phase 4c — Leduc Stage 0: is the Kuhn return-conditioning result a toy-game artefact?
+
+Narrow by design: encoder + dataset + DT training + a return-conditioning sweep scored by **actual
+performance** (chips/hand vs a near-Nash opponent). No exact exploitability (that needs step03,
+whose `cfr` package collides with step02's), no LLM, no ARDT.
+
+### Porting: every flagged Leduc blocker cleared, and one was a real bug
+
+| Blocker (flagged earlier) | Outcome |
+|---|---|
+| `make_cfr_policy` raises for non-Kuhn | Fixed — routes to step07 `solve_nash_cached`. Note its 2nd return value differs by game (step02 `node_map` for Kuhn, CFR `table` for Leduc); documented at the call site. |
+| `PokerStateEncoder` on 2 streets + board | Works unchanged, `state_dim=35` (Kuhn 17) |
+| `PokerTrajectoryDataset` | Works unchanged; 15 distinct return values, ≤4 decisions/player/hand |
+| **Unmasked illegal actions** | **A REAL BUG, now fixed.** Leduc states have 2 *or* 3 legal actions and `action_probs` softmaxes over all of `act_dim`. At smoke size the DT put **1.4–3.5%** of its probability mass on illegal actions; well-trained it drops to ~0.02–0.6%, but never to zero. In Kuhn all actions are always legal, so this was structurally unobservable. Masking + renormalisation added, with the illegal mass reported as a diagnostic. |
+
+Data sanity: seat-0 mean return **−0.115 ± 0.025** (Leduc's first-mover disadvantage), and the
+payoff alphabet is **15 values** {−13…+13} vs Kuhn's 4, with **−1 still modal but at 20.1%** rather
+than Kuhn's 41.7%.
+
+### Result (40k trajectories, 20k CFR iters, 40 epochs, 4,000 hands per target)
+
+| target R | chips/hand vs near-Nash | ± SE | data share |
+|---|---|---|---|
+| −13 | −0.277 | 0.104 | 0.5% |
+| −5 | **−0.878** | 0.059 | 8.5% |
+| −1 (modal) | −0.454 | 0.025 | 20.1% |
+| 0 | −0.801 | 0.070 | 17.4% |
+| +7 | −0.286 | 0.097 | 3.3% |
+| +13 | −0.369 | 0.098 | 0.5% |
+| **+15 (impossible)** | −0.366 | 0.097 | 0% |
+
+- **The Kuhn notch does NOT reproduce.** At the modal return the DT is **0.2 SE** from the mean of
+  the other targets — no collapse, nothing like Kuhn's jump to 1.93 chips exploitability where it
+  passed at 11 of 12 info sets.
+- **But conditioning still does not steer.** Pearson **r = +0.062**, Spearman **ρ = −0.054**, slope
+  **+0.0014** chips per unit of target return. Higher targets do not produce better play.
+- **Conditioning is not inert, though**: the spread across targets is **0.60 chips/hand**, many
+  times the per-point SE, so the target materially changes the policy — just not in an order
+  related to how good the target is. Worst at R=−5 and R=0, best at R=−13 and R=+7.
+- **The impossible +15 saturates** (−0.366, indistinguishable from the high real targets) —
+  the one Kuhn prediction that reproduces cleanly.
+- The DT **loses to near-Nash at every target** (−0.28 to −0.88 chips/hand), consistent with Kuhn.
+
+### §0.1 reconciliation — this refines the Phase 2 mechanism, and partly refutes it
+
+The Phase 2 notes explained the Kuhn behaviour as: *the return's magnitude encodes which betting
+line was played (|R|=2 ⇔ a bet was called, |R|=1 ⇔ a fold), its sign is card luck, and R=−1 — the
+modal fold payoff — therefore selects "the folding line"*. That explanation predicted the effect
+should **weaken or vanish on a richer payoff alphabet.** Half of that prediction is confirmed and
+half is refuted:
+
+- ✅ **The notch vanished**, exactly as the mechanism predicts, when the alphabet went 4 → 15 values
+  and the modal share 41.7% → 20.1%.
+- ❌ **Steering did not appear.** If the notch were the only thing suppressing return conditioning,
+  removing it should have let "higher target → better play" emerge. It did not (r ≈ 0.06).
+
+**So the payoff-alphabet story explains the Kuhn *notch*, but it is NOT why return conditioning
+fails.** The failure is more fundamental and survives a 15-value ladder, two betting streets and a
+board card. The likeliest remaining explanation — consistent with Paster et al. and now with two
+games — is that in a zero-sum imperfect-information game the realised return is dominated by
+factors the hero does not control (the opponent's private card and their actions), so conditioning
+on it cannot systematically select better play no matter how finely the payoffs are graded. That is
+a stronger and more transferable claim than the Kuhn-only version, and it is the one that should
+carry into Step 13: **on fixed poker logs, return-conditioned DT is the wrong instrument; the
+value of ARDT-style relabeling is precisely that it replaces an uncontrollable target with a
+controllable one.**
+
+### Honest note on the smoke run
+
+A 2,000-trajectory / 200-hand-per-target smoke pass showed an apparent **monotone rise** from −0.36
+at R=−13 to +0.33 at R=+13, which looked like "conditioning works on Leduc". At that size the
+per-point SE was **±0.20–0.37** — comparable to the entire apparent effect. At 4,000 hands
+(SE ±0.02–0.10) it is flat (r = +0.06). **The trend was noise.** Recorded because it is the third
+time this session a small-sample pattern looked like a discovery (see also the seat-0 scare in
+Phase 2 and the retracted B5 "in-context learning" result); the standing lesson is that no
+performance claim in this step is safe below ~10³ hands.
+
 ### Transient 400s ⇒ the client now retries
 
 A full comparison pass is 150+ sequential requests. The first gpt-oss run died at ~90 calls with
