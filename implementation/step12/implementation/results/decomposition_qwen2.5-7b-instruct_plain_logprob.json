@@ -1,0 +1,144 @@
+{
+  "baseline_exploitability_chips": 0.3571377184890649,
+  "sum_of_positive_deltas": 0.27951068566494675,
+  "sum_over_total_ratio": 0.78264118068365,
+  "info_sets": {
+    "1": {
+      "player": 0,
+      "p_bet": 0.0060255898236268104,
+      "p_bet_nash": 0.1827507860240093,
+      "deviation": 0.1767251962003825,
+      "expl_if_nash": 0.3275881070959482,
+      "delta_nash": 0.02954961139311668,
+      "expl_if_best_pure": 0.35814523661059294,
+      "delta_best_pure": -0.0010075181215280504,
+      "best_pure_action": "pass"
+    },
+    "2": {
+      "player": 0,
+      "p_bet": 0.9999455669557418,
+      "p_bet_nash": 0.0010354191967694563,
+      "deviation": 0.9989101477589724,
+      "expl_if_nash": 0.339087291072275,
+      "delta_nash": 0.018050427416789916,
+      "expl_if_best_pure": 0.3390685809219184,
+      "delta_best_pure": 0.01806913756714651,
+      "best_pure_action": "pass"
+    },
+    "3": {
+      "player": 0,
+      "p_bet": 0.999998584455616,
+      "p_bet_nash": 0.560633819394003,
+      "deviation": 0.4393647650616129,
+      "expl_if_nash": 0.3568668112500919,
+      "delta_nash": 0.00027090723897299496,
+      "expl_if_best_pure": 0.357138189948591,
+      "delta_best_pure": -4.7145952608573793e-07,
+      "best_pure_action": "bet"
+    },
+    "1pb": {
+      "player": 0,
+      "p_bet": 0.0016196676269887539,
+      "p_bet_nash": 1.8348382940077287e-05,
+      "deviation": 0.0016013192440486766,
+      "expl_if_nash": 0.35660716170536244,
+      "delta_nash": 0.0005305567837024516,
+      "expl_if_best_pure": 0.35660131816075524,
+      "delta_best_pure": 0.0005364003283096497,
+      "best_pure_action": "pass"
+    },
+    "2pb": {
+      "player": 0,
+      "p_bet": 0.5542103635365573,
+      "p_bet_nash": 0.5273164616023002,
+      "deviation": 0.026893901934257114,
+      "expl_if_nash": 0.357138206461383,
+      "delta_nash": -4.879723181083762e-07,
+      "expl_if_best_pure": 0.3571389378305338,
+      "delta_best_pure": -1.219341468905455e-06,
+      "best_pure_action": "bet"
+    },
+    "3pb": {
+      "player": 0,
+      "p_bet": 0.9997254752482267,
+      "p_bet_nash": 0.9999661106930311,
+      "deviation": 0.00024063544480434906,
+      "expl_if_nash": 0.35713771814843476,
+      "delta_nash": 3.4063013520935215e-10,
+      "expl_if_best_pure": 0.3571377181004629,
+      "delta_best_pure": 3.8860198392498546e-10,
+      "best_pure_action": "bet"
+    },
+    "1p": {
+      "player": 1,
+      "p_bet": 0.14374175432631311,
+      "p_bet_nash": 0.34420319696387963,
+      "deviation": 0.20046144263756652,
+      "expl_if_nash": 0.3291624228033084,
+      "delta_nash": 0.027975295685756518,
+      "expl_if_best_pure": 0.3810946775434504,
+      "delta_best_pure": -0.023956959054385496,
+      "best_pure_action": "pass"
+    },
+    "2p": {
+      "player": 1,
+      "p_bet": 0.9999984586329106,
+      "p_bet_nash": 0.0003397108858466087,
+      "deviation": 0.999658747747064,
+      "expl_if_nash": 0.20911385571975927,
+      "delta_nash": 0.14802386276930563,
+      "expl_if_best_pure": 0.20911385571975927,
+      "delta_best_pure": 0.14802386276930563,
+      "best_pure_action": "pass"
+    },
+    "3p": {
+      "player": 1,
+      "p_bet": 0.9999999223686116,
+      "p_bet_nash": 0.9999698577284785,
+      "deviation": 3.00646401331095e-05,
+      "expl_if_nash": 0.3571377184890649,
+      "delta_nash": 0.0,
+      "expl_if_best_pure": 0.3571377184890649,
+      "delta_best_pure": 0.0,
+      "best_pure_action": "bet"
+    },
+    "1b": {
+      "player": 1,
+      "p_bet": 0.0021747058538209014,
+      "p_bet_nash": 9.004141905276428e-05,
+      "deviation": 0.0020846644347681373,
+      "expl_if_nash": 0.3571377184890649,
+      "delta_nash": 0.0,
+      "expl_if_best_pure": 0.3571377184890649,
+      "delta_best_pure": 0.0,
+      "best_pure_action": "pass"
+    },
+    "2b": {
+      "player": 1,
+      "p_bet": 0.25342233048956875,
+      "p_bet_nash": 0.347122153501408,
+      "deviation": 0.09369982301183927,
+      "expl_if_nash": 0.3102878069831452,
+      "delta_nash": 0.04684991150591972,
+      "expl_if_best_pure": 0.3089070334006691,
+      "delta_best_pure": 0.048230685088395786,
+      "best_pure_action": "bet"
+    },
+    "3b": {
+      "player": 1,
+      "p_bet": 0.983449632666973,
+      "p_bet_nash": 0.9999698577284785,
+      "deviation": 0.01652022506150541,
+      "expl_if_nash": 0.3488776059583122,
+      "delta_nash": 0.008260112530752706,
+      "expl_if_best_pure": 0.34886253482255136,
+      "delta_best_pure": 0.00827518366651353,
+      "best_pure_action": "bet"
+    }
+  },
+  "model": "qwen2.5-7b-instruct",
+  "style": "plain",
+  "method": "logprob",
+  "temperature": 0.7,
+  "timestamp": "2026-07-27T10:22:02"
+}

@@ -1,0 +1,22 @@
+﻿A2 decomposition: model=qwen2.5-7b-instruct style=plain method=logprob
+
+=== qwen2.5-7b-instruct / plain / logprob ===
+baseline exploitability = 0.3571 chips (357.1 mbb/h)
+info set  P   P(bet)    Nash    dev  expl if Nash    delta  % of leak
+---------------------------------------------------------------------
+2p        1    1.000   0.000  1.000        0.2091   0.1480      41.4%
+2b        1    0.253   0.347  0.094        0.3103   0.0468      13.1%
+1         0    0.006   0.183  0.177        0.3276   0.0295       8.3%
+1p        1    0.144   0.344  0.200        0.3292   0.0280       7.8%
+2         0    1.000   0.001  0.999        0.3391   0.0181       5.1%
+3b        1    0.983   1.000  0.017        0.3489   0.0083       2.3%
+1pb       0    0.002   0.000  0.002        0.3566   0.0005       0.1%
+3         0    1.000   0.561  0.439        0.3569   0.0003       0.1%
+3pb       0    1.000   1.000  0.000        0.3571   0.0000       0.0%
+3p        1    1.000   1.000  0.000        0.3571   0.0000       0.0%
+1b        1    0.002   0.000  0.002        0.3571   0.0000       0.0%
+2pb       0    0.554   0.527  0.027        0.3571  -0.0000      -0.0%
+---------------------------------------------------------------------
+top-3 nodes ['2p', '2b', '1'] account for 63% of the leak (deltas are non-additive; sum/total = 0.78)
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\decomposition_qwen2.5-7b-instruct_plain_logprob.json

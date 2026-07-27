@@ -1,0 +1,27 @@
+﻿A1 validation: model=qwen2.5-7b-instruct style=plain samples=24 temp=0.7
+==============================================================================
+info set    P(bet) logprob  P(bet) sampled    |gap|
+---------------------------------------------------
+1                    0.006           0.000    0.006
+2                    1.000           1.000    0.000
+3                    1.000           1.000    0.000
+1pb                  0.002           0.000    0.002
+2pb                  0.554           0.583    0.029
+3pb                  1.000           1.000    0.000
+1p                   0.144           0.083    0.060
+2p                   1.000           1.000    0.000
+3p                   1.000           1.000    0.000
+1b                   0.002           0.000    0.002
+2b                   0.253           0.042    0.212
+3b                   0.983           1.000    0.017
+---------------------------------------------------
+mean |gap| = 0.027   max |gap| = 0.212 at '2b'
+binomial SE at N=24 (worst case p=0.5) = 0.102  -> CONSISTENT
+
+exploitability : logprob 0.3571 chips (357.1 mbb/h) | sampled 0.4653 chips (465.3 mbb/h)
+bluff(J)       : logprob 0.006 | sampled 0.000
+value-bet(K)   : logprob 1.000 | sampled 1.000
+cost           : logprob 12 calls in 26s | sampled 288 calls in 614s (24x more)
+unmapped mass  : mean 0.0002 (logprob analogue of illegal rate); sampled illegal rate 0.00%
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\logprob_validation_qwen2.5-7b-instruct.json

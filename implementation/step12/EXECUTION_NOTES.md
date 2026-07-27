@@ -305,6 +305,165 @@ predicted "a nonzero illegal-move rate with a real model". Measured: 0% (Qwen), 
 prose-only endings with no action directive — and it would have read as a **false 0%** under the
 first version of my `<think>` fix, which scraped a verb out of unfinished reasoning.
 
+---
+
+## Phase 4b — Deeper LLM investigation (experiments A1, A2, B4, B5, B6, C10)
+
+Six follow-on experiments, run 2026-07-26/27 on Qwen2.5-7B and gpt-oss-20b. Motivated by a
+structural limit of everything above: `strategy_extraction` queries each info set *independently*
+with a length-1 sequence, so every LLM number so far describes a **static, memoryless policy**, and
+"adaptation" was measured by *describing* an opponent in the prompt rather than letting the model
+observe one.
+
+### A1 — exact mixed strategies from logprobs (and where it is NOT valid)
+
+Prefill the assistant turn with `"Action:"`, request `top_logprobs`, and read the action
+distribution directly: **one call per info set, zero sampling variance**. Mass must be summed over
+surface forms (`' BET'`, `'BET'`, `' Bet'`, `' PAS'`), otherwise the top token alone reports a
+*pure* strategy.
+
+`validate_logprob.py` compared it against N=24 sampling on the same prompts (qwen2.5-7b, temp 0.7):
+
+| style | mean \|P(bet) gap\| | binomial SE | verdict |
+|---|---|---|---|
+| **plain** | **0.027** | 0.102 | ✅ CONSISTENT (3.8× inside the noise floor) |
+| cot | 0.237 | 0.102 | ❌ DISCREPANT (2.3× outside) |
+
+Cost on the plain run: **12 calls / 26 s vs 288 calls / 614 s — 24× fewer calls.**
+
+**The CoT failure is not a bug, it is a boundary.** The CoT prompt says "think step by step, THEN
+answer"; the prefill forces the answer at token 1, so we measure an out-of-distribution
+"gut reaction" rather than the model's CoT policy (0.832 vs 0.350 chips for the same prompt sampled
+properly). Added `reasoned_logprob_policy`: sample k reasonings, read the logprob distribution after
+each, average. That is Rao-Blackwellisation, not a free lunch — a CoT policy mixes through *two*
+channels (which reasoning it produces, and the action given that reasoning); logprobs integrate out
+the second exactly, the first still needs sampling. Cost 2k calls instead of 1, but far lower
+variance per unit budget than k coin flips. **All exact-extraction experiments below therefore use
+the `plain` style, where A1 is validated.**
+
+### A2 — where the leak actually is (and why the headline was misleading)
+
+`exploitability_decomposition.py` patches one info set at a time to Nash and re-measures with the
+exact metric. Self-test: on a strategy that is Nash everywhere except it folds the King to a bet, it
+attributes **99.4%** of the leak to exactly that node. Qwen2.5-7B (plain, 0.3571 chips baseline):
+
+| info set | P(bet) | Nash | deviation | % of leak |
+|---|---|---|---|---|
+| `2p` (Q, opponent checked) | 1.000 | 0.000 | 1.000 | **41.4%** |
+| `2b` (Q, facing a bet) | 0.253 | 0.347 | 0.094 | 13.1% |
+| `1` (J, root) | 0.006 | 0.183 | 0.177 | 8.3% |
+| `2` (Q, root) | 1.000 | 0.001 | 0.999 | 5.1% |
+| `3` (K, root) | 1.000 | 0.561 | **0.439** | **0.1%** |
+
+**This corrects an earlier headline in these notes.** Phase 4 reported "every LLM value-bets the
+King at 1.00 where Nash mixes at 0.68" as a signature failure. A2 shows that error is **almost
+free** (0.1% of the leak) — over-betting a hand that is never behind costs almost nothing. The
+damage is concentrated in the **Queen** nodes, above all `2p`: always betting the Queen after the
+opponent checks is **41% of the total loss**, and fixing that single decision would take the model
+from 0.357 to 0.209 chips. **Deviation magnitude and cost are nearly uncorrelated**, which is
+exactly what a single aggregate number hides. Top-3 nodes = 63% of the leak.
+
+### B4 — the models play BETTER than they can explain (the strongest result here)
+
+Asked, at the same 12 info sets with byte-identical situation text, "what percentage of the time
+should you BET here?", then scored a strategy built from their own answers:
+
+| | MAE vs Nash (stated) | MAE vs Nash (executed) | expl if it played what it says | expl actually played |
+|---|---|---|---|---|
+| Qwen2.5-7B | 0.353 | **0.246** | 0.921 chips | **0.357** (2.6× better) |
+| gpt-oss-20b | 0.434 | **0.328** | 1.576 chips | **0.392** (4.0× better) |
+
+**Both models' stated strategies are substantially WORSE than their played strategies**, on both
+metrics, on every comparison. This **refutes the hypothesis I went in with** (that models know the
+right frequency but cannot sample it). It is not an execution gap — it is that verbalised strategy
+is *less* informative than behaviour.
+
+The two failure modes differ, which strengthens the result rather than weakening it:
+- **Qwen answers "50%" at 11 of 12 info sets** — including with the King (Nash 1.000) and the Jack
+  facing a bet (Nash 0.000). A generic hedge whenever asked to name a frequency.
+- **gpt-oss answers near-zero at 8 of 12** ("bet ~1% of the time"), including all three King nodes
+  where Nash bets 100%. It also failed to produce a parseable number **8/36** times.
+
+**Implication for the thesis:** any method that extracts a strategy from an LLM by *asking* it will
+get something worse than the model's own play. Behavioural probing is not merely more convenient
+than introspection here — it is more accurate.
+
+### B5 — no in-context opponent modelling (after fixing a broken measurement)
+
+**First run reported "evidence of in-context learning, mean gap closed +1.59" — that was an
+artefact and is retracted.** `gap_closed > 1` means beating the *exact best response*, which is
+impossible. Against AlwaysBet it showed the hero at +0.617 chips/hand when the theoretical ceiling
+is **+0.333** (K→+2, Q→0, J→−1 over three equally likely cards) — a figure I checked by hand, which
+matched the computed BR of +0.3387 and so identified the *hero* number as the artefact.
+
+**Cause:** a 60-hand session was compared against baselines sampled over their *own, different*
+deals. Kuhn's per-hand std is ~1.2, giving SE ≈ 0.155 on 60 hands — comparable to the entire
+Nash→BR span — so unpaired deal luck dominated. **Fix:** baselines are now computed **exactly**
+(full tree expectation, no sampling) on the **hero's own realised deal sequence**, halves get their
+own paired baselines, hero SE is reported, and an `exceeds_ceiling` guard flags impossible results.
+
+Corrected (qwen2.5-7b, CoT, 120 hands, history of the last 20 hands in context):
+
+| opponent | Nash | BR ceiling | hero ± SE | gap closed ± SE | learning (2nd − 1st half) |
+|---|---|---|---|---|---|
+| AlwaysPass | +0.229 | +0.981 | +0.850 ± 0.056 | **+0.83 ± 0.07** | +0.00 |
+| AlwaysBet | +0.319 | +0.530 | +0.383 ± 0.169 | +0.31 ± 0.80 | −0.52 |
+| TightPassive | +0.088 | +0.316 | +0.092 ± 0.122 | +0.02 ± 0.53 | −0.15 |
+
+**Conclusion reverses: exploitative but NOT learning** (mean learning **−0.22**). Against the one
+well-powered cell (AlwaysPass, ±0.07) it captures 83% of the available exploitation *from the first
+half onward* and never improves. That is a **fixed loose-aggressive prior**, not opponent modelling
+— exactly what B6 independently shows. Honest caveat: the AlwaysBet and TightPassive cells have SEs
+of ±0.80 and ±0.53 (their Nash→BR spans are narrow), so only AlwaysPass is conclusive; tightening
+the others needs ~30× more hands (~4.5 h of calls).
+
+### B6 — the safe-exploitation trade-off, measured
+
+Extract the static policy once (12 calls), then simulate 4,000 hands per opponent call-free:
+
+| agent | expl | AlwaysPass | AlwaysBet | TightPassive | LooseAggr | Thresholdish | Random | **mean** |
+|---|---|---|---|---|---|---|---|---|
+| Nash-CFR | 0.0061 | 0.168 | 0.129 | −0.006 | 0.162 | 0.087 | 0.119 | **0.110** |
+| Qwen (plain) | 0.3571 | **0.374** | 0.191 | **−0.047** | 0.198 | 0.079 | **0.267** | **0.177** |
+
+The LLM **exploits 61% harder than Nash while being 59× more exploitable** — but the gain is
+entirely against *passive/random* opponents (AlwaysPass 0.374 vs 0.168; Random 0.267 vs 0.119).
+Against the two most competent archetypes it is **worse than Nash** (TightPassive −0.047 vs −0.006;
+Thresholdish 0.079 vs 0.087). Loose aggression prints against weak opposition and leaks against
+real players — the exploitation/exploitability frontier of thesis contribution #2, on one plot.
+
+### C10 — head-to-head, and exploitability predicts it
+
+4 entrants × 20,000 hands/pair, seats alternated, all from cached static strategies (call-free).
+Sanity checks pass: Nash vs Nash = 0.0000 exactly, and Nash loses to nobody.
+
+| row player | vs Nash | vs gpt-oss | vs OpenThinker3 | vs Qwen | **mean** | expl |
+|---|---|---|---|---|---|---|
+| Nash-CFR | 0.0000 | +0.1061 | +0.1245 | +0.0806 | **+0.104** | 0.0061 |
+| Qwen2.5-7B | −0.0806 | **+0.1618** | +0.1817 | 0.0000 | **+0.088** | 0.3571 |
+| gpt-oss-20b | −0.1061 | 0.0000 | +0.1535 | −0.1618 | −0.038 | 0.3917 |
+| OpenThinker3-7B | −0.1245 | −0.1535 | 0.0000 | −0.1817 | −0.153 | 0.8940 |
+
+1. **The 7B beats the 20B head-to-head** (+0.162 chips/hand), reinforcing that Kuhn rewards mixing,
+   not scale.
+2. **The ordering is strictly transitive and matches the exploitability ordering exactly**
+   (Qwen 0.357 < gpt-oss 0.392 < OpenThinker3 0.894). In this population exploitability *predicts*
+   head-to-head results — not guaranteed in general (cf. the spinning-top/non-transitivity
+   literature and Step 11's own cyclic findings), but it holds cleanly here.
+3. **OpenThinker3 has no usable immediate-action distribution: 34% unmapped mass** at the action
+   token under a plain prompt (vs 0.02% for Qwen, 0.17% for gpt-oss) — it wants to emit `<think>`.
+   Its 0.894 chips here is therefore **not comparable** to its 0.288 under CoT: the plain row
+   measures a model being asked to do something it structurally cannot. The honest headline for it
+   is the 34% figure, not the exploitability.
+
+### What these six add up to
+
+The static-policy picture from Phase 4 survives, but the *explanation* changes. LLMs are not
+"uniformly sloppy": they are near-optimal on hand ranking, nearly free-of-charge wrong on the
+King, catastrophically wrong on one Queen node, incapable of stating what they do, and
+exploitative-by-default rather than adaptive. **Every one of those is invisible in a single
+exploitability number**, which is the methodological argument for Step 14's evaluation framework.
+
 ### Transient 400s ⇒ the client now retries
 
 A full comparison pass is 150+ sequential requests. The first gpt-oss run died at ~90 calls with

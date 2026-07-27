@@ -30,6 +30,7 @@ the whole file exercisable offline; the HTTP/HF paths are verified in the run se
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 import urllib.request
@@ -150,6 +151,67 @@ class OpenAICompatClient(LLMClient):
         self.name = f"openai-compat:{model}"
         self.truncated = 0                    # replies cut off by max_tokens (diagnostic)
         self.transient_errors = 0             # retried HTTP/transport blips (diagnostic)
+
+    def chat_logprobs(self, system: str, user: str, prefill: str = "Action:",
+                      top_logprobs: int = 20, temperature: float = 0.0) -> list:
+        """Return [(token, probability), ...] for the FIRST generated token.
+
+        This is the engine behind exact mixed-strategy extraction (see logprob_policy.py). We
+        seed the assistant turn with `prefill` ("Action:") so the very next token IS the decision,
+        then read the full top-k distribution over that one position. One request yields the
+        model's actual action probabilities -- no sampling, no variance.
+
+        Verified against LM Studio 0.4.20 (2026-07-26): `logprobs`/`top_logprobs` are supported and
+        an assistant-role final message is treated as a continuation prefill.
+        """
+        url = f"{self.base_url}/chat/completions"
+        payload = {
+            "model": self.model,
+            "messages": [{"role": "system", "content": system},
+                         {"role": "user", "content": user},
+                         {"role": "assistant", "content": prefill}],
+            "temperature": temperature,
+            "max_tokens": 1,
+            "logprobs": True,
+            "top_logprobs": top_logprobs,
+        }
+        data = json.dumps(payload).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        body = None
+        last_err = None
+        for attempt in range(self.retries + 1):
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    body = json.loads(resp.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as e:
+                detail = ""
+                try:
+                    detail = e.read().decode("utf-8", "replace")[:300]
+                except Exception:
+                    pass
+                last_err = RuntimeError(f"HTTP {e.code} from {url}: {detail}")
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
+                last_err = RuntimeError(f"transport error to {url}: {e!r}")
+            if attempt < self.retries:
+                self.transient_errors += 1
+                time.sleep(self.backoff * (2 ** attempt))
+        if body is None:
+            raise last_err or RuntimeError("chat_logprobs() failed with no diagnostic")
+
+        lp = body["choices"][0].get("logprobs")
+        if not lp or not lp.get("content"):
+            raise RuntimeError(
+                f"{self.base_url} returned no logprobs for model {self.model!r}. "
+                "This backend cannot be used for exact extraction; fall back to sampling."
+            )
+        first = lp["content"][0]
+        alts = first.get("top_logprobs") or []
+        return [(a["token"], math.exp(a["logprob"])) for a in alts]
 
     def list_models(self) -> list:
         """Model ids the server actually serves (`GET /v1/models`)."""
@@ -301,6 +363,13 @@ _STYLE_INSTRUCTIONS = {
     "cot": ("Think step by step about your hand strength, the pot, and what your opponent's "
             "actions imply, THEN end your reply with a final line exactly: 'Action: BET' or "
             "'Action: PASS'."),
+    # Experiment B4: elicit a FREQUENCY rather than an action. Reuses the identical situation
+    # description so the stated frequency and the executed one are answers to the same question.
+    "frequency": ("Optimal poker play requires MIXED strategies -- taking the same action every "
+                  "time in a given spot is exploitable. Reply with ONLY an integer from 0 to 100: "
+                  "the percentage of the time you should BET (rather than PASS) in this exact "
+                  "situation, to play as close to game-theory-optimal as possible. Output the "
+                  "number and nothing else."),
     "gametheory": ("Approximate game-theory-optimal (Nash) play: with the King bet/call for "
                    "value; with the Jack you must sometimes BLUFF and otherwise fold to bets; "
                    "with the Queen mostly check and call at the right frequency. Balance your "

@@ -1,0 +1,23 @@
+﻿B5 opponent modelling: model=qwen2.5-7b-instruct hands=120 opponents=['AlwaysPass', 'AlwaysBet', 'TightPassive'] context=20 hands
+==================================================================================
+
+--- vs AlwaysPass ---
+  Nash +0.2290 | BR ceiling +0.9808 | hero +0.8500 +/- 0.0563 chips/hand  (exact paired baselines on the hero's own deals)
+  gap closed: overall +0.83 +/- 0.07   first half +0.82 -> second half +0.83  (learning +0.00)
+  illegal 0.0% over 120 calls
+
+--- vs AlwaysBet ---
+  Nash +0.3187 | BR ceiling +0.5300 | hero +0.3833 +/- 0.1691 chips/hand  (exact paired baselines on the hero's own deals)
+  gap closed: overall +0.31 +/- 0.80   first half +0.51 -> second half -0.01  (learning -0.52)
+  illegal 0.0% over 143 calls
+
+--- vs TightPassive ---
+  Nash +0.0882 | BR ceiling +0.3162 | hero +0.0917 +/- 0.1218 chips/hand  (exact paired baselines on the hero's own deals)
+  gap closed: overall +0.02 +/- 0.53   first half +0.11 -> second half -0.04  (learning -0.15)
+  illegal 0.0% over 129 calls
+
+==================================================================================
+mean gap closed = +0.38   mean learning (2nd half - 1st) = -0.22
+-> Exploitative but NOT learning: a fixed loose prior, flat across the session.
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\opponent_modeling_qwen2.5-7b-instruct.json

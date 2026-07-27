@@ -1,0 +1,26 @@
+﻿B4 frequency elicitation: model=openai/gpt-oss-20b repeats=3 temp=0.7
+==============================================================================
+info set    stated  executed    nash  |st-nash|  |ex-nash|
+----------------------------------------------------------
+1            0.115     0.132   0.183      0.068      0.050
+2            0.610     0.879   0.001      0.609      0.878
+3            0.503     0.995   0.561      0.057      0.435
+1pb          0.005     0.468   0.000      0.005      0.468
+2pb          0.010     0.792   0.527      0.517      0.265
+3pb          0.005     0.964   1.000      0.995      0.036
+1p           0.000     0.237   0.344      0.344      0.108
+2p           0.278     0.937   0.000      0.278      0.937
+3p           0.010     0.991   1.000      0.990      0.009
+1b           0.020     0.246   0.000      0.020      0.246
+2b           0.010     0.836   0.347      0.337      0.489
+3b           0.010     0.978   1.000      0.990      0.022
+----------------------------------------------------------
+MAE vs Nash: stated=0.434   executed=0.328
+
+exploitability  executed(played)  = 0.3917 chips (391.7 mbb/h)
+exploitability  stated(if played) = 1.5760 chips (1576.0 mbb/h)
+exploitability  Nash              = 0.0061 chips
+-> No knowing-vs-doing gap: its stated frequencies are no better than its play.
+unparsed elicitations: 8/36
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\frequency_elicitation_openai_gpt-oss-20b.json

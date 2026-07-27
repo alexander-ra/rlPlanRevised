@@ -1,0 +1,61 @@
+{
+  "model": "qwen2.5-7b-instruct",
+  "style": "cot",
+  "temperature": 0.7,
+  "hands": 120,
+  "context_hands": 20,
+  "hero_seat": 0,
+  "timestamp": "2026-07-27T10:57:45",
+  "mean_gap_closed": 0.38231117989077595,
+  "mean_learning_delta": -0.222351213286188,
+  "opponents": {
+    "AlwaysPass": {
+      "nash_winrate_exact": 0.22897243671693332,
+      "br_winrate_exact": 0.9808333333333332,
+      "hero_winrate": 0.85,
+      "hero_se": 0.05632289860760919,
+      "first_half_winrate": 0.8833333333333333,
+      "second_half_winrate": 0.8166666666666667,
+      "gap_closed_overall": 0.825987315044415,
+      "gap_closed_se": 0.0749113284931816,
+      "gap_closed_first_half": 0.824011826136913,
+      "gap_closed_second_half": 0.827321226771313,
+      "learning_delta": 0.003309400634399995,
+      "exceeds_ceiling": false,
+      "illegal_rate": 0.0,
+      "calls": 120
+    },
+    "AlwaysBet": {
+      "nash_winrate_exact": 0.31872576392777174,
+      "br_winrate_exact": 0.5299999999999999,
+      "hero_winrate": 0.38333333333333336,
+      "hero_se": 0.16910678729391737,
+      "first_half_winrate": 0.6833333333333333,
+      "second_half_winrate": 0.08333333333333333,
+      "gap_closed_overall": 0.3057995646164555,
+      "gap_closed_se": 0.8004136729482952,
+      "gap_closed_first_half": 0.507728796719145,
+      "gap_closed_second_half": -0.011306454014686818,
+      "learning_delta": -0.5190352507338317,
+      "exceeds_ceiling": false,
+      "illegal_rate": 0.0,
+      "calls": 143
+    },
+    "TightPassive": {
+      "nash_winrate_exact": 0.08821266264787601,
+      "br_winrate_exact": 0.31625,
+      "hero_winrate": 0.09166666666666666,
+      "hero_se": 0.12184151512760379,
+      "first_half_winrate": 0.2833333333333333,
+      "second_half_winrate": -0.1,
+      "gap_closed_overall": 0.015146660011457442,
+      "gap_closed_se": 0.5343051122345907,
+      "gap_closed_first_half": 0.11051961524775206,
+      "gap_closed_second_half": -0.04080817451138024,
+      "learning_delta": -0.1513277897591323,
+      "exceeds_ceiling": false,
+      "illegal_rate": 0.0,
+      "calls": 129
+    }
+  }
+}

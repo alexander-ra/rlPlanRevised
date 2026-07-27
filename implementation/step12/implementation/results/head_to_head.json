@@ -1,0 +1,38 @@
+{
+  "style": "plain",
+  "hands": 20000,
+  "seed": 0,
+  "timestamp": "2026-07-27T11:00:54",
+  "exploitability": {
+    "Nash-CFR": 0.0060859384242237455,
+    "openai/gpt-oss-20b": 0.3917206628721922,
+    "openthinker3-7b": 0.8940347730802976,
+    "qwen2.5-7b-instruct": 0.3571377184890649
+  },
+  "matrix": {
+    "Nash-CFR": {
+      "Nash-CFR": 0.0,
+      "openai/gpt-oss-20b": 0.10615,
+      "openthinker3-7b": 0.12455,
+      "qwen2.5-7b-instruct": 0.0806
+    },
+    "openai/gpt-oss-20b": {
+      "Nash-CFR": -0.10615,
+      "openai/gpt-oss-20b": 0.0,
+      "openthinker3-7b": 0.15355,
+      "qwen2.5-7b-instruct": -0.16185
+    },
+    "openthinker3-7b": {
+      "Nash-CFR": -0.12455,
+      "openai/gpt-oss-20b": -0.15355,
+      "openthinker3-7b": 0.0,
+      "qwen2.5-7b-instruct": -0.1817
+    },
+    "qwen2.5-7b-instruct": {
+      "Nash-CFR": -0.0806,
+      "openai/gpt-oss-20b": 0.16185,
+      "openthinker3-7b": 0.1817,
+      "qwen2.5-7b-instruct": 0.0
+    }
+  }
+}

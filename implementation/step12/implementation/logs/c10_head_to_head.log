@@ -1,0 +1,12 @@
+﻿C10 head-to-head: 4 entrants, 20000 hands/pair, style=plain
+==============================================================================
+                            Nash-CFR  openai/gpt-os  openthinker3-  qwen2.5-7b-in      MEAN      expl
+-----------------------------------------------------------------------------------------------------
+Nash-CFR                      0.0000         0.1061         0.1245         0.0806    0.1038    0.0061
+openai/gpt-oss-20b           -0.1061         0.0000         0.1535        -0.1618   -0.0381    0.3917
+openthinker3-7b              -0.1245        -0.1535         0.0000        -0.1817   -0.1533    0.8940
+qwen2.5-7b-instruct          -0.0806         0.1618         0.1817         0.0000    0.0877    0.3571
+-----------------------------------------------------------------------------------------------------
+(row player's chips/hand; seats alternated. Nash row ~0 everywhere = sanity check.)
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\head_to_head.json

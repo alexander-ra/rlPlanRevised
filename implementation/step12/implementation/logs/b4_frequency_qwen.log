@@ -1,0 +1,26 @@
+﻿B4 frequency elicitation: model=qwen2.5-7b-instruct repeats=3 temp=0.7
+==============================================================================
+info set    stated  executed    nash  |st-nash|  |ex-nash|
+----------------------------------------------------------
+1            0.500     0.006   0.183      0.317      0.177
+2            0.500     1.000   0.001      0.499      0.999
+3            0.500     1.000   0.561      0.061      0.439
+1pb          0.583     0.002   0.000      0.583      0.002
+2pb          0.500     0.554   0.527      0.027      0.027
+3pb          0.500     1.000   1.000      0.500      0.000
+1p           0.500     0.144   0.344      0.156      0.200
+2p           0.500     1.000   0.000      0.500      1.000
+3p           0.500     1.000   1.000      0.500      0.000
+1b           0.443     0.002   0.000      0.443      0.002
+2b           0.500     0.253   0.347      0.153      0.094
+3b           0.500     0.983   1.000      0.500      0.017
+----------------------------------------------------------
+MAE vs Nash: stated=0.353   executed=0.246
+
+exploitability  executed(played)  = 0.3571 chips (357.1 mbb/h)
+exploitability  stated(if played) = 0.9211 chips (921.1 mbb/h)
+exploitability  Nash              = 0.0061 chips
+-> No knowing-vs-doing gap: its stated frequencies are no better than its play.
+unparsed elicitations: 0/36
+
+saved -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step12\implementation\results\frequency_elicitation_qwen2.5-7b-instruct.json
