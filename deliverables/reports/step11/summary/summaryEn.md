@@ -39,7 +39,7 @@ exploitability, which has no meaning against a coalition (Contribution #3).
 
 ---
 
-## 1. Why the third player changes everything
+## Why the third player changes everything
 
 With two players, a zero-sum game has a *value*: there is a minimax-optimal strategy, and "how far
 from optimal are you?" (exploitability) is a single, meaningful number that anchored every step since
@@ -66,7 +66,7 @@ subgame that *is* exactly solvable, the 2-player endgame.
 
 ---
 
-## 2. The coalition detector — reading alliances off the moves
+## The coalition detector — reading alliances off the moves
 
 The first tool generalizes opponent modeling. Instead of inferring a hidden *type* or *hand* (Step
 7), the detector infers a hidden *social structure*. It watches the move log and accumulates two
@@ -88,7 +88,7 @@ else). The alliance is fully legible from chip placement alone.
 
 ---
 
-## 3. Shapley credit for a competitive game
+## Shapley credit for a competitive game
 
 If we want an agent to *learn* to form coalitions, we need a reward signal that says "you contributed
 to a coalition." The classical tool is the **Shapley value**: the unique fair way to split a
@@ -134,13 +134,13 @@ result is reported **after** a bug fix — see the reconciliation below.
 
 ---
 
-## 4. Coalition-aware MAPPO — and when coalitions actually emerge
+## Coalition-aware MAPPO — and when coalitions actually emerge
 
 Now we train. Each SLS seat is a masked, episodic PPO agent learning by self-play. The reward is a
 **blend**:
 $$ r = (1-\alpha)\,r_{\text{sparse}} \;+\; \alpha\,\text{(Shapley coalition credit)}, $$
 where $r_{\text{sparse}}$ is the sparse winner-takes-all reward and the credit term is the
-win-probability Shapley value from §3 (a cheap critic-value **proxy**, or an expensive rollout
+win-probability Shapley value from the *Shapley credit* section (a cheap critic-value **proxy**, or an expensive rollout
 **counterfactual**). The blend weight $\alpha$ dials between "just win" and "form coalitions."
 
 ![Coalition-aware MAPPO reward blend: the sparse winner-takes-all signal is mixed with the Shapley coalition credit by weight alpha. Measured, alpha is the dominant knob: coalitions emerge significantly only at low alpha (heavy credit weight), and every alpha >= 0.3 suppresses the signal. The cheap critic-value proxy beats the expensive counterfactual credit.](mappo_blend.png)
@@ -181,7 +181,7 @@ target and winning is secondary — exactly the raw step's framing, now quantifi
 
 ---
 
-## 5. EGTA and the spinning top — is SLS a wheel or a ladder?
+## EGTA and the spinning top — is SLS a wheel or a ladder?
 
 The final tool evaluates the *population*. **Empirical game-theoretic analysis (EGTA)** treats whole
 strategies as the atoms of a meta-game, plays every pair to fill an empirical payoff matrix, and
@@ -202,7 +202,7 @@ Step 10 predicted FFA coalition games would be strongly cyclic. Measured, it dep
 
 > **Reconciliation (kept prediction -> what actually happened).** I expected a large cyclic
 > component and, at first, saw a near-perfect skill ladder (cyclic $\sim 0.07$). That was partly the
-> seat-0 bug (§3) and partly **pool composition**: the default baseline pool *is* a skill ladder. A
+> seat-0 bug (the *Shapley credit* section) and partly **pool composition**: the default baseline pool *is* a skill ladder. A
 > coalition pool (fixed-ally + betrayer strategies) pushes the cyclic ratio to $\sim 0.57$-$0.69$ — a
 > large non-transitive component that strongly confirms the *direction* of the prediction, but stays
 > **honestly short of strict dominance** (cyclic$^2$ just under $0.5$). The prime suspect for the
@@ -217,7 +217,7 @@ Step 10 predicted FFA coalition games would be strongly cyclic. Measured, it dep
 
 ---
 
-## 6. Honest notes, limitations, and where this hands off
+## Honest notes, limitations, and where this hands off
 
 **What held up.** The exact anchors are solid: the SLS engine matches the 2-player minimax endgame
 with **zero** mismatches; the detector recovers a planted coalition **exactly** ($\{0,1\}$, score
