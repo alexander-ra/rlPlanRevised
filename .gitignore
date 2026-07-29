@@ -1,6 +1,15 @@
 # Python virtual environment
 .venv/
 
+# llmPipeline runtime state: credentials, logs, the working database and the
+# bulky intermediate JSON. The durable text snapshot of the glossary is committed
+# as llmPipeline/glossary_settled.json instead - it diffs, the .db does not.
+llmPipeline/out/
+
+# Third-party TV subtitles used only as test data for the translator bake-off.
+# Not thesis material, and not ours to redistribute.
+Subs/
+
 # Python cache and build artifacts
 **/__pycache__/
 *.pyc
