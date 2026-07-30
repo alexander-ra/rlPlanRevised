@@ -31,6 +31,12 @@ def strip_think(s: str) -> str:
     return s.strip()
 
 
+# Optional sink for per-request timing. The dashboard needs real tokens/sec, and
+# Ollama already returns eval_count/eval_duration on every response - it was simply
+# being discarded. Set STATS_SINK to a callable taking a dict.
+STATS_SINK = None
+
+
 def generate(model: str, prompt: str, system: str = "", *, temperature: float = 0.25,
              top_p: float = 0.9, num_predict: int = 2048, num_ctx: int = 16384,
              think: bool = False, seed: int | None = None, keep_alive: str = "2h",
@@ -61,8 +67,23 @@ def generate(model: str, prompt: str, system: str = "", *, temperature: float = 
         try:
             req = urllib.request.Request(
                 ENDPOINT, data=body, headers={"Content-Type": "application/json"})
+            t0 = time.time()
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return strip_think(json.loads(r.read()).get("response", ""))
+                data = json.loads(r.read())
+            if STATS_SINK:
+                try:
+                    STATS_SINK({
+                        "model": model,
+                        "wall": time.time() - t0,
+                        "out_tokens": data.get("eval_count", 0),
+                        "in_tokens": data.get("prompt_eval_count", 0),
+                        # eval_duration is nanoseconds
+                        "gen_secs": (data.get("eval_duration") or 0) / 1e9,
+                        "ts": time.time(),
+                    })
+                except Exception:  # noqa: BLE001 - telemetry must never break a run
+                    pass
+            return strip_think(data.get("response", ""))
 
         except urllib.error.HTTPError as e:
             last = f"HTTP {e.code}"

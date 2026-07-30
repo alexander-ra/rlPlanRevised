@@ -1,0 +1,175 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Translation run</title>
+<style>
+:root{color-scheme:light dark;
+ --plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+ --grid:#e1e0d9;--ring:rgba(11,11,11,.10);
+ --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;
+ --good:#0ca30c;--warn:#fab219;--crit:#d03b3b;}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){
+ --plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+ --grid:#2c2c2a;--ring:rgba(255,255,255,.10);
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+ font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:940px;margin:0 auto;padding:14px 14px 40px}
+h1{font-size:15px;font-weight:600;margin:0}
+.hdr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.sub{color:var(--muted);font-size:12.5px}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:12px;
+ padding:14px 15px;margin-bottom:11px}
+.lab{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+ margin-bottom:6px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:11px;
+ margin-bottom:11px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:13px 14px}
+.val{font-size:26px;font-weight:600;line-height:1.1}
+.val small{font-size:13px;font-weight:400;color:var(--ink2)}
+.bar{height:9px;background:var(--grid);border-radius:5px;overflow:hidden;margin-top:8px}
+.bar>i{display:block;height:100%;border-radius:5px;background:var(--s1);transition:width .4s}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+ padding:7px 0;border-bottom:1px solid var(--grid);font-size:14px}
+.row:last-child{border-bottom:0}
+.pill{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--ring);
+ color:var(--muted);white-space:nowrap}
+.pill.done{border-color:var(--good);color:var(--good)}
+.pill.run{border-color:var(--s1);color:var(--s1)}
+.pill.fail{border-color:var(--crit);color:var(--crit)}
+.pill.warn{border-color:var(--warn);color:var(--warn)}
+.steps{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center}
+.kinds{display:flex;gap:6px;flex-wrap:wrap}
+svg{display:block;width:100%;height:64px;overflow:visible}
+.lg{font-size:11.5px;color:var(--muted);font-family:ui-monospace,Consolas,monospace;
+ white-space:pre-wrap;word-break:break-word;margin:1px 0}
+.mono{font-variant-numeric:tabular-nums}
+@media (max-width:640px){
+  .wrap{padding:10px 10px 34px}
+  .card,.tile{border-radius:11px}
+  .val{font-size:23px}
+  .tiles{grid-template-columns:repeat(2,1fr);gap:9px}
+}
+</style></head><body><div class="wrap">
+
+<div class="hdr">
+  <span class="dot" id="dot" style="background:var(--muted)"></span>
+  <h1>Corpus translation</h1>
+  <span class="sub" id="sub">connecting…</span>
+</div>
+
+<div class="tiles">
+  <div class="tile"><div class="lab">Progress</div><div class="val" id="pct">–</div>
+    <div class="bar"><i id="pbar" style="width:0"></i></div>
+    <div class="sub mono" id="pwords" style="margin-top:6px">–</div></div>
+  <div class="tile"><div class="lab">Time left</div><div class="val" id="eta">–</div>
+    <div class="sub mono" id="finish" style="margin-top:6px">–</div></div>
+  <div class="tile"><div class="lab">Throughput</div><div class="val" id="tps">–</div>
+    <div class="sub mono" id="wpm" style="margin-top:6px">–</div></div>
+  <div class="tile"><div class="lab">GPU</div><div class="val" id="gutil">–</div>
+    <div class="sub mono" id="gdet" style="margin-top:6px">–</div></div>
+</div>
+
+<div class="card"><div class="lab">Current file</div><div id="cur">idle</div></div>
+
+<div class="card"><div class="lab">Tokens / sec</div>
+  <svg id="spark" viewBox="0 0 700 64" preserveAspectRatio="none"></svg></div>
+
+<div class="card"><div class="lab">Steps</div><div class="steps" id="steps"></div></div>
+
+<div class="tiles">
+  <div class="tile"><div class="lab">Quality</div><div class="val" id="q">–</div>
+    <div class="sub" id="qd" style="margin-top:6px">–</div></div>
+  <div class="tile"><div class="lab">Model</div><div class="val" id="mdl" style="font-size:16px">–</div>
+    <div class="sub mono" id="mdld" style="margin-top:6px">–</div></div>
+  <div class="tile"><div class="lab">Requests</div><div class="val" id="req">–</div>
+    <div class="sub mono" id="tok" style="margin-top:6px">–</div></div>
+  <div class="tile"><div class="lab">Elapsed</div><div class="val" id="el">–</div>
+    <div class="sub mono" id="files" style="margin-top:6px">–</div></div>
+</div>
+
+<div class="card"><div class="lab">Slowest completed</div><div id="recent" class="sub">–</div></div>
+<div class="card"><div class="lab">Log</div><div id="log"></div></div>
+</div><script>
+const $=s=>document.querySelector(s);
+const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const hms=s=>s==null?'–':(s>=3600?Math.floor(s/3600)+'h '+Math.floor(s%3600/60)+'m'
+  :s>=60?Math.floor(s/60)+'m '+Math.floor(s%60)+'s':Math.round(s)+'s');
+const K=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'k':n;
+
+async function tick(){
+  let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }
+  catch(e){ $('#sub').textContent='dashboard lost the server'; return; }
+
+  const fin=!!d.finished;
+  $('#dot').style.background = fin?'var(--s1)':(d.alive?'var(--good)':'var(--crit)');
+  $('#sub').textContent = fin?'finished'
+    : d.alive?`running · updated ${new Date().toLocaleTimeString()}`
+            : `NO HEARTBEAT for ${hms(d.stale_for)} — runner may have died`;
+
+  $('#pct').innerHTML=d.pct+' <small>%</small>';
+  $('#pbar').style.width=d.pct+'%';
+  $('#pwords').textContent=`${K(d.words_done)} / ${K(d.words_total)} words`;
+  $('#eta').textContent=hms(d.eta_all);
+  $('#finish').textContent=d.finish_at?('finish ~'+d.finish_at):'–';
+  $('#tps').innerHTML=(d.tps??'–')+' <small>tok/s</small>';
+  $('#wpm').textContent=d.wpm+' words/min';
+  $('#el').textContent=hms(d.elapsed);
+  $('#files').textContent=`${d.files_done} / ${d.files_total} files`;
+  $('#req').textContent=K(d.requests);
+  $('#tok').textContent=K(d.tokens_out)+' tokens out';
+
+  const g=d.gpu||{};
+  if(g.util!=null){
+    $('#gutil').innerHTML=Math.round(g.util)+' <small>%</small>';
+    const hot=g.temp>=83, full=g.vram_used/g.vram_total>=.95;
+    $('#gdet').innerHTML=`${(g.vram_used/1024).toFixed(1)}/${(g.vram_total/1024).toFixed(1)} GB · `
+      +`<span style="color:${hot?'var(--crit)':'inherit'}">${Math.round(g.temp)}°C</span> · `
+      +`${Math.round(g.power)}W${full?' · VRAM FULL':''}`;
+  }
+  const l=d.llm||{};
+  $('#mdl').textContent=l.loaded||'none';
+  $('#mdld').textContent=l.loaded?`${l.size_gb} GB · ${l.gpu_pct}% GPU`:'not loaded';
+
+  const bad=d.failures+d.reverted;
+  $('#q').innerHTML=bad===0?'<span style="color:var(--good)">clean</span>':bad;
+  $('#qd').textContent=`${d.failures} failed files · ${d.reverted} blocks reverted`;
+
+  const c=d.current;
+  $('#cur').innerHTML = c ? `<div class="row"><b>${esc(c.step)} · ${esc(c.kind)}</b>
+      <span class="mono sub">${K(c.words)} words</span></div>
+    <div class="row"><span>pass ${c.pass}/5 · block ${c.block}/${c.blocks}</span>
+      <span class="mono sub">${d.cur_frac}% · ${hms(d.eta_cur)} left</span></div>
+    <div class="bar"><i style="width:${d.cur_frac}%;background:var(--s3)"></i></div>`
+    : '<span class="sub">idle</span>';
+
+  const order=['onePager','summary','report'];
+  $('#steps').innerHTML=Object.keys(d.steps).sort().map(s=>{
+    const k=d.steps[s];
+    return `<div class="mono"><b>${esc(s)}</b></div><div class="kinds">`+
+      order.filter(o=>k[o]).map(o=>{
+        const v=k[o], cls=v.status==='done'?(v.parity===false?'warn':'done')
+          :v.status==='running'?'run':v.status==='failed'?'fail':'';
+        const t=v.status==='done'?` ${(v.secs/60).toFixed(0)}m`:'';
+        return `<span class="pill ${cls}">${o}${t}</span>`;}).join('')+`</div>`;
+  }).join('');
+
+  $('#recent').innerHTML=(d.recent||[]).map(r=>
+    `<div class="row"><span>${esc(r.step)} ${esc(r.kind)}</span>
+     <span class="mono sub">${(r.secs/60).toFixed(1)}m · ${K(r.words)}w`
+     +(r.parity===false?' · <span style="color:var(--warn)">parity</span>':'')
+     +(r.defects?` · ${r.defects} defects`:'')+`</span></div>`).join('')||'<span class="sub">none yet</span>';
+
+  const s=(d.tps_series||[]).map(x=>x[1]), W=700,H=64,sv=$('#spark');
+  if(s.length>1){
+    const mx=Math.max(...s,1)*1.15, X=i=>i*W/(s.length-1), Y=v=>H-3-(v/mx)*(H-12);
+    sv.innerHTML=`<polyline fill="none" stroke="var(--s1)" stroke-width="2"
+      stroke-linejoin="round" points="${s.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/>
+      <text x="2" y="10" fill="var(--muted)" font-size="10">${mx.toFixed(0)}</text>`;
+  } else sv.innerHTML='<text x="4" y="20" fill="var(--muted)" font-size="12">collecting…</text>';
+
+  $('#log').innerHTML=(d.log||[]).map(l=>`<div class="lg">${esc(l)}</div>`).join('');
+}
+tick(); setInterval(tick,3000);
+</script></body></html>

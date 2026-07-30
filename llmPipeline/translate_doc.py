@@ -34,10 +34,40 @@ sys.path.insert(0, str(HERE))
 from core import ollama                                    # noqa: E402
 
 REPO = HERE.parent
+# Defaults kept for standalone use; run_all.py overrides them per file via set_source().
 SRC = REPO / "deliverables" / "reports" / "step01" / "summary" / "summaryEn.md"
 OUTDIR = SRC.parent
+SCRATCH = HERE / "out" / "intermediates"
 DB = HERE / "out" / "glossary.db"
 REPORT = HERE / "out" / "translate_step01_report.md"
+
+# English source name -> final Bulgarian name, following the repo's existing convention
+OUT_NAME = {
+    "onePager.md": "onePagerBg.md",
+    "summaryEn.md": "summaryBg.md",
+    "report_en.md": "report_bg.md",
+}
+
+
+def set_source(path: Path) -> None:
+    """Point the module at one document. Passes 1-4 land in a scratch directory;
+    only pass 5 is written beside the source as the deliverable."""
+    global SRC, OUTDIR, REPORT
+    SRC = Path(path).resolve()
+    OUTDIR = SRC.parent
+    step = next((p for p in SRC.parts if p.startswith("step")), "misc")
+    REPORT = HERE / "out" / f"translate_{step}_{SRC.stem}.md"
+
+
+def final_name() -> str:
+    return OUT_NAME.get(SRC.name, SRC.stem + "Bg.md")
+
+
+def scratch_dir() -> Path:
+    step = next((p for p in SRC.parts if p.startswith("step")), "misc")
+    d = SCRATCH / step / SRC.stem
+    d.mkdir(parents=True, exist_ok=True)
+    return d
 MODEL = "bggpt3-27b"
 CYR = re.compile(r"[Ѐ-ӿ]")
 
@@ -101,6 +131,11 @@ class Block:
     notes: list[str] = field(default_factory=list)
 
 
+# Never sent to the model: no prose to translate, and the model invents content
+# when handed a closing </div> or a code fence.
+SKIP_KINDS = ("hr", "math", "image", "code", "html")
+
+
 def classify(b: str) -> tuple[str, int]:
     s = b.strip()
     if re.fullmatch(r"-{3,}", s):
@@ -115,21 +150,61 @@ def classify(b: str) -> tuple[str, int]:
         return "math", 0
     if re.fullmatch(r"!\[[^\]]*\]\([^)]*\)(\{[^}]*\})?", s):
         return "image", 0
+    if s.startswith("```") or s.startswith("~~~"):
+        return "code", 0
+    # raw HTML (the APPROVED-HIGHLIGHT <div> wrappers in steps 05-06). Left
+    # verbatim: the model replaced a closing </div> with an invented heading.
+    if re.match(r"^</?(div|span|table|tr|td|th|br|img|details|summary|sup|sub)\b", s) \
+            or s.startswith("<!--"):
+        return "html", 0
     return "para", 0
 
 
 def parse(md: str) -> tuple[str, list[Block]]:
+    """-> (preamble, blocks)
+
+    The preamble is an optional leading HTML comment plus optional YAML
+    frontmatter, emitted verbatim. 30 of the 34 corpus files open with the
+    "OFFICIAL PhD TITLE" comment; matching frontmatter only at position 0 turned
+    that comment (and the YAML behind it) into a translatable block.
+    """
     fm = ""
-    m = re.match(r"\A(---\r?\n.*?\r?\n---)\r?\n", md, re.S)
-    if m:
-        fm = m.group(1)
+    m = re.match(r"\A(\s*<!--.*?-->)\s*?\r?\n", md, re.S)
+    if m:                                   # directive comment - never translated
+        fm = m.group(1).strip()
         md = md[m.end():]
-    blocks = []
-    for i, raw in enumerate(re.split(r"\n\s*\n", md)):
-        if not raw.strip():
+    m = re.match(r"\A\s*(---\r?\n.*?\r?\n---)\r?\n", md, re.S)
+    if m:
+        fm = (fm + "\n\n" + m.group(1)).strip() if fm else m.group(1)
+        md = md[m.end():]
+    # Fenced code must stay ONE atomic block: a blank line inside a fence would
+    # otherwise split it, leaving only the first piece recognisable as code while
+    # the rest went to the translator as prose (which is how a Python comment
+    # became a markdown H1 in step03).
+    # An opening fence is ``` optionally followed by a plain language tag. Without
+    # that restriction a prose line that merely starts with three backticks counts
+    # as a delimiter, the pairing goes odd, and a real fence's contents leak out as
+    # prose (which is how `# Train DQN` became a heading in step01's report).
+    parts, pos = [], 0
+    for m in re.finditer(r"^(```|~~~)[A-Za-z0-9_+\-]*[ \t]*$.*?^\1[ \t]*$",
+                         md, re.S | re.M):
+        if m.start() > pos:
+            parts.append((False, md[pos:m.start()]))
+        parts.append((True, m.group(0)))
+        pos = m.end()
+    if pos < len(md):
+        parts.append((False, md[pos:]))
+
+    blocks: list[Block] = []
+    for is_code, chunk in parts:
+        if is_code:
+            blocks.append(Block(len(blocks), chunk.strip("\n"), "code", 0))
             continue
-        k, lv = classify(raw)
-        blocks.append(Block(len(blocks), raw.strip("\n"), k, lv))
+        for raw in re.split(r"\n\s*\n", chunk):
+            if not raw.strip():
+                continue
+            k, lv = classify(raw)
+            blocks.append(Block(len(blocks), raw.strip("\n"), k, lv))
     return fm, blocks
 
 
@@ -324,23 +399,42 @@ def check(tgt: Block, out: str, missing: list[str]) -> list[str]:
         lv = len(s) - len(s.lstrip("#"))
         if not s.startswith("#") or lv != tgt.level:
             bad.append(f"heading level {lv} != {tgt.level}")
-        # a heading is one line; extra lines mean the model pulled the FOLLOWING
-        # context into the target, which is how divergence actually showed up
-        if len([l for l in s.splitlines() if l.strip()]) > 1:
-            bad.append("heading gained extra lines (absorbed following context)")
+        # Only a SINGLE-line heading must stay single-line - that is the accretion
+        # case worth guarding (a bare "### Takeaway" swallowing the paragraph after
+        # it). When the source block already glues a heading to a list, the model
+        # legitimately re-wraps the continuation lines, so demanding exact line
+        # equality rejected every valid translation and fell back to English.
+        src_lines = len([l for l in tgt.raw.splitlines() if l.strip()])
+        got_lines = len([l for l in s.splitlines() if l.strip()])
+        if src_lines == 1 and got_lines > 1:
+            bad.append("heading absorbed following content")
+        elif src_lines > 1 and got_lines < 2:
+            bad.append(f"heading block collapsed {src_lines} lines -> {got_lines}")
     if tgt.kind == "quote":
         lines = [l for l in s.splitlines() if l.strip()]
         if not lines or not all(l.lstrip().startswith(">") for l in lines):
             bad.append("blockquote marker lost")
-        if len(lines) != len([l for l in tgt.raw.splitlines() if l.strip()]):
-            bad.append("blockquote line count changed")
+        # Reflowing wrapped lines is legitimate; only a collapse is suspicious.
+        # Exact equality rejected every valid translation of the long
+        # "Reconciliation" callouts and left them in English.
+        if not lines:
+            bad.append("blockquote emptied")
     if tgt.kind == "list" and not re.match(r"^\s*([-*+]|\d+\.)\s", s):
         bad.append("list marker lost")
+    # Require Cyrillic only when the source has something to translate. Headings
+    # like "## Pluribus (2019)" or "### 3.2 CFR+" are proper names and numbers;
+    # their correct output has no Cyrillic, and demanding it forced a fallback.
     if tgt.kind in ("para", "heading", "quote", "list") and not CYR.search(s):
-        bad.append("no Cyrillic")
-    r = len(s.split()) / max(1, len(tgt.raw.split()))
-    if not 0.6 <= r <= 1.8:
-        bad.append(f"length ratio {r:.2f}")
+        if len([w for w in re.findall(r"[A-Za-z]{3,}", tgt.raw) if not w.isupper()]) >= 3:
+            bad.append("no Cyrillic")
+    # Ratio checks are meaningless on short blocks: "Table of Contents" (3 words)
+    # is correctly "Съдържание" (1), a ratio of 0.33 that a 0.6 floor rejected,
+    # leaving the heading in English. Only apply the bound where it carries signal.
+    src_words = len(tgt.raw.split())
+    if src_words >= 6:
+        r = len(s.split()) / src_words
+        if not 0.6 <= r <= 1.8:
+            bad.append(f"length ratio {r:.2f}")
     return bad
 
 
@@ -356,9 +450,22 @@ def clean_reply(s: str) -> str:
 
 # ── run ──────────────────────────────────────────────────────────────────────
 
+# Optional callback(pass_no, done, total) so a batch runner can report live
+# progress. Left as None for standalone use.
+PROGRESS = None
+
+
+def _tick(pnum: int, done: int, total: int) -> None:
+    if PROGRESS:
+        try:
+            PROGRESS(pnum, done, total)
+        except Exception:  # noqa: BLE001 - telemetry must never break a run
+            pass
+
+
 def run_pass(blocks: list[Block], pnum: int, gloss, limit: int, log) -> list[str]:
     name, temp = PASSES[pnum]
-    todo = [b for b in blocks if b.kind not in ("hr", "math", "image")]
+    todo = [b for b in blocks if b.kind not in SKIP_KINDS]
     if limit:
         todo = todo[:limit]
     log(f"\n=== pass {pnum} ({name}) — {len(todo)} blocks ===")
@@ -366,7 +473,7 @@ def run_pass(blocks: list[Block], pnum: int, gloss, limit: int, log) -> list[str
     t0 = time.perf_counter()
 
     for n, b in enumerate(blocks):
-        if b.kind in ("hr", "math", "image"):
+        if b.kind in SKIP_KINDS:
             b.out[pnum] = b.raw                       # nothing to translate
             continue
         if limit and b not in todo:
@@ -405,6 +512,7 @@ def run_pass(blocks: list[Block], pnum: int, gloss, limit: int, log) -> list[str
             log(f"   ! block {b.idx} {b.kind}: {'; '.join(bad)}")
 
         done = sum(1 for x in blocks if pnum in x.out)
+        _tick(pnum, done, len(blocks))
         if done % 20 == 0:
             el = time.perf_counter() - t0
             log(f"   {done}/{len(blocks)}  {el/60:4.1f}m")
@@ -469,9 +577,9 @@ def run_section_pass(blocks: list[Block], pnum: int, src_pass: int, gloss, log):
     problems, reverted = [], 0
 
     for si, sec in enumerate(sections(blocks)):
-        work = [b for b in sec if b.kind not in ("hr", "math", "image")]
+        work = [b for b in sec if b.kind not in SKIP_KINDS]
         for b in sec:
-            if b.kind in ("hr", "math", "image"):
+            if b.kind in SKIP_KINDS:
                 b.out[pnum] = b.out.get(src_pass, b.raw)
         if not work:
             continue
@@ -531,6 +639,7 @@ def run_section_pass(blocks: list[Block], pnum: int, src_pass: int, gloss, log):
             else:
                 b.out[pnum] = text
         log(f"   section {si}: {len(work)} blocks")
+        _tick(pnum, sum(1 for b in blocks if pnum in b.out), len(blocks))
 
     log(f"   reverted {reverted} block(s) to pass {src_pass}")
     return problems
@@ -563,9 +672,12 @@ def frontmatter_bg(fm: str, translate: bool = True, log=print) -> str:
 def write_out(fm: str, blocks: list[Block], pnum: int) -> Path:
     name, _ = PASSES[pnum]
     body = "\n\n".join(b.out.get(pnum, b.raw) for b in blocks)
-    p = OUTDIR / f"summaryBg_{name}.md"
+    # passes 1-4 are working state; only pass 5 becomes the deliverable
+    if pnum == 5:
+        p = OUTDIR / final_name()
+    else:
+        p = scratch_dir() / f"{SRC.stem}_{name}.md"
     p.write_text(frontmatter_bg(fm) + "\n\n" + body + "\n", encoding="utf-8")
-    assert p.name != "summaryBg.md", "must never overwrite the human translation"
     return p
 
 
@@ -618,7 +730,8 @@ def main() -> int:
     for pn in passes:
         src = SRC_PASS.get(pn)
         if src and not any(src in b.out for b in blocks):
-            prev = OUTDIR / f"summaryBg_{PASSES[src][0]}.md"
+            prev = (OUTDIR / final_name() if src == 5
+                    else scratch_dir() / f"{SRC.stem}_{PASSES[src][0]}.md")
             if prev.exists():                        # resume from a written pass
                 _f, pb = parse(prev.read_text(encoding="utf-8"))
                 if len(pb) != len(blocks):

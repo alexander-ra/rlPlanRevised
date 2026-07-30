@@ -53,10 +53,15 @@ source .venv/bin/activate
 python3 scripts/build_pdf.py               # both languages
 python3 scripts/build_pdf.py --lang en     # English only
 
-# Step report + summary PDFs
-python3 scripts/build_reports.py                        # all steps
+# Step report + summary + one-pager PDFs
+python3 scripts/build_reports.py                        # all steps, all types
 python3 scripts/build_reports.py --step step01          # one step
 python3 scripts/build_reports.py --type summary         # summaries only
+python3 scripts/build_reports.py --type onepager        # one-pagers only
+
+# Bundles: one PDF per type per language, in deliverables/bundles/
+python3 scripts/build_reports.py --bundle               # rebuild everything, then merge
+python3 scripts/build_reports.py --bundle-only          # just re-merge existing PDFs
 
 # Interactive study viewer (bilingual EN/BG, outputs to docs/)
 python3 scripts/build.py    # → docs/index.html
@@ -74,7 +79,7 @@ cd implementation/step02 && python cfr/train.py
 - **Step naming:** `step01`, `step02`, etc. (zero-padded two digits)
 - **Learning cycle:** Each step follows 5 phases: Intuition → Exploration → Targeted Reading → Implementation → Consolidation
 - **Code ownership tags:** 🔴 HAND-CODE / 🟡 AI-ASSISTED / 🟢 AI-GENERATED (see PLAN.md §4.4)
-- **Reports:** Each step produces 4 PDFs: report EN, report BG, summary EN, summary BG
+- **Reports:** Each step produces 6 PDFs: report, summary and one-pager, each EN + BG
 - **Figures:** Stored in `deliverables/reports/stepXX/figures/` and copied into `summary/` subdirs
 
 ## Interactive Study Viewer — Module Structure
@@ -102,6 +107,11 @@ BG rendering notes:
 - BG PDFs require: `--pdf-engine=tectonic -V mainfont="DejaVu Serif" -V sansfont="DejaVu Sans"`
 - Summary PDFs go to `deliverables/summaries/stepXX_{en,bg}.pdf`
 - Report PDFs go to `deliverables/reports/stepXX/stepXX_report_{en,bg}.pdf`
+- One-pager PDFs go to `deliverables/onePagers/stepXX_{en,bg}.pdf` — the builder
+  retries at progressively tighter type until each one actually fits on one page
+- Bundles go to `deliverables/bundles/all{Reports,Summaries,OnePagers}_{en,bg}.pdf`;
+  they merge the per-step PDFs (one outline bookmark per step) rather than
+  re-rendering, so a bundle always matches its individual files
 
 ## Thesis Contributions (Target)
 
