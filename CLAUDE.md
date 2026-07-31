@@ -109,9 +109,34 @@ BG rendering notes:
 - Report PDFs go to `deliverables/reports/stepXX/stepXX_report_{en,bg}.pdf`
 - One-pager PDFs go to `deliverables/onePagers/stepXX_{en,bg}.pdf` — the builder
   retries at progressively tighter type until each one actually fits on one page
-- Bundles go to `deliverables/bundles/all{Reports,Summaries,OnePagers}_{en,bg}.pdf`;
-  they merge the per-step PDFs (one outline bookmark per step) rather than
-  re-rendering, so a bundle always matches its individual files
+- Bundles go to `deliverables/bundles/all{Reports,Summaries,OnePagers}_{en,bg}.pdf`
+- A bundle opens with one merged, section-level contents covering every step,
+  with bundle-wide page numbers. The per-step PDFs each keep their own TOC, but
+  a bundle re-renders them without one (cached in `bundles/.parts/`): a per-step
+  TOC's page numbers are relative to that step and point to the wrong place once
+  merged. The contents pages are rendered, measured and re-rendered until the
+  page count stops shifting, since adding them moves every number
+- BG PDFs use PT Serif / PT Sans (`mpm --install=paratype`), drawn for Cyrillic,
+  with DejaVu Sans Mono for code (`mpm --install=dejavu`). The builder probes
+  both the OS font list and the TeX tree, and falls back through
+  Liberation/DejaVu. The default LaTeX mono has **no Cyrillic**, so a monospace
+  without it silently blanks every Cyrillic code span
+- `scripts/glyph_fallback.tex` routes characters the body fonts lack (Greek, `ѝ`,
+  arrows, ✓/✗, box-drawing) to a font that has them — XeLaTeX drops an
+  uncoverable glyph silently, leaving a gap rather than an error
+- `scripts/float_layout.tex` relaxes float parameters and drains the queue at
+  each heading. Without it a heading between figures can go **untypeset** —
+  present in the .tex, absent from the PDF, no warning
+
+### Verification scripts
+
+- `python scripts/check_headings.py [--bundles]` — every level 1-2 heading in a
+  source must appear at heading size in the PDF. Exits non-zero if any is
+  missing. Guards the float defect above, which proofreading cannot catch
+- `python scripts/read_pdf_comments.py [--json out.json]` — extracts Acrobat
+  review comments (author, note, and the marked text) for a proofreading
+  round-trip. Highlight the words being commented on: the marked text is what
+  makes a comment locatable in the markdown
 
 ## Thesis Contributions (Target)
 

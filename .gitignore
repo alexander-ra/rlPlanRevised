@@ -36,3 +36,6 @@ implementation/nlhe/runs/
 *.nbc
 # cloudflared tunnel binary (large, downloadable)
 implementation/nlhe/tools/
+
+# Bundle build cache: TOC-less renders, regenerated on demand
+deliverables/bundles/.parts/

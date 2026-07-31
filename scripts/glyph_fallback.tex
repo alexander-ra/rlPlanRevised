@@ -1,0 +1,126 @@
+% ---------------------------------------------------------------------------
+% scripts/glyph_fallback.tex  —  included via --include-in-header
+%
+% Neither body font covers every character the sources use, and XeLaTeX does
+% not fall back on its own: a missing glyph is silently dropped, so the reader
+% sees a gap. PT Serif has no Greek at all (ε alone appears ~29 times), and
+% Latin Modern has no arrows, no card suits and no check marks.
+%
+% Each character below is routed to a font that does have it. DejaVu Serif
+% first, because it sits closest to the body text; DejaVu Sans only for the
+% handful DejaVu Serif also lacks.
+%
+% Both ship with the TeX distribution:  mpm --install=dejavu
+% ---------------------------------------------------------------------------
+
+\usepackage{newunicodechar}
+
+\newfontfamily\glyphfallback{DejaVu Serif}[Scale=MatchLowercase]
+\newfontfamily\glyphfallbacksans{DejaVu Sans}[Scale=MatchLowercase]
+% Box-drawing appears inside fenced code, where the substitute must also be
+% monospaced or the directory trees stop lining up.
+\newfontfamily\glyphfallbackmono{DejaVu Sans Mono}[Scale=MatchLowercase]
+
+% Robust, not \newcommand: microtype inspects the replacement text of an active
+% character, and a fragile macro there fails with "Argument of \MT@is@char has
+% an extra }" — but only when no \setmainfont was issued, i.e. on the English
+% builds that keep the Latin Modern default. Robust commands are protected from
+% that expansion.
+\DeclareRobustCommand{\fbk}[1]{{\glyphfallback #1}}
+\DeclareRobustCommand{\fbks}[1]{{\glyphfallbacksans #1}}
+\DeclareRobustCommand{\fbkm}[1]{{\glyphfallbackmono #1}}
+
+% Bulgarian ѝ (U+045D). PT Serif does not have it, and it is not
+% interchangeable with и — it is a separate word.
+\newunicodechar{ѝ}{\fbk{ѝ}}
+\newunicodechar{Ѝ}{\fbk{Ѝ}}
+
+% Greek. PT Serif has no Greek block at all, and the Latin Modern text font
+% has none either. Listed exhaustively rather than as-needed: ν and ρ were
+% missed on the first pass and vanished silently from two reports.
+\newunicodechar{α}{\fbk{α}}
+\newunicodechar{β}{\fbk{β}}
+\newunicodechar{γ}{\fbk{γ}}
+\newunicodechar{δ}{\fbk{δ}}
+\newunicodechar{ε}{\fbk{ε}}
+\newunicodechar{ζ}{\fbk{ζ}}
+\newunicodechar{η}{\fbk{η}}
+\newunicodechar{θ}{\fbk{θ}}
+\newunicodechar{ι}{\fbk{ι}}
+\newunicodechar{κ}{\fbk{κ}}
+\newunicodechar{λ}{\fbk{λ}}
+\newunicodechar{μ}{\fbk{μ}}
+\newunicodechar{ν}{\fbk{ν}}
+\newunicodechar{ξ}{\fbk{ξ}}
+\newunicodechar{π}{\fbk{π}}
+\newunicodechar{ρ}{\fbk{ρ}}
+\newunicodechar{σ}{\fbk{σ}}
+\newunicodechar{τ}{\fbk{τ}}
+\newunicodechar{υ}{\fbk{υ}}
+\newunicodechar{φ}{\fbk{φ}}
+\newunicodechar{χ}{\fbk{χ}}
+\newunicodechar{ψ}{\fbk{ψ}}
+\newunicodechar{ω}{\fbk{ω}}
+\newunicodechar{Γ}{\fbk{Γ}}
+\newunicodechar{Δ}{\fbk{Δ}}
+\newunicodechar{Θ}{\fbk{Θ}}
+\newunicodechar{Λ}{\fbk{Λ}}
+\newunicodechar{Ξ}{\fbk{Ξ}}
+\newunicodechar{Π}{\fbk{Π}}
+\newunicodechar{Σ}{\fbk{Σ}}
+\newunicodechar{Φ}{\fbk{Φ}}
+\newunicodechar{Ψ}{\fbk{Ψ}}
+\newunicodechar{Ω}{\fbk{Ω}}
+
+% Super/subscripts
+\newunicodechar{⁰}{\fbk{⁰}}
+\newunicodechar{⁴}{\fbk{⁴}}
+\newunicodechar{⁵}{\fbk{⁵}}
+\newunicodechar{⁶}{\fbk{⁶}}
+\newunicodechar{⁺}{\fbk{⁺}}
+\newunicodechar{⁻}{\fbk{⁻}}
+\newunicodechar{₀}{\fbk{₀}}
+\newunicodechar{₁}{\fbk{₁}}
+\newunicodechar{₂}{\fbk{₂}}
+
+% Arrows and relations
+\newunicodechar{→}{\fbk{→}}
+\newunicodechar{←}{\fbk{←}}
+\newunicodechar{↔}{\fbk{↔}}
+\newunicodechar{⇒}{\fbk{⇒}}
+\newunicodechar{∈}{\fbk{∈}}
+\newunicodechar{∝}{\fbk{∝}}
+\newunicodechar{≈}{\fbk{≈}}
+\newunicodechar{≠}{\fbk{≠}}
+\newunicodechar{≤}{\fbk{≤}}
+\newunicodechar{≥}{\fbk{≥}}
+\newunicodechar{±}{\fbk{±}}
+\newunicodechar{×}{\fbk{×}}
+\newunicodechar{∞}{\fbk{∞}}
+\newunicodechar{∑}{\fbk{∑}}
+\newunicodechar{√}{\fbk{√}}
+
+% Card suits
+\newunicodechar{♠}{\fbk{♠}}
+\newunicodechar{♥}{\fbk{♥}}
+\newunicodechar{♦}{\fbk{♦}}
+\newunicodechar{♣}{\fbk{♣}}
+
+% Box-drawing, used for directory trees inside code blocks
+\newunicodechar{─}{\fbkm{─}}
+\newunicodechar{│}{\fbkm{│}}
+\newunicodechar{├}{\fbkm{├}}
+\newunicodechar{└}{\fbkm{└}}
+\newunicodechar{┌}{\fbkm{┌}}
+\newunicodechar{┐}{\fbkm{┐}}
+\newunicodechar{┘}{\fbkm{┘}}
+\newunicodechar{┬}{\fbkm{┬}}
+\newunicodechar{┴}{\fbkm{┴}}
+\newunicodechar{┼}{\fbkm{┼}}
+
+% Only in DejaVu Sans
+\newunicodechar{✓}{\fbks{✓}}
+\newunicodechar{✗}{\fbks{✗}}
+\newunicodechar{⟦}{\fbks{⟦}}
+\newunicodechar{⟧}{\fbks{⟧}}
+\newunicodechar{ĸ}{\fbks{ĸ}}

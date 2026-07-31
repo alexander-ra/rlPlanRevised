@@ -1,0 +1,31 @@
+% ---------------------------------------------------------------------------
+% scripts/float_layout.tex  —  included via --include-in-header
+%
+% These documents are figure-dense: several steps put four or more figures in a
+% row with little text between them. With LaTeX's stock float parameters the
+% pending-float queue overflows, the output routine reports
+%   Overfull \vbox (344pt too high) has occurred while \output is active
+% and a section heading that sits between two figures is silently NOT TYPESET.
+% Step 11's "Coalition-aware MAPPO" heading disappeared from the summary this
+% way: present in the .tex, absent from the PDF, with no error.
+%
+% Relaxing the fractions lets more of a page be given to floats, and a barrier
+% at each section drains the queue so figures stay inside the section that
+% introduced them instead of drifting into the next one.
+% ---------------------------------------------------------------------------
+
+\usepackage{placeins}
+
+\renewcommand{\topfraction}{0.9}       % up to 90% of a page may be top floats
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}     % as little as 7% text is acceptable
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{8}
+
+% Drain pending floats at each heading, so a figure cannot outlive its section.
+\let\rlOldSection\section
+\renewcommand{\section}{\FloatBarrier\rlOldSection}
+\let\rlOldSubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\rlOldSubsection}
