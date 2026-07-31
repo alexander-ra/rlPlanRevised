@@ -25,7 +25,7 @@ working database; edit terms in the picker, not here.
 | clustering | клъстеризация | 5 |
 | infostate | информационно състояние | 5 |
 | lossy abstraction | Абстракция със загуби | 5 |
-| abstraction-and-blueprint paradigm | парадигма „абстракция и план | 4 |
+| abstraction-and-blueprint paradigm | парадигма „абстракция и план“ | 4 |
 | action sequence | последователност от действия | 4 |
 | belief distribution | разпределение на убежденията | 4 |
 | continuous action space | непрекъснато пространство на действията | 4 |
@@ -35,7 +35,7 @@ working database; edit terms in the picker, not here.
 | sequence-form | последователна форма | 4 |
 | tabular policy | таблична стратегия | 4 |
 | MDP | MDP | 3 |
-| augmented subgame | допълнена под-игра | 3 |
+| augmented subgame | разширена под-игра | 3 |
 | behavioral cluster | поведенчески клъстер | 3 |
 | behavioral clustering | поведенческо групиране | 3 |
 | belief space | пространство на убежденията | 3 |
@@ -57,8 +57,8 @@ working database; edit terms in the picker, not here.
 | belief-space blow-up | експлозия в пространството на убежденията | 2 |
 | belief-update loop | цикъл на актуализиране на убежденията | 2 |
 | betting abstraction | абстракция на залозите | 2 |
-| bucket | кофа | 2 |
-| bucket budget | бюджет на кофите | 2 |
+| bucket | клъстер | 2 |
+| bucket budget | бюджет на клъстерите | 2 |
 | card bucketing | групиране на карти | 2 |
 | environment | среда | 2 |
 | explicit modeling | изрично моделиране | 2 |
@@ -104,14 +104,14 @@ working database; edit terms in the picker, not here.
 | binary plane | двоична равнина | 1 |
 | blueprint floor | план за долна граница | 1 |
 | bounded lossy | ограничена загуба | 1 |
-| bounded lossy abstraction | ограничено загубно абстрахиране | 1 |
+| bounded lossy abstraction | абстракция с ограничена загуба | 1 |
 | bounded lossy merges | ограничени загубни обединявания | 1 |
 | bounded-lossy abstraction | абстракция с ограничена загуба | 1 |
-| bucket id | идентификатор на кофа | 1 |
-| bucket reallocation | свободата за преразпределение на кофите | 1 |
-| bucket trail | траектория на кофите | 1 |
+| bucket id | идентификатор на клъстер | 1 |
+| bucket reallocation | свободата за преразпределение на клъстерите | 1 |
+| bucket trail | траектория на клъстерите | 1 |
 | bucketing | групиране | 1 |
-| card buckets | кош за карти | 1 |
+| card buckets | клъстери за карти | 1 |
 | clustering pipeline | клъстеризационен конвейер | 1 |
 | coarse buckets | груби интервали | 1 |
 | competent archetypes | компетентни архетипи | 1 |
@@ -175,7 +175,7 @@ working database; edit terms in the picker, not here.
 | opponent-type space | пространство от типове противници | 1 |
 | partially observable mdp | Partially Observable MDP | 1 |
 | partially observed | частично наблюдаван | 1 |
-| partially-observed | частично наблюдаем | 1 |
+| partially-observed | частично наблюдаван | 1 |
 | pbs representation | PBS representation | 1 |
 | perfect models | перфектни модели | 1 |
 | perfect-recall buckets | кошчета с пълно припомняне | 1 |
@@ -248,11 +248,11 @@ working database; edit terms in the picker, not here.
 | cfr solver | CFR решавач | 5 |
 | decision tree | дърво на решенията | 5 |
 | heuristic search | евристично търсене | 5 |
-| policy space response oracles | оракули за отговор в пространството на стратегиите | 5 |
+| policy space response oracles | предсказвачи за отговор в пространството на стратегиите | 5 |
 | self-improver | самоусъвършенстващ се | 5 |
 | DREAM | DREAM | 4 |
 | alphastar | AlphaStar | 4 |
-| double-oracle | двойно предсказание | 4 |
+| double-oracle | двоен предсказвач | 4 |
 | dynamic programming | динамично програмиране | 4 |
 | mapo | MAPPO | 4 |
 | naive blend | наивна смеска | 4 |
@@ -274,7 +274,7 @@ working database; edit terms in the picker, not here.
 | CFR-AVG | CFR-AVG | 2 |
 | CFR-D | CFR-D | 2 |
 | Estimated-Maxmargin | Estimated-Maxmargin | 2 |
-| approximate oracle | приблизителен оракъл | 2 |
+| approximate oracle | приблизителен предсказвач | 2 |
 | blueprint strategy | план-стратегия | 2 |
 | deep counterfactual regret minimization | Deep CFR | 2 |
 | diversity-regularized meta-solver | метарешавател с регуляризация за разнообразие | 2 |
@@ -337,7 +337,7 @@ working database; edit terms in the picker, not here.
 | exact-CFR | Exact-CFR | 1 |
 | expectation-maximization | очакване–максимизиране | 1 |
 | explicit-discretisation | изрична дискретизация | 1 |
-| exploitability oracle | оракул за експлоатируемост | 1 |
+| exploitability oracle | предсказвач за експлоатируемост | 1 |
 | external sampling monte carlo counterfactual regret minimization | External Sampling Monte Carlo CFR | 1 |
 | gadget | приспособление | 1 |
 | global methods | глобални методи | 1 |
@@ -356,8 +356,8 @@ working database; edit terms in the picker, not here.
 | merge | сливане | 1 |
 | mix actions | смесени действия | 1 |
 | modified rbp | Modified RBP | 1 |
-| monte carlo variants | Monte Carlo variants | 1 |
-| monte-carlo variants | Monte-Carlo variants | 1 |
+| monte carlo variants | варианти на Монте Карло | 1 |
+| monte-carlo variants | варианти на Монте Карло | 1 |
 | mutation | мутация | 1 |
 | neural mccfr | Neural MCCFR | 1 |
 | neural ppo networks | Neural PPO Networks | 1 |
@@ -415,7 +415,7 @@ working database; edit terms in the picker, not here.
 | inference | извод | 2 |
 | prompt | подкана | 2 |
 | scale | мащаб | 2 |
-| state-of-the-art | най-съвременно ниво | 2 |
+| state-of-the-art | съвременно равнище | 2 |
 | thesis signal | сигнал за дисертацията | 2 |
 | thesis synthesis | синтез на дисертацията | 2 |
 | translation problem | проблем на транслацията | 2 |
@@ -434,7 +434,7 @@ working database; edit terms in the picker, not here.
 | data-driven approaches | подход, управляван от данни | 1 |
 | design choices | дизайнерски решения | 1 |
 | downstream application | приложно поле | 1 |
-| explicit-vs-implicit axis | основата „явни срещу неявни | 1 |
+| explicit-vs-implicit axis | ос „явни срещу неявни“ | 1 |
 | exploitative | експлоатативен | 1 |
 | framework | рамка | 1 |
 | generality with soundness | обобщеност с коректност | 1 |
@@ -545,7 +545,7 @@ working database; edit terms in the picker, not here.
 | evaluation methodology | методология за оценяване | 6 |
 | wall-clock time | реално време | 6 |
 | empirical game-theoretic analysis | емпиричен игровотеоретичен анализ | 5 |
-| failure mode | Режим на отказ | 5 |
+| failure mode | режим на отказ | 5 |
 | local-best-response probe | сондаж за най-добър локален отговор | 5 |
 | population evaluation | оценка на популацията | 5 |
 | benchmark game | референтна игра | 4 |
@@ -578,7 +578,7 @@ working database; edit terms in the picker, not here.
 | seeded sweep | обхождане с фиксирани начални стойности | 3 |
 | statistical confidence | статистическа достоверност | 3 |
 | stress test | стрес тест | 3 |
-| test time | време на изпитване | 3 |
+| test time | време на тестване | 3 |
 | undersampling | подбиране на ограничена извадка | 3 |
 | 5-seed paired sweep | петкратно кръстосано сравнение по двойки | 2 |
 | approximate exploitability | приблизителна експлоатируемост | 2 |
@@ -707,7 +707,7 @@ working database; edit terms in the picker, not here.
 | emd-style distances | разстояния от ЕМД тип | 1 |
 | empirical Nash convergence | емпирична сходимост на Наш | 1 |
 | empirical convergence | емпирична сходимост | 1 |
-| empirical game theoretic analysis | емпиричен игрово-теоретичен анализ | 1 |
+| empirical game theoretic analysis | емпиричен игровотеоретичен анализ | 1 |
 | empirical payoff matrix | емпирична матрица на печалбата | 1 |
 | empirical sweep | емпиричен преглед | 1 |
 | end-of-game win probabilities | вероятности за победа в края на играта | 1 |
@@ -819,8 +819,8 @@ working database; edit terms in the picker, not here.
 | pre-training diagnostic | предварителна диагностика на обучението | 1 |
 | probing | проучване | 1 |
 | profit-vs-Nash | печалба спрямо Нэш | 1 |
-| pure skill ladder | чиста скала на уменията | 1 |
-| pure-skill ladder | чистоуметелна стълбица | 1 |
+| pure skill ladder | стълбица на чистото умение | 1 |
+| pure-skill ladder | стълбица на чистото умение | 1 |
 | qualitative detection claims | качествени твърдения за откриване | 1 |
 | raw winnings | сурови печалби | 1 |
 | real-time feasibility | изпълнимост в реално време | 1 |
@@ -832,7 +832,7 @@ working database; edit terms in the picker, not here.
 | robustness sweep | обхождане за устойчивост | 1 |
 | rollout length | дължина на разгръщане | 1 |
 | running league | непрекъсната лига | 1 |
-| safe-exploitation | безопасно използване | 1 |
+| safe-exploitation | безопасна експлоатация | 1 |
 | safe-exploitation analysis | анализ на безопасното експлоатиране | 1 |
 | safe-exploitation trade-off | компромис безопасност–експлоатация | 1 |
 | safety anchor | предпазен ограничител | 1 |
@@ -942,7 +942,7 @@ working database; edit terms in the picker, not here.
 | common knowledge | общо знание | 7 |
 | extensive-form game | Игра в разгърната форма | 7 |
 | minimax theorem | теорема за минимакс | 7 |
-| mixed strategy | Смесена стратегия | 7 |
+| mixed strategy | смесена стратегия | 7 |
 | nash strategy | Нашева стратегия | 7 |
 | transitive | транзитивен | 7 |
 | nash equilibria | равновесие на Наш | 6 |
@@ -1076,7 +1076,7 @@ working database; edit terms in the picker, not here.
 | analytic evolutionary outcome | аналитичен еволюционен резултат | 1 |
 | antisymmetric payoff matrix | антисиметрична матрица на печалбата | 1 |
 | antisymmetrized payoff matrix | антисиметризирана матрица на изплащанията | 1 |
-| augmented-subgame | допълнен подучастък | 1 |
+| augmented-subgame | разширена под-игра | 1 |
 | auxiliary game | спомагателна игра | 1 |
 | average strategy Nash | средна стратегия на Наш | 1 |
 | average strategy profile | среден профил от стратегии | 1 |
@@ -1111,7 +1111,7 @@ working database; edit terms in the picker, not here.
 | empirical game theory | емпирична теория на игрите | 1 |
 | empirical games | емпирични игри | 1 |
 | epsilon equilibrium | епсилон равновесие | 1 |
-| epsilon equilibrium strategies | стратегии за епсилон равновесие | 1 |
+| epsilon equilibrium strategies | ε-равновесни стратегии | 1 |
 | epsilon-equilibrium strategies | ε-равновесни стратегии | 1 |
 | equilibrium-selection problems | проблеми с избора на равновесие | 1 |
 | expected value (ev) | очаквана стойност | 1 |
@@ -1148,7 +1148,7 @@ working database; edit terms in the picker, not here.
 | global strategy | глобална стратегия | 1 |
 | greedy best response | алчен най-добър отговор | 1 |
 | guarantee gap | гаранционна разлика | 1 |
-| hawk-dove game | игра „ястреб–гълъб | 1 |
+| hawk-dove game | игра „ястреб–гълъб“ | 1 |
 | hidden type | скрит тип | 1 |
 | hidden-information game | игра с непълна информация | 1 |
 | imperfect-information game theory | теория на игрите с непълна информация | 1 |
@@ -1168,7 +1168,7 @@ working database; edit terms in the picker, not here.
 | kuhn's theorem | Kuhn's Theorem | 1 |
 | learning in repeated games | обучение в повтарящи се игри | 1 |
 | least-exploitable strategy | най-слабо експлоатируема стратегия | 1 |
-| level-k reasoning | разсъждение от тип „Level-k | 1 |
+| level-k reasoning | разсъждение от тип „Level-k“ | 1 |
 | lunarlander | LunarLander | 1 |
 | lunarl原因-v3 | LunarLander-v3 | 1 |
 | max-min value | максиминна стойност | 1 |
@@ -1254,7 +1254,7 @@ working database; edit terms in the picker, not here.
 | strict cyclic dominance | стриктна циклична доминантност | 1 |
 | strictly cyclic-dominant | стриктно циклично доминиращ | 1 |
 | sub-dominant | поддоминантна | 1 |
-| subgame perfection | съвършенство в подиграта | 1 |
+| subgame perfection | съвършенство в под-играта | 1 |
 | suboptimal strategy | неоптимална стратегия | 1 |
 | symmetric game | симетрична игра | 1 |
 | symmetric matrix games | симетрични матрични игри | 1 |
@@ -1280,7 +1280,7 @@ working database; edit terms in the picker, not here.
 | zero-sum constraint | ограничение с нулева сума | 1 |
 | zero-sum rewards | награди с нулева сума | 1 |
 | Counterfactual best-response value (CBV) | контрафактична стойност на най-добрия отговор | 0 |
-| Empirical Game-Theoretic Analysis (EGTA) | емпиричен теоретико-игрови анализ | 0 |
+| Empirical Game-Theoretic Analysis (EGTA) | емпиричен игровотеоретичен анализ | 0 |
 | Intransitive cycle | Нетранзитивен цикъл | 0 |
 
 ## Mathematics & Statistics (244)
@@ -1290,7 +1290,7 @@ working database; edit terms in the picker, not here.
 | expected value | очаквана стойност | 28 |
 | standard error | стандартна грешка | 12 |
 | posterior | апостериорно разпределение | 10 |
-| worst-case | най-лошият случай | 9 |
+| worst-case | най-лош случай | 9 |
 | earth mover's distance | Разстояние на Васерщайн | 7 |
 | prior | предварително убеждение | 7 |
 | exploitability gap | експлоатируема разлика | 6 |
@@ -1338,7 +1338,7 @@ working database; edit terms in the picker, not here.
 | markov chain | марковска верига | 2 |
 | monotone decline | монотонно намаляване | 2 |
 | non-parametric models | непараметрични модели | 2 |
-| oracle | оракул | 2 |
+| oracle | предсказвач | 2 |
 | polytope | политоп | 2 |
 | posterior distribution | задно разпределение | 2 |
 | provably sound | доказуемо коректен | 2 |
@@ -1371,8 +1371,8 @@ working database; edit terms in the picker, not here.
 | approximation | приближение | 1 |
 | argmax | argmax | 1 |
 | bang-bang | изненадващ обрат | 1 |
-| bang-bang frontier | граница тип „вкл.–изкл | 1 |
-| bang-bang threshold | прагов контрол „включено/изключено | 1 |
+| bang-bang frontier | граница „включено–изключено“ | 1 |
+| bang-bang threshold | праг „включено–изключено“ | 1 |
 | basins | басейни | 1 |
 | bayesian inference | Байесово извеждане | 1 |
 | bayesian type posterior | баесово апостериорно разпределение | 1 |
@@ -1478,7 +1478,7 @@ working database; edit terms in the picker, not here.
 | posterior estimation | задно оценяване | 1 |
 | posterior mean | средна стойност апостериори | 1 |
 | posterior update | актуализация на апостериорното разпределение | 1 |
-| posterior weight | задна тегло | 1 |
+| posterior weight | апостериорно тегло | 1 |
 | posterior-over-time | разпределение на апостериорни вероятности във времето | 1 |
 | principle of optimality | принцип на оптималност | 1 |
 | prior beliefs | предварителни убеждения | 1 |
@@ -1518,7 +1518,7 @@ working database; edit terms in the picker, not here.
 | temporal correlation | времева корелация | 1 |
 | theoretical value | теоретична стойност | 1 |
 | total variation | обща вариация | 1 |
-| total-variation distance | разстояние на общата вариация | 1 |
+| total-variation distance | разстояние по обща вариация | 1 |
 | transition probabilities | вероятности за преход | 1 |
 | true probabilities | истински вероятности | 1 |
 | unbiased estimation theorem | теорема за непредубедена оценка | 1 |
@@ -1612,7 +1612,7 @@ working database; edit terms in the picker, not here.
 | implicit agent modeling | имплицитно моделиране на агенти | 2 |
 | information sharing | споделяне на информация | 2 |
 | mixed-motive | със смесени мотиви | 2 |
-| multi-agent actor-critic | многоагентен актьор-критик | 2 |
+| multi-agent actor-critic | многоагентен актьор-оценител | 2 |
 | multi-agent dynamics | динамика на многоагентни системи | 2 |
 | non-stationary opponents | нестационарни опоненти | 2 |
 | opponent-blind | независим от противника | 2 |
@@ -1802,7 +1802,7 @@ working database; edit terms in the picker, not here.
 | llm | голям езиков модел | 4 |
 | state tensor encoding | тензорно кодиране на състоянието | 4 |
 | strategy network | стратегическа мрежа | 4 |
-| actor-critic | актьор-критик | 3 |
+| actor-critic | актьор-оценител | 3 |
 | backpropagation | обратно разпространение на грешката | 3 |
 | critic-value proxy | заместващ показател за критична стойност | 3 |
 | decoder | декодер | 3 |
@@ -1831,7 +1831,7 @@ working database; edit terms in the picker, not here.
 | large language model | голям езиков модел | 2 |
 | multilayer perceptron | многослоен перцептрон | 2 |
 | neural equilibrium approximation | невронно приближение на равновесие | 2 |
-| neural oracles | невронни оракули | 2 |
+| neural oracles | невронни предсказвачи | 2 |
 | neural value approximation | невронно приближение на стойността | 2 |
 | q-network | q-мрежа | 2 |
 | relu | ReLU | 2 |
@@ -1842,7 +1842,7 @@ working database; edit terms in the picker, not here.
 | transformer | трансформър | 2 |
 | translation equivariance | еквивариантност спрямо транслация | 2 |
 | value net | мрежа за стойности | 2 |
-| weight initialization | инициализация на теглоите | 2 |
+| weight initialization | инициализация на теглата | 2 |
 | DRQN | DRQN | 1 |
 | Deep Recurrent Q-Network | Deep Recurrent Q-Network | 1 |
 | Deep Sets | Deep Sets | 1 |
@@ -1904,7 +1904,7 @@ working database; edit terms in the picker, not here.
 | neural estimation | невронна оценка | 1 |
 | neural value network | невронна мрежа за стойности | 1 |
 | one-hot vectors | едногорещи вектори | 1 |
-| orthogonal weight initialisation | ортогонална инициализация на теглоите | 1 |
+| orthogonal weight initialisation | ортогонална инициализация на теглата | 1 |
 | orthogonal weight initialization | ортогонална инициализация на теглата | 1 |
 | parameterised actor | параметризиран актьор | 1 |
 | per-agent critic | критик за всеки агент | 1 |
@@ -1951,8 +1951,8 @@ working database; edit terms in the picker, not here.
 | vanishing gradients | изчезващи градиенти | 1 |
 | wasserstein gan | Wasserstein GAN | 1 |
 | weight | тегло | 1 |
-| weight matrix | матрица на теглоите | 1 |
-| weight sharing | споделяне на теглои | 1 |
+| weight matrix | матрица на теглата | 1 |
+| weight sharing | споделяне на тегла | 1 |
 | width | ширина | 1 |
 | zero-sum-consistency output head | глава за изходна нулева сума | 1 |
 | Player embedding (player2vec) | вграждане на играч | 0 |
@@ -1970,7 +1970,7 @@ working database; edit terms in the picker, not here.
 | rebel | Recursive Belief-based Learning | 17 |
 | blueprint | план | 15 |
 | teaching attack | обучаваща атака | 11 |
-| matching pennies | игра „хвърляне на монета | 10 |
+| matching pennies | игра „хвърляне на монета“ | 10 |
 | continuation strategy | продължителна стратегия | 9 |
 | imperfect-information | непълна информация | 8 |
 | safety floor | праг на безопасност | 8 |
@@ -1992,7 +1992,7 @@ working database; edit terms in the picker, not here.
 | betting history | история на залозите | 4 |
 | chips | жетони | 4 |
 | dead zone | мъртва зона | 4 |
-| ffa games | Игри всеки срещу всеки | 4 |
+| ffa games | игри всеки срещу всеки | 4 |
 | game ai | игрови изкуствен интелект | 4 |
 | heads-up limit texas hold'em | хедс-ъп лимит тексаски холдем | 4 |
 | heads-up no-limit Texas hold'em | Тексаски но-лимит покер за двама | 4 |
@@ -2027,7 +2027,7 @@ working database; edit terms in the picker, not here.
 | strategy type | тип стратегия | 3 |
 | superhuman play | свръхчовешка игра | 3 |
 | tie-break | развръзка | 3 |
-| tight passive | стегната пасивност | 3 |
+| tight passive | стегнат-пасивен | 3 |
 | tightpassive | стегнат-пасивен | 3 |
 | value-bet | стойностен залог | 3 |
 | best-response ceiling | таван на най-добрия отговор | 2 |
@@ -2057,7 +2057,7 @@ working database; edit terms in the picker, not here.
 | kuhn notch | Kuhn Poker | 2 |
 | leaf value | стойност на възел | 2 |
 | limit texas hold'em | Тексас холдем с лимит | 2 |
-| loose aggressive | свободно-агресивен | 2 |
+| loose aggressive | разпуснат-агресивен | 2 |
 | loose passive | свободно-пасивен | 2 |
 | looseaggressive | свободно-агресивен | 2 |
 | maniac strategy | маниакална стратегия | 2 |
@@ -2066,7 +2066,7 @@ working database; edit terms in the picker, not here.
 | modal gap | модален интервал | 2 |
 | multi-street poker | покер с няколко кръга на залагане | 2 |
 | natural-language game | игра на естествен език | 2 |
-| no-limit texas hold'em | No-Limit Texas Hold'em | 2 |
+| no-limit texas hold'em | No-Limit Texas Холдем | 2 |
 | no-press diplomacy | No-Press Diplomacy | 2 |
 | off-tree opponent bet | залог на противника извън дървото | 2 |
 | out-of-menu opponent | противник извън менюто | 2 |
@@ -2097,7 +2097,7 @@ working database; edit terms in the picker, not here.
 | HUNL poker | HUNL poker | 1 |
 | King-flop | крал-флоп | 1 |
 | Leduc wall | стената на Ледюк | 1 |
-| Leduc-family games | игри от типа на Людек | 1 |
+| Leduc-family games | игри от типа на Ледюк | 1 |
 | Mini-NL | Mini-NL | 1 |
 | Player of Games | играч на игри | 1 |
 | abstraction bots | абстрактни ботове | 1 |
@@ -2109,7 +2109,7 @@ working database; edit terms in the picker, not here.
 | alwayscall | AlwaysCall | 1 |
 | alwayspass | AlwaysPass | 1 |
 | ante | залог | 1 |
-| atari games | Atari Games | 1 |
+| atari games | игри на Atari | 1 |
 | bayesian behavior | баесово поведение | 1 |
 | behavioral fingerprints | поведенчески отпечатъци | 1 |
 | behavioral patterns | поведенчески модели | 1 |
@@ -2157,7 +2157,7 @@ working database; edit terms in the picker, not here.
 | flop network | флоп мрежа | 1 |
 | folding | пас | 1 |
 | folding line | линия на пас | 1 |
-| full-bucket variants | варианти с пълна кофа | 1 |
+| full-bucket variants | варианти с пълна клъстер | 1 |
 | full-press diplomacy | Дипломация с максимален натиск | 1 |
 | full-scale poker | пълномащабен покер | 1 |
 | full-street models | пълни модели | 1 |
@@ -2169,7 +2169,7 @@ working database; edit terms in the picker, not here.
 | hand-strength clustering | групиране по сила на ръката | 1 |
 | hands | раздаване | 1 |
 | heads-up | един на един | 1 |
-| heads-up no-limit hold'em | Heads-Up No-Limit Hold'em | 1 |
+| heads-up no-limit hold'em | Heads-Up No-Limit Холдем | 1 |
 | heads-up no-limit poker AI | изкуствен интелект за по̀кер без лимит един на един | 1 |
 | heads-up poker | покер един на един | 1 |
 | hero realization plan | план за реализация на героя | 1 |
@@ -2196,7 +2196,7 @@ working database; edit terms in the picker, not here.
 | leak | изтичане | 1 |
 | leak decomposition | декомпозиция при изтичане | 1 |
 | leaves money on the table | оставя пари на масата | 1 |
-| leduc driver | Leduc Hold'em | 1 |
+| leduc driver | Leduc Холдем | 1 |
 | leduc tolerance | толеранс на Льодюк | 1 |
 | loose-aggressive prior | предварително разпределение, благоприятстващо агресивни и отворени стратегии | 1 |
 | luck-vs-skill limitation | ограничение произтичащо от елемента на случайността и умението | 1 |
@@ -2215,7 +2215,7 @@ working database; edit terms in the picker, not here.
 | multi-round structure | многорунтов строеж | 1 |
 | near-nash opponent | почти равновесен противник | 1 |
 | near-safe | почти безопасен | 1 |
-| no-limit hold'em | No-Limit Hold'em | 1 |
+| no-limit hold'em | No-Limit Холдем | 1 |
 | no-op | неоперация | 1 |
 | non-action | недействие | 1 |
 | nuts | най-силната ръка | 1 |
@@ -2270,7 +2270,7 @@ working database; edit terms in the picker, not here.
 | recon blind chess | слепец шах с разузнаване | 1 |
 | refined strategy | усъвършенствана стратегия | 1 |
 | resolved strategy | разрешена стратегия | 1 |
-| rhode island hold'em | Rhode Island Hold'em | 1 |
+| rhode island hold'em | Rhode Island Холдем | 1 |
 | river abstraction | речна абстракция | 1 |
 | rnr transition | RNR преход | 1 |
 | rollout counterfactual | контрафактично разгръщане | 1 |
@@ -2393,7 +2393,7 @@ working database; edit terms in the picker, not here.
 | centralized value function | централизирана стойностна функция | 2 |
 | counterfactual value decomposition | декомпозиция на контрафактичната стойност | 2 |
 | cumulative reward | натрупана награда | 2 |
-| deep rl | дълбоко обучение с подсилване | 2 |
+| deep rl | дълбоко обучение с подкрепление | 2 |
 | environment steps | стъпки на средата | 2 |
 | expected discounted return | очаквана дисконтирана възвръщаемост | 2 |
 | exploitation-versus-safety tension | напрежение между експлоатацията и безопасността | 2 |
@@ -2455,14 +2455,14 @@ working database; edit terms in the picker, not here.
 | credit attribution | разпределение на заслуги | 1 |
 | critic value | стойност на оценителя | 1 |
 | critic variance | дисперсия на оценителя | 1 |
-| critic-value | критична стойност | 1 |
-| critic-variance | вариация на критик | 1 |
+| critic-value | стойност на оценителя | 1 |
+| critic-variance | дисперсия на оценителя | 1 |
 | cumulative strategy | кумулативна стратегия | 1 |
 | current policy | текуща стратегия | 1 |
 | deep multi-agent reinforcement learning | дълбоко многоагентно обучение с подкрепление | 1 |
 | deep value-based rl | дълбоко обучение с базирано на стойност подсилващо обучение | 1 |
 | deep-learning | дълбоко обучение | 1 |
-| deep-rl | дълбоко обучение с подсилване | 1 |
+| deep-rl | дълбоко обучение с подкрепление | 1 |
 | dense reward | гъста награда | 1 |
 | deterministic policy | детерминистична стратегия | 1 |
 | discount factor | коефициент на дисконтиране | 1 |
@@ -2537,7 +2537,7 @@ working database; edit terms in the picker, not here.
 | population structure | популационна структура | 1 |
 | population-based improvement | Population-Based Improvement | 1 |
 | prediction-reality reconciliation | съгласуване предвиждане–реалност | 1 |
-| proxy-credit | заместващ кредит | 1 |
+| proxy-credit | заместващ кредитен сигнал | 1 |
 | recovery | възстановяване | 1 |
 | recovery result | резултат от възстановяването | 1 |
 | regime shift | промяна в режима | 1 |
@@ -2579,14 +2579,14 @@ working database; edit terms in the picker, not here.
 | value estimates | стойностни оценки | 1 |
 | value estimation errors | грешки при оценяване на стойността | 1 |
 | value-approximation term | член на апроксимация на стойността | 1 |
-| value-based offline rl | обучение с подсилване офлайн на базата на стойност | 1 |
+| value-based offline rl | обучение с подкрепление офлайн на базата на стойност | 1 |
 | value/policy | стойност/политика | 1 |
 | value/policy function | функция на стойност/политика | 1 |
 | zero-shot | безтренировъчен | 1 |
 | ε-greedy | ε-greedy | 1 |
 | ε-on-policy | ε-on-policy | 1 |
 | ε-on-policy mixture | ε-on-policy mixture | 1 |
-| Exploitation–safety tradeoff | Компромис между експлоатация и безопасност | 0 |
+| Exploitation–safety tradeoff | компромис между експлоатация и безопасност | 0 |
 | Markov decision process (MDP) | марковски процес на вземане на решения | 0 |
 | Regret (algorithmic) | съжаление | 0 |
 | Reinforcement learning (RL) | обучение с подкрепление | 0 |
@@ -2600,7 +2600,7 @@ working database; edit terms in the picker, not here.
 | meta-nash | мета-Наш | 11 |
 | continual re-solving | продължително пре-решаване | 10 |
 | linear programming | линейно програмиране | 9 |
-| spinning top decomposition | Декомпозиция „пумпал" | 9 |
+| spinning top decomposition | декомпозиция „пумпал“ | 9 |
 | equilibrium computation | изчисляване на равновесие | 8 |
 | depth-limited search | търсене с ограничена дълбочина | 7 |
 | monte-carlo tree search | търсене в дърво на Монте Карло | 7 |
@@ -2620,9 +2620,9 @@ working database; edit terms in the picker, not here.
 | leaf evaluator | оценител на възел | 4 |
 | meta-nash equilibrium | мета-Наш равновесие | 4 |
 | minimax value | минимаксна стойност | 4 |
-| monte carlo cfr | метод Монте Карло CFR | 4 |
+| monte carlo cfr | Монте Карло CFR | 4 |
 | monte carlo methods | методи на Монте Карло | 4 |
-| monte carlo tree search | търсене с метод Монте Карло в дърво | 4 |
+| monte carlo tree search | търсене в дърво на Монте Карло | 4 |
 | nested safe subgame solving | вложено безопасно решаване на под-игри | 4 |
 | search | търсене | 4 |
 | solver | решавач | 4 |
@@ -2641,7 +2641,7 @@ working database; edit terms in the picker, not here.
 | re-solve | преизчислявам | 3 |
 | real-time subgame methods | методи за под-игри в реално време | 3 |
 | regret-based pruning | подрязване, базирано на съжаление | 3 |
-| spinning-top decomposition | декомпозиция тип пумпал | 3 |
+| spinning-top decomposition | декомпозиция „пумпал“ | 3 |
 | subgame method | метод на под-играта | 3 |
 | test-time search | търсене по време на тестване | 3 |
 | unsafe search | несигурно търсене | 3 |
@@ -2652,7 +2652,7 @@ working database; edit terms in the picker, not here.
 | cfr-nash | CFR-Nash | 2 |
 | counter strategies | контрастратегии | 2 |
 | counterfactual advantage | контрафактично предимство | 2 |
-| double-oracle method | метод на двойно предсказание | 2 |
+| double-oracle method | метод на двойния предсказвач | 2 |
 | evaluation function | оценъчна функция | 2 |
 | expansion | разширяване | 2 |
 | full traversal | пълно обхождане | 2 |
@@ -2687,9 +2687,9 @@ working database; edit terms in the picker, not here.
 | AlphaZero-style search | търсене в стил AlphaZero | 1 |
 | Analytic ESS/Nash | Аналитично равновесие на Еволюционно стабилни стратегии/Наш | 1 |
 | CFR convergence | сходимост на CFR | 1 |
-| CFR family | CFR family | 1 |
-| CFR policy | CFR policy | 1 |
-| CFR solving | CFR solving | 1 |
+| CFR family | семейство CFR | 1 |
+| CFR policy | стратегия от CFR | 1 |
+| CFR solving | решаване с CFR | 1 |
 | CFR-resolution | CFR-resolution | 1 |
 | PSRO convergence analysis | PSRO convergence analysis | 1 |
 | PUCT expansion phase | PUCT expansion phase | 1 |
@@ -2705,32 +2705,32 @@ working database; edit terms in the picker, not here.
 | backup values | резервни стойности | 1 |
 | beam search | търсене с лъч | 1 |
 | belief-aware search | търсене с отчитане на убежденията | 1 |
-| best response oracle | оракул за най-добър отговор | 1 |
+| best response oracle | предсказвач за най-добър отговор | 1 |
 | best-response computation | изчисляване на най-добър отговор | 1 |
 | black-box solver | непрозрачен решавач | 1 |
 | blended toward nash | смесена към Наш | 1 |
 | blind nash play | сляпо равновесие по Наш | 1 |
 | candidate | кандидат | 1 |
 | candidate strategies | кандидатски стратегии | 1 |
-| cfr approximation | CFR approximation | 1 |
-| cfr search | CFR search | 1 |
+| cfr approximation | приближение чрез CFR | 1 |
+| cfr search | търсене с CFR | 1 |
 | classical re-solving | класическо пререшаване | 1 |
 | constrained response | ограничен отговор | 1 |
 | converged solve | сходно решение | 1 |
 | coordinated equilibrium | координирано равновесие | 1 |
-| cutting plane | отсичаща равнина | 1 |
+| cutting plane | равнина на отсичане | 1 |
 | cutting-plane method | метод на равнините на отсичане | 1 |
 | cyclic-but-not-dominant structure | циклична, но не доминираща структура | 1 |
 | de-duplicates best-response policies | премахва дублираните най-добри отговори | 1 |
 | depth | дълбочина | 1 |
-| depth-limit-plus-learned-leaf-value pattern | шаблон „ограничена дълбочина плюс научена стойност на листо | 1 |
+| depth-limit-plus-learned-leaf-value pattern | шаблон „ограничена дълбочина плюс научена стойност на листо“ | 1 |
 | depth-limited look-ahead | предвиждане с ограничена дълбочина | 1 |
 | depth-limited re-solve | ограничено по дълбочина преизчисляване | 1 |
 | depth-limited response | отговор с ограничена дълбочина | 1 |
 | depth-limited subgame | ограничена по дълбочина под-игра | 1 |
 | depth-limited-solving theory | теория на решаването с ограничена дълбочина | 1 |
 | deviation from equilibrium | отклонение от равновесие | 1 |
-| double oracle | двойно оракул | 1 |
+| double oracle | двоен предсказвач | 1 |
 | dynamic look-ahead | динамично предвиждане | 1 |
 | endgame optimality | оптималност в края на играта | 1 |
 | endgame solving | решаване на ендшпил | 1 |
@@ -2743,7 +2743,7 @@ working database; edit terms in the picker, not here.
 | exact computation | точно изчисление | 1 |
 | exact dual-LP formulation | точна двойствена линейно-програмна формулировка | 1 |
 | exact dual-lp | точна двойствена линейнопрограмна задача | 1 |
-| exact oracle | точен оракул | 1 |
+| exact oracle | точен предсказвач | 1 |
 | exact strategy | точна стратегия | 1 |
 | exact strategy extraction | извличане на точна стратегия | 1 |
 | exploitability convergence | сходимост на експлоатируемостта | 1 |
@@ -2776,7 +2776,7 @@ working database; edit terms in the picker, not here.
 | live re-solving | live re-solving | 1 |
 | local repair | локална корекция | 1 |
 | local strategy computation | изчисляване на локална стратегия | 1 |
-| local subgame method | метод на локална подигра | 1 |
+| local subgame method | метод на локална под-игра | 1 |
 | local/subgame | подлокална игра | 1 |
 | look-ahead rate | степен на предвиждане | 1 |
 | look-ahead tree | дърво за предвиждане | 1 |
@@ -2845,7 +2845,7 @@ working database; edit terms in the picker, not here.
 | safe search | безопасно търсене | 1 |
 | safe search for free | безопасно търсене безплатно | 1 |
 | safe vertex | безопасен връх | 1 |
-| safe-subgame scaffold | безопасна подигра-скеле | 1 |
+| safe-subgame scaffold | безопасна под-игра-скеле | 1 |
 | safe/nested solving | безопасно решаване | 1 |
 | sampling | извадка | 1 |
 | search depth | дълбочина на търсене | 1 |
@@ -2883,11 +2883,11 @@ working database; edit terms in the picker, not here.
 | subgame approximations | под-игра приближения | 1 |
 | subgame boundary | граница на под-играта | 1 |
 | subgame decomposition | декомпозиция на под-игра | 1 |
-| subgame gadget | подпомагащ подигра | 1 |
+| subgame gadget | подпомагащ под-игра | 1 |
 | subgame safety | сигурност в под-играта | 1 |
 | subgame solving with safety guarantees | Решаване на под-игри с гаранции за безопасност | 1 |
-| subgame values | стойности на подиграта | 1 |
-| subgame-based exploitation | експлоатация, базирана на подигра | 1 |
+| subgame values | стойности на под-играта | 1 |
+| subgame-based exploitation | експлоатация, базирана на под-игра | 1 |
 | terminal nodes | крайни възли | 1 |
 | tractable heuristics | управляеми евристики | 1 |
 | transitive-cyclic decomposition | транзитивно-циклично разлагане | 1 |
@@ -2896,10 +2896,10 @@ working database; edit terms in the picker, not here.
 | tree traversal | обхождане на дърво | 1 |
 | treeplex constraints | дървовидни ограничения | 1 |
 | unsafe solving | небезопасно решаване | 1 |
-| unsafe subgame solving | несигурно решаване на подигра | 1 |
+| unsafe subgame solving | несигурно решаване на под-игра | 1 |
 | value-guided search | търсене с насочване по стойност | 1 |
 | visit counts | брой посещения | 1 |
-| worst-case oracle | най-лошият случай оракул | 1 |
+| worst-case oracle | предсказвач за най-лош случай | 1 |
 | Restricted Nash Response (RNR) | ограничен отговор по Наш | 0 |
 
 ## Software & Experimental Infrastructure (173)
@@ -2973,7 +2973,7 @@ working database; edit terms in the picker, not here.
 | buffer | буфер | 1 |
 | build-time | време на компилация | 1 |
 | caching | кеширане | 1 |
-| cfr toolkit | CFR toolkit | 1 |
+| cfr toolkit | инструментариум за CFR | 1 |
 | checkpointing | контролна точка | 1 |
 | checkpoints | контролни точки | 1 |
 | cloud compute | облачни изчисления | 1 |
@@ -3018,7 +3018,7 @@ working database; edit terms in the picker, not here.
 | lazy allocation | отложено разпределение | 1 |
 | lazy memory allocation | отложено разпределение на паметта | 1 |
 | learning log | дневник на обучението | 1 |
-| leduc-family pipeline | конвейер тип „Людък | 1 |
+| leduc-family pipeline | конвейер от типа „Ледюк“ | 1 |
 | live patches | актуализации по време на работа | 1 |
 | llm backends | опорни системи за големи езикови модели | 1 |
 | lp engine | двигател за линейно програмиране | 1 |
@@ -3090,7 +3090,7 @@ working database; edit terms in the picker, not here.
 | variance reduction | намаляване на дисперсията | 11 |
 | return conditioning | условно връщане | 10 |
 | hyperparameter | хиперпараметър | 9 |
-| behavioral cloning | Поведенческо клониране | 8 |
+| behavioral cloning | поведенческо клониране | 8 |
 | learning rate | скорост на обучение | 8 |
 | last iterate | последна итерация | 7 |
 | converged | сходим | 5 |
@@ -3117,12 +3117,12 @@ working database; edit terms in the picker, not here.
 | regularization | регуляризация | 3 |
 | scaling wall | стена на мащабиране | 3 |
 | underfitting | недообучен | 3 |
-| weight decay | отслабване на теглоите | 3 |
+| weight decay | отслабване на теглата | 3 |
 | adam | Adam | 2 |
 | advantage normalisation | нормализиране на предимството | 2 |
 | baseline subtraction | изваждане на базова линия | 2 |
 | bootstrap | буутстрапинг | 2 |
-| bootstrap targets | целеви стойности по метода „bootstrap | 2 |
+| bootstrap targets | целеви стойности по метода „bootstrap“ | 2 |
 | clipping | отсичане | 2 |
 | convex optimization | изпъкнала оптимизация | 2 |
 | effective population size | ефективен размер на популацията | 2 |
@@ -3158,7 +3158,7 @@ working database; edit terms in the picker, not here.
 | adam optimizer | Adam optimizer | 1 |
 | adaptive hyperparameter scheduling | адаптивно планиране на хиперпараметри | 1 |
 | adaptive moment estimation | адаптивна оценка на моментите | 1 |
-| advantage normalization | нормализация на предимството | 1 |
+| advantage normalization | нормализиране на предимството | 1 |
 | alpha dead zone | алфа мъртва зона | 1 |
 | anticipatory parameter | предварителен параметър | 1 |
 | asymmetric squared loss | асиметрична квадратична загуба | 1 |
@@ -3257,7 +3257,7 @@ working database; edit terms in the picker, not here.
 | normalization | нормализация | 1 |
 | normalized | нормализирани | 1 |
 | observation normalisation | нормализиране на наблюденията | 1 |
-| observation normalization | нормализация на наблюдението | 1 |
+| observation normalization | нормализиране на наблюденията | 1 |
 | online update | онлайн актуализация | 1 |
 | opponent's learning update | обновяване на обучението на противника | 1 |
 | optimization | оптимизация | 1 |
@@ -3266,7 +3266,7 @@ working database; edit terms in the picker, not here.
 | piKL | piKL | 1 |
 | piKL-regularized exploitation | piKL-регулирана експлоатация | 1 |
 | policy gradient optimization | оптимизация чрез градиент на стратегията | 1 |
-| population based training | PBT | 1 |
+| population based training | обучение, базирано на популации | 1 |
 | population evolution | еволюция на популацията | 1 |
 | population/averaging machinery | среднопретеглящ механизъм | 1 |
 | pre-training | предварително обучение | 1 |
@@ -3319,7 +3319,7 @@ working database; edit terms in the picker, not here.
 | variance reducer | намалител на дисперсията | 1 |
 | variance reduction technique | техника за намаляване на дисперсията | 1 |
 | variance-reduction estimator | оценител за намаляване на дисперсията | 1 |
-| warm starts | топъл старт | 1 |
+| warm starts | топли стартове | 1 |
 | warm-started | топло стартирана | 1 |
 | warm-starts | топли стартове | 1 |
 

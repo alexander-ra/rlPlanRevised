@@ -121,7 +121,7 @@
  },
  {
   "en": "abstraction-and-blueprint paradigm",
-  "bg": "парадигма „абстракция и план",
+  "bg": "парадигма „абстракция и план“",
   "category": "Abstraction & State Representation",
   "freq": 4,
   "status": "picked",
@@ -201,7 +201,7 @@
  },
  {
   "en": "augmented subgame",
-  "bg": "допълнена под-игра",
+  "bg": "разширена под-игра",
   "category": "Abstraction & State Representation",
   "freq": 3,
   "status": "picked",
@@ -353,10 +353,10 @@
  },
  {
   "en": "bounded lossy abstraction",
-  "bg": "ограничено загубно абстрахиране",
+  "bg": "абстракция с ограничена загуба",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -377,15 +377,15 @@
  },
  {
   "en": "bucket",
-  "bg": "кофа",
+  "bg": "клъстер",
   "category": "Abstraction & State Representation",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
   "en": "bucket budget",
-  "bg": "бюджет на кофите",
+  "bg": "бюджет на клъстерите",
   "category": "Abstraction & State Representation",
   "freq": 2,
   "status": "picked",
@@ -393,26 +393,26 @@
  },
  {
   "en": "bucket id",
-  "bg": "идентификатор на кофа",
+  "bg": "идентификатор на клъстер",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
   "en": "bucket reallocation",
-  "bg": "свободата за преразпределение на кофите",
+  "bg": "свободата за преразпределение на клъстерите",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "bucket trail",
-  "bg": "траектория на кофите",
+  "bg": "траектория на клъстерите",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -441,10 +441,10 @@
  },
  {
   "en": "card buckets",
-  "bg": "кош за карти",
+  "bg": "клъстери за карти",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -1193,10 +1193,10 @@
  },
  {
   "en": "partially-observed",
-  "bg": "частично наблюдаем",
+  "bg": "частично наблюдаван",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -2065,7 +2065,7 @@
  },
  {
   "en": "approximate oracle",
-  "bg": "приблизителен оракъл",
+  "bg": "приблизителен предсказвач",
   "category": "Algorithm Names",
   "freq": 2,
   "status": "picked",
@@ -2265,7 +2265,7 @@
  },
  {
   "en": "double-oracle",
-  "bg": "двойно предсказание",
+  "bg": "двоен предсказвач",
   "category": "Algorithm Names",
   "freq": 4,
   "status": "picked",
@@ -2377,10 +2377,10 @@
  },
  {
   "en": "exploitability oracle",
-  "bg": "оракул за експлоатируемост",
+  "bg": "предсказвач за експлоатируемост",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: samples split (3/5)"
  },
  {
@@ -2633,18 +2633,18 @@
  },
  {
   "en": "monte carlo variants",
-  "bg": "Monte Carlo variants",
+  "bg": "варианти на Монте Карло",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
   "en": "monte-carlo variants",
-  "bg": "Monte-Carlo variants",
+  "bg": "варианти на Монте Карло",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -2753,7 +2753,7 @@
  },
  {
   "en": "policy space response oracles",
-  "bg": "оракули за отговор в пространството на стратегиите",
+  "bg": "предсказвачи за отговор в пространството на стратегиите",
   "category": "Algorithm Names",
   "freq": 5,
   "status": "picked",
@@ -3345,10 +3345,10 @@
  },
  {
   "en": "explicit-vs-implicit axis",
-  "bg": "основата „явни срещу неявни",
+  "bg": "ос „явни срещу неявни“",
   "category": "Common Academic Phrases",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -3601,10 +3601,10 @@
  },
  {
   "en": "state-of-the-art",
-  "bg": "най-съвременно ниво",
+  "bg": "съвременно равнище",
   "category": "Common Academic Phrases",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "decided by assistant (freq 2)"
  },
  {
@@ -4873,10 +4873,10 @@
  },
  {
   "en": "empirical game theoretic analysis",
-  "bg": "емпиричен игрово-теоретичен анализ",
+  "bg": "емпиричен игровотеоретичен анализ",
   "category": "Evaluation & Methodology",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -5185,7 +5185,7 @@
  },
  {
   "en": "failure mode",
-  "bg": "Режим на отказ",
+  "bg": "режим на отказ",
   "category": "Evaluation & Methodology",
   "freq": 5,
   "status": "picked",
@@ -6105,18 +6105,18 @@
  },
  {
   "en": "pure skill ladder",
-  "bg": "чиста скала на уменията",
+  "bg": "стълбица на чистото умение",
   "category": "Evaluation & Methodology",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "pure-skill ladder",
-  "bg": "чистоуметелна стълбица",
+  "bg": "стълбица на чистото умение",
   "category": "Evaluation & Methodology",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -6297,10 +6297,10 @@
  },
  {
   "en": "safe-exploitation",
-  "bg": "безопасно използване",
+  "bg": "безопасна експлоатация",
   "category": "Evaluation & Methodology",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -6724,7 +6724,7 @@
   "bg": "експлоатация на под-игра",
   "category": "Evaluation & Methodology",
   "freq": 4,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -6777,10 +6777,10 @@
  },
  {
   "en": "test time",
-  "bg": "време на изпитване",
+  "bg": "време на тестване",
   "category": "Evaluation & Methodology",
   "freq": 3,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -7065,10 +7065,10 @@
  },
  {
   "en": "Empirical Game-Theoretic Analysis (EGTA)",
-  "bg": "емпиричен теоретико-игрови анализ",
+  "bg": "емпиричен игровотеоретичен анализ",
   "category": "Game Theory",
   "freq": 0,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
@@ -7257,10 +7257,10 @@
  },
  {
   "en": "augmented-subgame",
-  "bg": "допълнен подучастък",
+  "bg": "разширена под-игра",
   "category": "Game Theory",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -7745,10 +7745,10 @@
  },
  {
   "en": "epsilon equilibrium strategies",
-  "bg": "стратегии за епсилон равновесие",
+  "bg": "ε-равновесни стратегии",
   "category": "Game Theory",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: samples split (2/5)"
  },
  {
@@ -8201,10 +8201,10 @@
  },
  {
   "en": "hawk-dove game",
-  "bg": "игра „ястреб–гълъб",
+  "bg": "игра „ястреб–гълъб“",
   "category": "Game Theory",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -8300,7 +8300,7 @@
   "bg": "под-игра с непълна информация",
   "category": "Game Theory",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
@@ -8457,10 +8457,10 @@
  },
  {
   "en": "level-k reasoning",
-  "bg": "разсъждение от тип „Level-k",
+  "bg": "разсъждение от тип „Level-k“",
   "category": "Game Theory",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -8657,7 +8657,7 @@
  },
  {
   "en": "mixed strategy",
-  "bg": "Смесена стратегия",
+  "bg": "смесена стратегия",
   "category": "Game Theory",
   "freq": 7,
   "status": "picked",
@@ -9649,10 +9649,10 @@
  },
  {
   "en": "subgame perfection",
-  "bg": "съвършенство в подиграта",
+  "bg": "съвършенство в под-играта",
   "category": "Game Theory",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -9660,7 +9660,7 @@
   "bg": "усъвършенстване на под-играта",
   "category": "Game Theory",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -10169,18 +10169,18 @@
  },
  {
   "en": "bang-bang frontier",
-  "bg": "граница тип „вкл.–изкл",
+  "bg": "граница „включено–изключено“",
   "category": "Mathematics & Statistics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "bang-bang threshold",
-  "bg": "прагов контрол „включено/изключено",
+  "bg": "праг „включено–изключено“",
   "category": "Mathematics & Statistics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -11201,10 +11201,10 @@
  },
  {
   "en": "oracle",
-  "bg": "оракул",
+  "bg": "предсказвач",
   "category": "Mathematics & Statistics",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "5/5 unanimous + appears verbatim in human BG corpus"
  },
  {
@@ -11345,10 +11345,10 @@
  },
  {
   "en": "posterior weight",
-  "bg": "задна тегло",
+  "bg": "апостериорно тегло",
   "category": "Mathematics & Statistics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "atomic fix: ML weight is тегло, not тежест"
  },
  {
@@ -11801,10 +11801,10 @@
  },
  {
   "en": "total-variation distance",
-  "bg": "разстояние на общата вариация",
+  "bg": "разстояние по обща вариация",
   "category": "Mathematics & Statistics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -11945,7 +11945,7 @@
  },
  {
   "en": "worst-case",
-  "bg": "най-лошият случай",
+  "bg": "най-лош случай",
   "category": "Mathematics & Statistics",
   "freq": 9,
   "status": "picked",
@@ -13137,10 +13137,10 @@
  },
  {
   "en": "multi-agent actor-critic",
-  "bg": "многоагентен актьор-критик",
+  "bg": "многоагентен актьор-оценител",
   "category": "Multi-Agent & Coalition Dynamics",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "decided by assistant (freq 2)"
  },
  {
@@ -14025,10 +14025,10 @@
  },
  {
   "en": "actor-critic",
-  "bg": "актьор-критик",
+  "bg": "актьор-оценител",
   "category": "Neural Architecture & Layers",
   "freq": 3,
-  "status": "auto",
+  "status": "picked",
   "reason": "5/5 unanimous + appears verbatim in human BG corpus"
  },
  {
@@ -14681,10 +14681,10 @@
  },
  {
   "en": "neural oracles",
-  "bg": "невронни оракули",
+  "bg": "невронни предсказвачи",
   "category": "Neural Architecture & Layers",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
@@ -14713,10 +14713,10 @@
  },
  {
   "en": "orthogonal weight initialisation",
-  "bg": "ортогонална инициализация на теглоите",
+  "bg": "ортогонална инициализация на теглата",
   "category": "Neural Architecture & Layers",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "atomic fix: ML weight is тегло, not тежест"
  },
  {
@@ -15225,26 +15225,26 @@
  },
  {
   "en": "weight initialization",
-  "bg": "инициализация на теглоите",
+  "bg": "инициализация на теглата",
   "category": "Neural Architecture & Layers",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "atomic fix: ML weight is тегло, not тежест"
  },
  {
   "en": "weight matrix",
-  "bg": "матрица на теглоите",
+  "bg": "матрица на теглата",
   "category": "Neural Architecture & Layers",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "atomic fix: ML weight is тегло, not тежест"
  },
  {
   "en": "weight sharing",
-  "bg": "споделяне на теглои",
+  "bg": "споделяне на тегла",
   "category": "Neural Architecture & Layers",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "atomic fix: ML weight is тегло, not тежест"
  },
  {
@@ -15345,10 +15345,10 @@
  },
  {
   "en": "Leduc-family games",
-  "bg": "игри от типа на Людек",
+  "bg": "игри от типа на Ледюк",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -15497,10 +15497,10 @@
  },
  {
   "en": "atari games",
-  "bg": "Atari Games",
+  "bg": "игри на Atari",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -16105,7 +16105,7 @@
  },
  {
   "en": "ffa games",
-  "bg": "Игри всеки срещу всеки",
+  "bg": "игри всеки срещу всеки",
   "category": "Poker & Domain Vocabulary",
   "freq": 4,
   "status": "picked",
@@ -16201,10 +16201,10 @@
  },
  {
   "en": "full-bucket variants",
-  "bg": "варианти с пълна кофа",
+  "bg": "варианти с пълна клъстер",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -16353,10 +16353,10 @@
  },
  {
   "en": "heads-up no-limit hold'em",
-  "bg": "Heads-Up No-Limit Hold'em",
+  "bg": "Heads-Up No-Limit Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -16580,7 +16580,7 @@
   "bg": "под-игра „поп на флопа“",
   "category": "Poker & Domain Vocabulary",
   "freq": 3,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -16665,10 +16665,10 @@
  },
  {
   "en": "leduc driver",
-  "bg": "Leduc Hold'em",
+  "bg": "Leduc Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -16713,10 +16713,10 @@
  },
  {
   "en": "loose aggressive",
-  "bg": "свободно-агресивен",
+  "bg": "разпуснат-агресивен",
   "category": "Poker & Domain Vocabulary",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "decided by assistant (freq 2) — UNCERTAIN, review"
  },
  {
@@ -16793,7 +16793,7 @@
  },
  {
   "en": "matching pennies",
-  "bg": "игра „хвърляне на монета",
+  "bg": "игра „хвърляне на монета“",
   "category": "Poker & Domain Vocabulary",
   "freq": 10,
   "status": "picked",
@@ -16969,10 +16969,10 @@
  },
  {
   "en": "no-limit hold'em",
-  "bg": "No-Limit Hold'em",
+  "bg": "No-Limit Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -16985,10 +16985,10 @@
  },
  {
   "en": "no-limit texas hold'em",
-  "bg": "No-Limit Texas Hold'em",
+  "bg": "No-Limit Texas Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -17164,7 +17164,7 @@
   "bg": "под-игра на външен възел",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -17569,10 +17569,10 @@
  },
  {
   "en": "rhode island hold'em",
-  "bg": "Rhode Island Hold'em",
+  "bg": "Rhode Island Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -18001,7 +18001,7 @@
  },
  {
   "en": "tight passive",
-  "bg": "стегната пасивност",
+  "bg": "стегнат-пасивен",
   "category": "Poker & Domain Vocabulary",
   "freq": 3,
   "status": "picked",
@@ -18169,10 +18169,10 @@
  },
  {
   "en": "Exploitation–safety tradeoff",
-  "bg": "Компромис между експлоатация и безопасност",
+  "bg": "компромис между експлоатация и безопасност",
   "category": "Reinforcement Learning",
   "freq": 0,
-  "status": "auto",
+  "status": "picked",
   "reason": "deepl: agrees with your existing glossary entry"
  },
  {
@@ -18593,18 +18593,18 @@
  },
  {
   "en": "critic-value",
-  "bg": "критична стойност",
+  "bg": "стойност на оценителя",
   "category": "Reinforcement Learning",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "deepl: agrees with the top-voted candidate"
  },
  {
   "en": "critic-variance",
-  "bg": "вариация на критик",
+  "bg": "дисперсия на оценителя",
   "category": "Reinforcement Learning",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -18649,10 +18649,10 @@
  },
  {
   "en": "deep rl",
-  "bg": "дълбоко обучение с подсилване",
+  "bg": "дълбоко обучение с подкрепление",
   "category": "Reinforcement Learning",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -18673,10 +18673,10 @@
  },
  {
   "en": "deep-rl",
-  "bg": "дълбоко обучение с подсилване",
+  "bg": "дълбоко обучение с подкрепление",
   "category": "Reinforcement Learning",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -19561,10 +19561,10 @@
  },
  {
   "en": "proxy-credit",
-  "bg": "заместващ кредит",
+  "bg": "заместващ кредитен сигнал",
   "category": "Reinforcement Learning",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -20209,10 +20209,10 @@
  },
  {
   "en": "value-based offline rl",
-  "bg": "обучение с подсилване офлайн на базата на стойност",
+  "bg": "обучение с подкрепление офлайн на базата на стойност",
   "category": "Reinforcement Learning",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -20289,26 +20289,26 @@
  },
  {
   "en": "CFR family",
-  "bg": "CFR family",
+  "bg": "семейство CFR",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
   "en": "CFR policy",
-  "bg": "CFR policy",
+  "bg": "стратегия от CFR",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
   "en": "CFR solving",
-  "bg": "CFR solving",
+  "bg": "решаване с CFR",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -20465,10 +20465,10 @@
  },
  {
   "en": "best response oracle",
-  "bg": "оракул за най-добър отговор",
+  "bg": "предсказвач за най-добър отговор",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: samples split (4/5)"
  },
  {
@@ -20545,10 +20545,10 @@
  },
  {
   "en": "cfr approximation",
-  "bg": "CFR approximation",
+  "bg": "приближение чрез CFR",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -20561,10 +20561,10 @@
  },
  {
   "en": "cfr search",
-  "bg": "CFR search",
+  "bg": "търсене с CFR",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -20681,10 +20681,10 @@
  },
  {
   "en": "cutting plane",
-  "bg": "отсичаща равнина",
+  "bg": "равнина на отсичане",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -20737,10 +20737,10 @@
  },
  {
   "en": "depth-limit-plus-learned-leaf-value pattern",
-  "bg": "шаблон „ограничена дълбочина плюс научена стойност на листо",
+  "bg": "шаблон „ограничена дълбочина плюс научена стойност на листо“",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -20796,7 +20796,7 @@
   "bg": "ограничена по дълбочина под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: samples split (3/5)"
  },
  {
@@ -20825,15 +20825,15 @@
  },
  {
   "en": "double oracle",
-  "bg": "двойно оракул",
+  "bg": "двоен предсказвач",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "double-oracle method",
-  "bg": "метод на двойно предсказание",
+  "bg": "метод на двойния предсказвач",
   "category": "Search & Equilibrium Solving",
   "freq": 2,
   "status": "picked",
@@ -20969,10 +20969,10 @@
  },
  {
   "en": "exact oracle",
-  "bg": "точен оракул",
+  "bg": "точен предсказвач",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -21036,7 +21036,7 @@
   "bg": "ограничена по фиксирана дълбочина под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -21329,10 +21329,10 @@
  },
  {
   "en": "local subgame method",
-  "bg": "метод на локална подигра",
+  "bg": "метод на локална под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -21553,10 +21553,10 @@
  },
  {
   "en": "monte carlo cfr",
-  "bg": "метод Монте Карло CFR",
+  "bg": "Монте Карло CFR",
   "category": "Search & Equilibrium Solving",
   "freq": 4,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
@@ -21569,10 +21569,10 @@
  },
  {
   "en": "monte carlo tree search",
-  "bg": "търсене с метод Монте Карло в дърво",
+  "bg": "търсене в дърво на Монте Карло",
   "category": "Search & Equilibrium Solving",
   "freq": 4,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -21708,7 +21708,7 @@
   "bg": "вложено безопасно решаване на под-игри",
   "category": "Search & Equilibrium Solving",
   "freq": 4,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -21716,7 +21716,7 @@
   "bg": "Вложено решаване на под-игри",
   "category": "Search & Equilibrium Solving",
   "freq": 5,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -22124,7 +22124,7 @@
   "bg": "безопасно вложено решаване на под-игри",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -22164,7 +22164,7 @@
   "bg": "Безопасно решаване на под-игри",
   "category": "Search & Equilibrium Solving",
   "freq": 5,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -22177,10 +22177,10 @@
  },
  {
   "en": "safe-subgame scaffold",
-  "bg": "безопасна подигра-скеле",
+  "bg": "безопасна под-игра-скеле",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22404,7 +22404,7 @@
   "bg": "решени под-игри",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -22441,7 +22441,7 @@
  },
  {
   "en": "spinning top decomposition",
-  "bg": "Декомпозиция „пумпал\"",
+  "bg": "декомпозиция „пумпал“",
   "category": "Search & Equilibrium Solving",
   "freq": 9,
   "status": "picked",
@@ -22449,7 +22449,7 @@
  },
  {
   "en": "spinning-top decomposition",
-  "bg": "декомпозиция тип пумпал",
+  "bg": "декомпозиция „пумпал“",
   "category": "Search & Equilibrium Solving",
   "freq": 3,
   "status": "picked",
@@ -22508,7 +22508,7 @@
   "bg": "под-игра приближения",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22516,7 +22516,7 @@
   "bg": "граница на под-играта",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22524,15 +22524,15 @@
   "bg": "декомпозиция на под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "subgame gadget",
-  "bg": "подпомагащ подигра",
+  "bg": "подпомагащ под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22540,7 +22540,7 @@
   "bg": "метод на под-играта",
   "category": "Search & Equilibrium Solving",
   "freq": 3,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -22548,7 +22548,7 @@
   "bg": "сигурност в под-играта",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22556,7 +22556,7 @@
   "bg": "решаване на под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 13,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
@@ -22564,23 +22564,23 @@
   "bg": "Решаване на под-игри с гаранции за безопасност",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
   "en": "subgame values",
-  "bg": "стойности на подиграта",
+  "bg": "стойности на под-играта",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "subgame-based exploitation",
-  "bg": "експлоатация, базирана на подигра",
+  "bg": "експлоатация, базирана на под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22673,10 +22673,10 @@
  },
  {
   "en": "unsafe subgame solving",
-  "bg": "несигурно решаване на подигра",
+  "bg": "несигурно решаване на под-игра",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22697,10 +22697,10 @@
  },
  {
   "en": "worst-case oracle",
-  "bg": "най-лошият случай оракул",
+  "bg": "предсказвач за най-лош случай",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22953,10 +22953,10 @@
  },
  {
   "en": "cfr toolkit",
-  "bg": "CFR toolkit",
+  "bg": "инструментариум за CFR",
   "category": "Software & Experimental Infrastructure",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -23409,10 +23409,10 @@
  },
  {
   "en": "leduc-family pipeline",
-  "bg": "конвейер тип „Людък",
+  "bg": "конвейер от типа „Ледюк“",
   "category": "Software & Experimental Infrastructure",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -24185,10 +24185,10 @@
  },
  {
   "en": "advantage normalization",
-  "bg": "нормализация на предимството",
+  "bg": "нормализиране на предимството",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "deepl: agrees with the top-voted candidate"
  },
  {
@@ -24265,7 +24265,7 @@
  },
  {
   "en": "behavioral cloning",
-  "bg": "Поведенческо клониране",
+  "bg": "поведенческо клониране",
   "category": "Training & Optimization",
   "freq": 8,
   "status": "picked",
@@ -24305,7 +24305,7 @@
  },
  {
   "en": "bootstrap targets",
-  "bg": "целеви стойности по метода „bootstrap",
+  "bg": "целеви стойности по метода „bootstrap“",
   "category": "Training & Optimization",
   "freq": 2,
   "status": "picked",
@@ -25281,10 +25281,10 @@
  },
  {
   "en": "observation normalization",
-  "bg": "нормализация на наблюдението",
+  "bg": "нормализиране на наблюденията",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "deepl: agrees with the top-voted candidate"
  },
  {
@@ -25385,10 +25385,10 @@
  },
  {
   "en": "population based training",
-  "bg": "PBT",
+  "bg": "обучение, базирано на популации",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: proper name / abbreviation kept in Latin"
  },
  {
@@ -25961,10 +25961,10 @@
  },
  {
   "en": "warm starts",
-  "bg": "топъл старт",
+  "bg": "топли стартове",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -25993,10 +25993,10 @@
  },
  {
   "en": "weight decay",
-  "bg": "отслабване на теглоите",
+  "bg": "отслабване на теглата",
   "category": "Training & Optimization",
   "freq": 3,
-  "status": "auto",
+  "status": "picked",
   "reason": "atomic fix: ML weight is тегло, not тежест"
  },
  {

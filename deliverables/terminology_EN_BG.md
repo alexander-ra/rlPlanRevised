@@ -52,6 +52,13 @@
 | Nash equilibrium | Равновесие на Наш | |
 | Equilibrium strategy | Равновесна стратегия | |
 | Best response | Най-добър отговор | |
+| Bucket (abstraction) | Клъстер | Не „кофа" / „кош"; мъжки род |
+| Critic (network) | Оценител | Но устойчивото словосъчетание остава „актьор-оценител" |
+| Game AI | Игрови изкуствен интелект | Не „изкуствен интелект в игрите" |
+| LLM / LLM agent | Голям езиков модел / агент с голям езиков модел | В проза; етикетите в таблици остават „LLM" |
+| Oracle (algorithmic) | Предсказвач | Not „оракул"/„оракъл" — those read as the mythological sense |
+| Best-response oracle | Предсказвач за най-добър отговор | |
+| Double oracle | Двоен предсказвач | |
 | Exploitability | Експлоатируемост | Neologism; alt: „степен на уязвимост към експлоатация" |
 | Exploitation | Експлоатация | In strategic sense, not pejorative |
 | Safe exploitation | Безопасна експлоатация | „Безопасна" = safe (security-sense) |
@@ -66,7 +73,7 @@
 | Cumulative regret | Сборно съжаление | Also: кумулативно |
 | Coalition | Коалиция | |
 | Coalition formation | Формиране на коалиции | |
-| Free-for-all (FFA) | Свободна конкуренция / Всеки срещу всеки | Use the descriptive phrase |
+| Free-for-all (FFA) | Игри всеки срещу всеки | Винаги описателно, не „FFA" |
 | Opponent modeling | Моделиране на противника | |
 | Behavioral trace | Поведенчески проследявания | Or „наблюдавана последователност от действия" |
 | Bayesian opponent modeling | Байесово моделиране на противника | |
@@ -107,10 +114,10 @@
 | Research frontier | Изследователска граница | |
 | Publication pipeline | Публикационен план | |
 | Dissertation chapter | Глава на дисертацията | |
-| Subgame solving | Решаване на подигри | |
-| Nested subgame solving | Вложено решаване на подигри | Brown & Sandholm (2017) |
-| Safe subgame solving | Безопасно решаване на подигри | |
-| Augmented subgame | Разширена подигра | Subgame plus alternative-payoff nodes |
+| Subgame solving | Решаване на под-игри | |
+| Nested subgame solving | Вложено решаване на под-игри | Brown & Sandholm (2017) |
+| Safe subgame solving | Безопасно решаване на под-игри | |
+| Augmented subgame | Разширена под-игра | Subgame plus alternative-payoff nodes |
 | Action abstraction | Абстракция на действията | |
 | Information abstraction | Информационна абстракция | |
 | Card bucketing | Групиране на карти | „Групиране" avoids anglicism |
@@ -140,7 +147,7 @@
 | Equivariant encoder | Еквивариантен кодер | |
 | Production-grade | Промишлено ниво / промишлен | Use „промишлен", not „продуктивен" (false friend) |
 | Fixed-limit (poker) | С лимит / лимитен | „Ледюк с лимит" preferred over „лимит Ледюк" |
-| Fixed-limit Leduc | Ледюк с лимит | Keep „Leduc" transliterated |
+| Fixed-limit Leduc | Ледюк с лимит | Винаги „Ледюк" на кирилица, с главна буква |
 | No-limit (poker) | Безлимитен | |
 | Wall-clock budget | Бюджет в реално време | |
 | Smoke test | Бърза проверка със смалени бюджети | Avoid calque „димен тест" |
@@ -151,7 +158,7 @@
 
 | English | Bulgarian | Notes |
 |---------|----------|-------|
-| Reinforcement learning (RL) | Обучение с подкрепление | |
+| Reinforcement learning (RL) | Обучение с подкрепление | Не „обучение с подсилване" |
 | Agent | Агент | |
 | Environment | Среда | |
 | Policy | Стратегия | In RL context, „стратегия" is standard in BG |
@@ -191,13 +198,13 @@
 | ReBeL | Recursive Belief-based Learning | Рекурсивно обучение на основата на убеждения |
 | piKL | Policy-regularized KL | — (keep as notation) |
 | RNR | Restricted Nash Response | Ограничен Наш отговор |
-| SES | Safe Exploitation Subgame | Безопасна експлоатация на подигри |
+| SES | Safe Exploitation Subgame | Безопасна експлоатация на под-игри |
 | OX-Search | Opponent Exploitation Search | — (keep as algorithm name) |
 | ABD | Adapting Beyond the Depth limit | — (keep as algorithm name) |
 | MADDPG | Multi-Agent Deep Deterministic Policy Gradient | Многоагентен дълбок детерминистичен градиент на стратегията |
 | QMIX | QMIX | Монотонна факторизация на стойностната функция |
 | MAPPO | Multi-Agent PPO | Многоагентна PPO |
-| PSRO | Policy Space Response Oracles | Оракули за отговор в пространството на стратегиите |
+| PSRO | Policy Space Response Oracles | Предсказвачи за отговор в пространството на стратегиите |
 | PBT | Population-Based Training | Обучение на базата на популации |
 | LOLA | Learning with Opponent-Learning Awareness | Обучение с осъзнаване на обучението на противника |
 | CommNet | Communication Neural Network | Комуникационна невронна мрежа |
