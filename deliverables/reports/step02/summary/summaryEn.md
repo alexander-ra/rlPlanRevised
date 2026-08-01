@@ -206,7 +206,7 @@ To validate the theoretical guarantees of CFR and its application to Kuhn Poker,
 
 [^zinkevich2007]: Zinkevich, M., Johanson, M., Bowling, M. & Piccione, C. (2007). "Regret Minimization in Games with Incomplete Information." *Advances in Neural Information Processing Systems 20*, 1729-1736.
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Chapters 3–4. Free: <http://www.masfoundations.org/download.html>
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Ch. 3–4 (normal- and extensive-form games); Ch. 5 (extensive-form games); §3.4 (computing equilibria) and §4.6 (computing best responses), the sequence-form machinery underneath every LP in Chapter 8; Ch. 7 "Learning and Teaching", the learning-in-repeated-games framing, including the tension that your actions both *exploit* and *teach* the opponent. Free: <http://www.masfoundations.org/download.html>
 
 [^neller2013]: Neller, T.W. & Lanctot, M. (2013). "An Introduction to Counterfactual Regret Minimization," Section 1–2.
 
@@ -214,4 +214,4 @@ To validate the theoretical guarantees of CFR and its application to Kuhn Poker,
 
 [^kuhn1950]: Kuhn, H.W. (1950). "Simplified Two-Person Poker." *Contributions to the Theory of Games*, Vol. 1.
 
-[^bowling2015]: Bowling, M. et al. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149. This paper used CFR+ (a variant) to solve heads-up limit Texas Hold'em — the first non-trivial imperfect-information game to be essentially solved.
+[^bowling2015]: Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149. Used CFR+ to solve heads-up limit Texas Hold'em — the first non-trivial imperfect-information game to be essentially solved.

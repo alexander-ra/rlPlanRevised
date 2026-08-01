@@ -123,6 +123,8 @@ while I learn." Five families matter here.
 | **LOLA** | optimize assuming the opponent takes **one learning step**; differentiate *through* their update | 2-player differentiable games where naive learning fails (IPD) | assumes you know and can differentiate the opponent's update |
 | **CommNet** | agents broadcast a **differentiable message**; each receives the **mean** of the others' and feeds it into its policy | cooperative tasks with partial observability | mean pooling discards *who* said what |
 
+: The MARL method families: what each does, when to reach for it, and its main weakness.
+
 Two axes cut across the table (Figure below). First, **what is centralized, and when?** IL
 centralizes nothing; CTDE centralizes the *critic/value at training only* (execution stays
 decentralized); PSRO centralizes a whole *meta-game solve* between training rounds; CommNet
@@ -163,6 +165,8 @@ noise-free) gives, measured:
 | Stag Hunt | all seeds $\to$ (Hare, Hare) | $0.0013$ | yes — the *risk-dominant* pure Nash |
 | Battle of the Sexes | all seeds $\to$ one pure Nash | $0.0013$ | yes — a pure Nash |
 | Matching Pennies | **does not converge** (last iterate drifts to the boundary) | $1.4$–$1.8$ | no — it never settles |
+
+: Independent learners on four matrix games, against the analytic Nash equilibrium.
 
 Three of the four converge to a genuine Nash, and the interesting details are in the "how." In
 Stag Hunt the learners reliably pick the **risk-dominant** equilibrium (Hare) rather than the
@@ -216,6 +220,8 @@ trained to convergence:
 |---|---|
 | centralized $Q(s,\text{joint }a)$ | $3.2\times10^{-11}$ |
 | independent $Q_i(o_i)$ | $0.077$ |
+
+: Centralised against independent critics: the final value-loss residual.
 
 The centralized critic drives its residual to essentially zero — it can see the target and the
 joint action, so the reward is a deterministic function of its inputs — while the independent
@@ -284,6 +290,8 @@ game):
 | Goofspiel ($K=3$) | $1.33 \to 0$ | converges |
 | Goofspiel ($K=4$) | oscillates $1.4 \leftrightarrow 2.0$ | does not settle |
 
+: PSRO exploitability trajectory, per game family.
+
 The Kuhn / matrix / RPS results are textbook: on the small games the population quickly spans
 the strategies needed and exploitability collapses. Two results did not go as predicted.[^lanctot2017]
 
@@ -326,6 +334,8 @@ Measured (scale config, $K=5$, so the guessing ceiling is $0.2$):
 | communication ON | $0.795$ |
 | communication OFF | $0.204$ |
 
+: Learned communication: team reward with the channel on and off.
+
 With the channel the listener climbs well above the $1/K$ ceiling; without it, it sits exactly
 at the ceiling. Communication is doing real work — and note the reconciliation from §5 applies
 here too: at the smoke configuration both numbers were $0.24$ (the channel had not yet learned
@@ -356,6 +366,8 @@ Measured (per-step discounted return; full cooperation $\approx 3$, mutual defec
 |---|---|
 | naive vs naive | $1.04$ |
 | LOLA vs LOLA | $2.82$ |
+
+: LOLA against naive learners on the iterated Prisoner's Dilemma.
 
 The direction is exactly the LOLA result — cooperation emerges where naive learning defects. (My
 prediction of $\approx 3$ was slightly high; the measured $2.82$ is near-cooperation, and the
@@ -440,7 +452,7 @@ single place where every two-player guarantee from Chapters 2–8 stops applying
 
 [^lowe2017]: Lowe, R. et al. (2017). "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments." *NeurIPS* (MADDPG); and Yu, C. et al. (2022). "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games." *NeurIPS* (MAPPO).
 
-[^lanctot2017]: Lanctot, M. et al. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *NeurIPS* (PSRO); and McMahan, H. B., Gordon, G. & Blum, A. (2003). "Planning in the Presence of Cost Functions Controlled by an Adversary." *ICML* (the double-oracle method PSRO generalizes).
+[^lanctot2017]: Lanctot, M. et al. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *NeurIPS* (PSRO). Related: McMahan, H. B., Gordon, G. & Blum, A. (2003). "Planning in the Presence of Cost Functions Controlled by an Adversary." *ICML* (the double-oracle method PSRO generalizes); Tuyls, K. et al. (2020). "Bounds and dynamics for empirical game-theoretic analysis." *AAMAS/JAAMAS* (EGTA).
 
 [^sukhbaatar2016]: Sukhbaatar, S., Szlam, A. & Fergus, R. (2016). "Learning Multiagent Communication with Backpropagation." *NeurIPS* (CommNet).
 

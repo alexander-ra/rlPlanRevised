@@ -215,7 +215,7 @@ PPO (Schulman и др., 2017)[^ppo] прилага фундаментално р
 
 [^watkins1989]: Watkins, C.J.C.H. (1989). *Learning from Delayed Rewards*. Докторска дисертация, University of Cambridge. Сходимостта е доказана в Watkins, C.J.C.H. & Dayan, P. (1992). "Q-learning." *Machine Learning*, 8(3-4), 279-292.
 
-[^suttonbarto2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, второ издание. MIT Press. <http://incompleteideas.net/book/the-book-2nd.html>
+[^suttonbarto2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, второ издание. MIT Press. Гл. 1 (областта); гл. 3 (крайни марковски процеси на вземане на решения); гл. 4 (динамично програмиране); гл. 5 (методи на Монте Карло); гл. 6 (обучение с темпорална разлика). <http://incompleteideas.net/book/the-book-2nd.html>
 
 [^dqn]: Mnih, V. et al. (2013). "Playing Atari with Deep Reinforcement Learning." arXiv:1312.5602; Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529-533.
 
@@ -226,6 +226,6 @@ PPO (Schulman и др., 2017)[^ppo] прилага фундаментално р
 <!-- Бележки към източниците. Заглавията на чуждоезични източници не се
      превеждат (правило 7 от terminology_EN_BG.md). -->
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*, Chapter 5. Безплатно: <http://www.masfoundations.org/download.html>
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Гл. 3–4 (игри в нормална и разгърната форма); гл. 5 (игри в разгърната форма); §3.4 (изчисляване на равновесия) и §4.6 (изчисляване на най-добри отговори) - механизмът в последователна форма под всяка линейна програма в Глава 8; гл. 7 "Learning and Teaching" - рамката за учене в повтарящи се игри, включително напрежението, че действията едновременно *експлоатират* и *обучават* опонента. Свободно достъпна: <http://www.masfoundations.org/download.html>
 
 [^mnih2015]: Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529–533. arXiv: <https://arxiv.org/abs/1509.06461>

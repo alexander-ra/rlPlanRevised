@@ -295,6 +295,7 @@ def run_pandoc(
     fontsize: str = "11pt",
     linestretch: str = "1.25",
     pagestyle: str | None = None,
+    work_dir: Path | None = None,
     quiet: bool = False,
 ) -> bool:
     """Run pandoc to convert a markdown file to PDF.
@@ -304,6 +305,10 @@ def run_pandoc(
     footnote_offset: starts footnote numbering at N+1. Each bundle part is
                    compiled on its own, so without this every chapter restarts
                    its notes at 1; the bundle wants one continuous run.
+    work_dir:      directory pandoc resolves relative paths from. Defaults to the
+                   markdown's own directory; the single-document bundle sets it to
+                   the repo root, since it rewrites every image path to be
+                   repo-relative as it concatenates the chapters.
     pagestyle:     LaTeX page style. "empty" suppresses the footer entirely,
                    which is what a bundle part wants: its own numbering would
                    restart at 1 inside the merged document. merge_pdfs() stamps
@@ -361,9 +366,19 @@ def run_pandoc(
             cmd,
             capture_output=True,
             text=True,
-            cwd=input_file.parent,   # resolve relative image paths from md location
+            cwd=str(work_dir or input_file.parent),
         )
         if result.returncode == 0:
+            # pandoc reports an unresolvable image as a warning and carries on, so
+            # a bundle could "succeed" with every figure silently missing.
+            lost = [l for l in result.stderr.splitlines()
+                    if "Could not fetch resource" in l or "not found" in l.lower()]
+            if lost:
+                print(f"  ! {len(lost)} image(s) could not be resolved:",
+                      file=sys.stderr)
+                for l in lost[:5]:
+                    print(f"      {l.strip()}", file=sys.stderr)
+                return False
             if not quiet:
                 size_kb = output_file.stat().st_size / 1024
                 print(f"  ✓ Done ({size_kb:.0f} KB) → {output_file.relative_to(REPO_ROOT)}")
@@ -536,39 +551,6 @@ def build_title_pdf(build_type: str, lang: str, out_file: Path,
     ])
     md_file = out_file.with_suffix(".title.md")
     md_file.write_text(f"```{{=latex}}\n{body}\n```\n", encoding="utf-8")
-    ok = run_pandoc(md_file, out_file, lang, engine, pandoc_bin,
-                    geometry="2.5cm", toc=False, number_sections=False,
-                    pagestyle="empty", quiet=True)
-    md_file.unlink(missing_ok=True)
-    return ok
-
-
-def build_preface_pdf(lang: str, out_file: Path,
-                      engine: str, pandoc_bin: str) -> bool:
-    """Render the study-plan introduction as the bundle's preface.
-
-    The source carries glossary cross-references - superscript indices like
-    ^15^ and inline <sup class="gl"> markers - that point at a glossary living
-    at the end of the study plan. There is no glossary in a bundle, so the
-    references are stripped rather than left dangling.
-    """
-    src = preface_source(lang)
-    if not src.exists():
-        print(f"    ! no preface source at {src.relative_to(REPO_ROOT)}")
-        return False
-
-    text = src.read_text(encoding="utf-8")
-    text = re.sub(r"<sup[^>]*>.*?</sup>", "", text)      # glossary markers
-    text = re.sub(r"\^\d+\^", "", text)                  # superscript indices
-    # the note explaining those indices is now pointless
-    text = re.sub(r"^>\s*\*.*?(Речника|Glossary).*?\*\s*$", "", text, flags=re.M)
-    # replace the study-plan title block with a preface heading
-    text = re.sub(r"\A(.*?)(?=^##\s)", "", text, flags=re.S | re.M)
-    text = f"# {PREFACE_HEADING[lang]}\n\n" + text
-    text = re.sub(r"\n{3,}", "\n\n", text)
-
-    md_file = out_file.with_suffix(".preface.md")
-    md_file.write_text(text, encoding="utf-8")
     ok = run_pandoc(md_file, out_file, lang, engine, pandoc_bin,
                     geometry="2.5cm", toc=False, number_sections=False,
                     pagestyle="empty", quiet=True)
@@ -865,8 +847,176 @@ def merge_pdfs(paths: list[Path], outline: list[tuple[int, str, int]],
     return True
 
 
+# --- Single-document bundles ------------------------------------------------
+#
+# A bundle used to be per-chapter PDFs merged after the fact, which meant every
+# counter LaTeX owns - page, figure, table, footnote, section - restarted at each
+# chapter, and a stack of machinery existed only to fake continuity afterwards.
+# Compiling the whole volume in one pandoc run makes all of that native, and is
+# what lets a source cited in two chapters carry one number.
+
+# The preface's own headings are numbered in the study plan and must not be here:
+# the bundle numbers chapters 1..12 and the front matter sits outside that.
+PREFACE_MANUAL_NUMBER = re.compile(r"^(#{1,6})\s+\d+(?:\.\d+)*\.?\s+", re.M)
+
+
+def preface_markdown(lang: str) -> str | None:
+    """The study-plan introduction, prepared as bundle front matter.
+
+    The source carries glossary cross-references - superscript indices like ^15^
+    and inline <sup class="gl"> markers - pointing at a glossary that lives at the
+    end of the study plan. A bundle has no glossary, so they are stripped rather
+    than left dangling. Headings lose both their manual numbers and their claim on
+    the automatic ones.
+    """
+    src = preface_source(lang)
+    if not src.exists():
+        print(f"    ! no preface source at {src.relative_to(REPO_ROOT)}")
+        return None
+
+    text = src.read_text(encoding="utf-8")
+    text = re.sub(r"<sup[^>]*>.*?</sup>", "", text)      # glossary markers
+    text = re.sub(r"\^\d+\^", "", text)                  # superscript indices
+    text = re.sub(r"^>\s*\*.*?(Речника|Glossary).*?\*\s*$", "", text, flags=re.M)
+    text = re.sub(r"\A(.*?)(?=^##\s)", "", text, flags=re.S | re.M)
+    # The study plan repeats the official title as its own heading; the bundle
+    # already carries it on the title page, so it and the rule under it go.
+    text = re.sub(r"\A##\s+" + re.escape(OFFICIAL_TITLE[lang]) + r"\.?\s*\n+(-{3,}\s*\n+)?",
+                  "", text)
+    text = PREFACE_MANUAL_NUMBER.sub(r"\1 ", text)
+    # {-} is pandoc's unnumbered-heading attribute. The trailing class must be
+    # [ \t]*, not \s*: \s matches newlines, so the blank line after each heading
+    # was being eaten and the following `---` became a setext underline.
+    text = re.sub(r"^(#{1,6}[ \t]+.+?)[ \t]*$", r"\1 {-}", text, flags=re.M)
+    text = f"# {PREFACE_HEADING[lang]} {{-}}\n\n" + text
+    return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
+
+
+# The alt text is matched lazily rather than as "anything but ]": one caption
+# contains a literal [8,8,1,1], which truncated the match and left that figure
+# pointing at a path that no longer resolved once the document moved.
+IMAGE_RE = re.compile(r"(!\[.*?\]\()([^)]+)(\))")
+
+
+def rewrite_image_paths(text: str, md_file: Path) -> str:
+    """Point every relative image at the repo root.
+
+    Each chapter references its figures by bare filename, resolved from its own
+    directory. One concatenated document has one working directory, so the paths
+    are rewritten as it is assembled. Preferred over --resource-path, whose
+    separator is OS-dependent and would differ between this repo's Bash and
+    PowerShell entry points.
+    """
+    def sub(m: re.Match) -> str:
+        target = m.group(2).strip()
+        if target.startswith(("http://", "https://", "/")) or ":" in target[:5]:
+            return m.group(0)
+        resolved = (md_file.parent / target).resolve()
+        if not resolved.exists():
+            missing.append(target)
+            return m.group(0)
+        try:
+            rel = resolved.relative_to(REPO_ROOT).as_posix()
+        except ValueError:
+            return m.group(0)
+        return f"{m.group(1)}{rel}{m.group(3)}"
+
+    missing: list[str] = []
+    out = IMAGE_RE.sub(sub, text)
+    for target in missing:
+        print(f"    ! {md_file.relative_to(REPO_ROOT)}: no such figure {target}",
+              file=sys.stderr)
+    return out
+
+
+def strip_front_matter(text: str) -> str:
+    """Drop a chapter's leading directive comment and YAML block."""
+    text = re.sub(r"\A\s*<!--.*?-->\s*?\r?\n", "", text, flags=re.S)
+    text = re.sub(r"\A\s*---\r?\n.*?\r?\n---\r?\n", "", text, flags=re.S)
+    return text.lstrip("\n")
+
+
+def assemble_bundle_markdown(build_type: str, lang: str) -> tuple[str, list[str], list[str]]:
+    """-> (markdown, steps included, steps missing a source)."""
+    _pdf_for_step, _stem, md_for_step = BUNDLE_TYPES[build_type]
+
+    head = [
+        "---",
+        f'title: "{BUNDLE_TITLES[(build_type, lang)]}"',
+        f'subtitle: "{OFFICIAL_TITLE[lang]}"',
+        f'author: "{BUNDLE_AUTHOR[lang]}"',
+        f'date: "{BUNDLE_DATE[lang]}"',
+        f"lang: {lang}",
+        "---",
+        "",
+    ]
+
+    body: list[str] = []
+    if build_type == "summary":
+        pre = preface_markdown(lang)
+        if pre:
+            body += [pre, "", r"\newpage", ""]
+
+    included, missing = [], []
+    for step in BUNDLE_STEPS:
+        md_file = md_for_step(step, lang)
+        if not md_file.exists():
+            missing.append(step)
+            continue
+        text = strip_front_matter(md_file.read_text(encoding="utf-8"))
+        text = rewrite_image_paths(text, md_file)
+        if included:
+            body.append(r"\newpage")
+            body.append("")
+        body.append(text.rstrip() + "\n")
+        included.append(step)
+
+    return "\n".join(head + body), included, missing
+
+
+def build_bundle_single(build_type: str, lang: str, engine: str,
+                        pandoc_bin: str) -> bool:
+    """Compile a whole bundle as one LaTeX document."""
+    _pdf_for_step, stem, _md_for_step = BUNDLE_TYPES[build_type]
+    output_file = BUNDLES_DIR / f"{stem}_{lang}.pdf"
+
+    markdown, included, missing = assemble_bundle_markdown(build_type, lang)
+    if not included:
+        print(f"  SKIP {output_file.name}: no {build_type} sources for {lang.upper()}")
+        return True
+
+    print(f"  Compiling {len(included)} {build_type} chapters as one document "
+          f"→ {output_file.name} ...")
+    if missing:
+        print(f"    (no {lang.upper()} source for: {', '.join(missing)})")
+
+    BUNDLES_DIR.mkdir(parents=True, exist_ok=True)
+    md_file = BUNDLES_DIR / f".{stem}_{lang}.md"
+    md_file.write_text(markdown, encoding="utf-8")
+
+    opts = {"geometry": "2.0cm"} if build_type == "summary" else {}
+    ok = run_pandoc(
+        md_file, output_file, lang, engine, pandoc_bin,
+        toc=True, number_sections=True,
+        # `titlepage` gives \maketitle a page of its own, as a volume wants.
+        extra_args=["-V", "classoption=titlepage"],
+        work_dir=REPO_ROOT,
+        **opts,
+    )
+    if ok:
+        md_file.unlink(missing_ok=True)
+    else:
+        print(f"    (assembled markdown kept at {md_file.relative_to(REPO_ROOT)})")
+    return ok
+
+
 def build_bundle(build_type: str, lang: str, engine: str, pandoc_bin: str) -> bool:
-    """Merge the per-step PDFs of one type, behind a generated contents page."""
+    """Merge the per-step PDFs of one type, behind a generated contents page.
+
+    Still used for the one-pagers bundle: each one-pager is a standalone single
+    sheet, so continuous numbering across them means nothing and the merge is
+    both cheaper and correct.
+    """
     pdf_for_step, stem, md_for_step = BUNDLE_TYPES[build_type]
     output_file = BUNDLES_DIR / f"{stem}_{lang}.pdf"
 
@@ -898,14 +1048,10 @@ def build_bundle(build_type: str, lang: str, engine: str, pandoc_bin: str) -> bo
         title_pdf = None
     title_pages = (page_count(title_pdf) or 1) if title_pdf else 0
 
+    # One-pagers carry no preface; the summaries bundle builds its own front
+    # matter inline (see preface_markdown / assemble_bundle_markdown).
     preface_pdf = None
     preface_pages = 0
-    if build_type == "summary":
-        preface_pdf = BUNDLES_DIR / f".{stem}_{lang}_preface.pdf"
-        if build_preface_pdf(lang, preface_pdf, engine, pandoc_bin):
-            preface_pages = page_count(preface_pdf) or 1
-        else:
-            preface_pdf = None
 
     def merged_outline(offset: int, max_level: int | None = None) -> list[tuple[int, str, int, str]]:
         """Every part's own outline, shifted into bundle page numbers.
@@ -1081,7 +1227,11 @@ def main():
                 sys.exit(1)
         for build_type in types:
             for lang in langs:
-                results.append(build_bundle(build_type, lang, engine, pandoc_bin))
+                # One-pagers stay a merge of standalone sheets; everything else
+                # compiles as a single document so its counters run through.
+                builder = (build_bundle if build_type == "onepager"
+                           else build_bundle_single)
+                results.append(builder(build_type, lang, engine, pandoc_bin))
 
     if all(results):
         print("\nAll PDFs built successfully.")

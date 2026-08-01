@@ -214,7 +214,7 @@ A clean from-scratch implementation is 300–500 lines versus SB3's ~10K. The tr
 
 [^watkins1989]: Watkins, C.J.C.H. (1989). *Learning from Delayed Rewards*. PhD thesis, University of Cambridge. Convergence was proved in Watkins, C.J.C.H. & Dayan, P. (1992). "Q-learning." *Machine Learning*, 8(3–4), 279–292.
 
-[^suttonbarto2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, 2nd edition. MIT Press. <http://incompleteideas.net/book/the-book-2nd.html>
+[^suttonbarto2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, 2nd edition. MIT Press. Ch. 1 (the field); Ch. 3 (finite Markov decision processes); Ch. 4 (dynamic programming); Ch. 5 (Monte Carlo methods); Ch. 6 (temporal-difference learning). <http://incompleteideas.net/book/the-book-2nd.html>
 
 [^dqn]: Mnih, V. et al. (2013). "Playing Atari with Deep Reinforcement Learning." arXiv:1312.5602; Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529–533.
 
@@ -222,6 +222,6 @@ A clean from-scratch implementation is 300–500 lines versus SB3's ~10K. The tr
 
 [^trpo]: Schulman, J., Levine, S., Abbeel, P., Jordan, M. & Moritz, P. (2015). "Trust Region Policy Optimization." *Proceedings of the 32nd International Conference on Machine Learning*, 1889–1897.
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*, Chapter 5. Free: <http://www.masfoundations.org/download.html>
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Ch. 3–4 (normal- and extensive-form games); Ch. 5 (extensive-form games); §3.4 (computing equilibria) and §4.6 (computing best responses), the sequence-form machinery underneath every LP in Chapter 8; Ch. 7 "Learning and Teaching", the learning-in-repeated-games framing, including the tension that your actions both *exploit* and *teach* the opponent. Free: <http://www.masfoundations.org/download.html>
 
 [^mnih2015]: Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529–533. arXiv: <https://arxiv.org/abs/1509.06461>

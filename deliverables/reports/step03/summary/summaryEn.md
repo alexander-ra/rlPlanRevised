@@ -53,6 +53,8 @@ Classical alternatives like **Minimax with alpha-beta pruning** evaluate every r
 | Domain knowledge needed | Strong eval function | None (random rollout) or learned |
 | Best suited for | Moderate branching, good heuristics | High branching, weak/no heuristics |
 
+: Minimax with alpha-beta pruning against MCTS, across five properties.
+
 For Go (branching factor ~250, no good evaluation function before neural networks), Minimax is impractical. MCTS was the breakthrough that made Go AI competitive; the same "sample instead of enumerate" principle carries over to imperfect-information game trees via MCCFR.[^browne2012]
 
 ---
@@ -69,7 +71,7 @@ $$\frac{1}{T}\sum_{t=1}^{T} \hat{v}_I^{(t)} \xrightarrow{T \to \infty} v_I$$
 
 where $\hat{v}_I^{(t)}$ is the sampled counterfactual value at information set $I$ on iteration $t$, and $v_I$ is the true value that vanilla CFR computes exactly. The sampled values are **unbiased estimators** — their expected value equals the true value — which guarantees convergence to the same Nash equilibrium as full-traversal CFR.
 
-The cost is **variance**. Individual samples can deviate substantially from the true value, requiring more iterations to reach the same precision. That variance-for-speed tradeoff is the central theme of this chapter.[^sutton2018]
+The cost is **variance**. Individual samples can deviate substantially from the true value, requiring more iterations to reach the same precision. That variance-for-speed tradeoff is the central theme of this chapter.[^suttonbarto2018]
 
 ---
 
@@ -88,6 +90,8 @@ Kuhn Poker captures the essence of imperfect information in the smallest possibl
 | **Information sets** | 12 | 936 |
 | **Game tree nodes** | 58 | 10,200 |
 | **Chance outcomes** | 6 | 120 |
+
+: Kuhn and Leduc Poker compared: cards, betting rounds, information sets and tree size.
 
 Three qualitatively new features appear:
 
@@ -140,6 +144,8 @@ MCCFR replaces full tree traversal with partial sampling. Two variants sit on th
 | **External Sampling** | Sample one deal | Explore **all** actions | **Sample** one action | ~42 nodes (~945× faster than full) |
 | **Outcome Sampling** | Sample one deal | Sample one action (ε-on-policy) | Sample one action | ~5.5 nodes (~2,228× faster) |
 
+: External and outcome sampling: what each variant samples at every node type, and the resulting cost per iteration.
+
 **External Sampling** explores every action at the updating player's nodes but samples at chance and opponent nodes. Regrets for the traversing player are updated based on the sampled subtree. Since only one deal and one opponent path are visited, each iteration touches a tiny slice of the tree.
 
 **Outcome Sampling** pushes sampling further: a single root-to-terminal trajectory is drawn. Because actions at the updating player's nodes are also sampled, the regret update must be corrected by **importance sampling** — the ratio of the true reach probability to the sampling probability. An ε-on-policy mixture (with probability ε, choose uniformly; otherwise follow the current strategy) ensures all actions are explored even when the current strategy assigns zero probability.
@@ -166,6 +172,8 @@ All four algorithms follow $O(1/\sqrt{T})$ convergence, but the constants differ
 | CFR+ | 0.34 | 20.6 | **~0.002** | ~38× faster |
 | MCCFR External | 107 | 19,470 | **0.767** | 10.2× slower |
 | MCCFR Outcome | 245 | 45,901 | **1.143** | 15.3× slower |
+
+: Measured convergence constants for the four solvers, per iteration and in wall-clock terms.
 
 The wall-clock constant is what determines real-world performance. Despite being 945× faster per iteration, External Sampling's variance constant (107 vs 0.34) is 315× larger. The speed advantage **does not overcome the variance penalty**:
 
@@ -200,6 +208,8 @@ Plugging in measured values:
 | External Sampling | ~2.1 million nodes |
 | Outcome Sampling | ~4.8 million nodes |
 
+: Game size at which MCCFR overtakes vanilla CFR, per sampling variant.
+
 Compared against actual games:
 
 | Game | $|N|$ | External wins? | Outcome wins? |
@@ -207,6 +217,8 @@ Compared against actual games:
 | Leduc Poker | 10,200 | No (210× too small) | No (466× too small) |
 | Limit Texas Hold'em | ~$10^{14}$ | Yes ($10^7$× above threshold) | Yes |
 | No-Limit Texas Hold'em | ~$10^{17}$ | Yes ($10^{10}$× above threshold) | Yes |
+
+: The crossover threshold applied to three real games.
 
 Leduc sits 210× below the External Sampling crossover and 466× below the Outcome Sampling crossover. Full traversal dominates because the entire game tree fits in memory and can be enumerated in milliseconds. At real poker scales the conclusion reverses completely — even one full-traversal iteration of Hold'em would take longer than the age of the universe. At that scale, MCCFR (with variance-reduction extensions) becomes the **only** tractable approach.
 
@@ -231,11 +243,11 @@ Leduc sits 210× below the External Sampling crossover and 466× below the Outco
 
 [^mccfr]: Lanctot, M., Waugh, K., Zinkevich, M. & Bowling, M. (2009). "Monte Carlo Sampling for Regret Minimization in Extensive Games." *Advances in Neural Information Processing Systems 22*, 1078-1086.
 
-[^bowling2015]: Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149.
+[^bowling2015]: Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149. Used CFR+ to solve heads-up limit Texas Hold'em — the first non-trivial imperfect-information game to be essentially solved.
 
 [^browne2012]: Browne, C. et al. (2012). "A Survey of Monte Carlo Tree Search Methods." *IEEE Transactions on Computational Intelligence and AI in Games*, 4(1), 1–43.
 
-[^sutton2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, Chapter 5 — Monte Carlo Methods.
+[^suttonbarto2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, 2nd edition. MIT Press. Ch. 1 (the field); Ch. 3 (finite Markov decision processes); Ch. 4 (dynamic programming); Ch. 5 (Monte Carlo methods); Ch. 6 (temporal-difference learning). <http://incompleteideas.net/book/the-book-2nd.html>
 
 [^southey2005]: Southey, F. et al. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *UAI*.
 

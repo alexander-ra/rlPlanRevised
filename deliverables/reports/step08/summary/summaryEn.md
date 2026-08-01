@@ -163,6 +163,8 @@ meaningful with a reasonable baseline (an open requirement I flag rather than re
 | Prime-safe (2023) | $\ge v^* - \varepsilon$ | the baseline's measured exploitability | you must measure $\varepsilon$ honestly |
 | Adaptation (2024) | $\le$ blueprint exploitability | any blueprint | vacuous if the blueprint is bad |
 
+: Three safety notions: the floor each guarantees, what it requires, and where it is weak.
+
 ### Where the two-player zero-sum assumption hides — the thesis attack point
 
 Every floor above rests on one fact: **in a two-player zero-sum game, a Nash strategy secures the
@@ -256,6 +258,8 @@ exploitability $\approx 0$) and then **jumps straight to the full best response*
 | **0.7** | **+0.167** | **0.444** | +0.103 | 0.311 |
 | 1.0 | +0.167 | 0.444 | +0.167 | 0.444 |
 
+: Restricted Nash Response across the mixing parameter: the canonical form against a naive blend.
+
 ![The exploitation-safety frontier on Kuhn with the LP operating points. The canonical RNR "curve" is only an interpolation between two achieved clusters (the safe corner and the full-BR corner); the smooth line is the dominated naive blend; the stars (Ganzfried, prime-safe, adaptation) sit at the efficient safe corner.](../figures/impl_pareto_kuhn.png)
 
 *Why (I checked before trusting the story).* The RNR objective is **linear** in $x$ over a
@@ -292,6 +296,8 @@ exact (full-tree), from the scale run.
 | | worst-case | −0.056 | −0.500 | −0.333 | −0.056 | −0.063 | −0.063 |
 | **Nash** (control) | EV | −0.056 | −0.055 | −0.056 | −0.056 | −0.055 | −0.055 |
 | | worst-case | −0.056 | −0.333 | −0.056 | −0.056 | −0.063 | −0.063 |
+
+: Kuhn: expected value and worst-case value for every method against every opponent.
 
 ![Methods versus the Rock on Kuhn: green is EV against the opponent, red is worst-case value, the dashed line is the Nash floor. Only the full best response's worst-case (red) plunges to −0.5, far below the floor; every principled method hugs the floor while still exploiting.](../figures/impl_methods_kuhn.png)
 
@@ -379,6 +385,8 @@ for each cell whether the solve **converged** or hit the cap. Game value $v^* = 
 | | worst-case | −0.089 | **−4.200** | −0.133 | −1.239 | −1.334 |
 | | converged? | ✓ | ✓ | ✗ (400 it) | ✗ capped | ✗ capped |
 
+: Leduc: the subgame method against the global solvers.
+
 **The headline finding is negative and empirical: global safe-exploitation does not scale, even
 to Leduc.** I predicted Ganzfried would be safe on Leduc as it is on Kuhn. Instead the **global**
 solvers (`ganzfried`, `prime_safe`, `adaptation`, and `rnr_0.5`) all **hit the 40-iteration cap
@@ -416,6 +424,8 @@ A deceptive opponent plays the weak Rock bait for 10 000 hands, then switches to
 | ganzfried | −0.048 | −0.055 | **0, 0, 0, 0, 0** |
 | adaptation | −0.046 | −0.055 | 40, 40, 40, 40, 40 |
 | nash | −0.051 | −0.061 | 0, 0, 0, 0, 0 |
+
+: The teaching attack: realised profit and safety violations per method.
 
 ![Teaching attack on Kuhn, cumulative profit. The full best response (blue) climbs on the bait to about +1700, then only drifts down after the switch — it ends far ahead, because a Nash "revealer" claws back only about the game value per hand. The safe methods refuse the bait and pay the first-player tax throughout.](../figures/impl_teaching_kuhn.png)
 
@@ -464,9 +474,9 @@ floor is what turns Chapter 7's fragile sensor into a deployable adaptive agent.
 <!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
      together here keeps the prose readable and the EN/BG pair easy to compare. -->
 
-[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Trans. Economics and Computation* — the paper that first made "exploit but never lose to the baseline" a theorem.
+[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Transactions on Economics and Computation* — the paper that first made "exploit but never lose to the baseline" a theorem; the safety half of the dial and the anchor for Chapter 8.
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, §3.4 (computing equilibria) and §4.6 (computing best responses) — the sequence-form machinery underneath every LP in this chapter.
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Ch. 3–4 (normal- and extensive-form games); Ch. 5 (extensive-form games); §3.4 (computing equilibria) and §4.6 (computing best responses), the sequence-form machinery underneath every LP in Chapter 8; Ch. 7 "Learning and Teaching", the learning-in-repeated-games framing, including the tension that your actions both *exploit* and *teach* the opponent. Free: <http://www.masfoundations.org/download.html>
 
 [^johanson2007]: Johanson, M., Zinkevich, M. & Bowling, M. (2007). "Computing Robust Counter-Strategies." *NeurIPS* — Restricted Nash Response, the tunable ancestor of all of the above.
 

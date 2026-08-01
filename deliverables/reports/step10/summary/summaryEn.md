@@ -65,6 +65,8 @@ Every method here is a different way to turn "a population" into a training sign
 | **PBT** | train many agents; copy the fitter ones (exploit) + perturb hyper-parameters (explore) | any population; online hyper-parameter search | can collapse diversity or regress (see §5) |
 | **AlphaStar league** | PBT with three agent *types* (main / main-exploiter / league-exploiter) + freezing + PFSP | non-transitive games where naive self-play cycles | many agents, much compute; heuristic, no safety guarantee |
 
+: The population-based method families: what each does, when to reach for it, and its main weakness.
+
 Two evaluation tools cut across them. **Replicator dynamics** (§3) are the continuous idealization of
 selection — they say where a population *flows* and where it can *rest*. The **spinning-top
 decomposition** (§4) measures how transitive vs cyclic a game (or a population) is. Together they are
@@ -102,6 +104,8 @@ measured results match theory exactly:
 | Rock-Paper-Scissors | Nash = uniform; **no ESS** | orbits centre, radius $0.095$ | **no** |
 | Stag Hunt | two pure ESS (basin-dependent) | $[0.8,0.2]\to[1,0]$; $[0.2,0.8]\to[0,1]$ | yes |
 
+: Replicator dynamics on four symmetric games, against the analytic reference.
+
 Prisoner's Dilemma collapses to the dominant strategy; Hawk-Dove *reaches* the interior $0.5$ ESS;
 Stag Hunt picks a different pure ESS depending on the basin its start lands in. **Rock-Paper-Scissors
 never converges** — its interior fixed point is a *centre*, so the population orbits it forever. That
@@ -132,6 +136,8 @@ simply cannot represent a pure cycle. The implementation uses the **combinatoria
 | Pure skill ladder | $1.0$ | $0.0$ | purely transitive |
 | PSRO-Leduc **best-response** meta-game | $0.41$-$0.46$ | $0.89$-$0.91$ | **mostly cyclic** (27 three-cycles) |
 | League **snapshot** meta-game | $0.94$-$0.98$ | — | **mostly transitive** |
+
+: Transitive and cyclic components of four populations, by combinatorial-Hodge decomposition.
 
 The two *real* populations are the headline — and they disagree, on the same game.[^balduzzi2019]
 
@@ -171,6 +177,8 @@ Does it improve? Measured, over two configs (smoke: 7 agents, 15 epochs; scale: 
 | meta-Nash exploitability | $4.73 \to 3.04$ | $5.01 \to$ min $\approx1.32$ (plateau $1.60$) → **$2.96$** |
 | final Elo (live agents) | $1176$-$1211$ | $1198$-$1210$ |
 
+: League training metrics at both scales.
+
 > **Reconciliation (kept prediction → what actually happened).** I predicted a *monotone* decrease in
 > exploitability. Smoke's 15 epochs oblige — a clean drop that ends at its minimum. But scale's 120
 > epochs tell the real story: exploitability falls steeply to a minimum near epoch 60 (min-main
@@ -203,6 +211,8 @@ The mechanism is clearest on a fast toy — a mini-PBT on matrix games:
 | Prisoner's Dilemma (transitive) | collapses to $0$ (everyone → Defect) |
 | Rock-Paper-Scissors (cyclic) | churns forever ($0.07$-$0.29$), never settles |
 
+: Mini-PBT diversity over generations, on a transitive and on a cyclic game.
+
 ![Mini-PBT diversity: on the transitive Prisoner's Dilemma the population collapses to a single strategy (diversity → 0), while on cyclic Rock-Paper-Scissors it churns indefinitely (0.07-0.29) as it chases the wheel of counters. Game structure, not population size, decides whether diversity survives.](mini_pbt.png)
 
 Transitive games *kill* diversity (there is one best, everyone converges to it); cyclic games *force*
@@ -229,6 +239,8 @@ exploitable than any single member. Measured:
 | Smoke | $2.665$ | $2.665$ | **yes** (all weight on the best agent) |
 | Scale | $3.418$ | $1.305$ | **no** |
 
+: Meta-Nash exploitability against the best individual agent, per configuration.
+
 > **Reconciliation (kept prediction → what actually happened).** I expected the meta-Nash mixture to
 > be at least as unexploitable as its best member. Smoke confirmed it trivially — the meta-Nash put
 > *all* weight on the single best agent, so meta = best = $2.665$. At scale the meta-Nash spreads
@@ -250,6 +262,8 @@ How does the league compare to the alternatives on Leduc exploitability?
 | PSRO (exact best-response oracle) | $2.163$ |
 | Self-play | $3.683$ |
 | League — meta-Nash mixture | $3.418$ |
+
+: Final Leduc exploitability, by method.
 
 The league's **best individual** is the strongest learned result — beating exact PSRO and self-play —
 though all learned methods remain far above the CFR-Nash floor. The league's **mixture** is the
@@ -313,10 +327,10 @@ missing guarantee — it can regress and its mixture can be exploitable — is t
 <!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
      together here keeps the prose readable and the EN/BG pair easy to compare. -->
 
-[^balduzzi2019]: Balduzzi, D. et al. (2019). "Open-ended Learning in Symmetric Zero-sum Games." *ICML* — the spinning-top geometry of transitive vs cyclic structure; and Jaderberg, M. et al. (2017). "Population Based Training of Neural Networks." *arXiv:1711.09846*.
+[^balduzzi2019]: Balduzzi, D. et al. (2019). "Open-ended Learning in Symmetric Zero-sum Games." *ICML* — the spinning-top geometry of transitive vs cyclic structure. Related: Jaderberg, M. et al. (2017). "Population Based Training of Neural Networks." *arXiv:1711.09846*.
 
 [^hofbauer1998]: Hofbauer, J. & Sigmund, K. (1998). *Evolutionary Games and Population Dynamics* (Cambridge) — replicator dynamics, ESS, and the RPS centre; and the Bloembergen–Tuyls survey (JAIR, 2015) connecting replicator dynamics to multi-agent learning.
 
 [^vinyals2019]: Vinyals, O. et al. (2019). "Grandmaster level in StarCraft II using multi-agent reinforcement learning." *Nature* (AlphaStar; the league and PFSP).
 
-[^lanctot2017]: Lanctot, M. et al. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *NeurIPS* (PSRO); and Tuyls, K. et al. (2020). "Bounds and dynamics for empirical game-theoretic analysis." *AAMAS/JAAMAS* (EGTA).
+[^lanctot2017]: Lanctot, M. et al. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *NeurIPS* (PSRO). Related: McMahan, H. B., Gordon, G. & Blum, A. (2003). "Planning in the Presence of Cost Functions Controlled by an Adversary." *ICML* (the double-oracle method PSRO generalizes); Tuyls, K. et al. (2020). "Bounds and dynamics for empirical game-theoretic analysis." *AAMAS/JAAMAS* (EGTA).

@@ -206,7 +206,7 @@ $$\text{exploit}(\sigma) = BR_0(\sigma_1) + BR_1(\sigma_0)$$
 
 [^zinkevich2007]: Zinkevich, M., Johanson, M., Bowling, M. & Piccione, C. (2007). "Regret Minimization in Games with Incomplete Information." *Advances in Neural Information Processing Systems 20*, 1729-1736.
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Chapters 3–4. Безплатно: <http://www.masfoundations.org/download.html>
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Гл. 3–4 (игри в нормална и разгърната форма); гл. 5 (игри в разгърната форма); §3.4 (изчисляване на равновесия) и §4.6 (изчисляване на най-добри отговори) - механизмът в последователна форма под всяка линейна програма в Глава 8; гл. 7 "Learning and Teaching" - рамката за учене в повтарящи се игри, включително напрежението, че действията едновременно *експлоатират* и *обучават* опонента. Свободно достъпна: <http://www.masfoundations.org/download.html>
 
 [^neller2013]: Neller, T.W. & Lanctot, M. (2013). "An Introduction to Counterfactual Regret Minimization," Section 1–2.
 
@@ -214,4 +214,4 @@ $$\text{exploit}(\sigma) = BR_0(\sigma_1) + BR_1(\sigma_0)$$
 
 [^kuhn1950]: Kuhn, H.W. (1950). "Simplified Two-Person Poker." *Contributions to the Theory of Games*, Vol. 1.
 
-[^bowling2015]: Bowling, M. et al. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149. В тази статия се използва CFR+ (вариант) за решаване на хедс-ъп лимит тексаски холдем - първата нетривиална игра с непълна информация, която по същество е решена.
+[^bowling2015]: Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149. Използва CFR+ за решаването на хедс-ъп лимит тексаски холдем - първата нетривиална игра с непълна информация, която по същество е решена.

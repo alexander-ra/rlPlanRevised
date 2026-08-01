@@ -75,6 +75,8 @@ computed three exact quantities:
 | Maniac (always bets/calls) | +0.121 | +0.333 | **0.213** |
 | Nash (equilibrium play) | -0.055 | -0.052 | 0.004 |
 
+: Exploitation headroom in Kuhn: Nash EV, best-response EV, and the gap between them, per opponent type.
+
 Against the three exploitable styles the gap is enormous — **0.11 to 0.28 per hand**, on a game
 whose entire equilibrium value is about one twentieth of a chip. Against a Nash opponent the gap
 is essentially **zero**, exactly as theory demands: you cannot exploit an equilibrium, because
@@ -123,6 +125,8 @@ hypothesis the detector reasons over:
 | **Rock** (tight-passive) | Commits chips only with the best hand; folds everything else. The most exploitable type. |
 | **Maniac** (loose-aggressive) | Always bets or calls, regardless of hand. |
 | **Nash** | Balanced equilibrium play; mixes its actions; unexploitable. |
+
+: The opponent type zoo: the behaviour of each fixed style.
 
 ### The update, worked by hand
 
@@ -233,6 +237,8 @@ The following table is the mental map to carry forward:
 | Type-based | a few known types | fastest | no | high (named types) | cheap |
 | Continuous | any per-situation strategy | slower (data-hungry) | yes | medium (per-situation) | cheap |
 | Consistent | one valid global strategy | provably to the truth | yes | medium | expensive (optimization) |
+
+: The three opponent models compared on representation, convergence, robustness, interpretability and cost.
 
 The obvious question — *which one should the thesis use?* — does not have a single answer, and
 that is itself a finding. The natural target is a **hybrid**: lean on structural priors (types)
@@ -371,6 +377,8 @@ convergence* from *falling after convergence*.
 | A wrong type still leading past hand 200 | 14 / 300 (~5%) |
 | Hand at which the truth locks in for good | median **23** - 90th pct **125** - worst **461** |
 
+: Detector reliability over 300 seeds of 500 hands each.
+
 The good news: the belief eventually lands on the closest representable strategy every time, and
 once it locks in it never falls. The sobering news is the middle rows: in a meaningful minority
 of runs the model held a **confident wrong belief for well over a hundred hands** — long enough
@@ -410,6 +418,8 @@ beats uniform play by the predicted margins (+0.500 on Kuhn, +2.087 on Leduc).
 | Maniac | 0.333 | 0.337 | 0.330 |
 | **Nash** | -0.055 | -0.055 | -0.053 |
 
+: Kuhn: the exploitation ceiling against what each model actually realised.
+
 (A pure "always fold to a bet" opponent is even more exploitable — a ceiling of 0.975, reached to
 within 0.966 — but it is not one of the recurring types defined above, so it is omitted here for
 consistency.)
@@ -425,6 +435,8 @@ solvable, but large enough to separate the models.
 | Calling station | 1.464 | 1.451 | 1.434 |
 | Rock | 0.937 | 0.912 | 0.848 |
 | **Nash** | -0.083 | -0.085 | **-0.175** |
+
+: Leduc: the exploitation ceiling against what each model actually realised.
 
 ![Exploitation against each Leduc opponent: the type-based model (which fits these opponents) hugs the exact best-response ceiling, while the continuous model tracks close but sits below for the hardest-to-fit types — and dips below the safe baseline against Nash.](../figures/impl_exploitation_leduc.png)
 
@@ -475,6 +487,8 @@ model (never forgets) against one with **change-point forgetting**. The result i
 |---|---|--:|--:|
 | Kuhn | rock -> maniac | **-0.116** | **+0.226** |
 | Leduc | rock -> maniac | **+1.940** | **+0.525** |
+
+: Static against change-point forgetting, after a mid-match style switch.
 
 - **On Kuhn, forgetting wins.** The strategy learned against a rock is bluff-heavy; unleashed on
   a maniac who calls everything, it *actively loses* (the static model goes negative). Detecting
@@ -531,6 +545,6 @@ the framework extends.[^shoham2008]
 
 [^ganzfried2025]: Ganzfried, S. (2025). "Consistent Opponent Modeling in Imperfect-Information Games." *arXiv:2508.17671*.
 
-[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM EC* — the safety half of the dial, and the anchor for Chapter 8.
+[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Transactions on Economics and Computation* — the paper that first made "exploit but never lose to the baseline" a theorem; the safety half of the dial and the anchor for Chapter 8.
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Ch. 7 "Learning and Teaching" — the learning-in-repeated-games framing under all of the above, including the tension that your actions both *exploit* and *teach* the opponent.
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Ch. 3–4 (normal- and extensive-form games); Ch. 5 (extensive-form games); §3.4 (computing equilibria) and §4.6 (computing best responses), the sequence-form machinery underneath every LP in Chapter 8; Ch. 7 "Learning and Teaching", the learning-in-repeated-games framing, including the tension that your actions both *exploit* and *teach* the opponent. Free: <http://www.masfoundations.org/download.html>

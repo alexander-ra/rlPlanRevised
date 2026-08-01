@@ -51,7 +51,7 @@ generalization — learning belief-state values with AlphaZero-style self-play, 
 abstraction and the blueprint, and *recovering* the safety Pluribus had surrendered. Student of Games, the
 capstone, unified perfect- and imperfect-information play in a single algorithm — and paid for that breadth
 with peak strength, losing decisively to a specialist AlphaZero at Go. Read this way, the chapter is a study
-of what each advance cost, not a ranking of winners.
+of what each advance cost, not a ranking of winners.[^deepstack]
 
 Beneath the individual trades, three axes of motion run through all five systems and give the chapter its
 spine. The first is **representational**: the move from hand-built *abstraction* — bucketing similar hands
@@ -117,6 +117,8 @@ beyond the horizon — even though, in poker, the situation is itself partly hid
 | Compute | Offline-heavy (~175 CPU-core-years to label the turn network); play-time runs on one GPU, < 5 s/decision |
 | Key innovation | Continual re-solving + learned counterfactual values: the first *sound* heuristic search for imperfect-information games |
 
+: DeepStack (2017) at a glance.
+
 ### The gap it closed
 
 Every prior game-AI milestone — backgammon, chess, Go — rested on *local search*: from the current position,
@@ -173,7 +175,7 @@ commits to a global strategy. Classical re-solving (Burch et al., 2014) shows th
 for a subgame you do not need the whole strategy — you need only your own range entering the subgame and a
 vector of the opponent's counterfactual values. DeepStack pushes this to its limit: it *never* holds a
 strategy for the whole game. Every time it must act, it re-solves the current public state from those two
-vectors, plays one action, and throws the strategy away.
+vectors, plays one action, and throws the strategy away.[^burch2014]
 
 What makes this work is the bookkeeping. After each event DeepStack updates its two vectors by simple rules:
 on its **own action** it swaps in the re-solved counterfactual values for the chosen action and Bayes-updates
@@ -331,6 +333,8 @@ unlike DeepStack, it first dismantled the prior best poker AI head-to-head.
 | Compute | Offline- *and* online-heavy: ~25M CPU core-hours on the Bridges supercomputer; ~50 nodes and tens of seconds per late decision; no GPUs |
 | Key innovation | Blueprint + real-time nested *safe* subgame solving + self-improvement: exact, provably-safe responses to off-tree bets in place of action translation |
 
+: Libratus (2017/2018) at a glance.
+
 ### The gap it closed
 
 The previous section laid out the paradigm DeepStack discarded — abstraction plus offline equilibrium plus
@@ -341,7 +345,7 @@ though the opponent had made the rounded bet. That rounding is the single larges
 abstraction-based poker: a local-best-response probe had shown the leading competition bots losing thousands
 of mbb/g to a worst-case adversary, and in 2015 Libratus's own predecessor Claudico lost the first
 *Brains vs. AI* match to professionals by 91 mbb/g, in good part because opponents could feel out and punish
-its translation boundaries.
+its translation boundaries.[^libratus]
 
 The conceptual question Libratus answers is therefore narrower and more surgical than DeepStack's: *can the
 decades-old abstraction paradigm be made superhuman by repairing only its real-time behaviour — responding to
@@ -446,7 +450,7 @@ menu size — by more than an order of magnitude in worst-case exploitability (1
 reported small-game test). And because each subgame is solved live, Libratus can also *change its own bet
 sizes* between hands — it perturbs them by a random 0–8% at the first solve — so the humans never face a
 fixed target to dissect. This is the precise mechanism by which the abstraction paradigm's worst weakness,
-action translation, is excised from the late game.
+action translation, is excised from the late game.[^brown2017]
 
 ### Caveats, dead-ends, and what the paper under-describes
 
@@ -594,6 +598,8 @@ $150 of cloud compute** — on the order of a thousandth of what the supercomput
 | Perfect-info too? | No (imperfect-information only) |
 | Compute | Famously cheap: blueprint ~12,400 core-hours / 8 days / < 512 GB on one 64-core server (~$144); play on 2 CPUs (28 cores), < 128 GB, no GPUs, 1–33 s/decision |
 | Key innovation | Superhuman six-player play via blueprint + depth-limited search with continuation strategies — won *empirically*, on a tiny budget, with **no N-player safety guarantee** |
+
+: Pluribus (2019) at a glance.
 
 ### The gap it closed
 
@@ -845,6 +851,8 @@ any prior poker AI — and, unlike the closed Libratus and Pluribus, its impleme
 | Compute | GPU-trained: full HUNL used ~90 DGX-1 nodes × 8 V100 GPUs for self-play data generation (a contrast with Pluribus's CPU-only ~$150); CFR on a single CPU thread; play < 2 s/hand, ≤ 5 s/decision |
 | Key innovation | Public belief states + an AlphaZero-style self-play loop training a PBS value/policy net with CFR run in belief space: the first *sound* RL+Search for imperfect-information games, recovering a provable 2p0s Nash guarantee with no abstraction or blueprint |
 
+: ReBeL (2020) at a glance.
+
 ### The gap it closed
 
 The previous three systems converged on one recipe — a precomputed strategy plus real-time search — and Pluribus
@@ -855,7 +863,7 @@ clustering at the network's input, and an abstraction on the river. Meanwhile th
 of game AI — AlphaZero's marriage of self-play reinforcement learning with search, which learns its own
 evaluation from scratch and reuses it both to train and to play — had been *unavailable* for imperfect
 information. The open question ReBeL answers is the one Noam Brown calls the field's "holy grail": **can the
-AlphaZero recipe be made to work, soundly, in games of hidden information?**
+AlphaZero recipe be made to work, soundly, in games of hidden information?**[^lbr]
 
 The reason it could not, before, is subtle and is the conceptual crux of the whole chapter. AlphaZero assumes
 each state has a single well-defined value: a chess position is worth what it is worth, regardless of how often
@@ -1127,6 +1135,8 @@ provenance — and it first appeared in 2021 under the name *Player of Games* be
 | Compute | TPU-trained, deliberately matched to AlphaZero's budget (Google TPUv4; Go the most expensive); reported *relative* to AlphaZero, no single dollar figure; search is $O(kT^2)$ ($O(T)$ for perfect-info); the full agent/code was **not** released |
 | Key innovation | Growing-Tree CFR + sound self-play: one self-play-with-search algorithm, **sound for both game classes**, that grows its tree incrementally with a CVPN at the leaves and provably converges to Nash |
 
+: Student of Games (2023) at a glance.
+
 ### The gap it closed
 
 For seventy years, the two great traditions of game AI ran on separate tracks. One — minimax, alpha–beta,
@@ -1179,7 +1189,7 @@ and periodically push it back. Online, the agent runs the very same GT-CFR searc
 to choose each move. The classic building blocks are all visible — CFR⁺ (Chapter 3) is the search's inner
 loop, value-and-policy approximation (Chapter 5) is the CVPN, and public belief states and decomposition (the
 DeepStack/ReBeL lineage) are the representation — but the binding novelty is GT-CFR, the search that *grows*
-its tree, and the sound self-play that keeps every search consistent with every other.
+its tree, and the sound self-play that keeps every search consistent with every other.[^deepstack]
 
 ### Key innovation: Growing-Tree CFR and sound self-play
 
@@ -1202,7 +1212,7 @@ single trajectory from the root, choosing actions by a PUCT rule that *mixes* th
 current CFR policy, and appends the first public state it reaches that is not yet in the tree. Iterating —
 "expand the tree, improve the policy, expand, improve" — yields an *anytime* search that, like MCTS, pours
 computation into the relevant lines, but that, unlike MCTS, is solving for a game-theoretically sound
-strategy at every step.
+strategy at every step.[^sog]
 
 The second idea is the **single knob that adapts this one search to both game classes**. When it expands,
 AlphaZero adds only the single most promising action, which is ideal when optimal play can be deterministic.
@@ -1298,7 +1308,7 @@ comparison is pinned to *network-call budget* rather than wall-clock, the honest
 AlphaZero, and substantial" — indeed the authors list reducing this compute among their open problems. At
 play time the search is anytime and tunable, but its $O(kT^2)$ growth (reducing to $O(T)$ for
 perfect-information games, where a node need only be evaluated once) means strong configurations are not
-cheap either.
+cheap either.[^pluribus]
 
 On accessibility the verdict is mixed and worth stating precisely. The **full Student of Games agent and its
 trained networks were not released** — there is no code-availability statement beyond data in the paper and
@@ -1348,7 +1358,7 @@ that AlphaZero's recipe (self-play, a learned value-and-policy network, and a tr
 was never specific to perfect information; it only needed a *sound* search over *beliefs* rather than states.
 Swap Monte-Carlo tree search for GT-CFR and run it over public belief states, and the same recipe spans
 chess and poker with a single convergence guarantee. That is the chapter's central thesis made literal: one
-algorithm, one network, one search, four very different games.
+algorithm, one network, one search, four very different games.[^brown2017]
 
 Its relationships to the surrounding frontier are clarifying. Student of Games is the *general* framework
 ReBeL pointed toward — it grows its tree instead of fixing a depth-limited subgame, decouples test-time
@@ -1426,6 +1436,8 @@ section's scorecard and are not repeated here.
 | **Pluribus** (2019) | First superhuman **multiplayer** (six-player) play; famously cheap (~$150 on a single server) | Drops *all* safety guarantees (no N-player bound); relies on *unsafe* search; remains fully tabular and abstracted |
 | **ReBeL** (2020) | "AlphaZero for imperfect information": **public belief states** + learned value/policy + CFR in belief space; *recovers* the 2p0s guarantee; eliminates abstraction *and* blueprint; open-sources Liar's Dice | Guarantees retreat to two players; the PBS blows up where common knowledge is scarce; GPU-cluster training; needs a known model |
 | **Student of Games** (2023) | Unifies **perfect- and imperfect-information** play in one sound algorithm (GT-CFR + a single value-and-policy net + sound self-play) | Weaker than the specialists (markedly at Go); guarantees still 2p0s; belief-space blow-up; known-model requirement; flagship code unreleased |
+
+: The five systems in sequence: what each added, and what it gave up for it.
 
 ![The seven-year arc as trade-offs: the five systems placed along three axes (abstraction → neural; offline → real-time search; imperfect-only → unified), with lineage arrows and a per-system capability-gained/given-up tag.](evolution_arc.png){width=98% fig-pos="H"}
 
@@ -1547,3 +1559,17 @@ the foil it defines itself against: it inherits their belief-state representatio
 and their exploitability discipline, and it sets out to add the one capability they all, by design, leave
 out — the ability to notice that an opponent is not playing optimally, and to do something about it without
 becoming exploitable in turn.
+
+[^brown2017]: Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS*.
+
+[^burch2014]: Burch, N., Johanson, M. & Bowling, M. (2014). "Solving Imperfect Information Games Using Decomposition." *AAAI* — re-solving and the augmented subgame.
+
+[^deepstack]: Moravčík, M. et al. (2017). "DeepStack: Expert-level artificial intelligence in heads-up no-limit poker." *Science*, 356(6337), 508–513.
+
+[^lbr]: Lisý, V. & Bowling, M. (2017). "Equilibrium Approximation Quality of Current No-Limit Poker Bots." *AAAI Workshop on Computer Poker* — local best response (LBR).
+
+[^libratus]: Brown, N. & Sandholm, T. (2018). "Superhuman AI for heads-up no-limit poker: Libratus beats top professionals." *Science*, 359(6374), 418–424.
+
+[^pluribus]: Brown, N. & Sandholm, T. (2019). "Superhuman AI for multiplayer poker." *Science*, 365(6456), 885–890.
+
+[^sog]: Schmid, M. et al. (2023). "Student of Games: A unified learning algorithm for both perfect and imperfect information games." *Science Advances*, 9(46).

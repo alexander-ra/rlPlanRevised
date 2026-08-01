@@ -97,6 +97,8 @@ orders. Two textbook toys pin down what "fair" and "stable" mean, and both repro
 | Glove game | $(2/3,1/6,1/6)$ | **non-empty** (a stable split exists) |
 | 3-player majority | $(1/3,1/3,1/3)$ | **empty** (no stable split) |
 
+: Shapley value and core stability on two cooperative-game toys.
+
 The **empty core** of the majority game is the conceptual heart of the chapter: it is a game where *any*
 allocation can be overturned by some coalition, so cooperation is *inherently unstable*. That is the
 SLS situation — and the reason N-player "safe" play cannot be anchored to a stable equilibrium
@@ -150,6 +152,8 @@ agents; `**` = significant at $>2\times$ SE):
 | any tier, $\alpha \ge 0.3$ | $-0.001 \ldots -0.004$ (negative) |
 | smoke, proxy, $\alpha=0$, synergy $0.1$ | **$+0.0024 \pm 0.0008$** (tiny) |
 
+: Paired coalition-score gap of Shapley credit over the sparse baseline, per regime.
+
 > **Reconciliation (kept prediction -> what actually happened).** My single-config runs used the
 > default $\alpha=0.3$ and showed the coalition signal collapse at scale — which I first read as "the
 > proxy credit is too weak once training is longer." The sweep overturned that completely: **$\alpha$
@@ -188,6 +192,8 @@ Chapter 10 predicted FFA coalition games would be strongly cyclic. Measured, it 
 |---|---|---|
 | Skill-ladder pool | $0.25$-$0.31$ | transitive-dominant (a ladder) |
 | Coalition pool (ally/betray strategies) | $\sim 0.57$-$0.69$ | strongly cyclic (a wheel) |
+
+: Cyclic ratio and structure of two SLS populations.
 
 > **Reconciliation (kept prediction -> what actually happened).** I expected a large cyclic
 > component and, at first, saw a near-perfect skill ladder (cyclic $\sim 0.07$). That was partly the
@@ -263,4 +269,4 @@ generalization of exploitability that **Chapter 14** inherits (Contribution #3).
 
 [^chapter2022]: the Chapter 09 MARL stack (this repo) for MAPPO with a centralized critic; and Bakhtin et al. (2022) on **piKL** — regularizing toward a behavioral prior instead of Nash, the N-player safe-play recipe this chapter points at.
 
-[^balduzzi2019]: Balduzzi, D. et al. (2019). "Open-ended Learning in Symmetric Zero-sum Games." *ICML* (the spinning top); and Lanctot, M. et al. (2017), the PSRO / EGTA line (Chapters 9-10 stack).
+[^balduzzi2019]: Balduzzi, D. et al. (2019). "Open-ended Learning in Symmetric Zero-sum Games." *ICML* — the spinning-top geometry of transitive vs cyclic structure. Related: Jaderberg, M. et al. (2017). "Population Based Training of Neural Networks." *arXiv:1711.09846*.

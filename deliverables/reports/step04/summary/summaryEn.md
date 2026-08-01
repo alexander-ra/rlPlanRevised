@@ -27,7 +27,7 @@ A game tree's size is the product of three factors: (a) the number of distinct h
 - **Branching factor** — No-limit poker allows any bet size from "min raise" to "all-in." Even discretising to a handful of sizes pushes per-node branching from 3 (fold/call/raise in fixed-limit) to 5–10.
 - **Depth** — Multiple betting rounds, each potentially with several raises, multiply.
 
-The combined number of information sets in heads-up no-limit Hold'em is $\sim 10^{161}$ — more than there are atoms in the observable universe by a factor of $\sim 10^{80}$. None of Chapter 3's algorithms can run on that tree.
+The combined number of information sets in heads-up no-limit Hold'em is $\sim 10^{161}$ — more than there are atoms in the observable universe by a factor of $\sim 10^{80}$. None of Chapter 3's algorithms can run on that tree.[^johanson2013size]
 
 Chapter 4 is the bridge from "toy games we can enumerate" to "games we cannot." The mechanism is **abstraction**: deliberately collapse parts of the game so the same algorithms can run on a smaller, structurally simpler proxy, and measure what that costs in strategy quality. By the end of this chapter the deliverable contains a quantitative answer to the central question of every practical poker AI since 2007:
 
@@ -65,6 +65,8 @@ Side by side, the two routes differ on every practical axis:
 | When it is computed | Before solving — fixed input to CFR/MCCFR | During solving — the network *is* the strategy |
 | Output type | A discrete bucket id per info set | A real vector |
 | Where it appears in this thesis | This chapter (4) | Chapter 5 (Deep CFR), chapter 6 (end-to-end), chapters 11–12 (sequence models) |
+
+: The explicit and implicit routes to abstraction, compared on every practical axis.
 
 ---
 
@@ -147,7 +149,7 @@ When can two information sets be collapsed into one? Three nested levels of stri
 
 ### Level 1 — Lossless
 
-Merge two info sets only when they are *strategically identical*: same probability of being reached, same recursive structure, and same utility consequences against every possible opponent continuation. The last condition is the load-bearing one — if any opponent reaction can distinguish them, they cannot be losslessly merged.
+Merge two info sets only when they are *strategically identical*: same probability of being reached, same recursive structure, and same utility consequences against every possible opponent continuation. The last condition is the load-bearing one — if any opponent reaction can distinguish them, they cannot be losslessly merged.[^gilpin2007]
 
 When this holds, the merge is free: any optimal strategy in the abstract game lifts to an optimal strategy in the original game with **zero** exploitability cost.
 
@@ -185,7 +187,7 @@ Three quantification tools, increasing in tightness and decreasing in formal rig
 
 ### Tool 1 — Analytical bound
 
-Given a bounded-lossy abstraction with per-merge slack constants, sum them — weighted by how often each info set is actually reached during play — to get an upper bound on the exploitability gap.
+Given a bounded-lossy abstraction with per-merge slack constants, sum them — weighted by how often each info set is actually reached during play — to get an upper bound on the exploitability gap.[^kroer2014]
 
 The reach-weighting is the key idea. Rare info sets can be merged aggressively without hurting overall exploitability; sloppy merges in dense, frequently-visited regions are catastrophic. A sloppy merge in a rare endgame scenario costs almost nothing overall, which is what lets a practical abstraction be aggressive without losing money in expectation.
 
@@ -193,7 +195,7 @@ The reach-weighting is the key idea. Rare info sets can be merged aggressively w
 
 ### Tool 2 — EMD proxy
 
-EMD between the hand-strength histograms of two info sets, measured without enumerating leaves (see the primer above for the mechanics). It is a *proxy*, not a bound — it correlates well with post-solve exploitability but carries no formal guarantee.
+EMD between the hand-strength histograms of two info sets, measured without enumerating leaves (see the primer above for the mechanics). It is a *proxy*, not a bound — it correlates well with post-solve exploitability but carries no formal guarantee.[^johanson2013abs]
 
 ### Tool 3 — CFR-BR direct evaluator
 
@@ -211,7 +213,7 @@ The three criterion levels and the three measurement tools leave one question op
 
 **The decision order.** First take every lossless merge available; then accept bounded lossy merges only when the error budget is tolerable; when exact checks are too pessimistic or too expensive, cluster with HSD + EMD and verify the resulting abstraction empirically.
 
-**Global optimisation is off the table.** Picking the partition that minimises the analytical bound is **NP-complete**, even for a tiny single-player game two levels deep. So nobody minimises the bound exactly — practical pipelines approximate level-by-level (one round at a time) rather than globally. Under reasonable conditions, a single level reduces to k-centre clustering in a metric space, which has polynomial-time approximation algorithms with constant-factor guarantees. This is *why* every practical poker abstraction since 2010 is a level-by-level clustering pipeline rather than a global optimiser.
+**Global optimisation is off the table.** Picking the partition that minimises the analytical bound is **NP-complete**, even for a tiny single-player game two levels deep. So nobody minimises the bound exactly — practical pipelines approximate level-by-level (one round at a time) rather than globally. Under reasonable conditions, a single level reduces to k-centre clustering in a metric space, which has polynomial-time approximation algorithms with constant-factor guarantees. This is *why* every practical poker abstraction since 2010 is a level-by-level clustering pipeline rather than a global optimiser.[^kroer2014]
 
 **Two robust comparisons on equal info-set budgets.**
 
@@ -234,7 +236,7 @@ Exhaustive merger that walks the *signal tree* — a structure smaller than the 
 
 Why the signal tree is smaller: the game tree multiplies every distinct hidden-state signal by every distinct betting sequence that could lead there, while the signal tree collapses all those betting paths into a single signal node. On Rhode Island Hold'em the signal tree is ~6.6M nodes vs ~3.1B game-tree nodes — roughly 500× compression before any lossy step is applied. GameShrink is *complete* over its merging criterion: every lossless merge expressible by the criterion is found.
 
-This pipeline + linear programming was the engine that solved Rhode Island Hold'em in 2007, four orders of magnitude beyond any poker game previously solved.
+This pipeline + linear programming was the engine that solved Rhode Island Hold'em in 2007, four orders of magnitude beyond any poker game previously solved.[^gilpin2007]
 
 > **Remember:** GameShrink searches the signal tree for every free merge before any lossy compression is considered.
 
@@ -261,17 +263,17 @@ Imperfect recall consistently wins at a fixed bucket budget — capacity is spen
 
 > **Further reading:** <https://arxiv.org/pdf/1705.02955v3>
 
-When play descends into a subgame and the abstract blueprint is too coarse, re-solve the subgame at higher fidelity *in real time*. Two patches matter — together they were the load-bearing components of Libratus, the first AI to defeat top humans in heads-up no-limit Texas hold'em.
+When play descends into a subgame and the abstract blueprint is too coarse, re-solve the subgame at higher fidelity *in real time*. Two patches matter — together they were the load-bearing components of Libratus, the first AI to defeat top humans in heads-up no-limit Texas hold'em.[^libratus]
 
 ### Why subgame solving cannot be done in isolation (Coin Toss)
 
 A simple counterexample called *Coin Toss*: a coin lands Heads or Tails with equal probability, only $P_1$ sees the outcome. $P_1$ chooses *Sell* (with payoff that depends on the coin) or *Play* (where $P_2$ guesses the side). The optimal $P_2$ strategy in the *Play* subgame is **not** a function of the *Play* subgame alone — it depends on the value $P_1$ would have gotten by choosing *Sell* instead. Change *Sell*'s payoff and the optimal *Play* strategy flips, even though the *Play* subgame itself is unchanged.
 
-This is the central pathology that all naive imperfect-information subgame solving walks into. The fix: solve an *augmented subgame* that includes the original subgame plus extra "alternative-payoff" nodes encoding what each player could have achieved by *not entering* this subgame.
+This is the central pathology that all naive imperfect-information subgame solving walks into. The fix: solve an *augmented subgame* that includes the original subgame plus extra "alternative-payoff" nodes encoding what each player could have achieved by *not entering* this subgame.[^burch2014]
 
 ### Patch 1 — Safe subgame solving
 
-The augmented subgame is anchored to blueprint values: each top-of-subgame information set gets an alternative payoff equal to what the blueprint promised that player at this point in the game. Solving the augmented game yields a refined strategy with a safety guarantee — exploitability is provably no higher than the blueprint, and strictly lower whenever local conditions allow.
+The augmented subgame is anchored to blueprint values: each top-of-subgame information set gets an alternative payoff equal to what the blueprint promised that player at this point in the game. Solving the augmented game yields a refined strategy with a safety guarantee — exploitability is provably no higher than the blueprint, and strictly lower whenever local conditions allow.[^brown2017]
 
 A practical refinement (*Reach*) carries forward "gifts" — value differences from earlier points along the path where the player could have done strictly better — for further improvement.
 
@@ -285,7 +287,7 @@ This is the direct answer to the translation problem set out under Axes of Abstr
 
 The inexpensive version builds a subgame just after the off-tree action, re-solves it with the safe-subgame scaffold, and appends the new sub-strategy to the blueprint. If another off-tree action appears later, the process repeats — the blueprint grows only where play actually goes.
 
-*Empirical impact.* On heads-up no-limit Texas hold'em, nested subgame solving's exploitability against off-tree opponent bets is **10–100× lower** than every prior action-translation method, depending on abstraction size.
+*Empirical impact.* On heads-up no-limit Texas hold'em, nested subgame solving's exploitability against off-tree opponent bets is **10–100× lower** than every prior action-translation method, depending on abstraction size.[^brown2017]
 
 *The recursion is shallow in practice.* Most real off-tree actions do not chain — the opponent plays one weird bet, the agent re-solves, and the new abstract tree absorbs it. Static action translators remain the right choice only when latency cannot afford a live CFR solve (online play, embedded apps).
 
@@ -295,7 +297,7 @@ The inexpensive version builds a subgame just after the off-tree action, re-solv
 
 ## Architecture: Blueprint + Live Patches
 
-The full pipeline now adds up to a single architectural pattern that every competitive heads-up no-limit poker AI since 2017 (Libratus, Modicum, Pluribus) has used:
+The full pipeline now adds up to a single architectural pattern that every competitive heads-up no-limit poker AI since 2017 (Libratus, Modicum, Pluribus) has used:[^libratus]
 
 1. **Build-time** — apply lossless and lossy abstraction to shrink the game; solve the resulting abstract game with CFR / CFR+ / MCCFR; freeze the resulting strategy as the **blueprint**.
 2. **Runtime** — when play descends into a subgame the blueprint covers coarsely, re-solve it with safe subgame solving (Patch 1). When the opponent plays an action outside the abstraction, re-solve a fresh subgame containing that action (Patch 2).
@@ -325,7 +327,7 @@ The lossy bucket runs show the other side of the tradeoff. Smaller bucketed game
 
 ![Mini-NL Leduc CFR+ abstraction results](day07_cfrplus_mini_nl_leduc.png)
 
-Action abstraction was the riskiest part of the chapter. In Mini-NL Leduc, restricting the action set reduced the information-set count from 4,704 to 936 and produced many more CFR+ iterations under the same time budget, but exploitability stayed high. In Extended Leduc, adding action abstraction on top of suit isomorphism produced a compact tree, but the translated strategy was highly exploitable. This is why the literature moves from static action translation toward nested subgame solving: the full action actually played by the opponent often matters too much to round away.
+Action abstraction was the riskiest part of the chapter. In Mini-NL Leduc, restricting the action set reduced the information-set count from 4,704 to 936 and produced many more CFR+ iterations under the same time budget, but exploitability stayed high. In Extended Leduc, adding action abstraction on top of suit isomorphism produced a compact tree, but the translated strategy was highly exploitable. This is why the literature moves from static action translation toward nested subgame solving: the full action actually played by the opponent often matters too much to round away.[^brown2017]
 
 ![Extended Leduc CFR+ abstraction results](day07_cfrplus_extended_leduc.png)
 
@@ -355,3 +357,17 @@ The bridge to Chapter 5 is the implicit route just described: Deep CFR and neura
 The bridge to Chapter 6 is the blueprint architecture. Modern poker agents solve a coarse abstract game first, then patch weaknesses online with subgame solving. Chapter 4 supplies the vocabulary: blueprint, action translation, exploitability gap, Pareto frontier, and safe/nested refinement. Chapter 6 turns those pieces into complete game-playing systems.
 
 For the thesis, abstraction matters because opponent adaptation only works at the resolution the representation preserves. If the abstraction merges two strategically distinct opponent-facing states, no downstream opponent model can recover that distinction. Conversely, a representation that is too fine may be too expensive to solve or evaluate. The Chapter 4 Pareto frontier therefore becomes part of the evaluation methodology: strategy quality must be reported together with the size and granularity of the game representation that produced it.
+
+[^brown2017]: Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS*.
+
+[^burch2014]: Burch, N., Johanson, M. & Bowling, M. (2014). "Solving Imperfect Information Games Using Decomposition." *AAAI* — re-solving and the augmented subgame.
+
+[^gilpin2007]: Gilpin, A. & Sandholm, T. (2007). "Lossless Abstraction of Imperfect Information Games." *Journal of the ACM*, 54(5) — GameShrink, and the Rhode Island Hold'em result.
+
+[^johanson2013abs]: Johanson, M., Burch, N., Valenzano, R. & Bowling, M. (2013). "Evaluating State-Space Abstractions in Extensive-Form Games." *AAMAS*.
+
+[^johanson2013size]: Johanson, M. (2013). "Measuring the Size of Large No-Limit Poker Games." Technical report, University of Alberta.
+
+[^kroer2014]: Kroer, C. & Sandholm, T. (2014). "Extensive-Form Game Abstraction with Bounds." *ACM EC*; and Kroer, C. & Sandholm, T. (2016). "Imperfect-Recall Abstractions with Bounds in Games." *ACM EC*.
+
+[^libratus]: Brown, N. & Sandholm, T. (2018). "Superhuman AI for heads-up no-limit poker: Libratus beats top professionals." *Science*, 359(6374), 418–424.
