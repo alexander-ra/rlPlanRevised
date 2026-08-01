@@ -4,17 +4,17 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 9 One-Pager — Multi-Agent Reinforcement Learning"
+title: "Chapter 9 One-Pager — Multi-Agent Reinforcement Learning"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
 lang: en
 ---
 
-# Step 9 One-Pager — Multi-Agent Reinforcement Learning
+# Chapter 9 One-Pager — Multi-Agent Reinforcement Learning
 
-**Problem.** Steps 2–8 lived inside two-player zero-sum games, where a Nash strategy secures a
-value `v*` against anyone and CFR provably converges to it. Step 9 is the pivot into the
+**Problem.** Chapters 2–8 lived inside two-player zero-sum games, where a Nash strategy secures a
+value `v*` against anyone and CFR provably converges to it. Chapter 9 is the pivot into the
 multi-agent world, where the defining difficulty is **non-stationarity**: every agent is
 learning at once, so from any one agent's seat the environment (which contains the others) never
 holds still. This is the launch point for the thesis's multi-agent contributions — dynamic
@@ -26,7 +26,7 @@ small, *exactly-solvable* testbeds, so every learner is graded against ground tr
 **Independent learning** (the control that fails) on four canonical matrix games; **CTDE** —
 centralize the critic at training, decentralize the actor at execution — via MADDPG and MAPPO on
 cooperative tasks; **PSRO** — a game played over a *population* of policies (meta-Nash +
-best-response oracle), reusing Step 07's exact best response as both oracle and exploitability
+best-response oracle), reusing Chapter 07's exact best response as both oracle and exploitability
 metric — on Kuhn, Leduc, a matrix game, and a native Goofspiel; **learned communication**
 (CommNet); and **LOLA** (differentiate through the opponent's learning step) on the Iterated
 Prisoner's Dilemma. **All numbers below are measured.**
@@ -56,10 +56,10 @@ Prisoner's Dilemma. **All numbers below are measured.**
   the optimum 11 (IL/MAPPO 7, MADDPG 5) — a centralized critic lowers variance but does not by
   itself solve hard-exploration coordination.
 
-**Thesis connection.** PSRO is Step 2's iterated best response lifted to a population and the
+**Thesis connection.** PSRO is Chapter 2's iterated best response lifted to a population and the
 empirical backbone here; LOLA is *dynamic* opponent modeling, the moving-target complement to
-Step 7's static read (Contribution #1); PSRO's meta-game is a population-level evaluation
-methodology (Contribution #3). The Leduc scaling wall echoes Step 8's global-vs-local finding,
+Chapter 7's static read (Contribution #1); PSRO's meta-game is a population-level evaluation
+methodology (Contribution #3). The Leduc scaling wall echoes Chapter 8's global-vs-local finding,
 and the place where every two-player guarantee stops — the **missing `N>2` minimax anchor** — is
 exactly Contribution #2's problem statement.
 

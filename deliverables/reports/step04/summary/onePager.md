@@ -4,19 +4,19 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 4 One-Pager — Game Abstraction and Scaling"
+title: "Chapter 4 One-Pager — Game Abstraction and Scaling"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "May 2026"
 lang: en
 ---
 
-# Step 4 One-Pager — Game Abstraction and Scaling Imperfect-Information Games
+# Chapter 4 One-Pager — Game Abstraction and Scaling Imperfect-Information Games
 
-**Problem.** Step 3 established that a solver's reach is bounded by tree size, so the classical
+**Problem.** Chapter 3 established that a solver's reach is bounded by tree size, so the classical
 route to real poker is not a better solver but a *smaller game*: shrink it, solve the shrunken
 version, translate the strategy back, and pay an exploitability tax for the distinctions you
-threw away. Step 4 measures that tax. The question is not "does abstraction help" but which
+threw away. Chapter 4 measures that tax. The question is not "does abstraction help" but which
 axis of compression is safe, and whether the compute a reduction buys ever repays the strategic
 information it destroys.
 
@@ -54,14 +54,14 @@ a 4-rank Extended Leduc. **All numbers below are measured.**
 
 **Thesis connection.** The reporting format is the transferable part: strategy quality is
 meaningless without game size beside it, and the Pareto frontier of the two is an early seed of
-Contribution #3's evaluation methodology. The mechanism transfers as well — Step 7's type-based
+Contribution #3's evaluation methodology. The mechanism transfers as well — Chapter 7's type-based
 opponent modelling is this same "group for tractability" idea moved from state space to strategy
 space, and its confident-but-wrong failure is action translation's misspecification in another
 costume.
 
 **Open questions.** Static translation is brittle by construction, which points at subgame and
-nested solving (Step 6) as the production-grade answer to off-tree actions. Whether the ordering
+nested solving (Chapter 6) as the production-grade answer to off-tree actions. Whether the ordering
 measured here — card abstraction survivable, action abstraction ruinous — holds in a game with
 enough hand-strength diversity that `k5` genuinely differs from `k3`. And whether an abstraction
-can be adapted to the opponent rather than fixed in advance, which is where this step touches
+can be adapted to the opponent rather than fixed in advance, which is where this chapter touches
 the adaptive framework directly.

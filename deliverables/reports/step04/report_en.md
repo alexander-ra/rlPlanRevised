@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 04 — Game Abstraction & Scaling Imperfect-Information Games: Implementation Report
+# Chapter 04 — Game Abstraction & Scaling Imperfect-Information Games: Implementation Report
 
 **Environment:** May 2026  
 **Games:** Fixed-limit Leduc, Mini-NL Leduc, Extended Leduc  
@@ -16,7 +16,7 @@ BG: Изследване на възможностите за приложени
 
 ## 1. What was developed
 
-Step 04 extends the Step 03 CFR toolkit with explicit game abstraction. The implementation builds a Leduc-family pipeline that can shrink the game along three axes, solve the abstracted game, translate the resulting strategy back into the full game, and measure the exploitability cost.
+Chapter 04 extends the Chapter 03 CFR toolkit with explicit game abstraction. The implementation builds a Leduc-family pipeline that can shrink the game along three axes, solve the abstracted game, translate the resulting strategy back into the full game, and measure the exploitability cost.
 
 **Source layout:**
 
@@ -51,7 +51,7 @@ implementation/step04/
 
 ### 2.1 Lossless suit isomorphism
 
-Leduc suits carry no strategic information because payoffs depend only on rank and whether the private card pairs the community card. Step 04 therefore implements rank-canonical engines that merge suit-isomorphic information sets.
+Leduc suits carry no strategic information because payoffs depend only on rank and whether the private card pairs the community card. Chapter 04 therefore implements rank-canonical engines that merge suit-isomorphic information sets.
 
 This abstraction is lossless: it should preserve Nash quality while reducing the number of information sets and increasing the number of CFR/CFR+ iterations possible under the same wall-clock budget.
 
@@ -143,7 +143,7 @@ Extended Leduc confirms the value of lossless abstraction at a larger scale: sui
 
 ![Abstraction Pareto frontier](figures/day05_pareto.png)
 
-The Pareto frontier summarizes the central Step 04 tradeoff: smaller abstract games train faster, but not every reduction is strategically safe.
+The Pareto frontier summarizes the central Chapter 04 tradeoff: smaller abstract games train faster, but not every reduction is strategically safe.
 
 | Abstraction family | Result |
 |---|---|
@@ -168,7 +168,7 @@ The practical criterion is therefore not just "smaller is better." A useful abst
 2. **Lossy information abstraction creates an exploitability floor.** Coarse card buckets solve faster but cannot recover distinctions they deliberately removed.
 3. **Action abstraction is more dangerous than card abstraction in these experiments.** Restricted action sets plus translation produced high exploitability even when the abstract tree was much smaller.
 4. **The Pareto frontier is the right reporting format.** Strategy quality must be presented together with game size and abstraction type.
-5. **Subgame solving is the natural next mechanism.** Static translation is brittle; Step 6's safe/nested solving methods are the production-grade response to off-tree actions.
+5. **Subgame solving is the natural next mechanism.** Static translation is brittle; Chapter 6's safe/nested solving methods are the production-grade response to off-tree actions.
 
 ---
 

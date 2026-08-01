@@ -1,5 +1,5 @@
 ---
-title: "Step 1 Summary — Reinforcement Learning Basics"
+title: "Chapter 1 Summary — Reinforcement Learning Basics"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "April 2026"
@@ -8,9 +8,7 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 1 — Reinforcement Learning Basics
-
-This is a condensed summary of the foundational reinforcement learning material covered in Step 1. It is written to serve two purposes: as a quick refresher while progressing through later steps, and as a primary source for the Step 15 public report synthesis.
+# Chapter 1 — Reinforcement Learning Basics
 
 ---
 
@@ -18,16 +16,13 @@ This is a condensed summary of the foundational reinforcement learning material 
 
 Reinforcement learning did not emerge fully formed. Its roots stretch across multiple fields that were largely unaware of each other for decades.
 
-The earliest thread comes from **animal psychology** in the early 1900s — Thorndike's "Law of Effect" (1911) proposed that actions followed by satisfying outcomes become more likely. This is, in essence, the reward signal idea. A parallel thread ran through **optimal control theory** in the 1950s, where Bellman developed dynamic programming to solve sequential decision problems. He introduced the value function and the principle of optimality, both of which sit at the core of modern RL. A third thread came from **trial-and-error learning** in early AI research — Samuel's checkers program (1959) learned by playing against itself, adjusting its evaluation function based on wins and losses.
+The earliest thread comes from **animal psychology** in the early 1900s — Thorndike's "Law of Effect" (1911)[^thorndike1911] proposed that actions followed by satisfying outcomes become more likely. This is, in essence, the reward signal idea. A parallel thread ran through **optimal control theory** in the 1950s, where Bellman developed dynamic programming to solve sequential decision problems.[^bellman1957] He introduced the value function and the principle of optimality, both of which sit at the core of modern RL. A third thread came from **trial-and-error learning** in early AI research — Samuel's checkers program (1959)[^samuel1959] learned by playing against itself, adjusting its evaluation function based on wins and losses.
 
-These threads stayed separate until the 1980s and 1990s. Sutton's PhD work on temporal-difference learning (1988) bridged the gap between animal learning theories and Bellman's dynamic programming. Then Watkins formalized Q-learning (1989), giving the field its first clean, model-free control algorithm with convergence guarantees. By the time Sutton and Barto published their textbook in 1998 (updated 2018), reinforcement learning had consolidated into a recognizable discipline with its own notation, problem taxonomy, and algorithmic toolbox.
+These threads stayed separate until the 1980s and 1990s. Sutton's PhD work on temporal-difference learning (1988)[^sutton1988] bridged the gap between animal learning theories and Bellman's dynamic programming. Then Watkins formalized Q-learning (1989),[^watkins1989] giving the field its first clean, model-free control algorithm with convergence guarantees. By the time Sutton and Barto published their textbook in 1998 (updated 2018),[^suttonbarto2018] reinforcement learning had consolidated into a recognizable discipline with its own notation, problem taxonomy, and algorithmic toolbox.
 
-The deep learning revolution hit RL in 2013–2015 when DeepMind's DQN learned to play Atari games from raw pixels. That demonstration made it clear that RL algorithms, combined with neural function approximators, could handle high-dimensional real-world problems. PPO followed in 2017 as a practical policy gradient method, and since then RL has expanded into robotics, game AI, recommendation systems, and language model alignment (RLHF).
+The deep learning revolution hit RL in 2013–2015 when DeepMind's DQN learned to play Atari games from raw pixels.[^dqn] That demonstration made it clear that RL algorithms, combined with neural function approximators, could handle high-dimensional real-world problems. PPO followed in 2017 as a practical policy gradient method,[^ppo] and since then RL has expanded into robotics, game AI, recommendation systems, and language model alignment (RLHF).
 
-The important takeaway is that RL is not just "machine learning with rewards." It is a distinct framework for sequential decision-making under uncertainty, with its own theoretical foundations drawn from control theory, psychology, and statistics.
-
-> **Read more:** Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, 2nd edition — Chapter 1.  
-> Free: <http://incompleteideas.net/book/the-book-2nd.html>
+The important takeaway is that RL is not just "machine learning with rewards." It is a distinct framework for sequential decision-making under uncertainty, with its own theoretical foundations drawn from control theory, psychology, and statistics.[^suttonbarto2018]
 
 ---
 
@@ -63,7 +58,7 @@ A **Markov Decision Process** (MDP) is the formal mathematical framework that mo
 - $R(s,a,s')$: the reward function
 - $\gamma \in [0,1)$: the discount factor
 
-The "Markov" part means that the future depends only on the current state, not on the history of how you got there. This is a strong assumption — and one that does not hold in many interesting settings (like poker, where the history of bets matters). We deal with that in Section 4.
+The "Markov" part means that the future depends only on the current state, not on the history of how you got there. This is a strong assumption — and one that does not hold in many interesting settings (like poker, where the history of bets matters). *Information Sets — When You Cannot See Everything*, below, deals with that.
 
 The objective is to find a policy $\pi^*$ that maximizes the expected discounted return:
 
@@ -73,10 +68,7 @@ The key recursive relationship is the **Bellman equation**:
 
 $$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a)\left[R(s,a,s') + \gamma V^\pi(s')\right]$$
 
-This says: the value of a state equals the expected immediate reward plus the discounted value of wherever you end up. All of dynamic programming, TD learning, and deep RL build on variations of this equation.
-
-> **Read more:** Sutton & Barto (2018). *Reinforcement Learning: An Introduction*, Chapter 3 — Finite Markov Decision Processes.  
-> Free: <http://incompleteideas.net/book/the-book-2nd.html>
+This says: the value of a state equals the expected immediate reward plus the discounted value of wherever you end up. All of dynamic programming, TD learning, and deep RL build on variations of this equation.[^suttonbarto2018]
 
 ---
 
@@ -88,12 +80,9 @@ The formal extension is the **Partially Observable MDP** (POMDP), which adds an 
 
 In game theory, the same idea is captured through **information sets**. An information set groups together all game states that a player cannot distinguish between, given what they have observed. In Kuhn Poker (3 cards, 2 players), when you hold a Jack and no betting has occurred, you are in an information set — you know your card but not your opponent's, so you cannot tell if the true state is "I have Jack, opponent has Queen" or "I have Jack, opponent has King."
 
-Algorithms that work in these settings — like CFR (Counterfactual Regret Minimization, covered in Step 2) — operate over information sets rather than individual states. This is a fundamentally different computational problem than standard RL, and it is why game-playing AI requires its own set of tools beyond what DQN or PPO provide out of the box.
+Algorithms that work in these settings — like CFR (Counterfactual Regret Minimization, covered in Chapter 2) — operate over information sets rather than individual states. This is a fundamentally different computational problem than standard RL, and it is why game-playing AI requires its own set of tools beyond what DQN or PPO provide out of the box.
 
-Understanding information sets now matters because the later steps (5–8) deal entirely with imperfect-information games. The algorithms change, but the core concept stays: you are making decisions based on what you can observe, reasoning about what you cannot.
-
-> **Read more:** Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*, Chapter 5.  
-> Free: <http://www.masfoundations.org/download.html>
+Understanding information sets now matters because the later chapters (5–8) deal entirely with imperfect-information games. The algorithms change, but the core concept stays: you are making decisions based on what you can observe, reasoning about what you cannot.[^shoham2008]
 
 ---
 
@@ -109,10 +98,7 @@ The two main DP algorithms are:
 
 DP is beneficial because it gives exact solutions and has clean convergence guarantees. The downside is obvious: you need the full model, and the computation scales with the number of states. For Kuhn Poker with 12 states, DP is trivial. For Go with $10^{170}$ states, it is impossible.
 
-The reason DP matters even though we rarely use it directly is that every subsequent method — Monte Carlo, TD learning, DQN, PPO — can be understood as an approximation to the DP solution when the model is unknown or the state space is too large. DP is the theoretical ceiling that practical algorithms try to approach.
-
-> **Read more:** Sutton & Barto (2018). *Reinforcement Learning: An Introduction*, Chapter 4 — Dynamic Programming.  
-> Free: <http://incompleteideas.net/book/the-book-2nd.html>
+The reason DP matters even though we rarely use it directly is that every subsequent method — Monte Carlo, TD learning, DQN, PPO — can be understood as an approximation to the DP solution when the model is unknown or the state space is too large. DP is the theoretical ceiling that practical algorithms try to approach.[^suttonbarto2018]
 
 ---
 
@@ -126,7 +112,7 @@ $$V(s_t) \leftarrow V(s_t) + \alpha \left[r_t + \gamma V(s_{t+1}) - V(s_t)\right
 
 The term in brackets is the **TD error** — the difference between what happened (reward + estimated future value) and what was predicted. If the TD error is positive, the state was better than expected; if negative, worse.
 
-The control version of this idea is **Q-learning** (Watkins, 1989):
+The control version of this idea is **Q-learning** (Watkins, 1989):[^watkins1989]
 
 $$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[r_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t)\right]$$
 
@@ -134,16 +120,13 @@ Q-learning learns the value of state-action pairs and uses the max operator to b
 
 TD learning is beneficial compared to DP because it needs no model. It is beneficial compared to Monte Carlo because it learns online (every step, not every episode) and has lower variance. The bootstrapping introduces some bias, but in practice this tradeoff is overwhelmingly favorable. TD methods are the foundation that DQN and most modern value-based algorithms are built on.
 
-**SARSA** is the on-policy cousin of Q-learning — it updates using the action the agent actually took next, rather than the best possible action. This makes it more conservative and sometimes safer in practice, but it cannot learn an optimal policy while following a suboptimal exploratory policy.
-
-> **Read more:** Sutton & Barto (2018). *Reinforcement Learning: An Introduction*, Chapter 6 — Temporal-Difference Learning.  
-> Free: <http://incompleteideas.net/book/the-book-2nd.html>
+**SARSA** is the on-policy cousin of Q-learning — it updates using the action the agent actually took next, rather than the best possible action. This makes it more conservative and sometimes safer in practice, but it cannot learn an optimal policy while following a suboptimal exploratory policy.[^suttonbarto2018]
 
 ---
 
 ## DQN — Deep Q-Networks
 
-DQN (Mnih et al., 2015) is the algorithm that proved deep neural networks could work as function approximators in RL at scale. Before DQN, Q-learning was limited to tabular settings or hand-crafted features. DQN showed it could learn to play 49 Atari games from raw pixel input, surpassing human performance on many of them.
+DQN (Mnih et al., 2015)[^dqn] is the algorithm that proved deep neural networks could work as function approximators in RL at scale. Before DQN, Q-learning was limited to tabular settings or hand-crafted features. DQN showed it could learn to play 49 Atari games from raw pixel input, surpassing human performance on many of them.
 
 **How it works.** DQN replaces the Q-table with a neural network that takes a state as input and outputs Q-values for all actions. The network is trained by minimizing the squared TD error: the difference between the predicted Q-value and the target (reward + discounted max Q-value of the next state). At each step, the agent picks the action with the highest Q-value (exploitation) or a random action with probability $\epsilon$ (exploration).
 
@@ -157,20 +140,17 @@ Two tricks make this stable enough to work:
 
 **Limitations.** DQN handles only discrete action spaces. It can overestimate Q-values (addressed by Double DQN). It is off-policy, which is sample-efficient but can lead to stale data in the replay buffer. And fundamentally, it learns a greedy deterministic policy — there is no natural way to express stochastic policies, which matters in games where mixing strategies is optimal.
 
-In our Step 1 implementation, DQN solved CartPole-v1 (achieving a 100-episode average of 477.5 against a 475 target) after ~1000 episodes of training. The most impactful hyperparameters were network size, epsilon minimum, and target network sync frequency.
+In our Chapter 1 implementation, DQN solved CartPole-v1 (achieving a 100-episode average of 477.5 against a 475 target) after ~1000 episodes of training. The most impactful hyperparameters were network size, epsilon minimum, and target network sync frequency.
 
-**A note on neural networks in this step.** The Q-network inside DQN is a standard multi-layer perceptron (MLP) used here as a practical tool — a function that maps states to Q-values. For Step 1, the neural network internals (weight initialization, gradient flow, activation functions) were treated as a black box: we used PyTorch's defaults and focused on the RL algorithm itself. A more thorough treatment of neural network architectures and how they interact with equilibrium-finding methods will come in Step 5 (Neural Equilibrium Approximation).
-
-> **Read more:** Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529–533.  
-> arXiv: <https://arxiv.org/abs/1509.06461>
+**A note on neural networks in this chapter.** The Q-network inside DQN is a standard multi-layer perceptron (MLP) used here as a practical tool — a function that maps states to Q-values. For Chapter 1, the neural network internals (weight initialization, gradient flow, activation functions) were treated as a black box: we used PyTorch's defaults and focused on the RL algorithm itself. A more thorough treatment of neural network architectures and how they interact with equilibrium-finding methods will come in Chapter 5 (Neural Equilibrium Approximation).[^mnih2015]
 
 ---
 
 ## PPO — Proximal Policy Optimization
 
-PPO (Schulman et al., 2017) takes a fundamentally different approach to RL than DQN. Instead of learning the value of actions and deriving a policy from those values, PPO **learns the policy directly** — a neural network outputs a probability distribution over actions, and the network is trained to increase the probability of actions that lead to high returns.
+PPO (Schulman et al., 2017)[^ppo] takes a fundamentally different approach to RL than DQN. Instead of learning the value of actions and deriving a policy from those values, PPO **learns the policy directly** — a neural network outputs a probability distribution over actions, and the network is trained to increase the probability of actions that lead to high returns.
 
-**The problem PPO solves.** Policy gradient methods are powerful in theory but notoriously unstable in practice. The basic REINFORCE algorithm suffers from high variance and can take destructively large steps that ruin a good policy. Trust Region Policy Optimization (TRPO, Schulman et al., 2015) addressed this by constraining how much the policy can change per update, but TRPO requires expensive second-order optimization (computing the Hessian).
+**The problem PPO solves.** Policy gradient methods are powerful in theory but notoriously unstable in practice. The basic REINFORCE algorithm suffers from high variance and can take destructively large steps that ruin a good policy. Trust Region Policy Optimization (TRPO, Schulman et al., 2015)[^trpo] addressed this by constraining how much the policy can change per update, but TRPO requires expensive second-order optimization (computing the Hessian).
 
 **How PPO works.** PPO keeps the stability idea from TRPO but replaces the constraint with a much simpler mechanism: **clipping**. The key quantity is the probability ratio $r_t(\theta) = \pi_\theta(a_t|s_t) / \pi_{\theta_{old}}(a_t|s_t)$ — how much more (or less) likely the new policy is to take the same action the old policy took. PPO clips this ratio to the range $[1-\epsilon, 1+\epsilon]$ (typically $\epsilon = 0.2$), which means:
 
@@ -185,12 +165,9 @@ This is the **clipped surrogate objective**, and it is what makes PPO work. It g
 
 **Limitations.** Being on-policy, PPO is less sample-efficient than off-policy methods like DQN (each experience is used for only a few update epochs before being discarded). It requires careful tuning of the advantage estimation (GAE lambda), entropy bonus, and network architecture. And it can still struggle with sparse rewards — if the agent rarely encounters success, there is little signal to learn from.
 
-In our Step 1 implementation, PPO solved LunarLander-v3 (100-episode average of 202.2 against a 200 target) at ~264K environment steps. The decisive factors were network capacity (doubling from [64,64] to [128,128]) and advantage normalization.
+In our Chapter 1 implementation, PPO solved LunarLander-v3 (100-episode average of 202.2 against a 200 target) at ~264K environment steps. The decisive factors were network capacity (doubling from [64,64] to [128,128]) and advantage normalization.
 
-**A note on neural networks in this step.** Same as with DQN — the policy and value networks here are standard MLPs whose internals were not the focus of this step. We adopted a practical "it works" stance toward the neural components and concentrated on understanding the PPO algorithm logic (clipping, GAE, rollout structure). The deeper interplay between neural network design and RL convergence — particularly in the context of game-playing agents — is deferred to Step 5.
-
-> **Read more:** Schulman, J. et al. (2017). "Proximal Policy Optimization Algorithms."  
-> arXiv: <https://arxiv.org/abs/1707.06347>
+**A note on neural networks in this chapter.** Same as with DQN — the policy and value networks here are standard MLPs whose internals were not the focus of this chapter. We adopted a practical "it works" stance toward the neural components and concentrated on understanding the PPO algorithm logic (clipping, GAE, rollout structure). The deeper interplay between neural network design and RL convergence — particularly in the context of game-playing agents — is deferred to Chapter 5.[^ppo]
 
 ---
 
@@ -222,4 +199,29 @@ The gap is narrower here than with DQN. Both use identical PPO hyperparameters. 
 
 ### Takeaway
 
-A clean from-scratch implementation is 300–500 lines versus SB3's ~10K. The tradeoff: fewer features but complete transparency and debuggability. For research purposes — particularly the opponent exploitation work planned for Steps 7–8 — custom implementations allow surgical modifications (e.g., injecting belief-state observations) that would require deep SB3 subclassing. That practical flexibility is why we built from scratch.
+A clean from-scratch implementation is 300–500 lines versus SB3's ~10K. The tradeoff: fewer features but complete transparency and debuggability. For research purposes — particularly the opponent exploitation work planned for Chapters 7–8 — custom implementations allow surgical modifications (e.g., injecting belief-state observations) that would require deep SB3 subclassing. That practical flexibility is why we built from scratch.
+
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
+
+[^thorndike1911]: Thorndike, E.L. (1911). *Animal Intelligence: Experimental Studies*. Macmillan.
+
+[^bellman1957]: Bellman, R. (1957). *Dynamic Programming*. Princeton University Press.
+
+[^samuel1959]: Samuel, A.L. (1959). "Some Studies in Machine Learning Using the Game of Checkers." *IBM Journal of Research and Development*, 3(3), 210–229.
+
+[^sutton1988]: Sutton, R.S. (1988). "Learning to Predict by the Methods of Temporal Differences." *Machine Learning*, 3(1), 9–44.
+
+[^watkins1989]: Watkins, C.J.C.H. (1989). *Learning from Delayed Rewards*. PhD thesis, University of Cambridge. Convergence was proved in Watkins, C.J.C.H. & Dayan, P. (1992). "Q-learning." *Machine Learning*, 8(3–4), 279–292.
+
+[^suttonbarto2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, 2nd edition. MIT Press. <http://incompleteideas.net/book/the-book-2nd.html>
+
+[^dqn]: Mnih, V. et al. (2013). "Playing Atari with Deep Reinforcement Learning." arXiv:1312.5602; Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529–533.
+
+[^ppo]: Schulman, J., Wolski, F., Dhariwal, P., Radford, A. & Klimov, O. (2017). "Proximal Policy Optimization Algorithms." arXiv:1707.06347.
+
+[^trpo]: Schulman, J., Levine, S., Abbeel, P., Jordan, M. & Moritz, P. (2015). "Trust Region Policy Optimization." *Proceedings of the 32nd International Conference on Machine Learning*, 1889–1897.
+
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*, Chapter 5. Free: <http://www.masfoundations.org/download.html>
+
+[^mnih2015]: Mnih, V. et al. (2015). "Human-level control through deep reinforcement learning." *Nature*, 518(7540), 529–533. arXiv: <https://arxiv.org/abs/1509.06461>

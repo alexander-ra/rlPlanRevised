@@ -1,0 +1,13 @@
+% Included whenever a document is rendered with pagestyle=empty.
+%
+% \pagestyle{empty} alone is not enough: \maketitle issues an explicit
+% \thispagestyle{plain} for the title page, and pandoc's default template calls
+% \maketitle whenever the document has a title. The result was a stray "1" on
+% the first page of every one-pager and on the bundle's contents page, sitting
+% just above the continuous number the bundler stamps there.
+%
+% Aliasing the `plain` style to `empty` makes the suppression hold even where
+% something asks for `plain` by name.
+\makeatletter
+\let\ps@plain\ps@empty
+\makeatother

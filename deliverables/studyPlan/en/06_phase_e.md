@@ -1,12 +1,12 @@
-## 6. Phase E — Multi-Agent Dynamics (Steps 9–11)
+## 6. Phase E — Multi-Agent Dynamics (Chapters 9–11)
 
 ### 6.1 Phase Overview
 
-The preceding phases focused on two-player imperfect-information games. Phase E will transition the study to multi-agent settings, where new challenges arise: non-stationarity^36^ from simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions^41^. Step 9 introduces multi-agent RL paradigms (CTDE^37^, PSRO^38^), Step 10 scales to population-based training^39^ and evolutionary game theory, and Step 11 applies these tools to coalition formation in free-for-all games — crystallizing the theoretical gap at the core of Contribution 2.
+The preceding phases focused on two-player imperfect-information games. Phase E will transition the study to multi-agent settings, where new challenges arise: non-stationarity^36^ from simultaneously learning agents, credit assignment in joint-reward environments, and the emergence of coalitions^41^. Chapter 9 introduces multi-agent RL paradigms (CTDE^37^, PSRO^38^), Chapter 10 scales to population-based training^39^ and evolutionary game theory, and Chapter 11 applies these tools to coalition formation in free-for-all games — crystallizing the theoretical gap at the core of Contribution 2.
 
-### 6.2 Step 9 — Multi-Agent RL — Coordination, Competition, and Communication
+### 6.2 Chapter 9 — Multi-Agent RL — Coordination, Competition, and Communication
 
-**Contribution Alignment.** This step will provide the algorithmic vocabulary for extending the thesis from two-player to multi-agent settings. The CTDE^37^ paradigm introduces the architectural pattern — centralized training, decentralized execution — used throughout the remainder of the thesis. PSRO^38^ provides a population-based framework relevant to defining safety in multi-agent populations (Contribution 2). LOLA^40^ contributes the insight of modeling an opponent's learning dynamics, extending the Bayesian modeling of Step 7 from static inference to dynamic anticipation (Contribution 1).
+**Contribution Alignment.** This chapter will provide the algorithmic vocabulary for extending the thesis from two-player to multi-agent settings. The CTDE^37^ paradigm introduces the architectural pattern — centralized training, decentralized execution — used throughout the remainder of the thesis. PSRO^38^ provides a population-based framework relevant to defining safety in multi-agent populations (Contribution 2). LOLA^40^ contributes the insight of modeling an opponent's learning dynamics, extending the Bayesian modeling of Chapter 7 from static inference to dynamic anticipation (Contribution 1).
 
 **Literature.**
 
@@ -26,9 +26,9 @@ The preceding phases focused on two-player imperfect-information games. Phase E 
 - Integrate a CommNet differentiable communication channel with MADDPG; evaluate the benefit of emergent communication on cooperative tasks.
 - Produce a comparative evaluation table: independent learning versus CTDE versus PSRO across all test environments and Goofspiel.
 
-### 6.3 Step 10 — Population-Based Training and Evolutionary Game Theory
+### 6.3 Chapter 10 — Population-Based Training and Evolutionary Game Theory
 
-**Contribution Alignment.** Population-based training and the AlphaStar league architecture will be studied as examples of implicit opponent modeling at population scale, complementing the explicit Bayesian modeling of Step 7 (Contribution 1). The spinning top decomposition^42^ — distinguishing genuine skill improvement from non-transitive cycling — will be adopted into the evaluation methodology (Contribution 3). EGTA^43^ will provide meta-Nash analysis extending exploitability assessment to population settings.
+**Contribution Alignment.** Population-based training and the AlphaStar league architecture will be studied as examples of implicit opponent modeling at population scale, complementing the explicit Bayesian modeling of Chapter 7 (Contribution 1). The spinning top decomposition^42^ — distinguishing genuine skill improvement from non-transitive cycling — will be adopted into the evaluation methodology (Contribution 3). EGTA^43^ will provide meta-Nash analysis extending exploitability assessment to population settings.
 
 **Literature.**
 
@@ -42,14 +42,14 @@ The preceding phases focused on two-player imperfect-information games. Phase E 
 **Practical Tasks.**
 
 - Implement a replicator dynamics simulator on matrix games; verify convergence to Nash equilibrium and evolutionary stable strategies on Prisoner's Dilemma, Hawk-Dove, and Stag Hunt, and verify cycling on Rock-Paper-Scissors. Generate phase portraits.
-- Implement the spinning top decomposition^42^ (Balduzzi et al., 2019); apply to PSRO^38^ meta-game payoff matrices from Step 9 and to the league meta-game from this step. Compute the transitive ratio as a diagnostic metric.
+- Implement the spinning top decomposition^42^ (Balduzzi et al., 2019); apply to PSRO^38^ meta-game payoff matrices from Chapter 9 and to the league meta-game from this chapter. Compute the transitive ratio as a diagnostic metric.
 - Build a PBT league for Leduc Hold'em^20^ with three agent roles (main agents, main exploiters, league exploiters), prioritized matchmaking, periodic agent freezing, and PBT explore-exploit population updates.
 - Conduct EGTA^43^ analysis: construct the empirical normal-form game over the league population and compute meta-Nash equilibrium; verify that the meta-Nash mixture exploitability does not exceed that of the best individual agent.
-- Produce a comparative evaluation: league versus PSRO (Step 9) versus single self-play agent versus MCCFR^23^ Nash strategy (Step 3), measuring exploitability, Elo rating, effective population diversity, and strategy clustering.
+- Produce a comparative evaluation: league versus PSRO (Chapter 9) versus single self-play agent versus MCCFR^23^ Nash strategy (Chapter 3), measuring exploitability, Elo rating, effective population diversity, and strategy clustering.
 
-### 6.4 Step 11 — Dynamic Coalition Formation in Competitive Free-For-All Games
+### 6.4 Chapter 11 — Dynamic Coalition Formation in Competitive Free-For-All Games
 
-**Contribution Alignment.** This step crystallizes the central theoretical gap of the thesis. In two-player games, safe exploitation uses Nash equilibrium as the safety baseline (Step 8). In N-player free-for-all games, Nash equilibrium is both computationally intractable and strategically insufficient — it ignores coalition structures. The piKL regularization approach of Bakhtin et al. (2022) suggests replacing equilibrium-based safety with behavioral-prior-based safety, a shift that Contribution 2 will seek to formalize. Coalition detection will extend opponent modeling from individual player types to multi-agent social structure (Contribution 1). Shapley-value^44^ credit decomposition combined with EGTA^43^ will provide the basis for N-player evaluation methodology (Contribution 3).
+**Contribution Alignment.** This chapter crystallizes the central theoretical gap of the thesis. In two-player games, safe exploitation uses Nash equilibrium as the safety baseline (Chapter 8). In N-player free-for-all games, Nash equilibrium is both computationally intractable and strategically insufficient — it ignores coalition structures. The piKL regularization approach of Bakhtin et al. (2022) suggests replacing equilibrium-based safety with behavioral-prior-based safety, a shift that Contribution 2 will seek to formalize. Coalition detection will extend opponent modeling from individual player types to multi-agent social structure (Contribution 1). Shapley-value^44^ credit decomposition combined with EGTA^43^ will provide the basis for N-player evaluation methodology (Contribution 3).
 
 **Literature.**
 
@@ -62,9 +62,9 @@ The preceding phases focused on two-player imperfect-information games. Phase E 
 **Practical Tasks.**
 
 - Build a verified So Long Sucker^45^ environment with coalition tracking, rich state representation, and correctness validation against the endgame analysis of De Carufel and Jerade (2024).
-- Implement a coalition detection module that infers implicit alliances from observed chip-placement behavior using help/harm matrices, extending the opponent modeling methodology of Step 7 to multi-agent alliance inference.
+- Implement a coalition detection module that infers implicit alliances from observed chip-placement behavior using help/harm matrices, extending the opponent modeling methodology of Chapter 7 to multi-agent alliance inference.
 - Adapt Shapley Q-value^44^ decomposition to the competitive free-for-all setting, distributing each action's credit among all players according to marginal coalition contributions.
 - Train four-player MAPPO agents with Shapley-decomposed rewards via self-play; compare against a sparse-reward baseline replicating Sharan and Adak (2024).
-- Apply EGTA^43^ (Step 10) to construct the four-player payoff tensor and compute meta-Nash over the agent population; apply the spinning top decomposition^42^ to quantify the non-transitive structure of coalition dynamics.
+- Apply EGTA^43^ (Chapter 10) to construct the four-player payoff tensor and compute meta-Nash over the agent population; apply the spinning top decomposition^42^ to quantify the non-transitive structure of coalition dynamics.
 - Produce a comparative evaluation: coalition-aware agents versus sparse-reward agents versus random baselines, measuring win rate, coalition formation frequency, Shapley variation, and game length.
 

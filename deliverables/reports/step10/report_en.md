@@ -4,13 +4,13 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 10 — Population-Based Training and Evolutionary Game Theory: Experiment Report
+# Chapter 10 — Population-Based Training and Evolutionary Game Theory: Experiment Report
 
-**Testbeds:** four symmetric matrix games for the evolutionary-dynamics half (Prisoner's Dilemma, Hawk-Dove, Rock-Paper-Scissors, Stag Hunt); a synthetic pure-skill ladder; the PSRO best-response meta-game on Leduc Hold'em; and a small AlphaStar-style **PBT league** of neural PPO agents playing Leduc Hold'em. The Leduc engine, the exact best-response oracle, and NashConv/exploitability come from the Step 07 stack (reused wholesale); PSRO and the meta-Nash solver come from Step 09. Neural agents are trained with PyTorch and then extracted to *tabular* policies so the Step 07 **exact** best response can grade them.
+**Testbeds:** four symmetric matrix games for the evolutionary-dynamics half (Prisoner's Dilemma, Hawk-Dove, Rock-Paper-Scissors, Stag Hunt); a synthetic pure-skill ladder; the PSRO best-response meta-game on Leduc Hold'em; and a small AlphaStar-style **PBT league** of neural PPO agents playing Leduc Hold'em. The Leduc engine, the exact best-response oracle, and NashConv/exploitability come from the Chapter 07 stack (reused wholesale); PSRO and the meta-Nash solver come from Chapter 09. Neural agents are trained with PyTorch and then extracted to *tabular* policies so the Chapter 07 **exact** best response can grade them.
 
-**PhD connection:** the population-level layer of the thesis. Three hooks: **main exploiters as automated opponent modelers** (Contribution #1, the population lift of Step 07's Bayesian read); the **AlphaStar league as a population safe-exploitation mechanism whose guarantee is missing** (Contribution #2); and **EGTA / meta-Nash as the population evaluation methodology** (Contribution #3).
+**PhD connection:** the population-level layer of the thesis. Three hooks: **main exploiters as automated opponent modelers** (Contribution #1, the population lift of Chapter 07's Bayesian read); the **AlphaStar league as a population safe-exploitation mechanism whose guarantee is missing** (Contribution #2); and **EGTA / meta-Nash as the population evaluation methodology** (Contribution #3).
 
-**Scope of results:** every number in this report is **measured from a real run** and read from the artifacts under `implementation/step10/implementation/results/{smoke,scale}_results.json` and `implementation/step10/exploration/figures/*.json`. Evolutionary results are bracketed by *analytic* references (ESS / Nash of each matrix game); league results are bracketed by Step 07's *exact* exploitability. Three Phase-4 predictions were **contradicted** by the scale run; per WORKFLOW §0.1 they are kept as stated and reconciled with what actually happened (§8).
+**Scope of results:** every number in this report is **measured from a real run** and read from the artifacts under `implementation/step10/implementation/results/{smoke,scale}_results.json` and `implementation/step10/exploration/figures/*.json`. Evolutionary results are bracketed by *analytic* references (ESS / Nash of each matrix game); league results are bracketed by Chapter 07's *exact* exploitability. Three Phase-4 predictions were **contradicted** by the scale run; per WORKFLOW §0.1 they are kept as stated and reconciled with what actually happened (§8).
 
 > **How to read this report.** Both parts follow the same arc: **what we test -> how -> results -> conclusion.** **Part I (§1-§3)** uses evolutionary game theory as a *diagnostic lens*: replicator dynamics on solvable matrix games, then the transitive/cyclic "spinning-top" decomposition. **Part II (§4-§7)** builds and evaluates the **PBT league**: training dynamics, EGTA/meta-Nash, diversity + Elo, and a head-to-head against PSRO / self-play / CFR-Nash. §8 reconciles the three contradicted predictions; §9-§11 cover trust, limitations, and directions; §12 lists reproduction commands.
 
@@ -18,9 +18,9 @@ BG: Изследване на възможностите за приложени
 
 # PART I — EVOLUTIONARY GAME THEORY AS A DIAGNOSTIC LENS
 
-## 1. What this step is about
+## 1. What this chapter is about
 
-Steps 2-9 reasoned about equilibria of a *fixed* game. Step 10 moves up a level to **populations of strategies that change over time** and asks two questions a single-agent view cannot: *which strategies grow?* (replicator dynamics) and *does this game even have a "best" strategy, or only a wheel of counters?* (the transitive/cyclic decomposition). These two tools are the diagnostic that Part II's population-based training needs — because whether a self-training population converges or cycles is decided by the game's structure, not the learning rate. All Part I evolutionary numbers are deterministic (fixed seeds, exact dynamics), so "did it converge?" is unambiguous.
+Chapters 2-9 reasoned about equilibria of a *fixed* game. Chapter 10 moves up a level to **populations of strategies that change over time** and asks two questions a single-agent view cannot: *which strategies grow?* (replicator dynamics) and *does this game even have a "best" strategy, or only a wheel of counters?* (the transitive/cyclic decomposition). These two tools are the diagnostic that Part II's population-based training needs — because whether a self-training population converges or cycles is decided by the game's structure, not the learning rate. All Part I evolutionary numbers are deterministic (fixed seeds, exact dynamics), so "did it converge?" is unambiguous.
 
 ---
 
@@ -62,7 +62,7 @@ Steps 2-9 reasoned about equilibria of a *fixed* game. Step 10 moves up a level 
 
 **Results.** The Hodge decomposition nails the pure cases: RPS is $0.0$ transitive / $1.0$ cyclic (a single three-cycle), the skill ladder is $1.0$/$0.0$. The **SVD rank-1** method the raw step suggested instead reports RPS as $\approx0.707$ transitive — wrong, because a rank-1 skew-symmetric approximation cannot represent a pure cycle; the Hodge method is the one used for the diagnosis. The two *real* populations diverge sharply: the **PSRO best-response meta-game on Leduc is mostly cyclic** ($\approx0.41$-$0.46$ transitive, 27 three-cycles), while the **league's snapshot meta-game is mostly transitive** ($\approx0.94$-$0.98$).
 
-**Conclusion.** The transitive/cyclic ratio is a *pre-training diagnostic*. Two populations drawn from the same game (Leduc) have opposite structure depending on how they are built (best responses vs training snapshots — see §8.2). This is exactly the tool that predicts whether naive self-play/PBT will converge or cycle, and it is the diagnostic the thesis carries into later steps.
+**Conclusion.** The transitive/cyclic ratio is a *pre-training diagnostic*. Two populations drawn from the same game (Leduc) have opposite structure depending on how they are built (best responses vs training snapshots — see §8.2). This is exactly the tool that predicts whether naive self-play/PBT will converge or cycle, and it is the diagnostic the thesis carries into later chapters.
 
 ![Transitive-ratio bar chart: Rock-Paper-Scissors (0.0, purely cyclic), a pure skill ladder (1.0, purely transitive), the PSRO-Leduc best-response meta-game (~0.41-0.46, mostly cyclic with 27 three-cycles), and the league snapshot meta-game (~0.94-0.98, mostly transitive). Which population you decompose decides whether Leduc looks like a wheel or a ladder.](figures/impl_transitive_ratios.png)
 
@@ -72,7 +72,7 @@ Steps 2-9 reasoned about equilibria of a *fixed* game. Step 10 moves up a level 
 
 ## 4. What the league is and how it is graded
 
-The second half builds a small **AlphaStar-style league** on Leduc Hold'em with three agent types — **main** agents (the product), **main exploiters** (hunt weaknesses in the current mains), and **league exploiters** (hunt weaknesses anywhere in the frozen history) — plus periodic **freezing** of snapshots into a museum and **PFSP** matchmaking (sample harder opponents more often). Agents are neural PPO networks on a Leduc info-state encoding; PBT copies the top agents (exploit) and perturbs their learning rate / entropy (explore). Crucially, each network is extracted to a **tabular** policy so Step 07's **exact** best response measures its exploitability — the same NashConv yardstick used since Step 2. Two configs: **smoke** (7 live agents, 15 epochs) and **scale** (8 live agents, 120 epochs, 48 frozen snapshots).
+The second half builds a small **AlphaStar-style league** on Leduc Hold'em with three agent types — **main** agents (the product), **main exploiters** (hunt weaknesses in the current mains), and **league exploiters** (hunt weaknesses anywhere in the frozen history) — plus periodic **freezing** of snapshots into a museum and **PFSP** matchmaking (sample harder opponents more often). Agents are neural PPO networks on a Leduc info-state encoding; PBT copies the top agents (exploit) and perturbs their learning rate / entropy (explore). Crucially, each network is extracted to a **tabular** policy so Chapter 07's **exact** best response measures its exploitability — the same NashConv yardstick used since Chapter 2. Two configs: **smoke** (7 live agents, 15 epochs) and **scale** (8 live agents, 120 epochs, 48 frozen snapshots).
 
 ---
 
@@ -136,7 +136,7 @@ The second half builds a small **AlphaStar-style league** on Leduc Hold'em with 
 |---|---:|---:|---|
 | CFR-Nash (floor) | $0.033$ (2k iters) | $0.0099$ (20k iters) | approximate Nash, the target floor |
 | **League — best individual** | $2.665$ | **$1.305$** | strongest frozen snapshot |
-| PSRO (exact BR) | $3.037$ (12 rounds) | $2.163$ (20 rounds) | Step 09's slow-Leduc wall |
+| PSRO (exact BR) | $3.037$ (12 rounds) | $2.163$ (20 rounds) | Chapter 09's slow-Leduc wall |
 | Self-play | $3.140$ | $3.683$ | plain best-response-to-latest |
 | League — meta-Nash mixture | $2.665$ | $3.418$ | see §8.1 |
 
@@ -156,14 +156,14 @@ Per WORKFLOW §0.1, contradicted Phase-4 predictions are kept and reconciled, no
 
 2. **Leduc's meta-game is transitive (§3).** *Predicted:* the intuition doc framed poker as a skill ladder. *Measured:* the PSRO **best-response** meta-game is mostly cyclic ($\approx0.41$-$0.46$ transitive, 27 three-cycles), while the league **snapshot** meta-game is mostly transitive ($\approx0.94$-$0.98$). *Reconciliation:* not a bug — a population of best responses cycles (A beats the mixture, B beats A, a later BR beats B; Balduzzi's spinning-top), whereas a population of training-trajectory snapshots forms a ladder because later snapshots are mostly stronger. The structure is a property of the *population*, not just the game; both measurements are correct and instructive.
 
-3. **League exploitability decreases monotonically (§5).** *Predicted:* a monotone decline. *Measured:* smoke ($15$ epochs) declines cleanly and ends at its minimum ($3.04$); scale ($120$ epochs) falls to a minimum near epoch 60 (min-main $\approx1.21$, meta-Nash $\approx1.32$/plateau $1.60$) and then **regresses** to $\approx2.05$ / $\approx2.96$ by epoch 119. *Reconciliation:* an honest, likely-real training instability, only visible once training is long enough — under sustained exploiter pressure the live main agents chase their exploiters and lose absolute-exploitability ground (churn / partial forgetting). The best agents are the frozen snapshots from mid-run, which is exactly why the best-individual metric (§7) is strong while the late live agents are not. Documented, not fixed; the natural remedy is best-snapshot retention / population regularization (§11). This echoes Step 09's methodological rule: **scale reveals what smoke hides.**
+3. **League exploitability decreases monotonically (§5).** *Predicted:* a monotone decline. *Measured:* smoke ($15$ epochs) declines cleanly and ends at its minimum ($3.04$); scale ($120$ epochs) falls to a minimum near epoch 60 (min-main $\approx1.21$, meta-Nash $\approx1.32$/plateau $1.60$) and then **regresses** to $\approx2.05$ / $\approx2.96$ by epoch 119. *Reconciliation:* an honest, likely-real training instability, only visible once training is long enough — under sustained exploiter pressure the live main agents chase their exploiters and lose absolute-exploitability ground (churn / partial forgetting). The best agents are the frozen snapshots from mid-run, which is exactly why the best-individual metric (§7) is strong while the late live agents are not. Documented, not fixed; the natural remedy is best-snapshot retention / population regularization (§11). This echoes Chapter 09's methodological rule: **scale reveals what smoke hides.**
 
 ---
 
 ## 9. Trustworthiness and sample adequacy
 
 - **Evolutionary results are bounded by analytic references.** Each replicator outcome is checked against the game's analytic ESS/Nash; the spinning-top ratios are checked against the pure cases (RPS $=0.0$, skill ladder $=1.0$). These are deterministic and exactly reproducible.
-- **League exploitability is Step 07's *exact* NashConv**, not a simulation: every neural policy is extracted to a tabular policy and scored by exact best response, so "how exploitable is this agent/mixture?" is ground-truthed rather than estimated.
+- **League exploitability is Chapter 07's *exact* NashConv**, not a simulation: every neural policy is extracted to a tabular policy and scored by exact best response, so "how exploitable is this agent/mixture?" is ground-truthed rather than estimated.
 - **Neural training is seed- and library-sensitive.** The league is one PBT run per config; the *qualitative* findings (early improvement; best-individual < PSRO < self-play; late regression at scale; meta-Nash > best member at scale) are the trustworthy claims, not the third-decimal magnitudes.
 - **Diversity metrics are threshold-sensitive.** The single-cluster result depends on the $0.30$ single-linkage threshold; it should be read as "behaviorally similar," not "provably one strategy."
 
@@ -187,7 +187,7 @@ Per WORKFLOW §0.1, contradicted Phase-4 predictions are kept and reconciled, no
 
 - *Best-snapshot retention / population regularization* — directly targets the late regression (§8.3); re-run to see whether the guarantee gap is a training or a design issue.
 - *Report the selected member, or a diversity-regularized meta-solver* — the meta-Nash-mixing failure (§8.1) motivates either shipping a best-response-robust member or changing the meta-solver objective.
-- *Carry the transitive/cyclic diagnostic to Step 11's FFA games* — test the "large cyclic component" prediction directly, where naive PBT is expected to cycle.
+- *Carry the transitive/cyclic diagnostic to Chapter 11's FFA games* — test the "large cyclic component" prediction directly, where naive PBT is expected to cycle.
 - *Formalize population safety without a minimax anchor (Contribution #2)* — the exploiter mechanism is heuristic; §8.1/§8.3 show it does not guarantee a non-exploitable population.
 
 ---

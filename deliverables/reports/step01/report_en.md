@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 01 — RL Basics: Implementation Report
+# Chapter 01 — RL Basics: Implementation Report
 
 **Environment:** April 2026  
 **Algorithms:** DQN (CartPole-v1), PPO (LunarLander-v3)  
@@ -33,7 +33,7 @@ BG: Изследване на възможностите за приложени
 
 ## Overview <a id="overview"></a>
 
-Step 01 implements two foundational RL algorithms from scratch in PyTorch, with
+Chapter 01 implements two foundational RL algorithms from scratch in PyTorch, with
 extensive inline comments explaining the *why* behind each design choice. Both
 algorithms use identical hyperparameter sets compared against Stable-Baselines3
 (SB3) equivalents.
@@ -273,7 +273,7 @@ Our custom PPO is simply more sample-efficient for this specific task.
   fewer features but complete transparency and debuggability.
 - SB3's defaults are tuned for robustness across many environments (such as Atari games with millions of steps and discrete image inputs), not for classic control tasks like CartPole. This causes the SB3 default algorithm to struggle or fail without extensive tuning compared to our environment-specific hyperparameters.
   Task-specific implementations can outperform SB3 defaults with appropriate hyperparameters.
-- For research purposes (thesis work on opponent exploitation, Steps 7–8), custom
+- For research purposes (thesis work on opponent exploitation, Chapters 7–8), custom
   implementations allow surgical modifications (e.g. injecting belief-state observations)
   that would require deep SB3 subclassing.
 

@@ -4,20 +4,20 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 3 One-Pager — CFR Variants and Monte Carlo Methods"
+title: "Chapter 3 One-Pager — CFR Variants and Monte Carlo Methods"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "April 2026"
 lang: en
 ---
 
-# Step 3 One-Pager — CFR Variants and Monte Carlo Methods
+# Chapter 3 One-Pager — CFR Variants and Monte Carlo Methods
 
-**Problem.** Step 2's vanilla CFR visits every information set on every iteration, which stops
+**Problem.** Chapter 2's vanilla CFR visits every information set on every iteration, which stops
 being affordable one game up from Kuhn. The field's two answers are a better-constant
 full-traversal method (**CFR+**) and *sampling* the tree (**MCCFR**), and the received wisdom is
-that sampling is what made real poker solvable. Step 3 asks which one actually wins, on what
-size of game, and why — the question that decides the solver every later step depends on.
+that sampling is what made real poker solvable. Chapter 3 asks which one actually wins, on what
+size of game, and why — the question that decides the solver every later chapter depends on.
 
 **Approach.** All four algorithms hand-coded in Python + NumPy on **Leduc Poker** (6 cards, two
 betting rounds, a revealed community card, 936 information sets, 10,200 nodes, 120 deals):
@@ -50,14 +50,14 @@ are measured.**
   constant `eps*sqrt(T)` falls from **0.90** (T=100) to **0.27** (T=3,700) instead of holding
   flat, so the `O(1/sqrt(T))` bound is loose here in a way the bound itself does not predict.
 
-**Thesis connection.** This step fixes the tooling for everything that follows: Leduc plus the
-exact best-response evaluator become the standard testbed of Steps 7-12, and CFR+ becomes the
+**Thesis connection.** This chapter fixes the tooling for everything that follows: Leduc plus the
+exact best-response evaluator become the standard testbed of Chapters 7-12, and CFR+ becomes the
 Nash reference against which every later opponent-modelling, safe-exploitation and LLM number is
-bracketed. The exactness-versus-variance trade-off measured here returns in Step 5, where the
+bracketed. The exactness-versus-variance trade-off measured here returns in Chapter 5, where the
 sampled estimates feed a network instead of a table.
 
 **Open questions.** Whether the crossover node count is a property of the algorithms or of this
 implementation's constant factors — a vectorised or compiled full-traversal solver shifts
 `speed_v` and moves the threshold, so the number is honest for this code and not yet a claim
 about the algorithms in general. Which sampling scheme survives once the strategy is a neural
-network rather than a table (Step 5). And why vanilla CFR converges faster than its worst case.
+network rather than a table (Chapter 5). And why vanilla CFR converges faster than its worst case.

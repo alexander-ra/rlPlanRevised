@@ -1,5 +1,5 @@
 ---
-title: "Step 5 Summary — Neural Networks for Imperfect-Information Games"
+title: "Chapter 5 Summary — Neural Networks for Imperfect-Information Games"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "May 2026"
@@ -8,18 +8,18 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 5 — Neural Networks for Imperfect-Information Games
+# Chapter 5 — Neural Networks for Imperfect-Information Games
 
 <!-- APPROVED-HIGHLIGHT START (temporary; remove before final build) -->
 <div style="background-color:#e6f9e6; padding:0.4em 0.8em; border-radius:4px">
 
-This is a condensed survey of neural-network methods for imperfect-information games — the material that Step 5 widened from its original Deep CFR focus into a broader treatment of how neural networks are built, trained, and deployed in games where players cannot see the full state. It serves two purposes: as a quick refresher while progressing through later steps, and as a primary source for the Step 15 public report synthesis. Step 5 is a deliberate one-off deviation from the usual learning cycle — the from-scratch implementation phase is deferred and the theory is broadened in its place — so this document is a breadth-first map of the field rather than a record of code. Mathematics is kept light: key equations are stated where they sharpen intuition, but derivations and proofs are left to the cited sources.
+This is a condensed survey of neural-network methods for imperfect-information games — the material that Chapter 5 widened from its original Deep CFR focus into a broader treatment of how neural networks are built, trained, and deployed in games where players cannot see the full state. It serves two purposes: as a quick refresher while progressing through later chapters, and as a primary source for the Chapter 15 public report synthesis. Chapter 5 is a deliberate one-off deviation from the usual learning cycle — the from-scratch implementation phase is deferred and the theory is broadened in its place — so this document is a breadth-first map of the field rather than a record of code. Mathematics is kept light: key equations are stated where they sharpen intuition, but derivations and proofs are left to the cited sources.
 
 ---
 
 ## Why Neural Networks {-}
 
-Tabular CFR and its Monte Carlo variants (Steps 2–4) store a regret value and a strategy value at each information set, so their memory cost is proportional to the number of information sets, which grows with the size of the game. The Step 5 exploration quantified this limit on Leduc poker, a game small enough to hold in a table: tabular MCCFR reached an exploitability of 0.097, whereas Deep CFR under a comparable wall-clock budget reached only 1.70. At this scale the tabular method is preferable; the neural method offers no advantage, because the table already fits.
+Tabular CFR and its Monte Carlo variants (Chapters 2–4) store a regret value and a strategy value at each information set, so their memory cost is proportional to the number of information sets, which grows with the size of the game. The Chapter 5 exploration quantified this limit on Leduc poker, a game small enough to hold in a table: tabular MCCFR reached an exploitability of 0.097, whereas Deep CFR under a comparable wall-clock budget reached only 1.70. At this scale the tabular method is preferable; the neural method offers no advantage, because the table already fits.
 
 A neural network replaces the table with a function $f_\theta$ that maps a state's features to a value or an action distribution and generalizes to states never visited during training. This inverts the cost structure: memory becomes independent of the number of information sets, at the price of more expensive iterations and weaker convergence guarantees. The two regimes meet at a crossover in game size — below it, enumeration is cheaper and exact; above it, the table cannot be constructed and function approximation is the only option. The games this research targets lie above the crossover, which is why the remainder of the chapter concerns neural methods.
 
@@ -61,7 +61,7 @@ where $s$ and $s'$ are consecutive states, $r$ the reward, $\gamma \in [0,1]$ th
 
 ### Putting the Fundamentals Together on Leduc Poker
 
-These pieces combine into the simplest neural solver for a game. Take Leduc poker, the testbed from Steps 3–4: its information state — the private card, the betting history, and the pot — encodes as a vector of about thirty numbers. A small network maps that vector to a value for each action; backpropagation with Adam fits it to target values generated during play, and light regularization prevents it from memorizing the noise in those targets. Used well, the network provides two capabilities the table lacks: it generalizes, so a value learned at one information set informs similar unseen ones, and its memory cost is fixed by the number of parameters rather than by the number of information sets.
+These pieces combine into the simplest neural solver for a game. Take Leduc poker, the testbed from Chapters 3–4: its information state — the private card, the betting history, and the pot — encodes as a vector of about thirty numbers. A small network maps that vector to a value for each action; backpropagation with Adam fits it to target values generated during play, and light regularization prevents it from memorizing the noise in those targets. Used well, the network provides two capabilities the table lacks: it generalizes, so a value learned at one information set informs similar unseen ones, and its memory cost is fixed by the number of parameters rather than by the number of information sets.
 
 The same machinery degrades when overdriven, and the exploration made the failure modes concrete. Capacity is the clearest. On Leduc the smallest network tested, two hidden layers of thirty-two units, reached a lower exploitability than networks several times larger, because at a limited sample budget the larger networks held too many parameters for too little data and fit noise rather than structure. A learning rate set too high destabilizes the descent; excessive regularization flattens the sharp, near-deterministic strategies CFR converges to, since heavy weight decay or dropout pulls the output toward the uniform distribution. The general principle is that capacity and regularization must be matched to the amount and quality of the data rather than maximized by default — a point Part 2 develops into explicit sizing guidance.
 
@@ -91,7 +91,7 @@ A **convolutional layer** (CNN) connects each output unit to only a small local 
 
 > **Weight sharing**: reusing the same weights at many positions (CNN) or time steps (RNN). It is what makes these layouts parameter-efficient and is the mechanism behind their equivariance.
 
-A **recurrent layer** (RNN) applies the same cell repeatedly along a sequence: at each step it takes the current input together with the previous step's *hidden state* and produces a new hidden state, which is passed forward. Because the cell is shared across steps, the number of weights is independent of sequence length, and the hidden state acts as a memory of everything seen so far — the property needed when the state is a history revealed over time, as under partial observability. Gated variants (LSTM, GRU) add learned gates that control what to keep and what to discard, which lets them retain information across longer spans.
+A **recurrent layer** (RNN) applies the same cell repeatedly along a sequence: at each step it takes the current input together with the previous chapter's *hidden state* and produces a new hidden state, which is passed forward. Because the cell is shared across steps, the number of weights is independent of sequence length, and the hidden state acts as a memory of everything seen so far — the property needed when the state is a history revealed over time, as under partial observability. Gated variants (LSTM, GRU) add learned gates that control what to keep and what to discard, which lets them retain information across longer spans.
 
 A **self-attention layer** (the Transformer) lets every element interact with every other directly. Each element emits a *query*, a *key*, and a *value*; the output for an element is a weighted average of all elements' values, with the weights set by the similarity between its query and each key. Because the operation ignores element order, it is permutation-equivariant, and order must be supplied explicitly through positional encodings when it matters. Attention captures long-range dependencies that a recurrent layer reaches only indirectly, at the cost of computation that grows with the square of the number of elements. It suits variable-length histories and set-valued inputs.
 
@@ -103,7 +103,7 @@ In practice a network rarely uses one family alone. The usual design is a pipeli
 
 ### Encoding Game State & History
 
-Before any of these architectures can run, the game state must be turned into numbers. The information state — everything the acting player may legally observe — has to become a fixed-shape tensor, and the way it is laid out determines which architecture can exploit it. Categorical facts are encoded either as *one-hot* vectors — a length-$k$ vector with a single 1 marking which of $k$ categories holds — or, when $k$ is large, as *embeddings*: short learned vectors looked up per category and trained alongside the network. Leduc poker is small enough for one-hot throughout: the private card, the public card, and the betting history each become one-hot fields and the pot a single scalar, producing the roughly thirty-dimensional vector used in Steps 3–4.
+Before any of these architectures can run, the game state must be turned into numbers. The information state — everything the acting player may legally observe — has to become a fixed-shape tensor, and the way it is laid out determines which architecture can exploit it. Categorical facts are encoded either as *one-hot* vectors — a length-$k$ vector with a single 1 marking which of $k$ categories holds — or, when $k$ is large, as *embeddings*: short learned vectors looked up per category and trained alongside the network. Leduc poker is small enough for one-hot throughout: the private card, the public card, and the betting history each become one-hot fields and the pot a single scalar, producing the roughly thirty-dimensional vector used in Chapters 3–4.
 
 > **One-hot vs. embedding**: one-hot is exact but its length grows with the number of categories; an embedding compresses a large vocabulary — every card, or every board tile — into a few learned dimensions and lets similar categories share structure.
 
@@ -117,7 +117,7 @@ Two smaller points complete the craft. Continuous features such as the pot or a 
 
 A network's *capacity* — set by its width, the number of units per layer, and its depth, the number of layers — is the size of the family of functions it can represent. Too little capacity and the network *underfits*, unable to express the target strategy; too much and it *overfits*, fitting the noise in a limited sample rather than the underlying structure. The right capacity is the one matched to how much informative data the training procedure actually supplies — which, in a game solver, is often far less than the raw number of states suggests, because the values being fit are themselves noisy estimates.
 
-The Step 5 exploration showed this directly. Running Deep CFR on Leduc under a fixed budget but with different network sizes, the smallest network — two hidden layers of thirty-two units — reached a lower exploitability than networks two and four times wider; the larger networks held more parameters than the few thousand traversals could constrain and spent the surplus fitting sampling noise. The lesson is not that smaller is always better, but that capacity must track the data budget: on a larger game, or with far more traversals, the ranking would reverse.
+The Chapter 5 exploration showed this directly. Running Deep CFR on Leduc under a fixed budget but with different network sizes, the smallest network — two hidden layers of thirty-two units — reached a lower exploitability than networks two and four times wider; the larger networks held more parameters than the few thousand traversals could constrain and spent the surplus fitting sampling noise. The lesson is not that smaller is always better, but that capacity must track the data budget: on a larger game, or with far more traversals, the ranking would reverse.
 
 ![Deep CFR exploitability on Leduc across network sizes (32x32, 64x64, 128x128x128).](day01_network_sizes.png){width=62% fig-pos="H"}
 
@@ -137,13 +137,13 @@ Two stabilizers from the deadly-triad discussion — the target network and the 
 
 > **Reservoir sampling**: a method that keeps a fixed-size sample in which every item seen so far is equally likely to be retained, so a running average stays unbiased without storing all the data.
 
-Even with these in place, a neural solver fails quietly more often than loudly, so reading the diagnostics matters. A loss that falls steadily while the evaluation metric — exploitability, for a solver — stalls is the signature of a network that is *alive but not converged*: training is working, but the budget is too small for the average strategy to settle, which is what the Step 5 networks showed on Leduc at a few thousand traversals. The opposite and more dangerous case is training that is not running at all while appearing to: in the exploration, a one-character bug in an OpenSpiel routine left the advantage networks untrained, yet the program ran to completion and produced plausible output, with exploitability simply frozen at the random-strategy level. The lesson is to confirm that the loss actually moves and that the evaluation metric responds before trusting any result — a silent no-op is indistinguishable from a hard problem unless the curves are checked.
+Even with these in place, a neural solver fails quietly more often than loudly, so reading the diagnostics matters. A loss that falls steadily while the evaluation metric — exploitability, for a solver — stalls is the signature of a network that is *alive but not converged*: training is working, but the budget is too small for the average strategy to settle, which is what the Chapter 5 networks showed on Leduc at a few thousand traversals. The opposite and more dangerous case is training that is not running at all while appearing to: in the exploration, a one-character bug in an OpenSpiel routine left the advantage networks untrained, yet the program ran to completion and produced plausible output, with exploitability simply frozen at the random-strategy level. The lesson is to confirm that the loss actually moves and that the evaluation metric responds before trusting any result — a silent no-op is indistinguishable from a hard problem unless the curves are checked.
 
 ## Part 3 — Neural Networks in CFR
 
 ### From Tabular CFR to Function Approximation
 
-Tabular CFR keeps two numbers at every information set: a cumulative counterfactual regret for each action, from which the current strategy is derived by regret matching, and a cumulative strategy, whose running average is the Nash approximation the algorithm ultimately returns (Steps 2–4). Both tables grow with the number of information sets — the wall described at the start of this chapter.
+Tabular CFR keeps two numbers at every information set: a cumulative counterfactual regret for each action, from which the current strategy is derived by regret matching, and a cumulative strategy, whose running average is the Nash approximation the algorithm ultimately returns (Chapters 2–4). Both tables grow with the number of information sets — the wall described at the start of this chapter.
 
 Replacing them with neural networks is conceptually simple: a function approximator takes an information-state tensor as input and predicts what the table would have stored. One network can learn the regrets — equivalently, the counterfactual advantages — that determine the current strategy; another can learn the average strategy directly. Because a network generalizes across similar information states, it never has to enumerate them, and its size is fixed by its parameters rather than by the game. The methods below differ mainly in *which* of the two tables they approximate and *how* they generate the data to train it: Deep CFR learns advantages from sampled tree traversals, while NFSP learns the average strategy from self-play without traversing the tree at all.
 
@@ -205,7 +205,7 @@ Population-based methods reframe equilibrium-finding as an iterative tournament.
 
 ### Search + RL: ReBeL & Player of Games
 
-Search-plus-RL methods are the AlphaZero idea adapted to hidden information. In a perfect-information game one can search forward from the current position because the state is known; under imperfect information the searching player does not know the true state, so the search must range over a distribution of possible states. ReBeL (Brown et al., 2020) makes this precise with the *public belief state* — a probability distribution over the players' private information given everything public — and runs CFR over a small, depth-limited subgame at play time, with a learned value network supplying the leaf values. Player of Games (Schmid et al., 2023) generalizes the recipe into one algorithm that handles both perfect and imperfect information. These systems reach the strongest play but are the most complex to build and depend on having compute available *during* play, not only during training; they are the subject of Step 6, so this section only places them in the landscape.
+Search-plus-RL methods are the AlphaZero idea adapted to hidden information. In a perfect-information game one can search forward from the current position because the state is known; under imperfect information the searching player does not know the true state, so the search must range over a distribution of possible states. ReBeL (Brown et al., 2020) makes this precise with the *public belief state* — a probability distribution over the players' private information given everything public — and runs CFR over a small, depth-limited subgame at play time, with a learned value network supplying the leaf values. Player of Games (Schmid et al., 2023) generalizes the recipe into one algorithm that handles both perfect and imperfect information. These systems reach the strongest play but are the most complex to build and depend on having compute available *during* play, not only during training; they are the subject of Chapter 6, so this section only places them in the landscape.
 
 ### Model-Free Self-Play: PPO, DQN, MAPPO, QMIX
 
@@ -283,6 +283,6 @@ family. The practical payoff of the survey. -->
 
 ### Connections & Forward Pointers
 
-<!-- STUB: Back-pointers to Step 1 (RL basics, DQN/PPO), Step 3 (CFR variants/MC), Step 4
-(abstraction). Forward pointer to Step 6 (end-to-end architectures). Restate the stance:
+<!-- STUB: Back-pointers to Chapter 1 (RL basics, DQN/PPO), Chapter 3 (CFR variants/MC), Chapter 4
+(abstraction). Forward pointer to Chapter 6 (end-to-end architectures). Restate the stance:
 poker-first now, with these neural tools generalizing to other environments later. -->

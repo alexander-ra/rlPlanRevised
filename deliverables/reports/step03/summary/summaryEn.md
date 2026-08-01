@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 3 Summary — CFR Variants & Monte Carlo Methods"
+title: "Chapter 3 Summary — CFR Variants & Monte Carlo Methods"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "April 2026"
@@ -13,24 +13,20 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 3 — CFR Variants & Monte Carlo Methods
-
-This is a condensed summary of the scalability material covered in Step 3. It serves two purposes: as a quick refresher while progressing through later steps, and as a primary source for the Step 15 public report synthesis.
+# Chapter 3 — CFR Variants & Monte Carlo Methods
 
 ---
 
 ## Why Vanilla CFR Breaks at Scale
 
-Step 2 established a working Vanilla CFR solver on Kuhn Poker — 12 information sets, 58 terminal nodes, solvable in milliseconds. That experience is deceptive. Vanilla CFR requires a **full traversal of the game tree on every iteration**, and real games are not Kuhn. Leduc Poker has 936 information sets (~78× larger); Limit Texas Hold'em has over $10^{14}$. No computer can enumerate that tree even once.
+Chapter 2 established a working Vanilla CFR solver on Kuhn Poker — 12 information sets, 58 terminal nodes, solvable in milliseconds. That experience is deceptive. Vanilla CFR requires a **full traversal of the game tree on every iteration**, and real games are not Kuhn. Leduc Poker has 936 information sets (~78× larger); Limit Texas Hold'em has over $10^{14}$. No computer can enumerate that tree even once.
 
-Step 3 closes the scale gap through two complementary mechanisms, developed independently in the game-theory literature and later combined in practice:
+Chapter 3 closes the scale gap through two complementary mechanisms, developed independently in the game-theory literature and later combined in practice:
 
-1. **CFR+ (Tammelin, 2014)** — a modification of vanilla CFR that achieves dramatically faster convergence through regret flooring, linear strategy averaging, and alternating updates. CFR+ was the algorithm that "solved" Heads-Up Limit Texas Hold'em in 2015 — the first non-trivial poker variant to be essentially solved.
-2. **Monte Carlo CFR (Lanctot et al., 2009)** — instead of traversing the entire game tree each iteration, MCCFR samples a small portion. Each iteration is orders of magnitude cheaper, at the cost of noisier updates. This is the only tractable approach for games where full traversal is physically impossible.
+1. **CFR+ (Tammelin, 2014)**[^cfrplus] — a modification of vanilla CFR that achieves dramatically faster convergence through regret flooring, linear strategy averaging, and alternating updates. CFR+ was the algorithm that "solved" Heads-Up Limit Texas Hold'em in 2015 — the first non-trivial poker variant to be essentially solved.
+2. **Monte Carlo CFR (Lanctot et al., 2009)**[^mccfr] — instead of traversing the entire game tree each iteration, MCCFR samples a small portion. Each iteration is orders of magnitude cheaper, at the cost of noisier updates. This is the only tractable approach for games where full traversal is physically impossible.
 
-For the thesis, MCCFR is the algorithm that computes the baseline Nash strategy — the "play it safe" anchor from which an adaptive agent deviates based on opponent observations (Contribution #1). CFR+ makes that computation tractable on the intermediate benchmark games used in Steps 5–8.
-
-> **Read more:** Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149.
+For the thesis, MCCFR is the algorithm that computes the baseline Nash strategy — the "play it safe" anchor from which an adaptive agent deviates based on opponent observations (Contribution #1). CFR+ makes that computation tractable on the intermediate benchmark games used in Chapters 5–8.[^bowling2015]
 
 ---
 
@@ -57,9 +53,7 @@ Classical alternatives like **Minimax with alpha-beta pruning** evaluate every r
 | Domain knowledge needed | Strong eval function | None (random rollout) or learned |
 | Best suited for | Moderate branching, good heuristics | High branching, weak/no heuristics |
 
-For Go (branching factor ~250, no good evaluation function before neural networks), Minimax is impractical. MCTS was the breakthrough that made Go AI competitive; the same "sample instead of enumerate" principle carries over to imperfect-information game trees via MCCFR.
-
-> **Read more:** Browne, C. et al. (2012). "A Survey of Monte Carlo Tree Search Methods." *IEEE Transactions on Computational Intelligence and AI in Games*, 4(1), 1–43.
+For Go (branching factor ~250, no good evaluation function before neural networks), Minimax is impractical. MCTS was the breakthrough that made Go AI competitive; the same "sample instead of enumerate" principle carries over to imperfect-information game trees via MCCFR.[^browne2012]
 
 ---
 
@@ -75,29 +69,7 @@ $$\frac{1}{T}\sum_{t=1}^{T} \hat{v}_I^{(t)} \xrightarrow{T \to \infty} v_I$$
 
 where $\hat{v}_I^{(t)}$ is the sampled counterfactual value at information set $I$ on iteration $t$, and $v_I$ is the true value that vanilla CFR computes exactly. The sampled values are **unbiased estimators** — their expected value equals the true value — which guarantees convergence to the same Nash equilibrium as full-traversal CFR.
 
-The cost is **variance**. Individual samples can deviate substantially from the true value, requiring more iterations to reach the same precision. That variance-for-speed tradeoff is the central theme of this step.
-
-> **Read more:** Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, Chapter 5 — Monte Carlo Methods.
-
----
-
-## The Mathematics of Poker
-
-Poker is the canonical testbed for imperfect-information game theory because it combines three sources of complexity that rarely co-occur:
-
-1. **Hidden information** — each player sees only their own cards. The same observable game state (information set) can correspond to many different underlying game states.
-2. **Stochastic elements** — card deals introduce chance nodes into the game tree. An optimal strategy must account for all possible deals, not just the observed one.
-3. **Strategic deception** — unlike perfect-information games, poker rewards mixed strategies. A player who always bets with strong hands and checks with weak ones is trivially exploitable. Nash equilibrium requires **randomized bluffing at mathematically precise frequencies**.
-
-The extensive-form framework from Step 2 carries over: game tree, information sets, strategies (mappings from information sets to action distributions), Nash equilibrium. The key quantities for evaluating strategies are:
-
-- **Expected value (EV)** — average payoff under a given strategy pair.
-- **Best response** — the optimal counter-strategy against a fixed opponent; the strongest possible exploitation.
-- **Exploitability** — the average gain an opponent could obtain by playing a perfect best response. Nash equilibrium has exploitability zero.
-
-Chen & Ankenman formalise these concepts through toy-game solutions where Nash bluffing frequencies can be derived analytically. Their half-street and full-street models build intuition for why CFR's output strategies contain the precise bluff/call ratios they do — a balanced player must bluff with a frequency proportional to the pot odds they offer.
-
-> **Read more:** Chen, B. & Ankenman, J. (2006). *The Mathematics of Poker*. ConJelCo — analytical Nash derivations for toy poker games.
+The cost is **variance**. Individual samples can deviate substantially from the true value, requiring more iterations to reach the same precision. That variance-for-speed tradeoff is the central theme of this chapter.[^sutton2018]
 
 ---
 
@@ -123,9 +95,7 @@ Three qualitatively new features appear:
 - **Pair hands** — the hand ranking now depends on the community card; a Jack can become the best hand if a Jack is dealt on the board.
 - **Larger bet sizes in later rounds** — the 4-chip raise in round 2 means decisions in later rounds carry more weight.
 
-Despite being ~78× larger than Kuhn, Leduc remains small enough for exact computation (a full tree traversal takes ~50 ms). That makes it the ideal benchmark: large enough for performance differences to be meaningful, small enough that all algorithms can be run to near-convergence within minutes.
-
-> **Read more:** Southey, F. et al. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *UAI*.
+Despite being ~78× larger than Kuhn, Leduc remains small enough for exact computation (a full tree traversal takes ~50 ms). That makes it the ideal benchmark: large enough for performance differences to be meaningful, small enough that all algorithms can be run to near-convergence within minutes.[^southey2005]
 
 ---
 
@@ -153,13 +123,11 @@ Later iterations — which have lower regret and better strategies — contribut
 
 **Combined effect:** empirical convergence improves from $O(1/\sqrt{T})$ to approximately $O(1/T)$. CFR+ with 1,000 iterations achieves what vanilla CFR needs ~1,000,000 iterations for. This is what made it feasible to solve Heads-Up Limit Texas Hold'em in 2015. Note: while the $O(1/T)$ rate is consistently observed, it lacks a formal proof — Tammelin et al. give the algorithm but not a convergence theorem matching the observed rate.
 
-Empirically, on Leduc at 5,000 iterations CFR+ reaches exploitability ≈ 5.4×10⁻⁵ while vanilla CFR is still at ~7.6×10⁻³ — a ~140× improvement from three small modifications.
+Empirically, on Leduc at 5,000 iterations CFR+ reaches exploitability ≈ 5.4×10⁻⁵ while vanilla CFR is still at ~7.6×10⁻³ — a ~140× improvement from three small modifications.[^cfrplus]
 
 ![Leduc Poker — Exploitability vs Iterations](leduc_exploitability_iterations.png)
 
 ![Leduc Poker — Exploitability vs Wall-Clock Time](leduc_exploitability_time.png)
-
-> **Read more:** Tammelin, O. (2014). "Solving Large Imperfect Information Games Using CFR+." *AAAI*.
 
 ---
 
@@ -184,9 +152,7 @@ On Kuhn Poker's 12 information sets, all four algorithms (vanilla CFR, CFR+, bot
 
 ![Kuhn Poker — Exploitability vs Wall-Clock Time](kuhn_exploitability_time.png)
 
-To see the tradeoff emerge, the game tree has to be large enough that per-iteration cost matters. That is Leduc's role.
-
-> **Read more:** Lanctot, M., Waugh, K., Zinkevich, M. & Bowling, M. (2009). "Monte Carlo Sampling for Regret Minimization in Extensive Games." *NeurIPS*.
+To see the tradeoff emerge, the game tree has to be large enough that per-iteration cost matters. That is Leduc's role.[^mccfr]
 
 ---
 
@@ -246,21 +212,31 @@ Leduc sits 210× below the External Sampling crossover and 466× below the Outco
 
 ---
 
-## Connections to Step 2 and Forward Pointers
+## Connections to Chapter 2 and Forward Pointers
 
-**Same principle, different regime.** Step 2 established full-traversal CFR on Kuhn and proved that minimizing regret locally at each information set drives the global strategy to Nash equilibrium. Step 3 preserves that principle but introduces two independent refinements: CFR+ modifies how regrets accumulate (flooring + linear weighting), and MCCFR modifies how regrets are measured (sampled estimator instead of exact expectation). Both still output the **average** strategy, not the final iteration — the same averaging mechanism that stabilizes vanilla CFR stabilizes every variant.
+**Same principle, different regime.** Chapter 2 established full-traversal CFR on Kuhn and proved that minimizing regret locally at each information set drives the global strategy to Nash equilibrium. Chapter 3 preserves that principle but introduces two independent refinements: CFR+ modifies how regrets accumulate (flooring + linear weighting), and MCCFR modifies how regrets are measured (sampled estimator instead of exact expectation). Both still output the **average** strategy, not the final iteration — the same averaging mechanism that stabilizes vanilla CFR stabilizes every variant.
 
-**Convergence rates.** Step 2 measured a log-log slope near $-0.5$ for Kuhn's exploitability, confirming $O(1/\sqrt{T})$. Step 3 shows that this rate is a property of the algorithm family, not of any one implementation — only CFR+'s empirical $O(1/T)$ is faster, and it lacks a formal proof. MCCFR stays at $O(1/\sqrt{T})$ with a dramatically larger constant.
+**Convergence rates.** Chapter 2 measured a log-log slope near $-0.5$ for Kuhn's exploitability, confirming $O(1/\sqrt{T})$. Chapter 3 shows that this rate is a property of the algorithm family, not of any one implementation — only CFR+'s empirical $O(1/T)$ is faster, and it lacks a formal proof. MCCFR stays at $O(1/\sqrt{T})$ with a dramatically larger constant.
 
 **Forward:**
 
-- **Step 4 (Game Abstraction & Scaling)** — attacks scalability from the opposite direction: instead of sampling the tree, reduce the tree itself through state and action abstraction. Combines with MCCFR to make real poker tractable.
-- **Step 5 (Neural Equilibrium / Deep CFR)** — replaces tabular strategy storage with neural function approximators, using MCCFR's sampling framework as the data-generation engine. The variance properties established here explain why Deep CFR requires specific variance-reduction techniques (advantage networks, importance-weighted targets).
-- **Step 6 (End-to-End Game AI)** — builds on both CFR+ and MCCFR for complete agents. The Leduc engine built for this step becomes the benchmark environment through Step 8.
+- **Chapter 4 (Game Abstraction & Scaling)** — attacks scalability from the opposite direction: instead of sampling the tree, reduce the tree itself through state and action abstraction. Combines with MCCFR to make real poker tractable.
+- **Chapter 5 (Neural Equilibrium / Deep CFR)** — replaces tabular strategy storage with neural function approximators, using MCCFR's sampling framework as the data-generation engine. The variance properties established here explain why Deep CFR requires specific variance-reduction techniques (advantage networks, importance-weighted targets).
+- **Chapter 6 (End-to-End Game AI)** — builds on both CFR+ and MCCFR for complete agents. The Leduc engine built for this chapter becomes the benchmark environment through Chapter 8.[^brown2017]
 
-**Open questions:**
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
 
-- Why does CFR+ empirically achieve $O(1/T)$ when no proof matches that rate? The best current hypothesis is that regret flooring reshapes the trajectory of the regret-minimization dynamics in a way that classical convergence bounds do not capture.
-- At what tree size does variance reduction (weighted average sampling, variance-reduced MCCFR) become essential rather than optional? The crossover formula tells us where plain MCCFR wins — but not where it stops winning without additional tricks.
+[^cfrplus]: Tammelin, O. (2014). "Solving Large Imperfect Information Games Using CFR+." arXiv:1407.5042. The Heads-Up Limit Hold'em result is Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145-149.
 
-> **Read more:** Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS* — bridges tabular CFR with subgame decomposition for real poker.
+[^mccfr]: Lanctot, M., Waugh, K., Zinkevich, M. & Bowling, M. (2009). "Monte Carlo Sampling for Regret Minimization in Extensive Games." *Advances in Neural Information Processing Systems 22*, 1078-1086.
+
+[^bowling2015]: Bowling, M., Burch, N., Johanson, M. & Tammelin, O. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149.
+
+[^browne2012]: Browne, C. et al. (2012). "A Survey of Monte Carlo Tree Search Methods." *IEEE Transactions on Computational Intelligence and AI in Games*, 4(1), 1–43.
+
+[^sutton2018]: Sutton, R.S. & Barto, A.G. (2018). *Reinforcement Learning: An Introduction*, Chapter 5 — Monte Carlo Methods.
+
+[^southey2005]: Southey, F. et al. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *UAI*.
+
+[^brown2017]: Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS* — bridges tabular CFR with subgame decomposition for real poker.

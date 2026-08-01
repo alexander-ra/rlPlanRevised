@@ -4,9 +4,9 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 12 — Sequence Models and LLM Agents in Strategic Settings: Experiment Report
+# Chapter 12 — Sequence Models and LLM Agents in Strategic Settings: Experiment Report
 
-**Testbed:** Kuhn Poker (exact Nash and exact exploitability from Step 02), with a narrow port to
+**Testbed:** Kuhn Poker (exact Nash and exact exploitability from Chapter 02), with a narrow port to
 Leduc Hold'em as a complexity check.
 **Methods compared:** Nash-CFR · Behavioural Cloning · Decision Transformer · Adversarially Robust
 Decision Transformer (ARDT) · four LLM backends (offline stub, gpt-oss-20b, Qwen2.5-7B-Instruct,
@@ -30,7 +30,7 @@ Contribution #3 (evaluation methodology).
 
 ---
 
-## What this step is about
+## What this chapter is about
 
 Two post-classical ways to play a game. **Sequence modelling** reframes RL as conditional sequence
 prediction: feed a GPT-style model `(return-to-go, state, action)` triples and predict the next
@@ -41,7 +41,7 @@ entirely: give a language model the rules in English and let it play.
 
 Kuhn Poker is the shared testbed because its Nash equilibrium and exploitability are *exactly*
 computable, so every method gets a ground-truthed score rather than an anecdote. All methods are
-coerced into Step 02's 12-info-set strategy format and measured with the same exact metric.
+coerced into Chapter 02's 12-info-set strategy format and measured with the same exact metric.
 
 ## The headline comparison
 
@@ -55,7 +55,7 @@ Exploitability in chips (lower is closer to Nash); SMOKE profile, offline stub f
 | Decision Transformer | 0.7992 | 799.2 | 1.00 | 0.64 |
 | LLM (stub) × 3 prompt styles | 0.8333 | 833.3 | 1.00 | 1.00 |
 
-![Exploitability by method on the exact Kuhn metric — plain behavioural cloning, included only as a contrast baseline, beats both of the methods this step is named after.](figures/impl_exploitability_bars_stub.png)
+![Exploitability by method on the exact Kuhn metric — plain behavioural cloning, included only as a contrast baseline, beats both of the methods this chapter is named after.](figures/impl_exploitability_bars_stub.png)
 
 **The two methods the step is about finish last.** Plain behavioural cloning — the simplest possible
 baseline — lands within 0.04 chips of Nash and beats the return-conditioned Decision Transformer by
@@ -153,7 +153,7 @@ first", giving an out-of-distribution policy — a boundary documented in the co
 | `2b` (Queen, facing a bet) | 0.253 | 0.347 | 0.094 | 13.1% |
 | `3` (King, root) | 1.000 | 0.561 | **0.439** | **0.1%** |
 
-This **corrects a headline stated earlier in this step**. "Every LLM value-bets the King at 1.00
+This **corrects a headline stated earlier in this chapter**. "Every LLM value-bets the King at 1.00
 where Nash mixes at 0.68" was reported as a signature failure — it costs **0.1%** of the leak.
 Over-betting a hand that is never behind is nearly free. The damage is one Queen node: always
 betting the Queen after the opponent checks is **41.4%** of total exploitability, and repairing that
@@ -284,7 +284,7 @@ temperature 0.7 the frequencies become intermediate and the illegal-move rate be
 
 ## Trustworthiness and sample adequacy
 
-Four results in this step looked like discoveries and were measurement artefacts (R5, R6, a seat-0
+Four results in this chapter looked like discoveries and were measurement artefacts (R5, R6, a seat-0
 return that was 1.7 SE of sampling noise, and a Leduc trend that vanished at 20× the hands). Each was
 caught by a cheap consistency check against something exactly computable — an exact game value, an
 exact best-response ceiling, a standard error, or a probability-mass conservation diagnostic.
@@ -312,8 +312,8 @@ committed artifact `results/comparison_SMOKE_stub.json`; the qualitative orderin
    to say the Kuhn advantage does not transfer; not enough to rank models on Leduc.
 2. **ARDT is a documented simplification of the published method** — single-sided, state-only
    `V(s)` instead of the coupled state-action `Q̃(s,a)`. Targets #3–4 test the proxy, not ARDT.
-3. **No exact Leduc exploitability.** Leduc's metric lives in Step 03, whose package is also named
-   `cfr` and collides with Step 02's; chips/hand against near-Nash was used instead.
+3. **No exact Leduc exploitability.** Leduc's metric lives in Chapter 03, whose package is also named
+   `cfr` and collides with Chapter 02's; chips/hand against near-Nash was used instead.
 4. **Kuhn results are SMOKE-profile** (5,000 trajectories, 5,000 CFR iterations, small networks). The
    qualitative ordering is robust, but absolute values would shift at scale.
 5. **Logprob extraction is validated for plain prompts only**; CoT figures come from sampling.
@@ -326,7 +326,7 @@ committed artifact `results/comparison_SMOKE_stub.json`; the qualitative orderin
 **Conclusions.** Return conditioning does not steer a Decision Transformer in poker, on either of two
 games, and the reason is not the size of the payoff alphabet: in a zero-sum imperfect-information
 game the realised return is dominated by factors the agent does not control. Plain behavioural
-cloning beats both of the methods this step is named after. LLMs get hand ranking right and mixing
+cloning beats both of the methods this chapter is named after. LLMs get hand ranking right and mixing
 frequencies wrong, cannot verbalise the strategy they actually play, do not learn opponents from
 observed play, and lose their apparent competence when the game grows by one street.
 
@@ -334,10 +334,10 @@ observed play, and lose their apparent competence when the game grows by one str
 
 - *Replace ARDT's state-only relabeling with the paper's coupled state-action estimators* (Eqs. 8–11
   plus the Algorithm-1 warm-up). This is the named, evidence-backed reason the proxy underperforms
-  and the change to make before Step 13's fixed logs.
+  and the change to make before Chapter 13's fixed logs.
 - *Treat return-conditioned DT as the wrong instrument for offline poker* — the value of ARDT's
   relabeling is precisely that it swaps an uncontrollable conditioning target for a controllable one.
-- *Report per-decision decompositions rather than a scalar* in the Step 14 evaluation framework;
+- *Report per-decision decompositions rather than a scalar* in the Chapter 14 evaluation framework;
   deviation magnitude is not a proxy for cost.
 - *Probe behaviour rather than asking* in any LLM-based opponent-modelling component.
 - *Test the one-line Leduc prompt fix* ("you may check for free") before drawing any conclusion about

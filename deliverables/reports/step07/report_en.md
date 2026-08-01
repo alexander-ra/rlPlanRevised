@@ -4,10 +4,10 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 07 — Opponent Modeling in Imperfect-Information Games
+# Chapter 07 — Opponent Modeling in Imperfect-Information Games
 
-**Games:** Kuhn Poker (3-card, 2-player) and Leduc Hold'em (6-card, 2-round) — the smallest exact-solvable imperfect-information testbeds, reusing the Step 02 Kuhn engine + CFR solver and the Step 03 Leduc engine.
-**PhD connection:** **Contribution #1 (Behavioral Adaptation Framework)** — an opponent model is the *sensor* that turns observed actions into an estimate of the opponent's strategy; the adaptive exploiter is a first *actuator*, which Step 08 formalizes into safe (KL-regularized) exploitation.
+**Games:** Kuhn Poker (3-card, 2-player) and Leduc Hold'em (6-card, 2-round) — the smallest exact-solvable imperfect-information testbeds, reusing the Chapter 02 Kuhn engine + CFR solver and the Chapter 03 Leduc engine.
+**PhD connection:** **Contribution #1 (Behavioral Adaptation Framework)** — an opponent model is the *sensor* that turns observed actions into an estimate of the opponent's strategy; the adaptive exploiter is a first *actuator*, which Chapter 08 formalizes into safe (KL-regularized) exploitation.
 **Scope of results:** Part I is a sequence of seeded Kuhn-Poker experiments that build intuition. Part II is a full evaluation on both games (5 seeds, 20 000-hand matches, Nash baselines at 200 000 / 40 000 CFR iterations). All figures are measured from these runs and are bounded, wherever possible, by *exact* analytical references rather than simulated ones.
 
 > **How to read this report.** Both parts follow the same arc: **what we test → how we test it → results → conclusions.** **Part I (§1–§6)** studies the type-based Bayesian model in isolation on Kuhn — what an opponent "type" looks like, why modeling is worth doing, and how the belief-update loop behaves (including where it fails). **Part II (§7–§13)** evaluates the full system — three opponent models and an adaptive exploiter — on Kuhn and Leduc. §14 lists reproduction commands.
@@ -16,7 +16,7 @@ BG: Изследване на възможностите за приложени
 
 # PART I — EXPLORATION ON KUHN POKER
 
-## 1. What this step is about
+## 1. What this chapter is about
 
 A **Nash-equilibrium** strategy is built never to lose in the long run, *no matter who it plays*. That safety has a price: it plays identically against a world champion and against someone who folds every time you bet. **Opponent modeling** is the act of *watching how a specific opponent actually plays* and updating a belief about their strategy, so we can **deviate from Nash to exploit their mistakes** — bluff more against someone who folds too much, value-bet thinner against someone who calls too much.
 
@@ -35,7 +35,7 @@ Four ground-truth types serve both as the opponents we play against and as the c
 | **AlwaysCall** | Calling station — never bets, never folds (checks an open pot, calls any bet). |
 | **TightPassive** | Rock — only commits chips with the nuts (K); folds everything else. The most exploitable type. |
 | **LooseAggressive** | Maniac — always bets / calls, regardless of hand. |
-| **Nash** | Balanced equilibrium play (from the Step 02 CFR solver); mixes its actions; unexploitable. |
+| **Nash** | Balanced equilibrium play (from the Chapter 02 CFR solver); mixes its actions; unexploitable. |
 
 ---
 
@@ -162,11 +162,11 @@ A tempting shortcut — a **hard** per-hand tally (pick the single best-fitting 
 
 ## 6. What Part I establishes
 
-The exploration surfaces, with a concrete measured face, the tension that Steps 07–08 exist to resolve:
+The exploration surfaces, with a concrete measured face, the tension that Chapters 07–08 exist to resolve:
 
 1. **The value is real (Exp. 2):** blind Nash leaves 0.1–0.3 per hand on the table against exploitable opponents — modeling is worth doing.
 2. **A model can be confident *and* wrong for a long time (Exp. 3):** in ~13% of 500-hand runs the detector confidently believed the wrong type past hand 100, and a stereotype menu cannot represent an out-of-menu opponent (Exp. 3–4).
-3. **Therefore exploitation must be regularized.** One must not best-respond to whatever the model currently believes; the lean toward exploitation has to be bounded (e.g. KL-regularized) and scaled to how *earned* the read is. Part I turns that abstract principle into a demonstrated failure mode; Part II measures it at full scale, and Step 08 builds the safe actuator.
+3. **Therefore exploitation must be regularized.** One must not best-respond to whatever the model currently believes; the lean toward exploitation has to be bounded (e.g. KL-regularized) and scaled to how *earned* the read is. Part I turns that abstract principle into a demonstrated failure mode; Part II measures it at full scale, and Chapter 08 builds the safe actuator.
 
 ---
 
@@ -241,7 +241,7 @@ Realized mean profit per hand over 20 000-hand matches (×5 seeds), against the 
 1. **You cannot exploit an equilibrium.** Against the Nash opponent every model earns ≈ the (negative) Nash EV, never more — the exact ceiling *is* essentially the game value. This confirms the exploitation is real, not an artifact. (Where a realized number sits a hair *above* its ceiling — e.g. continuous −0.053 vs the −0.055 Kuhn Nash ceiling — the excess is finite-sample noise within ±1 SE, not a real breach: the exact ceiling cannot actually be beaten.)
 2. **A confident-but-underfit model makes *you* exploitable.** On Leduc the continuous model *loses* to Nash (−0.175 vs the −0.083 ceiling): with imperfect data it best-responds to a *wrong* estimate of an unexploitable opponent, opening a leak in its own play.
 
-**Conclusion.** When the model class fits, best response reaches the exact extractable ceiling — modeling delivers the full theoretical value. When it does not (continuous on Leduc's many info sets), two costs appear: money left on the table against exploitable opponents, and — more dangerously — a *negative* result against an opponent who cannot be exploited at all. That second cost is the exploitation-vs-safety tension in numbers, and the direct motivation for Step 08's KL-regularized safe exploitation.
+**Conclusion.** When the model class fits, best response reaches the exact extractable ceiling — modeling delivers the full theoretical value. When it does not (continuous on Leduc's many info sets), two costs appear: money left on the table against exploitable opponents, and — more dangerously — a *negative* result against an opponent who cannot be exploited at all. That second cost is the exploitation-vs-safety tension in numbers, and the direct motivation for Chapter 08's KL-regularized safe exploitation.
 
 ---
 
@@ -263,7 +263,7 @@ The result is **scenario-dependent**, which is itself the finding. Mean profit/h
 - **Kuhn — change-point wins.** The stale anti-rock strategy (bluff-heavy) *actively loses* to the new maniac (who calls everything), so the static model goes negative on every seed (−0.077 to −0.122); detecting the switch and re-learning recovers to +0.21 (all seeds +0.18 to +0.24). The two bands do not overlap.
 - **Leduc — change-point loses.** The maniac leaks 2+/hand, so the continuously-adapting static model exploits it well without any reset (+1.83); meanwhile the detector fires many **false positives** during the stable phase (58–59 resets per seed against a single true switch), each dropping to safe play and discarding data, and lands three-and-a-half times lower (+0.55). Again the seed bands are cleanly separated.
 
-**Conclusion.** Change-point forgetting rescues you exactly when a stale model is *harmful*, but its naive form — a low-signal detector that false-triggers, plus a full reset-to-safe on every detection — can underperform simple continuous adaptation when the new opponent is exploitable enough that staleness costs little. The *reaction* to a detected change matters as much as the detection: cheaper responses (partial forgetting instead of a hard reset; a less trigger-happy detector) are the clear next step.
+**Conclusion.** Change-point forgetting rescues you exactly when a stale model is *harmful*, but its naive form — a low-signal detector that false-triggers, plus a full reset-to-safe on every detection — can underperform simple continuous adaptation when the new opponent is exploitable enough that staleness costs little. The *reaction* to a detected change matters as much as the detection: cheaper responses (partial forgetting instead of a hard reset; a less trigger-happy detector) are the clear next chapter.
 
 ---
 
@@ -304,7 +304,7 @@ Ranked by how much they qualify the conclusions:
 
 **Research directions** (each now motivated by a measured effect above):
 
-- **Safe (KL-regularized) exploitation.** The continuous model's Nash self-leak (§9) is the exploitation-vs-safety tension made empirical — the concrete hand-off into **Step 08** and thesis **Contribution #2**: bound the best response's deviation from Nash by the model's own confidence, so an underfit model cannot open a leak.
+- **Safe (KL-regularized) exploitation.** The continuous model's Nash self-leak (§9) is the exploitation-vs-safety tension made empirical — the concrete hand-off into **Chapter 08** and thesis **Contribution #2**: bound the best response's deviation from Nash by the model's own confidence, so an underfit model cannot open a leak.
 - **Confidence-scaled forgetting instead of a hard reset (§10).** A forgetting factor, or a reset whose depth scales with detection confidence, should dominate the current reset-to-safe.
 - **A better change-point signal (§10, §12).** Per-info-set likelihood-ratio monitoring or a multivariate detector over several behavioral features would cut the false-positive rate that currently sinks change-point on Leduc.
 - **Misspecified / out-of-menu opponents (§12).** Because well-specified detection is saturated, the interesting regime is opponents *not* in the menu (mixtures, drift, adversarial). This is where the non-parametric and sequence-form models should separate from type-based, and where a "none of my types fit" detector (open-world type discovery) becomes its own question — the smallest version of which Part I (§4.2, §5) already exhibits on Kuhn.

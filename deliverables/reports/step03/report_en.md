@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 03 — CFR Variants & Monte Carlo Methods: Implementation Report
+# Chapter 03 — CFR Variants & Monte Carlo Methods: Implementation Report
 
 **Environment:** April 2026
 **Game:** Leduc Poker (6-card, 2-player, 2 betting rounds)
@@ -113,11 +113,11 @@ Iterative information-set-constrained best response: for each player, computes t
 
 ### 4.1 Kuhn Poker — 5,000 iterations
 
-All four OpenSpiel algorithms plus the Step 02 custom CFR, run for sanity checking at small scale.
+All four OpenSpiel algorithms plus the Chapter 02 custom CFR, run for sanity checking at small scale.
 
 | Algorithm | Exploitability | Time |
 |-----------|---------------|------|
-| Custom CFR (Step 02) | ~3.5×10⁻⁴ | < 1 s |
+| Custom CFR (Chapter 02) | ~3.5×10⁻⁴ | < 1 s |
 | OpenSpiel CFR | ~1.5×10⁻³ | ~2 s |
 | CFR+ | ~3.0×10⁻⁴ | ~2 s |
 | External Sampling MCCFR | ~4×10⁻³ | ~1 s |

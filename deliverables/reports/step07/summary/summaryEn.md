@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 7 Summary — Opponent Modeling in Imperfect-Information Games"
+title: "Chapter 7 Summary — Opponent Modeling in Imperfect-Information Games"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
@@ -13,27 +13,26 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 7 — Opponent Modeling in Imperfect-Information Games
+# Chapter 7 — Opponent Modeling in Imperfect-Information Games
 
 This is a ground-up chapter on opponent modeling: the problem, the mathematics, the family of
-methods, and a set of controlled experiments run on two small poker games. It serves two
-purposes — a self-contained refresher while later steps build on it, and a primary source for
-the Step 15 public synthesis. It is written to be read on its own; no prior familiarity with
+methods, and a set of controlled experiments run on two small poker games. It is written to be
+read on its own; no prior familiarity with
 the project's code is assumed. All experimental numbers reported here were measured on
 reproducible runs of the two testbeds (Kuhn Poker and Leduc Hold'em) and are bounded, wherever
 possible, by *exact* analytical references rather than simulated ones.
 
-**Where this sits in the thesis.** A game-theoretic agent from the earlier steps computes a
-*Nash equilibrium* — a strategy that cannot be beaten in the long run. This step builds the
+**Where this sits in the thesis.** A game-theoretic agent from the earlier chapters computes a
+*Nash equilibrium* — a strategy that cannot be beaten in the long run. This chapter builds the
 opposite capability: a **sensor** that watches how a *specific* opponent actually plays and
 turns those observations into an estimate of their strategy, so the agent can deviate from
 equilibrium to punish that opponent's mistakes. That sensor is the first half of the thesis's
 Behavioral Adaptation Framework (Contribution #1). The second half — how to exploit *safely*,
-without opening a hole in your own play — is formalized in Step 8.
+without opening a hole in your own play — is formalized in Chapter 8.
 
 ---
 
-## 1. Why Opponent Modeling — the money Nash leaves on the table
+## Why Opponent Modeling
 
 A **Nash equilibrium** strategy is built never to lose in the long run, *no matter who it
 plays*. In a two-player zero-sum game that guarantee is real and valuable: an equilibrium
@@ -55,7 +54,7 @@ aren't enough), and if you **over-commit** to paper you become predictable and t
 with scissors. Inferring the bias is opponent modeling; knowing how far to lean is the
 exploitation-versus-safety tradeoff that runs through everything below.
 
-![The safety-exploitation dial: pure equilibrium play is unexploitable but blind; a hard best response extracts the most value but is maximally risky. Opponent modeling operates in between. Step 7 builds the sensor (the model); Step 8 builds the actuator (safe exploitation).](spectrum_safety_exploitation.png)
+![The safety-exploitation dial: pure equilibrium play is unexploitable but blind; a hard best response extracts the most value but is maximally risky. Opponent modeling operates in between. Chapter 7 builds the sensor (the model); Chapter 8 builds the actuator (safe exploitation).](spectrum_safety_exploitation.png)
 
 ### How much is at stake — measured on Kuhn Poker
 
@@ -85,13 +84,11 @@ first-player disadvantage of $-1/18 \approx -0.056$ — that is the game, not an
 Two lessons are already visible. First, **modeling is worth doing**: the value is large and
 real. Second, **exploitation is directional** — the exact best response to a rock *bluffs more*
 (it bets the weakest hand into an open pot, because the rock folds everything but the King). The
-rest of this chapter is about earning that value without giving it back.
-
-> **Read more:** Southey, F. et al. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *UAI*.
+rest of this chapter is about earning that value without giving it back.[^southey2005]
 
 ---
 
-## 2. The Bayesian Core — belief, evidence, response
+## The Bayesian Core — belief, evidence, response
 
 Underneath every method in this chapter is one loop, and it is worth stating in plain language
 before any notation. You are a detective. You start with a hunch about how the opponent plays (a
@@ -166,13 +163,11 @@ Your expected payoff against a *distribution* of opponent strategies equals your
 the single averaged strategy. That collapses an intractable integral over strategy space into
 "best-respond to one averaged opponent," and it is what makes Bayesian exploitation practical.
 (Section 5 revisits this: responding to the mean is payoff-optimal but, as it turns out, can fail
-to *converge* to the opponent's true strategy — the subtlety the 2025 work resolves.)
-
-> **Read more:** Ganzfried, S. & Sun, Q. (2016/2018). "Bayesian Opponent Exploitation in Imperfect-Information Games." *IEEE CIG*. (Theorem 2.1: respond to the posterior mean.)
+to *converge* to the opponent's true strategy — the subtlety the 2025 work resolves.)[^ganzfried2016]
 
 ---
 
-## 3. Seeing Through a Keyhole — the partial-observability problem
+## Seeing Through a Keyhole — the partial-observability problem
 
 There is a reason opponent modeling in poker is harder than counting frequencies in
 rock-paper-scissors, and it deserves its own section because it shapes every model that follows.
@@ -205,7 +200,7 @@ object the consistency theory of Section 5 is built around.
 
 ---
 
-## 4. Three Models, One Interface
+## Three Models, One Interface
 
 There is no single "opponent model." There is a family, trading off convergence speed,
 robustness to surprises, interpretability, and compute. This project implements and compares
@@ -242,15 +237,13 @@ The following table is the mental map to carry forward:
 The obvious question — *which one should the thesis use?* — does not have a single answer, and
 that is itself a finding. The natural target is a **hybrid**: lean on structural priors (types)
 when data is sparse, and converge toward the consistent estimate as evidence accumulates. This
-chapter builds and measures the endpoints so that the hybrid has firm ground to stand on.
-
-> **Read more:** Bard, N. (2013). "Online Implicit Agent Modelling." *AAMAS* — the explicit-vs-implicit axis that frames this taxonomy.
+chapter builds and measures the endpoints so that the hybrid has firm ground to stand on.[^bard2013]
 
 ---
 
-## 5. The Consistency Problem and the Sequence-Form Fix
+## The Consistency Problem and the Sequence-Form Fix
 
-This section is the theoretical frontier of the step and the piece the thesis most directly
+This section is the theoretical frontier of the chapter and the piece the thesis most directly
 extends. It answers a question the earlier models quietly beg: *if a model fits the observed
 behavior well, have we actually recovered the opponent's true strategy?* The surprising answer
 is **not necessarily — even with infinite data** — and there is a principled fix.
@@ -337,14 +330,12 @@ real-time, hand-by-hand match that is impractical in its naive form. Rather than
 this as the *empirical answer* to a question the step poses explicitly — *is a per-update convex
 solve fast enough for real-time play?* — namely **not without incremental methods** (warm-starting
 each solve from the last, caching the per-hand terms), which is exactly the kind of approximation
-Step 8 takes up. The understanding and the recovery result are what the thesis needs from this
-model now; the online engineering is future work.
-
-> **Read more:** Ganzfried, S. (2025). "Consistent Opponent Modeling in Imperfect-Information Games." *arXiv:2508.17671*.
+Chapter 8 takes up. The understanding and the recovery result are what the thesis needs from this
+model now; the online engineering is future work.[^ganzfried2025]
 
 ---
 
-## 6. When a Model Is Confident and Wrong
+## When a Model Is Confident and Wrong
 
 Section 5 was about a subtle failure with infinite data. This section is about a blunt failure
 with finite data, and it is the one that most directly motivates *safe* exploitation. It is a
@@ -391,11 +382,11 @@ certain is how you hurt yourself.
 The honest fix is not a bigger menu — it is to stop asking "which single type?" and to lean on
 models that can represent blends (the continuous and consistent models of Sections 4-5), and to
 **scale how hard you exploit to how well-earned the read is**. That principle is the through-line
-into the next two sections and into Step 8.
+into the next two sections and into Chapter 8.
 
 ---
 
-## 7. From Model to Money — best response, the ceiling, and a self-inflicted leak
+## From Model to Money — best response, the ceiling, and a self-inflicted leak
 
 A model is only useful if acting on it wins. To measure that cleanly we feed each model's
 estimate into the **same** exact best response and play full matches on both games, bracketing
@@ -451,19 +442,17 @@ Two results carry the message, and the second is the important one:
 This is the exploitation-versus-safety tension in a single number. When the model class fits,
 best response extracts the full theoretical value; when it does not, the agent both leaves money
 on the table *and* — more dangerously — hands some back. That second cost is precisely what
-Step 8's safety mechanism (bounding the deviation from Nash by the model's own confidence) exists
+Chapter 8's safety mechanism (bounding the deviation from Nash by the model's own confidence) exists
 to prevent.
 
 The differences here are not seed luck. Across five seeds the standard error of per-hand profit
 is tiny relative to the effects: the type-based model is statistically indistinguishable from the
 ceiling on every type in both games, and the continuous model's Leduc shortfall and its Nash
-self-leak are many standard errors wide.
-
-> **Read more:** Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM EC* — the safety half of the dial, and the anchor for Step 8.
+self-leak are many standard errors wide.[^ganzfried2015]
 
 ---
 
-## 8. Adapting to Change — non-stationary opponents
+## Adapting to Change — non-stationary opponents
 
 Everything so far assumed a fixed opponent. Real opponents drift and adapt, and a model that
 learned patiently for ten thousand hands is worse than useless the moment its subject changes
@@ -499,15 +488,15 @@ The lesson is not "change detection is good" or "bad" — it is that **the react
 change matters as much as the detection**. A trigger-happy detector paired with a full
 reset-to-safe can cost more than staleness when the new opponent is exploitable enough that
 staleness is cheap. Cheaper, gentler responses — partial forgetting instead of a hard reset, a
-less nervous detector — are the clear next step, and they connect directly to Step 8's
+less nervous detector — are the clear next chapter, and they connect directly to Chapter 8's
 confidence-scaled exploitation. (This experiment was run at a single seed, so read the *direction*
 as robust and the exact magnitudes as illustrative.)
 
 ---
 
-## 9. Connections and Forward Pointers
+## Connections and Forward Pointers
 
-**What this step establishes.** A good opponent model is *necessary but not sufficient* for
+**What this chapter establishes.** A good opponent model is *necessary but not sufficient* for
 profitable, safe adaptation. When the model class fits the opponent, best response reaches the
 exact extractable ceiling — the full theoretical value of modeling is realized. But under
 partial observability and limited data, an underfit model both leaves money on the table and,
@@ -516,35 +505,32 @@ Non-stationarity adds a second edge: forgetting a stale model helps only when st
 actively harmful, and a careless detector's false alarms can cost more than they save. One
 principle recurs across all of it: **exploitation must be scaled to how well-earned the read is.**
 
-**Backward connections.** This step is the mirror image of the equilibrium work that preceded it.
+**Backward connections.** This chapter is the mirror image of the equilibrium work that preceded it.
 Where an equilibrium strategy *ignores* the opponent's identity by design, an opponent model is
 the machinery that *uses* it — the two are the endpoints of the safety-exploitation spectrum. The
-sampling machinery that earlier steps used to traverse a game tree according to the *current*
+sampling machinery that earlier chapters used to traverse a game tree according to the *current*
 strategy reappears here to reason over an opponent's actions according to the *inferred* model.
 And the idea of grouping many concrete situations into a few representative buckets — abstraction
 — is exactly what the type-based model does in strategy space.
 
-**Forward to Step 8 and the thesis.** This step built the **sensor**; Step 8 builds the
+**Forward to Chapter 8 and the thesis.** This chapter built the **sensor**; Chapter 8 builds the
 **actuator** — the mechanism that turns a model into *safe* exploitation, bounding how far you
 deviate from equilibrium by how much your read has earned. The continuous model's self-inflicted
 leak against Nash (Section 7) is the empirical case for that mechanism; the confident-but-wrong
 sweep (Section 6) sets its budget; the consistency theory (Section 5) is the principled backbone
-the framework extends.
+the framework extends.[^shoham2008]
 
-**Open questions carried forward.**
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
 
-- *Consistency at real-time speed.* The consistent model is principled and accurate but its
-  per-update convex solve does not yet fit an online match. Incremental solving (warm starts,
-  cached terms) or Step 8's subgame approximations are the routes to a usable real-time version.
-- *Non-stationarity, properly.* All three models assume a stationary opponent for their
-  guarantees. Confidence-scaled forgetting and better change signals are the immediate next work;
-  a full theoretical treatment is a thesis-scale target.
-- *Out-of-menu opponents.* Well-specified detection is the easy case. The interesting regime is
-  opponents *outside* any menu — mixtures, drift, adversaries — where the non-parametric and
-  sequence-form models should separate from the type-based one, and where an explicit "none of my
-  types fit" signal becomes its own research question.
-- *From one opponent to many.* Against several opponents at once, the jointly-optimal response is
-  not the combination of individual best responses, and the convex guarantee of Section 5 no
-  longer holds. Multi-opponent modeling is the bridge to the later multi-agent steps.
+[^southey2005]: Southey, F. et al. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *UAI*.
 
-> **Read more:** Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Ch. 7 "Learning and Teaching" — the learning-in-repeated-games framing under all of the above, including the tension that your actions both *exploit* and *teach* the opponent.
+[^ganzfried2016]: Ganzfried, S. & Sun, Q. (2016/2018). "Bayesian Opponent Exploitation in Imperfect-Information Games." *IEEE CIG*. (Theorem 2.1: respond to the posterior mean.)
+
+[^bard2013]: Bard, N. (2013). "Online Implicit Agent Modelling." *AAMAS* — the explicit-vs-implicit axis that frames this taxonomy.
+
+[^ganzfried2025]: Ganzfried, S. (2025). "Consistent Opponent Modeling in Imperfect-Information Games." *arXiv:2508.17671*.
+
+[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM EC* — the safety half of the dial, and the anchor for Chapter 8.
+
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Ch. 7 "Learning and Teaching" — the learning-in-repeated-games framing under all of the above, including the tension that your actions both *exploit* and *teach* the opponent.

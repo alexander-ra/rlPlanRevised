@@ -4,14 +4,14 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 7 One-Pager — Opponent Modeling"
+title: "Chapter 7 One-Pager — Opponent Modeling"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
 lang: en
 ---
 
-# Step 7 One-Pager — Opponent Modeling in Imperfect-Information Games
+# Chapter 7 One-Pager — Opponent Modeling in Imperfect-Information Games
 
 **Problem.** A Nash-equilibrium strategy is unexploitable but blind: it plays identically
 against everyone and never punishes a weak opponent. Opponent modeling is the sensor that turns
@@ -48,10 +48,10 @@ exactly solvable, so every result is bracketed by exact analytical references.
   detection.
 - *Consistency.* The consistent model recovers Kuhn strategies accurately (TV ~0.004-0.021) but
   its per-update convex solve is too costly for the online loop as built — an empirical answer to
-  the step's real-time-feasibility question, pointing to incremental solving / Step 8
+  the step's real-time-feasibility question, pointing to incremental solving / Chapter 8
   approximations.
 
-**Thesis connection.** Step 7 builds the **sensor** (the model); Step 8 builds the **actuator**
+**Thesis connection.** Chapter 7 builds the **sensor** (the model); Chapter 8 builds the **actuator**
 (safe, KL-regularized exploitation). The continuous model's Nash self-leak is the empirical case
 for that safety mechanism; the consistency theory is the principled backbone the framework
 extends.

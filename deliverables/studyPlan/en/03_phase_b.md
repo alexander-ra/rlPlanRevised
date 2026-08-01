@@ -1,10 +1,10 @@
-## 3. Phase B — Scaling the Toolbox (Steps 3–4)
+## 3. Phase B — Scaling the Toolbox (Chapters 3–4)
 
 ### 3.1 Phase Overview
 
 Phase A established a working CFR^15^ solver on the minimal Kuhn Poker^19^ benchmark, but vanilla CFR requires a full traversal of the game tree on every iteration — an approach that becomes infeasible as games grow. This phase will introduce two complementary scaling mechanisms: Monte Carlo sampling methods that reduce per-iteration cost, and game abstraction techniques that reduce the game tree itself. These tools are needed to bridge the gap between toy benchmarks and the medium-scale games on which later thesis work will be developed.
 
-### 3.2 Step 3 — CFR Variants and Monte Carlo Methods
+### 3.2 Chapter 3 — CFR Variants and Monte Carlo Methods
 
 **Contribution Alignment.** Monte Carlo CFR variants will provide the computationally tractable equilibrium computation needed for medium-scale games, which will underpin the empirical work in later contributions. CFR+ accelerates convergence, enabling equilibrium computation for games beyond the reach of vanilla CFR. Understanding the variance characteristics of different sampling schemes will inform later design decisions in opponent modeling.
 
@@ -21,9 +21,9 @@ Phase A established a working CFR^15^ solver on the minimal Kuhn Poker^19^ bench
 - Implement CFR+ with regret flooring, alternating updates, and linear averaging; demonstrate approximately ten-fold convergence speedup over vanilla CFR on Kuhn Poker.
 - Compare convergence profiles of all variants: exploitability^3^ versus iterations and versus wall time.
 
-### 3.3 Step 4 — Game Abstraction and Scaling Imperfect-Information Games
+### 3.3 Chapter 4 — Game Abstraction and Scaling Imperfect-Information Games
 
-**Contribution Alignment.** This step will study how game abstraction — both lossless and lossy — affects the quality of computed equilibria, and how subgame solving^22^ can refine strategies during play. These techniques are directly relevant to later work on safe exploitation (where abstraction quality bounds exploitation risk) and opponent modeling (where abstraction granularity determines the ability to distinguish opponent types).
+**Contribution Alignment.** This chapter will study how game abstraction — both lossless and lossy — affects the quality of computed equilibria, and how subgame solving^22^ can refine strategies during play. These techniques are directly relevant to later work on safe exploitation (where abstraction quality bounds exploitation risk) and opponent modeling (where abstraction granularity determines the ability to distinguish opponent types).
 
 **Literature.**
 

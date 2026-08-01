@@ -54,11 +54,16 @@ def log(msg: str) -> None:
         pass
 
 
-def worklist() -> list[dict]:
+def worklist(only_steps: set[str] | None = None,
+             only_kinds: set[str] | None = None) -> list[dict]:
     items = []
     for i in range(1, 13):
         step = f"step{i:02d}"
+        if only_steps and step not in only_steps:
+            continue
         for kind, rel in ORDER:
+            if only_kinds and kind not in only_kinds:
+                continue
             p = REPORTS / step / rel
             if not p.exists():
                 continue
@@ -74,7 +79,7 @@ def worklist() -> list[dict]:
 class State:
     """Atomically-written run state; the dashboard is a pure reader."""
 
-    def __init__(self, items: list[dict]):
+    def __init__(self, items: list[dict], resume: bool = True):
         self.d = {
             "started": time.time(),
             "heartbeat": time.time(),
@@ -89,7 +94,7 @@ class State:
             "tokens_out": 0, "requests": 0, "tps_series": [],
             "retries": 0, "failures": 0, "reverted": 0,
         }
-        if STATE.exists():                       # resume
+        if resume and STATE.exists():            # resume
             try:
                 old = json.loads(STATE.read_text(encoding="utf-8"))
                 for k, v in old.get("files", {}).items():
@@ -122,10 +127,24 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
+    # A single English source is edited far more often than the whole corpus is
+    # retranslated, and a full run takes hours. --only/--kind make the common
+    # case a targeted job instead of a resume-and-skip through 34 files.
+    ap.add_argument("--only", default="", metavar="stepNN[,stepNN]",
+                    help="restrict to these steps")
+    ap.add_argument("--kind", default="", metavar="onePager|summary|report",
+                    help="restrict to these document kinds")
+    ap.add_argument("--fresh", action="store_true",
+                    help="ignore recorded completion for the selected files")
     a = ap.parse_args()
 
     OUT.mkdir(parents=True, exist_ok=True)
-    items = worklist()
+    steps = {s.strip() for s in a.only.split(",") if s.strip()} or None
+    kinds = {k.strip() for k in a.kind.split(",") if k.strip()} or None
+    items = worklist(steps, kinds)
+    if not items:
+        print(f"nothing selected (--only {a.only!r} --kind {a.kind!r})", file=sys.stderr)
+        return 1
     if a.limit:
         items = items[:a.limit]
 
@@ -137,7 +156,7 @@ def main() -> int:
             print(f"  {x['step']} {x['kind']:<9} {x['words']:6,}w   {act} {t.name}")
         return 0
 
-    st = State(items)
+    st = State(items, resume=not a.fresh)
     recent: deque = deque(maxlen=60)
 
     def sink(s):                                  # live tokens/sec

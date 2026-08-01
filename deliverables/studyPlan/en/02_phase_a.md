@@ -1,12 +1,12 @@
-## 2. Phase A — Foundation (Steps 1–2)
+## 2. Phase A — Foundation (Chapters 1–2)
 
 ### 2.1 Phase Overview
 
 This phase covers the foundational material required for all subsequent work: reinforcement learning basics (value estimation, policy optimization, experience replay) and game-theoretic fundamentals (extensive-form games, Nash equilibrium computation, and exploitability measurement). A solid command of both domains is essential before proceeding to the more specialized topics of later phases.
 
-### 2.2 Step 1 — Reinforcement Learning Basics
+### 2.2 Chapter 1 — Reinforcement Learning Basics
 
-**Contribution Alignment.** The reinforcement learning methods studied in this step — value estimation, policy gradients, and experience replay — will recur throughout the thesis, particularly in the opponent modeling and adaptive exploitation components of the planned contributions.
+**Contribution Alignment.** The reinforcement learning methods studied in this chapter — value estimation, policy gradients, and experience replay — will recur throughout the thesis, particularly in the opponent modeling and adaptive exploitation components of the planned contributions.
 
 **Literature.**
 
@@ -21,9 +21,9 @@ This phase covers the foundational material required for all subsequent work: re
 - Compare learning curves of both agents; analyze sensitivity to key hyperparameters (learning rate, batch size, discount factor).
 - Validate both implementations against established reference results.
 
-### 2.3 Step 2 — Game Theory and Counterfactual Regret Minimization
+### 2.3 Chapter 2 — Game Theory and Counterfactual Regret Minimization
 
-**Contribution Alignment.** The extensive-form game representation and CFR algorithm introduced here will provide the formal framework and baseline equilibrium computation used throughout the thesis. Exploitability^3^, defined and implemented in this step, will serve as the primary quantitative metric across all three contributions.
+**Contribution Alignment.** The extensive-form game representation and CFR algorithm introduced here will provide the formal framework and baseline equilibrium computation used throughout the thesis. Exploitability^3^, defined and implemented in this chapter, will serve as the primary quantitative metric across all three contributions.
 
 **Literature.**
 

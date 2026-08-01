@@ -1,5 +1,5 @@
 ---
-title: "Step 2 Summary — Game Theory & CFR Basics"
+title: "Chapter 2 Summary — Game Theory & CFR Basics"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "April 2026"
@@ -8,22 +8,17 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 2 — Game Theory & CFR Basics
-
-This is a condensed summary of the game theory and counterfactual regret minimization material covered in Step 2. It serves two purposes: as a quick refresher while progressing through later steps, and as a primary source for the Step 15 public report synthesis.
+# Chapter 2 — Game Theory & CFR Basics
 
 ---
 
 ## From Single-Agent RL to Multi-Agent Strategic Interaction
 
-Step 1 treated environments as passive — the cart-pole doesn't fight back, the lander doesn't try to crash you. The agent optimized against fixed dynamics. Step 2 introduces a fundamentally different problem: the environment includes another *strategic* decision-maker whose actions depend on yours.
+Chapter 1 treated environments as passive — the cart-pole doesn't fight back, the lander doesn't try to crash you. The agent optimized against fixed dynamics. Chapter 2 introduces a fundamentally different problem: the environment includes another *strategic* decision-maker whose actions depend on yours.
 
 This shift breaks the MDP framework. In a single-agent setting, the optimal policy is fixed — there exists a single best way to act regardless of what strategy you considered before. In a multi-agent setting, the "best" strategy depends on what the opponent does, and the opponent's best strategy depends on what you do. This circularity is the core challenge of game theory.
 
-The formalization begins with **normal-form games** (simultaneous moves, like Rock-Paper-Scissors) and extends to **extensive-form games** (sequential moves with a tree structure, like poker). In both cases, the solution concept shifts from "optimal policy" to **Nash equilibrium** — a strategy profile where no player can improve by unilaterally changing their own strategy.
-
-> **Read more:** Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Chapters 3–4.
-> Free: <http://www.masfoundations.org/download.html>
+The formalization begins with **normal-form games** (simultaneous moves, like Rock-Paper-Scissors) and extends to **extensive-form games** (sequential moves with a tree structure, like poker). In both cases, the solution concept shifts from "optimal policy" to **Nash equilibrium** — a strategy profile where no player can improve by unilaterally changing their own strategy.[^shoham2008]
 
 ---
 
@@ -38,15 +33,13 @@ The critical distinction is between **perfect** and **imperfect** information:
 
 An **information set** groups all game states that a player cannot tell apart. At an information set, the player must choose the same strategy for all states in the group (since they cannot distinguish them). This constraint is what makes imperfect-information games fundamentally harder than perfect-information ones — you cannot simply pick the best action for each state; you must pick one action that works well *on average* across all states in the information set.
 
-In Kuhn Poker, the information set `"2pb"` contains two game states: "I hold Queen, opponent holds Jack, history is pass-bet" and "I hold Queen, opponent holds King, history is pass-bet." The player holding Queen cannot distinguish these and must use the same strategy (call probability) for both.
-
-> **Read more:** Shoham & Leyton-Brown (2008). *Multiagent Systems*, Chapter 5 — Extensive-form games.
+In Kuhn Poker, the information set `"2pb"` contains two game states: "I hold Queen, opponent holds Jack, history is pass-bet" and "I hold Queen, opponent holds King, history is pass-bet." The player holding Queen cannot distinguish these and must use the same strategy (call probability) for both.[^shoham2008]
 
 ---
 
 ## Minimax Theorem
 
-The Minimax Theorem, established by John von Neumann in 1928, provides a foundational solution concept for two-player zero-sum games. It states that for every finite, two-player, zero-sum game, there exists a strategy for both players where the maximum expected loss is minimized. In other words, each player can guarantee a specific expected payoff, known as the "value of the game," regardless of the opponent's strategy. This creates a scenario where one player's optimal strategy is to maximize their minimum reward (maximin), while the opponent seeks to minimize the first player's maximum reward (minimax). When these two values equal, the game is in equilibrium. This algorithm directly relates to Nash Equilibrium: in the specific case of two-player zero-sum games, a Minimax strategy profile is equivalent to a Nash equilibrium. Discovering this Minimax solution guarantees safety against any exploitative strategy the opponent might employ.
+The Minimax Theorem, established by John von Neumann in 1928,[^vonneumann1928] provides a foundational solution concept for two-player zero-sum games. It states that for every finite, two-player, zero-sum game, there exists a strategy for both players where the maximum expected loss is minimized. In other words, each player can guarantee a specific expected payoff, known as the "value of the game," regardless of the opponent's strategy. This creates a scenario where one player's optimal strategy is to maximize their minimum reward (maximin), while the opponent seeks to minimize the first player's maximum reward (minimax). When these two values equal, the game is in equilibrium. This algorithm directly relates to Nash Equilibrium: in the specific case of two-player zero-sum games, a Minimax strategy profile is equivalent to a Nash equilibrium. Discovering this Minimax solution guarantees safety against any exploitative strategy the opponent might employ.
 
 ---
 
@@ -58,16 +51,14 @@ $$u_i(\sigma_i^*, \sigma_{-i}^*) \geq u_i(\sigma_i, \sigma_{-i}^*) \quad \forall
 
 No player can improve their expected payoff by unilaterally deviating. This does not mean everyone is happy with the outcome (Prisoner's Dilemma), just that no one can do better by changing only their own strategy.
 
-In games extended to more than two players (N-player games) or general-sum games, the properties of Nash equilibrium become significantly more complex. In these settings, finding an exact Nash equilibrium is known to be computationally intractable, often falling into the complexity class PPAD-complete. Furthermore, the equilibria lose their safety guarantee: playing a Nash strategy in a 3-player game does not protect against two opponents who might deviate from equilibrium, potentially forming temporary coalitions that exploit the third player. This dynamic necessitates entirely different evaluation and training frameworks (such as those discussed in Steps 9 and 11) since the direct equivalence between Nash and minimax optimality no longer holds.
+In games extended to more than two players (N-player games) or general-sum games, the properties of Nash equilibrium become significantly more complex. In these settings, finding an exact Nash equilibrium is known to be computationally intractable, often falling into the complexity class PPAD-complete. Furthermore, the equilibria lose their safety guarantee: playing a Nash strategy in a 3-player game does not protect against two opponents who might deviate from equilibrium, potentially forming temporary coalitions that exploit the third player. This dynamic necessitates entirely different evaluation and training frameworks (such as those discussed in Chapters 9 and 11) since the direct equivalence between Nash and minimax optimality no longer holds.
 
 **Key properties:**
-- **Existence:** Nash (1950) proved that every finite game has at least one Nash equilibrium (possibly in mixed strategies). This is a foundational theorem but does not help with computation.
+- **Existence:** Nash (1950)[^nash1950] proved that every finite game has at least one Nash equilibrium (possibly in mixed strategies). This is a foundational theorem but does not help with computation.
 - **Uniqueness:** Games may have multiple equilibria. Kuhn Poker has a one-parameter *family* of Nash equilibria indexed by $\alpha \in [0, 1/3]$.
 - **Mixed strategies:** In many games, the equilibrium requires randomization. In Kuhn Poker, the Nash equilibrium has Player 2 bluffing with Jack exactly 1/3 of the time — any other frequency is exploitable.
 
-For 2-player zero-sum games (where one player's gain is the other's loss), Nash equilibria have a special property: they are **minimax optimal**. Playing your Nash strategy guarantees you at least the game value, regardless of what the opponent does. This is the safety guarantee that makes Nash equilibrium the baseline for poker AI.
-
-> **Read more:** Nash, J.F. (1950). "Equilibrium points in n-person games." *PNAS*, 36(1), 48–49.
+For 2-player zero-sum games (where one player's gain is the other's loss), Nash equilibria have a special property: they are **minimax optimal**. Playing your Nash strategy guarantees you at least the game value, regardless of what the opponent does. This is the safety guarantee that makes Nash equilibrium the baseline for poker AI.[^nash1950]
 
 ---
 
@@ -79,17 +70,15 @@ The idea: after many rounds of play, for each action $a$, compute the **cumulati
 
 $$\sigma^{T+1}(a) = \begin{cases} \frac{R^{T,+}(a)}{\sum_{a'} R^{T,+}(a')} & \text{if } \sum > 0 \\ \frac{1}{|A|} & \text{otherwise} \end{cases}$$
 
-**Convergence guarantee:** Blackwell (1956) and Hart & Mas-Colell (2000) proved that regret matching ensures average regret converges to zero at rate $O(\sqrt{T})$. In a two-player zero-sum game, if both players use regret matching at their respective decision points, the average strategy profile converges to a Nash equilibrium.
+**Convergence guarantee:** Blackwell (1956)[^blackwell1956] and Hart & Mas-Colell (2000)[^hartmascolell2000] proved that regret matching ensures average regret converges to zero at rate $O(\sqrt{T})$. In a two-player zero-sum game, if both players use regret matching at their respective decision points, the average strategy profile converges to a Nash equilibrium.
 
-A simple example is Rock-Paper-Scissors. If you play regret matching against a fixed opponent who always plays Rock, your cumulative regret for Paper will grow (Paper beats Rock), while regret for Scissors will stay at zero. Your strategy will gradually shift toward playing Paper with increasing probability, which is the correct best response.
-
-> **Read more:** Neller, T.W. & Lanctot, M. (2013). "An Introduction to Counterfactual Regret Minimization," Section 1–2.
+A simple example is Rock-Paper-Scissors. If you play regret matching against a fixed opponent who always plays Rock, your cumulative regret for Paper will grow (Paper beats Rock), while regret for Scissors will stay at zero. Your strategy will gradually shift toward playing Paper with increasing probability, which is the correct best response.[^neller2013]
 
 ---
 
 ## Counterfactual Regret Minimization (CFR)
 
-CFR (Zinkevich et al., 2007) extends regret matching to extensive-form games. The key insight: decompose the total regret of a game strategy into **local regrets** at each information set, then minimize each local regret independently using regret matching. If each information set's regret converges to zero, the overall strategy converges to Nash equilibrium.
+CFR (Zinkevich et al., 2007)[^zinkevich2007] extends regret matching to extensive-form games. The key insight: decompose the total regret of a game strategy into **local regrets** at each information set, then minimize each local regret independently using regret matching. If each information set's regret converges to zero, the overall strategy converges to Nash equilibrium.
 
 **The "counterfactual" part** is crucial. At each information set $I$, the regret for action $a$ is not simply "how much better $a$ would have been." It is the *counterfactual* regret — the improvement assuming the player had intentionally played to reach $I$ (reach probability = 1 for the player) but everything else (opponent strategy, chance events) stayed the same. Formally:
 
@@ -115,10 +104,19 @@ where $\pi_{-i}^t$ is the opponent's reach probability and $v^t(I, a)$ is the co
 
 $$\text{exploit}(\bar{\sigma}^T) \leq O\left(\Delta\sqrt{|I|/T}\right)$$
 
-where $\Delta$ is the maximum payoff range and $|I|$ is the number of information sets.
+where $\Delta$ is the maximum payoff range and $|I|$ is the number of information sets.[^zinkevich2007]
 
-> **Read more:** Zinkevich, M. et al. (2007). "Regret Minimization in Games with Incomplete Information." *NeurIPS*.
-> Neller & Lanctot (2013). Sections 3–5 (full Kuhn Poker walkthrough).
+---
+
+## The Mathematics of Poker
+
+Poker is the canonical testbed for imperfect-information game theory because it combines three sources of complexity that rarely co-occur:
+
+1. **Hidden information** — each player sees only their own cards. The same observable game state (information set) can correspond to many different underlying game states.
+2. **Stochastic elements** — card deals introduce chance nodes into the game tree. An optimal strategy must account for all possible deals, not just the observed one.
+3. **Strategic deception** — unlike perfect-information games, poker rewards mixed strategies. A player who always bets with strong hands and checks with weak ones is trivially exploitable. Nash equilibrium requires **randomized bluffing at mathematically precise frequencies**.
+
+Chen & Ankenman formalise these concepts through toy-game solutions where Nash bluffing frequencies can be derived analytically. Their half-street and full-street models build intuition for why CFR's output strategies contain the precise bluff/call ratios they do — a balanced player must bluff with a frequency proportional to the pot odds they offer.[^chen2006]
 
 ---
 
@@ -139,9 +137,7 @@ Kuhn Poker (Kuhn, 1950) is the standard minimal example for imperfect-informatio
 
 **Game value:** Player 0's expected payoff at Nash is $-1/18 \approx -0.0556$. Player 0 has a structural disadvantage from acting first.
 
-**Why Kuhn matters:** Every key concept in imperfect-information game solving appears here in miniature — bluffing (J bets despite being worst card), information asymmetry (Player 2 sees Player 1's action before deciding), mixed strategies (exact 1/3 bluff frequency), indifference (Q is indifferent between call and fold at certain info sets). If your algorithm cannot solve Kuhn correctly, it cannot solve anything.
-
-> **Read more:** Kuhn, H.W. (1950). "Simplified Two-Person Poker." *Contributions to the Theory of Games*, Vol. 1.
+**Why Kuhn matters:** Every key concept in imperfect-information game solving appears here in miniature — bluffing (J bets despite being worst card), information asymmetry (Player 2 sees Player 1's action before deciding), mixed strategies (exact 1/3 bluff frequency), indifference (Q is indifferent between call and fold at certain info sets). If your algorithm cannot solve Kuhn correctly, it cannot solve anything.[^kuhn1950]
 
 ---
 
@@ -161,25 +157,17 @@ At Nash equilibrium, exploitability is exactly zero — neither player can impro
 
 **Why not just game value?** A strategy can achieve the correct game value while still being exploitable. Consider a Kuhn strategy where Player 1 always bluffs with J (instead of 1/3 of the time). The average game value might be close to $-1/18$, but the strategy is highly exploitable — Player 0 can always call with Q and profit. Exploitability catches this; game value alone does not.
 
-> **This metric recurs throughout the thesis.** Steps 7–8 (opponent modeling, safe exploitation) use exploitability as the primary measure. Step 14 builds a general evaluation framework around it.
+> **This metric recurs throughout the thesis.** Chapters 7–8 (opponent modeling, safe exploitation) use exploitability as the primary measure. Chapter 14 builds a general evaluation framework around it.
 
 ---
 
-## Connections to Step 1 and Forward Pointers
+## Connections to Chapter 1 and Forward Pointers
 
-**Local optimization → global convergence.** In Step 1, DQN minimizes TD error at each state independently, yet the overall Q-function converges to optimal. In Step 2, CFR minimizes regret at each information set independently, yet the overall strategy converges to Nash. Both demonstrate the same principle: local updates, when properly structured, achieve global objectives.
+**Local optimization → global convergence.** In Chapter 1, DQN minimizes TD error at each state independently, yet the overall Q-function converges to optimal. In Chapter 2, CFR minimizes regret at each information set independently, yet the overall strategy converges to Nash. Both demonstrate the same principle: local updates, when properly structured, achieve global objectives.
 
 **Strategy accumulation ≈ experience replay.** CFR outputs the *average* strategy, not the last iteration's strategy. This averaging stabilizes convergence, just as experience replay in DQN stabilizes learning by preventing the agent from over-fitting to recent transitions. Both are memory mechanisms that smooth out noise.
 
-**Forward:** Step 2 covers *full tree traversal* CFR — every information set is visited every iteration. For larger games, this is intractable. Step 3 introduces Monte Carlo CFR (MCCFR), which samples parts of the tree, trading exactness for scalability. Step 4 adds game abstraction, reducing the game size. Step 5 replaces tabular strategies with neural networks.
-
-**Open questions:**
-- Why does the *average* strategy converge but not the current strategy? (Intuition: the current strategy overshoots corrections, while averaging dampens oscillations — same reason as Polyak averaging in optimization.)
-- CFR is proven for 2-player zero-sum games. What about $N$-player or general-sum? (Steps 9 and 11 explore this frontier.)
-- How do we handle games too large for full tree traversal? (Step 3 — Monte Carlo CFR.)
-
-> **Read more:** Bowling, M. et al. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149.
-> This paper used CFR+ (a variant) to solve heads-up limit Texas Hold'em — the first non-trivial imperfect-information game to be essentially solved.
+**Forward:** Chapter 2 covers *full tree traversal* CFR — every information set is visited every iteration. For larger games, this is intractable. Chapter 3 introduces Monte Carlo CFR (MCCFR), which samples parts of the tree, trading exactness for scalability. Chapter 4 adds game abstraction, reducing the game size. Chapter 5 replaces tabular strategies with neural networks.[^bowling2015]
 
 ---
 
@@ -204,3 +192,26 @@ To validate the theoretical guarantees of CFR and its application to Kuhn Poker,
 ![Strategy Analysis](strategy_analysis.png)
 
 *This visualization breaks down the specific action probabilities at various information sets, demonstrating the emergence of the optimal bluffing and calling frequencies dictated by the Kuhn Poker Nash equilibrium family.*
+
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
+
+[^vonneumann1928]: von Neumann, J. (1928). "Zur Theorie der Gesellschaftsspiele." *Mathematische Annalen*, 100(1), 295-320. English translation: "On the Theory of Games of Strategy," in *Contributions to the Theory of Games*, Vol. 4 (1959), 13-42.
+
+[^nash1950]: Nash, J.F. (1950). "Equilibrium Points in N-Person Games." *Proceedings of the National Academy of Sciences*, 36(1), 48-49.
+
+[^blackwell1956]: Blackwell, D. (1956). "An Analog of the Minimax Theorem for Vector Payoffs." *Pacific Journal of Mathematics*, 6(1), 1-8.
+
+[^hartmascolell2000]: Hart, S. & Mas-Colell, A. (2000). "A Simple Adaptive Procedure Leading to Correlated Equilibrium." *Econometrica*, 68(5), 1127-1150.
+
+[^zinkevich2007]: Zinkevich, M., Johanson, M., Bowling, M. & Piccione, C. (2007). "Regret Minimization in Games with Incomplete Information." *Advances in Neural Information Processing Systems 20*, 1729-1736.
+
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Chapters 3–4. Free: <http://www.masfoundations.org/download.html>
+
+[^neller2013]: Neller, T.W. & Lanctot, M. (2013). "An Introduction to Counterfactual Regret Minimization," Section 1–2.
+
+[^chen2006]: Chen, B. & Ankenman, J. (2006). *The Mathematics of Poker*. ConJelCo — analytical Nash derivations for toy poker games.
+
+[^kuhn1950]: Kuhn, H.W. (1950). "Simplified Two-Person Poker." *Contributions to the Theory of Games*, Vol. 1.
+
+[^bowling2015]: Bowling, M. et al. (2015). "Heads-up limit hold'em poker is solved." *Science*, 347(6218), 145–149. This paper used CFR+ (a variant) to solve heads-up limit Texas Hold'em — the first non-trivial imperfect-information game to be essentially solved.

@@ -1,12 +1,12 @@
-## 8. Phase G — Integration (Steps 14–15)
+## 8. Phase G — Integration (Chapters 14–15)
 
 ### 8.1 Phase Overview
 
-Phase G will synthesize the preceding work into two integrative deliverables. Step 14 constructs a unified evaluation framework validated across all game types encountered in the study plan — constituting the core of Contribution 3 (Evaluation Methodology). Step 15 maps the research frontier, designs the experimental program, produces a Chapter I outline for the dissertation (due November 2026), and establishes the publication pipeline.
+Phase G will synthesize the preceding work into two integrative deliverables. Chapter 14 constructs a unified evaluation framework validated across all game types encountered in the study plan — constituting the core of Contribution 3 (Evaluation Methodology). Chapter 15 maps the research frontier, designs the experimental program, produces a Chapter I outline for the dissertation (due November 2026), and establishes the publication pipeline.
 
-### 8.2 Step 14 — Evaluation Frameworks and Exploitability Metrics
+### 8.2 Chapter 14 — Evaluation Frameworks and Exploitability Metrics
 
-**Contribution Alignment.** This step will constitute the core of Contribution 3 directly. The planned three-layer evaluation framework will integrate exploitability computation, population-level ranking (Elo, $\alpha$-Rank^52^, VasE^53^), and statistical confidence quantification (AIVAT^54^ variance reduction). It will be validated across Kuhn Poker^19^, Leduc Hold'em^20^, So Long Sucker^45^, and real-world data. For Contribution 1, the framework will measure whether behavioral adaptation produces measurable improvements. For Contribution 2, marginal exploitability^55^ will test whether two-player safe exploitation guarantees generalize to multi-agent settings.
+**Contribution Alignment.** This chapter will constitute the core of Contribution 3 directly. The planned three-layer evaluation framework will integrate exploitability computation, population-level ranking (Elo, $\alpha$-Rank^52^, VasE^53^), and statistical confidence quantification (AIVAT^54^ variance reduction). It will be validated across Kuhn Poker^19^, Leduc Hold'em^20^, So Long Sucker^45^, and real-world data. For Contribution 1, the framework will measure whether behavioral adaptation produces measurable improvements. For Contribution 2, marginal exploitability^55^ will test whether two-player safe exploitation guarantees generalize to multi-agent settings.
 
 **Literature.**
 
@@ -18,7 +18,7 @@ Phase G will synthesize the preceding work into two integrative deliverables. St
 
 **Practical Tasks.**
 
-- Audit and unify all evaluation code from prior steps (exploitability from Steps 3 and 8, EGTA^43^ and spinning top decomposition^42^ from Step 10, SLS metrics from Step 11, behavioral metrics from Step 13) into a three-layer evaluation API.
+- Audit and unify all evaluation code from prior steps (exploitability from Chapters 3 and 8, EGTA^43^ and spinning top decomposition^42^ from Chapter 10, SLS metrics from Chapter 11, behavioral metrics from Chapter 13) into a three-layer evaluation API.
 - Construct a bot zoo of reference agents for Kuhn and Leduc covering four tiers: trivial (random, always-call, always-fold), heuristic (tight-aggressive, loose-aggressive, tight-passive), computed (Nash/CFR, DQN), and advanced (PSRO^38^, Decision Transformer^46^).
 - Implement $\alpha$-Rank^52^ with Fermi selection function; compute stationary distributions via eigenvalue decomposition and analyze sensitivity to the selection pressure parameter.
 - Implement VasE^53^ with tournament matrix construction from pairwise comparisons across games; compute maximal lotteries via linear programming and intransitive cycle detection.
@@ -26,9 +26,9 @@ Phase G will synthesize the preceding work into two integrative deliverables. St
 - Conduct cross-game validation: full three-layer evaluation on Kuhn, Leduc, So Long Sucker^45^ (marginal exploitability^55^), and Playtech data (AIVAT-adjusted confidence intervals for style classification and collusion detection^50^).
 - Produce a disagreement analysis comparing Elo, $\alpha$-Rank, and VasE rankings, with the spinning top decomposition explaining cases of divergence between transitive and cyclic competitive structures.
 
-### 8.3 Step 15 — Research Frontier Mapping and Contribution Design
+### 8.3 Chapter 15 — Research Frontier Mapping and Contribution Design
 
-**Contribution Alignment.** This step will complete the learning phase and design the research phase. The deliverables will include a research frontier map for each contribution, formal contribution design documents, experimental specifications, a Chapter I outline (25–30 pages, due November 2026), and a publication pipeline through to defense.
+**Contribution Alignment.** This chapter will complete the learning phase and design the research phase. The deliverables will include a research frontier map for each contribution, formal contribution design documents, experimental specifications, a Chapter I outline (25–30 pages, due November 2026), and a publication pipeline through to defense.
 
 **Literature.**
 

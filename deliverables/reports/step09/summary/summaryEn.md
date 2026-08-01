@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 9 Summary — Multi-Agent Reinforcement Learning"
+title: "Chapter 9 Summary — Multi-Agent Reinforcement Learning"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
@@ -13,13 +13,12 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 9 — Multi-Agent Reinforcement Learning: Coordination, Competition, and Communication
+# Chapter 9 — Multi-Agent Reinforcement Learning: Coordination, Competition, and Communication
 
 This is a ground-up chapter on multi-agent reinforcement learning (MARL): the problem that
 makes it different from everything before it, the mathematics that frames it, the family of
 methods that attack it, and a set of controlled experiments run on small, exactly-solvable
-games. It serves two purposes — a self-contained refresher for later steps that build on it,
-and a primary source for the Part-1 thesis synthesis. It is written to be read on its own; no
+games. It is written to be read on its own; no
 prior familiarity with the project's code is assumed. **All experimental numbers reported here
 were measured** on reproducible runs of the testbeds and, wherever possible, are bounded by
 *exact* analytical references (Nash equilibria, exact best-response values) rather than by
@@ -27,12 +26,12 @@ other simulations. Where a run contradicted what theory led me to expect, I keep
 expectation and reconcile it with what happened — those gaps are the most instructive parts of
 the step.
 
-**Where this sits in the thesis.** Steps 2–8 lived entirely inside **two-player zero-sum**
+**Where this sits in the thesis.** Chapters 2–8 lived entirely inside **two-player zero-sum**
 games: there is a value $v^*$, a Nash strategy secures it against *any* opponent, and CFR
-provably converges to it. Step 9 is the pivot into the **multi-agent** world, where those three
+provably converges to it. Chapter 9 is the pivot into the **multi-agent** world, where those three
 comforts weaken or vanish. It carries three thesis hooks. **LOLA** — differentiating through an
 opponent's *learning step* — is *dynamic* opponent modeling, the moving-target complement to
-Step 7's static read (Contribution #1). **PSRO** — a game played over a *population of
+Chapter 7's static read (Contribution #1). **PSRO** — a game played over a *population of
 policies* — is both the framework for safe exploitation where there is no minimax theorem
 (Contribution #2) and a general multi-agent *evaluation methodology* (Contribution #3). The
 place where every two-player guarantee breaks — the missing minimax anchor for $N>2$ — is named
@@ -40,12 +39,12 @@ here and left open for the thesis to attack.
 
 ---
 
-## 1. Why multi-agent RL is a different problem
+## Why multi-agent RL is a different problem
 
-In single-agent RL (Steps 1 and 6) an agent learns by trial and error against a **fixed**
+In single-agent RL (Chapters 1 and 6) an agent learns by trial and error against a **fixed**
 world. Formally it faces a stationary Markov decision process: the transition law
 $P(s' \mid s,a)$ and reward $R(s,a)$ do not change while the agent trains, which is exactly what
-lets a fixed optimal value function $Q^*$ exist for the agent to converge toward. In Steps 2–8
+lets a fixed optimal value function $Q^*$ exist for the agent to converge toward. In Chapters 2–8
 we went one level up and computed **equilibria** — strategies that are optimal against a
 *perfectly rational* opponent who has already finished reasoning.
 
@@ -67,19 +66,17 @@ are improving in real time, every adjustment you make changes what they should d
 vice-versa; you step on each other's toes, over-correct, and oscillate — until you either lock
 into a shared rhythm (a coordinated equilibrium) or cycle forever (as in Matching Pennies,
 §4). The entire field is the art of *stacking the deck so the synchronization happens
-reliably.*
+reliably.*[^zhang2021]
 
 ![Non-stationarity as two partners learning to dance at once. Each agent optimizes against the other's current policy (the solid arrows), but that policy is itself moving because the other agent is optimizing back (the dashed arrows). The target each one chases is never still, so naive learners cycle or over-correct rather than converge. Every method in this chapter is a different way to make the moving target hold still long enough to learn against.](nonstationarity_dance.png)
 
-> **Read more:** Zhang, K., Yang, Z. & Başar, T. (2021). "Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms." *Handbook of RL and Control* — §1–2 for non-stationarity and the taxonomy used here.
-
 ---
 
-## 2. Markov games — the bridge from Steps 2–8 to MARL
+## Markov games — the bridge from Chapters 2–8 to MARL
 
-Steps 2–8 reasoned about **extensive-form games (EFGs)**: a game *tree*, **information sets**
+Chapters 2–8 reasoned about **extensive-form games (EFGs)**: a game *tree*, **information sets**
 grouping histories a player cannot distinguish, and counterfactual values feeding a regret
-solver (CFR). Step 9 reasons about **Markov (stochastic) games**, the standard MARL formalism.
+solver (CFR). Chapter 9 reasons about **Markov (stochastic) games**, the standard MARL formalism.
 The two connect cleanly, and stating the connection is what keeps the switch from feeling like
 starting over.
 
@@ -91,11 +88,11 @@ with states $s\in\mathcal{S}$, one action set $\mathcal{A}_i$ per agent, a trans
 $P(s' \mid s, a_1,\dots,a_N)$ driven by the **joint** action, per-agent rewards
 $R_i(s,a_1,\dots,a_N)$, and (in the partially observed case) observations $o_i = O_i(s)$. Each
 agent has a policy $\pi_i(a_i \mid o_i)$; together they form a **joint policy**
-$\pi=(\pi_1,\dots,\pi_N)$. The special cases are exactly the previous steps:
+$\pi=(\pi_1,\dots,\pi_N)$. The special cases are exactly the previous chapters:
 
-- $N=1$ recovers an ordinary **MDP** (Step 1).
-- $N=2$, $R_1=-R_2$, a single state gives a **matrix game** (this step's testbed, §4).
-- Sequential, imperfect-information, zero-sum gives an **EFG** (Steps 2–8): a Markov game whose
+- $N=1$ recovers an ordinary **MDP** (Chapter 1).
+- $N=2$, $R_1=-R_2$, a single state gives a **matrix game** (this chapter's testbed, §4).
+- Sequential, imperfect-information, zero-sum gives an **EFG** (Chapters 2–8): a Markov game whose
   "state" is a *history* and whose partial observability is precisely an **information set**.
 
 What survives the bridge is the *vocabulary*. A policy still maps what-you-know to a
@@ -107,16 +104,14 @@ perfect recall, which general Markov games (loops, simultaneous moves, $N>2$) do
 "average strategy $\to$ Nash" no longer holds; MARL falls back to gradient/value learning whose
 convergence is not guaranteed (hence the cycling of §4). Most consequentially, the **minimax
 value anchor** disappears: in two-player zero-sum a Nash strategy guarantees $v^*$ against any
-opponent — the fact that made Step 8's safe exploitation coherent — and for $N>2$ there is no
-such single value. That missing anchor is the precise gap Contribution #2 inherits.
-
-> **Read more:** Littman, M. L. (1994). "Markov Games as a Framework for Multi-Agent Reinforcement Learning." *ICML* — the paper that introduced this framing and the minimax-Q algorithm.
+opponent — the fact that made Chapter 8's safe exploitation coherent — and for $N>2$ there is no
+such single value. That missing anchor is the precise gap Contribution #2 inherits.[^littman1994]
 
 ---
 
-## 3. The family of methods
+## The family of methods
 
-Every method in this step is a different structural answer to "the other agents are learning
+Every method in this chapter is a different structural answer to "the other agents are learning
 while I learn." Five families matter here.
 
 | Approach | What it does | Reach for it when | Main weakness |
@@ -141,13 +136,11 @@ static.
 Historically the line runs: learn to talk (CommNet, 2016) → centralize the critic (MADDPG,
 2017) → bring game theory to a population (PSRO, 2017) → factorize the value (QMIX, 2018) → look
 ahead at the opponent's learning (LOLA, 2018) → and then discover that the simple thing often
-wins (MAPPO, 2022).
-
-> **Read more:** Albrecht, S. V., Christianos, F. & Schäfer, L. (2024). *Multi-Agent Reinforcement Learning: Foundations and Modern Approaches* (MIT Press), Ch. 8–9 — a current textbook treatment of exactly this taxonomy.
+wins (MAPPO, 2022).[^albrecht2024]
 
 ---
 
-## 4. Independent learning and its failure modes
+## Independent learning and its failure modes
 
 The cleanest way to see *why* the rest of the field exists is to run the control that fails.
 Independent learning drops each agent into its own gradient loop and pretends the others are
@@ -178,7 +171,7 @@ punished, so gradient dynamics slide to the safe corner. In Battle of the Sexes 
 on the *same* pure equilibrium; the learners solve the coordination problem but not in a
 seed-diverse way. These are the coordination and equilibrium-selection problems made concrete.
 
-Matching Pennies is the headline: it **never converges**, which is exactly the point.
+Matching Pennies is the headline: it **never converges**, which is exactly the point.[^singh2000]
 
 > **Reconciliation (kept prediction $\to$ what actually happened).** I predicted Matching
 > Pennies would trace a clean orbit at roughly constant radius around $(\tfrac12,\tfrac12)$.
@@ -197,11 +190,9 @@ Matching Pennies is the headline: it **never converges**, which is exactly the p
 
 ![Zoom on non-stationarity: the distance-to-Nash for Matching Pennies does not shrink (it grows across time-windows, 0.30 to 0.48), while the Prisoner's Dilemma distance-to-(Defect,Defect) collapses to zero. More compute traces a bigger divergence, not convergence — non-stationarity is structural, not a budget problem.](nonstationarity_demo.png)
 
-> **Read more:** Singh, S., Kearns, M. & Mansour, Y. (2000). "Nash Convergence of Gradient Dynamics in General-Sum Games." *UAI* — the analysis of why gradient ascent cycles rather than converges in games like Matching Pennies.
-
 ---
 
-## 5. Centralized training, decentralized execution (CTDE)
+## Centralized training, decentralized execution (CTDE)
 
 The first structural fix keeps execution realistic — each agent still acts on its own
 observation — while giving the *learner* a privileged view during training. The archetype is
@@ -250,29 +241,26 @@ prediction broke.
 A methodological note worth carrying forward: both CTDE effects above were **invisible at the
 fast "smoke" configuration** — there the critic losses were near-equal and the communication
 benefit (§7) was zero. They appeared only once trained at the larger "scale" configuration. The
-smoke config proves the code runs; the phenomena need training to convergence.
+smoke config proves the code runs; the phenomena need training to convergence.[^lowe2017]
 
 ![Cooperative CTDE and communication results (scale config). Left: the centralized critic's residual is orders of magnitude below the independent critic's. Middle: on the climbing game, no method reaches the optimum (11); MADDPG (5) trails IL and MAPPO (7) — CTDE reduces critic variance but does not by itself solve hard-exploration coordination. Right: communication lifts the listener far above the 1/K guessing ceiling (see §7).](impl_coop_ctde_comm.png)
 
-> **Read more:** Lowe, R. et al. (2017). "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments." *NeurIPS* (MADDPG); and Yu, C. et al. (2022). "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games." *NeurIPS* (MAPPO).
-
 ---
 
-## 6. PSRO — game theory over a population of policies
+## PSRO — game theory over a population of policies
 
-The second structural fix is the through-line of the step and the direct descendant of Step 2's
+The second structural fix is the through-line of the chapter and the direct descendant of Chapter 2's
 iterated best response. **PSRO** (Policy-Space Response Oracles; Lanctot et al., 2017) treats
 whole policies as the atoms of a higher game. It maintains a **population** of policies per
 player, builds the empirical **meta-game** payoff matrix between the populations, solves a
 **meta-Nash** over it, trains a **best response** (the "oracle") to the opponent's meta-Nash
 mixture, and adds that response to the population — repeat. It unifies self-play, fictitious
 play, and the double-oracle method under one framework, and, crucially for this project, its
-progress metric is *exploitability* — the very same NashConv used throughout Steps 2–8.
+progress metric is *exploitability* — the very same NashConv used throughout Chapters 2–8.
 
-![The PSRO double-oracle loop. From the current populations, build the meta-game payoff matrix, solve its meta-Nash mixture, then call a best-response oracle against the opponent's mixture and add the new policy to the population. Exploitability of the meta-Nash mixture is expected to fall as the population grows. In this project the oracle is Step 07's exact best response, so PSRO's convergence is measured with the same exploitability yardstick as the game-theory steps.](psro_loop.png)
+![The PSRO double-oracle loop. From the current populations, build the meta-game payoff matrix, solve its meta-Nash mixture, then call a best-response oracle against the opponent's mixture and add the new policy to the population. Exploitability of the meta-Nash mixture is expected to fall as the population grows. In this project the oracle is Chapter 07's exact best response, so PSRO's convergence is measured with the same exploitability yardstick as the game-theory steps.](psro_loop.png)
 
-Two facts make the implementation exact rather than approximate. First, the oracle reuses Step
-07's **exact best response** on Kuhn and Leduc. Second, the opponent's meta-Nash mixture over
+Two facts make the implementation exact rather than approximate. First, the oracle reuses Chapter 07's **exact best response** on Kuhn and Leduc. Second, the opponent's meta-Nash mixture over
 *behavioral policies* is, by Kuhn's theorem (these games have perfect recall), realization-
 equivalent to a **single behavioral policy**; collapsing the mixture that way lets the exact
 best-response engine apply directly.
@@ -297,7 +285,7 @@ game):
 | Goofspiel ($K=4$) | oscillates $1.4 \leftrightarrow 2.0$ | does not settle |
 
 The Kuhn / matrix / RPS results are textbook: on the small games the population quickly spans
-the strategies needed and exploitability collapses. Two results did not go as predicted.
+the strategies needed and exploitability collapses. Two results did not go as predicted.[^lanctot2017]
 
 > **Reconciliation 1 (Leduc).** I predicted PSRO would drive Leduc exploitability below $0.5$
 > within 20 iterations. Measured, it fell from $4.75$ to $2.16$ — a clear, roughly monotone
@@ -305,7 +293,7 @@ the strategies needed and exploitability collapses. Two results did not go as pr
 > machine zero in 6 rounds, but Leduc's game tree is far larger, and a population of 20 *pure*
 > best responses is simply too small to closely approximate its mixed Nash. The "< 0.5 in 20"
 > target was optimistic. The lesson — exploitability decreases as the population grows — holds;
-> the *rate* is the scaling wall, and it rhymes with Step 8's global-vs-local scaling finding.
+> the *rate* is the scaling wall, and it rhymes with Chapter 8's global-vs-local scaling finding.
 
 > **Reconciliation 2 (Goofspiel $K=4$).** I predicted non-increasing exploitability. At $K=3$
 > it converged to $0$ cleanly; at $K=4$ it oscillates between $\sim\!1.4$ and $\sim\!2.0$ and
@@ -319,11 +307,9 @@ the strategies needed and exploitability collapses. Two results did not go as pr
 
 ![Self-play on Kuhn: the average-iterate exploitability (NashConv) falls steadily toward zero while the last-iterate exploitability keeps oscillating. This is why self-play and PSRO rely on averaging over a population rather than trusting the most recent policy.](selfplay_vs_nash.png)
 
-> **Read more:** Lanctot, M. et al. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *NeurIPS* (PSRO); and McMahan, H. B., Gordon, G. & Blum, A. (2003). "Planning in the Presence of Cost Functions Controlled by an Adversary." *ICML* (the double-oracle method PSRO generalizes).
-
 ---
 
-## 7. Learned communication (CommNet)
+## Learned communication (CommNet)
 
 CTDE centralizes information at *training*; communication centralizes it at *execution*, through
 a channel the agents **learn** rather than one a designer builds. In **CommNet** (Sukhbaatar et
@@ -343,19 +329,17 @@ Measured (scale config, $K=5$, so the guessing ceiling is $0.2$):
 With the channel the listener climbs well above the $1/K$ ceiling; without it, it sits exactly
 at the ceiling. Communication is doing real work — and note the reconciliation from §5 applies
 here too: at the smoke configuration both numbers were $0.24$ (the channel had not yet learned
-to carry information), and the benefit appeared only after training at scale.
-
-> **Read more:** Sukhbaatar, S., Szlam, A. & Fergus, R. (2016). "Learning Multiagent Communication with Backpropagation." *NeurIPS* (CommNet).
+to carry information), and the benefit appeared only after training at scale.[^sukhbaatar2016]
 
 ---
 
-## 8. LOLA — modeling the opponent as a learner
+## LOLA — modeling the opponent as a learner
 
 Every method so far treats the opponent's strategy as fixed while you respond. **LOLA** (Learning
 with Opponent-Learning Awareness; Foerster et al., 2018) is the exception, and it is the one most
 directly connected to the thesis. Instead of optimizing against the opponent's *current* policy,
 each agent optimizes against the policy the opponent will hold *after one learning step*, and
-differentiates *through* that step. The extra term is a mixed second derivative — how the
+differentiates *through* that chapter. The extra term is a mixed second derivative — how the
 opponent's update depends on *my* parameters — and it is what turns self-interested agents
 cooperative.
 
@@ -380,17 +364,15 @@ the mechanism: setting the look-ahead learning rate to zero makes LOLA's gradien
 to the naive gradient, so the cooperation comes specifically from the second-order look-ahead
 term.
 
-Conceptually this is **dynamic** opponent modeling: Step 7 inferred an opponent's *current*
+Conceptually this is **dynamic** opponent modeling: Chapter 7 inferred an opponent's *current*
 strategy; LOLA anticipates their *learning trajectory*. Combining the two — a static read that
-seeds a dynamic look-ahead — is a candidate for Contribution #1, not a solved thing.
+seeds a dynamic look-ahead — is a candidate for Contribution #1, not a solved thing.[^foerster2018]
 
 ![LOLA vs naive learners on the Iterated Prisoner's Dilemma: naive learners' per-step return collapses toward mutual defection (~1), while LOLA learners' return climbs toward mutual cooperation (~2.8). Anticipating the opponent's next learning step is what reshapes the dynamics from defection to cooperation.](lola_ipd_playground.png)
 
-> **Read more:** Foerster, J. et al. (2018). "Learning with Opponent-Learning Awareness." *AAMAS* (LOLA).
-
 ---
 
-## 9. Honest notes, limitations, and where this hands off
+## Honest notes, limitations, and where this hands off
 
 **What held up.** The confirmed results are the backbone: independent learning converges on
 dominant/coordination games and *fails* on Matching Pennies; PSRO drives exploitability to
@@ -411,7 +393,7 @@ items (Goofspiel $K=4$; MADDPG's counterfactual baseline) should be investigated
 pieces are reused. And a methodological point: the neural effects were invisible at the fast
 smoke config and only emerged at scale, so the scale numbers are the ones the claims rest on.
 
-**Trust.** Every equilibrium target is *exact* (analytic Nash for the matrix games; Step 07's
+**Trust.** Every equilibrium target is *exact* (analytic Nash for the matrix games; Chapter 07's
 exact best response and NashConv for Kuhn/Leduc/Goofspiel), so the game-theoretic results are
 bounded by ground truth rather than by other simulations. The neural results are qualitative
 inequalities (central $<$ independent; comm ON $>$ comm OFF), not precise values, and are seed-
@@ -419,19 +401,12 @@ and version-sensitive by construction. The experiment PNGs cited above are gener
 committed JSON artifacts (see `../figures/README.md`); a few were not saved on the run and are
 marked "to close."
 
-**Backward and forward connections.** Backward: PSRO is Step 2's iterated best response lifted to
-a population, and it reuses Step 07's exact best-response engine wholesale; the Leduc scaling wall
-echoes Step 8's global-vs-local finding. Forward: the three thesis hooks are now concrete — LOLA
+**Backward and forward connections.** Backward: PSRO is Chapter 2's iterated best response lifted to
+a population, and it reuses Chapter 07's exact best-response engine wholesale; the Leduc scaling wall
+echoes Chapter 8's global-vs-local finding. Forward: the three thesis hooks are now concrete — LOLA
 as dynamic opponent modeling (Contribution #1), PSRO's meta-game as an evaluation methodology
 (Contribution #3), and, above all, the **missing $N>2$ minimax anchor** (Contribution #2), the
-single place where every two-player guarantee from Steps 2–8 stops applying.
-
-**Open questions.** Can an approximate (RL) oracle push Leduc PSRO much closer to Nash, and at
-what cost to the convergence guarantee? What breaks the Goofspiel $K=4$ oscillation — de-
-duplication, a mixed-strategy population, or a different meta-solver? Why does a centralized
-critic *hurt* on the climbing game, and does a counterfactual/COMA baseline fix it? And the
-thesis question underneath all of them: with no minimax value for $N>2$, what does "safe" even
-mean for a population, and can PSRO's meta-game supply a usable substitute?
+single place where every two-player guarantee from Chapters 2–8 stops applying.
 
 ---
 
@@ -448,6 +423,25 @@ mean for a population, and can PSRO's meta-game supply a usable substitute?
 - **Self-play/PSRO succeed in the average/population, not the last iterate** (Kuhn average
   NashConv $0.24\to0.031$ while the last iterate oscillates) — the reason a population exists.
 - **LOLA reframes the opponent as a learner** and turns IPD defection into cooperation
-  ($1.04\to2.82$) — the dynamic complement to Step 7's static opponent model (Contribution #1).
+  ($1.04\to2.82$) — the dynamic complement to Chapter 7's static opponent model (Contribution #1).
 - **The $N>2$ minimax gap is the open door to the thesis** (Contribution #2): the vocabulary of
-  Steps 2–8 crosses into MARL, but the safety anchor does not.
+  Chapters 2–8 crosses into MARL, but the safety anchor does not.
+
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
+
+[^zhang2021]: Zhang, K., Yang, Z. & Başar, T. (2021). "Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms." *Handbook of RL and Control* — §1–2 for non-stationarity and the taxonomy used here.
+
+[^littman1994]: Littman, M. L. (1994). "Markov Games as a Framework for Multi-Agent Reinforcement Learning." *ICML* — the paper that introduced this framing and the minimax-Q algorithm.
+
+[^albrecht2024]: Albrecht, S. V., Christianos, F. & Schäfer, L. (2024). *Multi-Agent Reinforcement Learning: Foundations and Modern Approaches* (MIT Press), Ch. 8–9 — a current textbook treatment of exactly this taxonomy.
+
+[^singh2000]: Singh, S., Kearns, M. & Mansour, Y. (2000). "Nash Convergence of Gradient Dynamics in General-Sum Games." *UAI* — the analysis of why gradient ascent cycles rather than converges in games like Matching Pennies.
+
+[^lowe2017]: Lowe, R. et al. (2017). "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments." *NeurIPS* (MADDPG); and Yu, C. et al. (2022). "The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games." *NeurIPS* (MAPPO).
+
+[^lanctot2017]: Lanctot, M. et al. (2017). "A Unified Game-Theoretic Approach to Multiagent Reinforcement Learning." *NeurIPS* (PSRO); and McMahan, H. B., Gordon, G. & Blum, A. (2003). "Planning in the Presence of Cost Functions Controlled by an Adversary." *ICML* (the double-oracle method PSRO generalizes).
+
+[^sukhbaatar2016]: Sukhbaatar, S., Szlam, A. & Fergus, R. (2016). "Learning Multiagent Communication with Backpropagation." *NeurIPS* (CommNet).
+
+[^foerster2018]: Foerster, J. et al. (2018). "Learning with Opponent-Learning Awareness." *AAMAS* (LOLA).

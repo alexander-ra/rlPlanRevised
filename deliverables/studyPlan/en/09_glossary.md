@@ -114,7 +114,7 @@
 
 **[49] VPIP (Voluntarily Put In Pot).** A standard poker behavioral statistic measuring the percentage of hands in which a player voluntarily contributes chips to the pot before the flop. Combined with PFR (Pre-Flop Raise percentage), VPIP forms the primary axis for classifying player archetypes (tight versus loose, passive versus aggressive).
 
-**[50] Collusion detection.** The problem of identifying coordinated play among ostensibly independent players in multiplayer games. Detection signals include co-occurrence anomaly (pairs appearing together more often than expected), chip dumping (directional monetary transfer between colluding players), and soft play (reduced aggression against specific opponents). Extends the coalition detection methodology of Step 11 to a practical fraud detection application.
+**[50] Collusion detection.** The problem of identifying coordinated play among ostensibly independent players in multiplayer games. Detection signals include co-occurrence anomaly (pairs appearing together more often than expected), chip dumping (directional monetary transfer between colluding players), and soft play (reduced aggression against specific opponents). Extends the coalition detection methodology of Chapter 11 to a practical fraud detection application.
 
 ### Evaluation and Integration
 

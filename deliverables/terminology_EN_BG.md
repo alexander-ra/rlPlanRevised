@@ -46,8 +46,9 @@
 | Game theory | Теория на игрите | |
 | Extensive-form game | Игра в разгърната форма | |
 | Normal-form game | Игра в нормална форма | |
-| Imperfect information | Несъвършена информация | ⚠ NOT „непълна" — that means "incomplete" |
-| Incomplete information | Непълна информация | Different concept (Bayesian games) |
+| Imperfect information | Непълна информация | Settled. „Несъвършена" is retired — the corpus uses „непълна" throughout |
+| Perfect information | Пълна информация | |
+| Incomplete information | Непълна по Харшани информация | Bayesian games. Qualified, because plain „непълна информация" is now imperfect information |
 | Information set | Информационно множество | |
 | Nash equilibrium | Равновесие на Наш | |
 | Equilibrium strategy | Равновесна стратегия | |
@@ -57,6 +58,9 @@
 | Game AI | Игрови изкуствен интелект | Не „изкуствен интелект в игрите" |
 | LLM / LLM agent | Голям езиков модел / агент с голям езиков модел | В проза; етикетите в таблици остават „LLM" |
 | Oracle (algorithmic) | Предсказвач | Not „оракул"/„оракъл" — those read as the mythological sense |
+| Oracle value (omniscient estimate) | Приблизителна стойност | ⚠ NOT „предсказвач стойност" — the *oracle* sense here is a value, not a component |
+| State-of-the-art | Водещ стандарт | Also as an adjective: „водещ стандарт при…". Not „най-съвременно ниво" |
+| Jack / Queen / King (cards) | Вале / Дама / Поп | Kuhn poker J/Q/K. „Цар" is retired |
 | Best-response oracle | Предсказвач за най-добър отговор | |
 | Double oracle | Двоен предсказвач | |
 | Exploitability | Експлоатируемост | Neologism; alt: „степен на уязвимост към експлоатация" |
@@ -128,22 +132,23 @@
 | Lossless abstraction | Беззагубна абстракция | Standard CS BG; avoid „безпотерна" |
 | Lossy abstraction | Абстракция със загуби | Use „със загуби" as adjectival phrase, not „загубна" |
 | Exploitability gap | Пропуск в експлоатируемостта | Prefer prepositional phrase over adj+noun „експлоатируемостен пропуск" |
-| Action translation | Превод на действия | |
-| Nearest-action translator | Преводач към най-близкото действие | |
+| Action translation | Транслация на действия | Deliberate anglicism, and the one exception to rule 4: „превод" collides with translation of *text*, which the corpus also discusses |
+| Nearest-action translator | Транслатор към най-близкото действие | |
 | Probability-split translator | Вероятностно разделяне | |
 | Pseudo-harmonic mapping | Псевдохармонично преобразуване | Ganzfried & Sandholm (2013); single word, no hyphen |
 | Suit isomorphism | Изоморфизъм на цветовете | Suit = цвят (на карта) |
 | Ordered game isomorphism (OGI) | Подреден игрови изоморфизъм | Gilpin & Sandholm Definition 3.2 |
 | Hand-strength distribution (HSD) | Разпределение на силата на ръката | Keep „HSD" abbreviation in Latin |
-| Earth Mover's Distance (EMD) | Разстояние на Земекопача | Keep „EMD" abbreviation in Latin |
-| Perfect recall | Съвършена памет | |
-| Imperfect recall | Несъвършена памет | |
+| Earth Mover's Distance (EMD) | Разстояние на Васерщайн | Keep „EMD" abbreviation in Latin. The same quantity as Wasserstein-1; „Земекопача"/„Земьов-Мъри" are retired — a calque that reads as a surname |
+| Perfect recall | Пълна памет | Follows the пълна/непълна decision above |
+| Imperfect recall | Непълна памет | |
 | Reach probability | Вероятност за достигане | |
 | Reach-weighted bound | Граница, претеглена по достигането | Kroer & Sandholm (2016) |
 | Counterfactual best-response value (CBV) | Стойност на най-добрия отговор по контрафактуалния стандарт | Keep „CBV" symbolic |
 | Blueprint (strategy) | Схема (на стратегията) | |
 | Off-tree action | Действие извън дървото | |
-| Information bottleneck (IB) | Информационно тясно място | Keep „IB" abbreviation in Latin |
+| Information bottleneck (IB) | Информационно стеснение | Keep „IB" abbreviation in Latin. „Тясно място" is retired |
+| Bottleneck (general) | Стеснение | |
 | Equivariant encoder | Еквивариантен кодер | |
 | Production-grade | Промишлено ниво / промишлен | Use „промишлен", not „продуктивен" (false friend) |
 | Fixed-limit (poker) | С лимит / лимитен | „Ледюк с лимит" preferred over „лимит Ледюк" |
@@ -185,6 +190,9 @@
 
 > Algorithm proper names and abbreviations are kept in English (Latin script).
 > On first mention, give the full English name, then the Bulgarian descriptive gloss in parentheses.
+> The same holds for **named systems**: Libratus, Pluribus, DeepStack, ReBeL, Student of Games,
+> AlphaStar, AlphaGo, OpenSpiel, Stable-Baselines3. Never transliterate them („Либратус" is wrong).
+> Only *games* are transliterated, because they are read aloud in the text: Кун, Ледюк, Го.
 
 | Abbreviation | Full English Name | Bulgarian Gloss (first mention only) |
 |-------------|-------------------|--------------------------------------|
@@ -253,7 +261,7 @@
 | Contribution N addresses | Принос N е насочен към |
 | The following phase covers | Следващият етап обхваща |
 | The study plan is organized as | Планът за обучение е организиран като |
-| Under conditions of imperfect information | При условия на несъвършена информация |
+| Under conditions of imperfect information | При условия на непълна информация |
 | A strategy profile in which | Стратегически профил, при който |
 | Without loss of generality | Без загуба на общност |
 | It follows that | Следва, че |
@@ -275,3 +283,9 @@
 5. **Register.** Maintain formal academic tone throughout: passive constructions, third person, impersonal sentences. Avoid colloquialisms, contractions, or unnecessarily informal phrasing.
 
 6. **Citation format.** Author surnames are kept in Latin script. Titles of works may be given in the original language (English) since no standard Bulgarian translation exists for most.
+
+7. **Titles of parts of a foreign-language source are not translated.** A reference to
+   „Sutton & Barto (2018), *Reinforcement Learning: An Introduction*, Chapter 3 — Finite
+   Markov Decision Processes" keeps the book title *and* the chapter title in English. Only
+   the surrounding prose is Bulgarian. A reader who follows the reference needs the words
+   that are actually printed in the book.

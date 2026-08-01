@@ -4,19 +4,19 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 11 One-Pager — Dynamic Coalition Formation in Competitive FFA Games"
+title: "Chapter 11 One-Pager — Dynamic Coalition Formation in Competitive FFA Games"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
 lang: en
 ---
 
-# Step 11 One-Pager — Dynamic Coalition Formation in Competitive FFA Games (So Long Sucker)
+# Chapter 11 One-Pager — Dynamic Coalition Formation in Competitive FFA Games (So Long Sucker)
 
-**Problem.** Steps 2-10 all leaned on one crutch: a two-player game with an exact best-response
+**Problem.** Chapters 2-10 all leaned on one crutch: a two-player game with an exact best-response
 and exploitability oracle, so "did it work?" was one number. Add a third player and alliances
 become possible — form, exploit, betray — while Nash turns both intractable and strategically
-empty, since it ignores coalitions entirely. Step 11 removes the crutch deliberately. This is the
+empty, since it ignores coalitions entirely. Chapter 11 removes the crutch deliberately. This is the
 thesis frontier, not a consolidation step.
 
 **Approach.** A native 4-player **So Long Sucker** engine — the 1950 game Nash, Shapley, Shubik
@@ -24,7 +24,7 @@ and Hausner built to study alliances — implemented from the De Carufel & Jerad
 with a 2-player **minimax endgame** as its only exact anchor. On top: a **coalition detector**
 (help/harm from chip placement), **Shapley credit** redefined as the value of a member's win
 probability, a **coalition-aware MAPPO** trainer blending coalition and winner-takes-all reward by
-a weight `alpha`, and **EGTA + spinning-top** analysis reused from Step 10. **All numbers below
+a weight `alpha`, and **EGTA + spinning-top** analysis reused from Chapter 10. **All numbers below
 are measured**, with one caveat: `scale_results.json` is a **pre-fix** run cited only as evidence
 of the bug below — the authoritative figures are `sweep_scale.json` (5 seeds) and post-fix
 `smoke_results.json`.
@@ -58,7 +58,7 @@ kind of player is this" to "who is allied with whom", read straight off the move
 gets its problem statement sharpened rather than solved — with an **empty core** and no Nash
 anchor, "safe" cannot mean bounded deviation from equilibrium and must become
 behavioural/population-based (piKL). Contribution #3 gains a working substitute for
-exploitability in EGTA plus the spinning-top decomposition, inheriting Step 10's caveat that the
+exploitability in EGTA plus the spinning-top decomposition, inheriting Chapter 10's caveat that the
 population you assemble decides whether you see a ladder or a wheel.
 
 **Open questions.** Reconciling the engine's turn and tie-break model against De Carufel & Jerade

@@ -1,10 +1,10 @@
-## 5. Phase D — Opponent Modeling and Exploitation (Steps 7–8)
+## 5. Phase D — Opponent Modeling and Exploitation (Chapters 7–8)
 
 ### 5.1 Phase Overview
 
-This phase addresses the central research question: how should an agent adapt its play to a specific opponent? The preceding phases built the algorithmic toolbox — equilibrium solvers, abstraction, and neural approximation — but did not yet tackle opponent-aware play. Step 7 will introduce inference mechanisms that convert observed action sequences into beliefs about opponent behavior. Step 8 will cover algorithms that translate those beliefs into profitable yet safe strategy adjustments. Together, these steps will form the foundation for Contribution 1 (Behavioral Adaptation) and expose the theoretical limitations that Contribution 2 (Multi-Agent Safe Exploitation) will need to address.
+This phase addresses the central research question: how should an agent adapt its play to a specific opponent? The preceding phases built the algorithmic toolbox — equilibrium solvers, abstraction, and neural approximation — but did not yet tackle opponent-aware play. Chapter 7 will introduce inference mechanisms that convert observed action sequences into beliefs about opponent behavior. Chapter 8 will cover algorithms that translate those beliefs into profitable yet safe strategy adjustments. Together, these chapters will form the foundation for Contribution 1 (Behavioral Adaptation) and expose the theoretical limitations that Contribution 2 (Multi-Agent Safe Exploitation) will need to address.
 
-### 5.2 Step 7 — Opponent Modeling — Inference from Behavioral Traces
+### 5.2 Chapter 7 — Opponent Modeling — Inference from Behavioral Traces
 
 **Contribution Alignment.** Bayesian opponent modeling^31^ will serve as the inference component of the planned Behavioral Adaptation Framework (Contribution 1). Three modeling paradigms will be studied — type-based models, continuous parametric models, and consistent convergent estimators — each offering different tradeoffs between assumptions, convergence speed, and robustness. The multiplayer extension, which requires joint beliefs over all opponents, will expose computational challenges relevant to Contribution 2. Non-stationarity handling will address an open problem relevant to the evaluation methodology (Contribution 3).
 
@@ -27,9 +27,9 @@ This phase addresses the central research question: how should an agent adapt it
 - Conduct a head-to-head model comparison measuring convergence speed, final exploitation rate, and robustness to unknown opponent types.
 - Execute non-stationarity tests demonstrating model behavior under opponent type switching.
 
-### 5.3 Step 8 — Safe Exploitation — Theory, Algorithms, and Real-Time Search
+### 5.3 Chapter 8 — Safe Exploitation — Theory, Algorithms, and Real-Time Search
 
-**Contribution Alignment.** This step covers the exploitation–safety tradeoff^33^, which is the theoretical core of the thesis. Key topics include the Restricted Nash Response (RNR^32^), the Safety Theorem of Ganzfried and Sandholm (2015) — which provides formal guarantees in two-player zero-sum settings but fails in N-player games, exposing the gap that Contribution 2 will address — subgame exploitation methods for real-time safe play (relevant to Contribution 1), and teaching attack^34^ resilience testing as a prototype for the adversarial evaluation methodology of Contribution 3.
+**Contribution Alignment.** This chapter covers the exploitation–safety tradeoff^33^, which is the theoretical core of the thesis. Key topics include the Restricted Nash Response (RNR^32^), the Safety Theorem of Ganzfried and Sandholm (2015) — which provides formal guarantees in two-player zero-sum settings but fails in N-player games, exposing the gap that Contribution 2 will address — subgame exploitation methods for real-time safe play (relevant to Contribution 1), and teaching attack^34^ resilience testing as a prototype for the adversarial evaluation methodology of Contribution 3.
 
 **Literature.**
 
@@ -47,10 +47,10 @@ This phase addresses the central research question: how should an agent adapt it
 - Implement an exploitation metrics module measuring exploitation value and safety violations.
 - Build a Restricted Nash Response (RNR^32^) solver with configurable safety parameter $p \in [0,1]$.
 - Implement the Ganzfried safe exploitation solver enforcing the Safety Theorem guarantee.
-- Implement a prime-safe exploitation extension handling $\varepsilon$-equilibrium baselines (connecting abstraction quality from Step 4).
+- Implement a prime-safe exploitation extension handling $\varepsilon$-equilibrium baselines (connecting abstraction quality from Chapter 4).
 - Build an SES-style subgame exploitation solver with gadget construction for real-time safe exploitation.
 - Implement an adaptation safety^35^ checker following the Ge et al. (2024) safety notion.
 - Generate exploitation–safety Pareto frontier plots for all methods across multiple opponent types.
-- Integrate the full pipeline: Step 7 opponent models^30^ feeding Step 8 exploitation engine, evaluated end-to-end.
+- Integrate the full pipeline: Chapter 7 opponent models^30^ feeding Chapter 8 exploitation engine, evaluated end-to-end.
 - Conduct a teaching attack^34^ stress test with deceptive opponent switching behavior mid-game and robustness analysis.
 

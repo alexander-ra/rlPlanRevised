@@ -1,5 +1,13 @@
 [
  {
+  "en": "Information bottleneck (IB)",
+  "bg": "информационно стеснение",
+  "category": "Abstraction & State Representation",
+  "freq": 0,
+  "status": "picked",
+  "reason": "composed: samples split (3/5)"
+ },
+ {
   "en": "MAP type",
   "bg": "тип МАР",
   "category": "Abstraction & State Representation",
@@ -177,7 +185,7 @@
  },
  {
   "en": "action translation",
-  "bg": "преобразуване на действие",
+  "bg": "транслация на действия",
   "category": "Abstraction & State Representation",
   "freq": 7,
   "status": "picked",
@@ -185,10 +193,10 @@
  },
  {
   "en": "action translation problem",
-  "bg": "проблем с преобразуването на действие",
+  "bg": "проблем с транслацията на действия",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -1089,10 +1097,10 @@
  },
  {
   "en": "nearest-action translator",
-  "bg": "преводач на най-близкия ход",
+  "bg": "транслатор към най-близкото действие",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -1297,10 +1305,10 @@
  },
  {
   "en": "probability-split translator",
-  "bg": "вероятностен разделител",
+  "bg": "вероятностно разделяне",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -1321,10 +1329,10 @@
  },
  {
   "en": "pseudo-harmonic translator",
-  "bg": "псевдохармоничен преводач",
+  "bg": "псевдохармоничен транслатор",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -2001,18 +2009,18 @@
  },
  {
   "en": "action-translation method",
-  "bg": "метод за преобразуване на действие",
+  "bg": "метод за транслация на действия",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "deepl: agrees with the top-voted candidate"
  },
  {
   "en": "action-translation step",
-  "bg": "стъпка на преобразуване на действие",
+  "bg": "стъпка на транслация на действия",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -2305,10 +2313,10 @@
  },
  {
   "en": "emd",
-  "bg": "разстояние на Земьов-Мъри",
+  "bg": "разстояние на Васерщайн",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -2913,18 +2921,18 @@
  },
  {
   "en": "static action translators",
-  "bg": "статични преобразуватели на действия",
+  "bg": "статични транслатори на действия",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
   "en": "static translation",
-  "bg": "статичен превод",
+  "bg": "статична транслация",
   "category": "Algorithm Names",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: samples split (3/5)"
  },
  {
@@ -3217,10 +3225,10 @@
  },
  {
   "en": "bottleneck",
-  "bg": "тясно място",
+  "bg": "стеснение",
   "category": "Common Academic Phrases",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "5/5 unanimous + appears verbatim in human BG corpus"
  },
  {
@@ -3593,7 +3601,7 @@
  },
  {
   "en": "state of the art",
-  "bg": "съвременно равнище",
+  "bg": "водещ стандарт",
   "category": "Common Academic Phrases",
   "freq": 5,
   "status": "picked",
@@ -3601,7 +3609,7 @@
  },
  {
   "en": "state-of-the-art",
-  "bg": "съвременно равнище",
+  "bg": "водещ стандарт",
   "category": "Common Academic Phrases",
   "freq": 2,
   "status": "picked",
@@ -3689,10 +3697,10 @@
  },
  {
   "en": "translation problem",
-  "bg": "проблем на транслацията",
+  "bg": "проблем с транслацията",
   "category": "Common Academic Phrases",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "decided by assistant (freq 2) — UNCERTAIN, review"
  },
  {
@@ -4833,18 +4841,18 @@
  },
  {
   "en": "emd proxy",
-  "bg": "прокси на разстоянието на Земьов-Музер",
+  "bg": "прокси на разстоянието на Васерщайн",
   "category": "Evaluation & Methodology",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "emd-style distances",
-  "bg": "разстояния от ЕМД тип",
+  "bg": "разстояния от тип Васерщайн",
   "category": "Evaluation & Methodology",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -10041,10 +10049,10 @@
  },
  {
   "en": "Earth Mover's Distance (EMD)",
-  "bg": "Разстояние на Васерщайн",
+  "bg": "разстояние на Васерщайн",
   "category": "Mathematics & Statistics",
   "freq": 0,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
@@ -10625,7 +10633,7 @@
  },
  {
   "en": "earth mover's distance",
-  "bg": "Разстояние на Васерщайн",
+  "bg": "разстояние на Васерщайн",
   "category": "Mathematics & Statistics",
   "freq": 7,
   "status": "picked",
@@ -10881,10 +10889,10 @@
  },
  {
   "en": "information bottleneck lagrangian",
-  "bg": "лагранжиан на информационното тясно място",
+  "bg": "лагранжиан на информационното стеснение",
   "category": "Mathematics & Statistics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -15121,10 +15129,10 @@
  },
  {
   "en": "translation boundaries",
-  "bg": "граници на превод",
+  "bg": "граници на транслацията",
   "category": "Neural Architecture & Layers",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -15329,10 +15337,10 @@
  },
  {
   "en": "King-flop",
-  "bg": "крал-флоп",
+  "bg": "флоп с Поп",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -16702,6 +16710,14 @@
   "freq": 4,
   "status": "picked",
   "reason": "samples split 2/5"
+ },
+ {
+  "en": "libratus",
+  "bg": "Libratus",
+  "category": "Poker & Domain Vocabulary",
+  "freq": 14,
+  "status": "picked",
+  "reason": "5/5 unanimous but no corroboration in human BG corpus"
  },
  {
   "en": "limit texas hold'em",
@@ -18166,6 +18182,30 @@
   "freq": 1,
   "status": "auto",
   "reason": "5/5 unanimous + appears verbatim in human BG corpus"
+ },
+ {
+  "en": "Jack",
+  "bg": "Вале",
+  "category": "Poker & Games",
+  "freq": 0,
+  "status": "auto",
+  "reason": "summaries review 2026-08"
+ },
+ {
+  "en": "King",
+  "bg": "Поп",
+  "category": "Poker & Games",
+  "freq": 0,
+  "status": "auto",
+  "reason": "summaries review 2026-08"
+ },
+ {
+  "en": "Queen",
+  "bg": "Дама",
+  "category": "Poker & Games",
+  "freq": 0,
+  "status": "auto",
+  "reason": "summaries review 2026-08"
  },
  {
   "en": "Exploitation–safety tradeoff",
@@ -23033,10 +23073,10 @@
  },
  {
   "en": "computational bottleneck",
-  "bg": "изчислително тясно място",
+  "bg": "изчислително стеснение",
   "category": "Software & Experimental Infrastructure",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
@@ -23161,10 +23201,10 @@
  },
  {
   "en": "deployment translation",
-  "bg": "превод на внедряване",
+  "bg": "транслация при внедряване",
   "category": "Software & Experimental Infrastructure",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -23513,10 +23553,10 @@
  },
  {
   "en": "network size bottleneck",
-  "bg": "тясно място в размера на мрежата",
+  "bg": "стеснение в размера на мрежата",
   "category": "Software & Experimental Infrastructure",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {

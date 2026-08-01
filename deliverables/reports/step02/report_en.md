@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 02 — Game Theory & CFR Basics: Implementation Report
+# Chapter 02 — Game Theory & CFR Basics: Implementation Report
 
 **Environment:** April 2026  
 **Game:** Kuhn Poker (3-card, 2-player)  
@@ -16,7 +16,7 @@ BG: Изследване на възможностите за приложени
 
 ## 1. What was developed
 
-Step 02 implements a modular version of vanilla Counterfactual Regret Minimization (CFR) applied to Kuhn Poker, written from scratch in Python. It proves that the framework successfully discovers Nash equilibrium strategies in a multi-agent, imperfect-information environment.
+Chapter 02 implements a modular version of vanilla Counterfactual Regret Minimization (CFR) applied to Kuhn Poker, written from scratch in Python. It proves that the framework successfully discovers Nash equilibrium strategies in a multi-agent, imperfect-information environment.
 
 **Key Components Built:**
 - **Game Engine:** `kuhn_poker.py` handles terminal payoffs, betting actions, and info-set representations.

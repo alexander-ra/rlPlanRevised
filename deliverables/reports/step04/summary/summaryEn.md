@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 4 Summary — Game Abstraction & Scaling Imperfect-Information Games"
+title: "Chapter 4 Summary — Game Abstraction & Scaling Imperfect-Information Games"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "May 2026"
@@ -13,25 +13,13 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 4 — Game Abstraction & Scaling Imperfect-Information Games
-
-This is a condensed summary of the game-abstraction material covered in Step 4. It serves two purposes: as a quick refresher while progressing through later steps, and as a primary source for the Step 15 public report synthesis.
-
----
-
-## From Enumerated Games to Abstraction
-
-Steps 1–3 built the algorithms (DQN/PPO; Vanilla CFR; CFR+ and MCCFR external/outcome). Each was demonstrated on a game small enough to enumerate exactly: Kuhn (12 information sets), Leduc (936). That toolkit is complete — but it only works when the entire game tree fits in memory.
-
-Step 4 is the bridge from "toy games we can enumerate" to "games we cannot." The mechanism is **abstraction**: deliberately collapse parts of the game so the same algorithms can run on a smaller, structurally simpler proxy, and measure what that costs in strategy quality. By the end of this step the deliverable contains a quantitative answer to the central question of every practical poker AI since 2007:
-
-> *How much can the game be shrunk before the abstract Nash strategy stops being a good strategy in the real game?*
-
-That answer takes the form of a Pareto curve: on one axis, the size of the abstracted game; on the other, the **exploitability gap** — how much worse the abstract strategy is than the real game's exact Nash. Both metrics are introduced formally in the section below.
+# Chapter 4 — Game Abstraction & Scaling Imperfect-Information Games
 
 ---
 
 ## Why Abstraction Is Needed
+
+Chapters 1–3 built the algorithms (DQN/PPO; Vanilla CFR; CFR+ and MCCFR external/outcome). Each was demonstrated on a game small enough to enumerate exactly: Kuhn (12 information sets), Leduc (936). That toolkit is complete — but it only works when the entire game tree fits in memory.
 
 A game tree's size is the product of three factors: (a) the number of distinct hidden states the chance node can produce, (b) the branching factor at each decision point, and (c) the depth (decisions until terminal). Each of the three blows up independently:
 
@@ -39,23 +27,21 @@ A game tree's size is the product of three factors: (a) the number of distinct h
 - **Branching factor** — No-limit poker allows any bet size from "min raise" to "all-in." Even discretising to a handful of sizes pushes per-node branching from 3 (fold/call/raise in fixed-limit) to 5–10.
 - **Depth** — Multiple betting rounds, each potentially with several raises, multiply.
 
-The combined number of information sets in heads-up no-limit Hold'em is $\sim 10^{161}$ — more than there are atoms in the observable universe by a factor of $\sim 10^{80}$. None of Step 3's algorithms can run on that tree.
+The combined number of information sets in heads-up no-limit Hold'em is $\sim 10^{161}$ — more than there are atoms in the observable universe by a factor of $\sim 10^{80}$. None of Chapter 3's algorithms can run on that tree.
 
-The recipe is the same across every approach: *build a smaller game whose strategies translate back into playable strategies for the real game, run the Step 3 algorithms on that smaller game, then bound the damage.* That recipe has two routes.
+Chapter 4 is the bridge from "toy games we can enumerate" to "games we cannot." The mechanism is **abstraction**: deliberately collapse parts of the game so the same algorithms can run on a smaller, structurally simpler proxy, and measure what that costs in strategy quality. By the end of this chapter the deliverable contains a quantitative answer to the central question of every practical poker AI since 2007:
 
-### Two Routes to Abstraction {.unlisted}
+> *How much can the game be shrunk before the abstract Nash strategy stops being a good strategy in the real game?*
 
-The word "abstraction" in this literature actually covers two operationally different things. Both are used in modern game AI; both will appear in this thesis; conflating them is a category error. This section pins the boundary, and the abstraction pipeline follows it strictly: every phase has an *explicit* subsection (the tabular / algorithmic route) and an *implicit* subsection (the Deep-RL counterpart in the same conceptual slot).
+That answer takes the form of a Pareto curve: on one axis, the size of the abstracted game; on the other, the **exploitability gap** — how much worse the abstract strategy is than the real game's exact Nash. Both metrics are introduced formally below.
 
-| Aspect | **Explicit / tabular** | **Implicit / IB-style** (Deep RL) |
-|---|---|---|
-| Where compression lives | A partition over info sets / a finite chosen set of actions | A continuous latent vector $z = f_\theta(s)$ |
-| Who does it | A human-designed rule or a clustering pass on hand features | The optimiser, via gradient descent on a loss |
-| The "knob" | $k$ in k-means buckets, the bet-set, the suit-isomorphism rule | $\beta$ multiplying $I(S;Z)$ in the loss |
-| Guarantee | Bounded exploitability gap in the **same** game (formal exploitability bound) | Information-theoretic bound on $I(S;Z)$; **no** Nash-preservation theorem |
-| When it is computed | Before solving — fixed input to CFR/MCCFR | During solving — the network *is* the strategy |
-| Output type | A discrete bucket id per info set | A real vector |
-| Where it appears in this thesis | This step (4) | Step 5 (Deep CFR), step 6 (end-to-end), steps 11–12 (sequence models) |
+The recipe is the same across every approach: *build a smaller game whose strategies translate back into playable strategies for the real game, run the Chapter 3 algorithms on that smaller game, then bound the damage.* That recipe has two routes.
+
+---
+
+## Routes to Abstraction
+
+The word "abstraction" in this literature actually covers two operationally different things. Both are used in modern game AI; both will appear in this thesis; conflating them is a category error. This section pins the boundary. Everything that follows implements the **explicit** route end-to-end; the implicit counterparts occupy the same conceptual slots, but since no implicit work is performed in this chapter they are collected in a single section near the end rather than interleaved.
 
 Both routes share the same **intuition** — compress while preserving value — and that intuition is best captured by the Information Bottleneck Lagrangian, with $\beta$ as the exchange rate between memory and value:
 
@@ -68,19 +54,29 @@ When $\beta = 0$, the algorithm compresses the entire game into one state and pl
 - **Empirical similarity (HSD + EMD)** — measures the curve itself: EMD between abstract and full distributions is a proxy for the value-loss term.
 - **Runtime patching** — orthogonal: accept the value loss from any chosen $\beta$, then patch it at runtime via subgame solving.
 
-The implementations in this step are all explicit; the implicit subsections are forward pointers, not work performed here.
+Side by side, the two routes differ on every practical axis:
 
-Throughout the rest of this summary, the strategy produced by solving the abstract game (and used as the starting point at runtime) is referred to as the **blueprint**.
+| Aspect | **Explicit / tabular** | **Implicit / IB-style** (Deep RL) |
+|---|---|---|
+| Where compression lives | A partition over info sets / a finite chosen set of actions | A continuous latent vector $z = f_\theta(s)$ |
+| Who does it | A human-designed rule or a clustering pass on hand features | The optimiser, via gradient descent on a loss |
+| The "knob" | $k$ in k-means buckets, the bet-set, the suit-isomorphism rule | $\beta$ multiplying $I(S;Z)$ in the loss |
+| Guarantee | Bounded exploitability gap in the **same** game (formal exploitability bound) | Information-theoretic bound on $I(S;Z)$; **no** Nash-preservation theorem |
+| When it is computed | Before solving — fixed input to CFR/MCCFR | During solving — the network *is* the strategy |
+| Output type | A discrete bucket id per info set | A real vector |
+| Where it appears in this thesis | This chapter (4) | Chapter 5 (Deep CFR), chapter 6 (end-to-end), chapters 11–12 (sequence models) |
 
 ---
 
-## Two Axes of Abstraction
+## Axes of Abstraction
 
 Every concrete abstraction technique falls onto one of two orthogonal axes — *what states the agent treats as the same* (information abstraction) and *what moves the agent considers* (action abstraction). A third axis, *runtime refinement*, is orthogonal to both and lives in its own section (Runtime Patching, below).
 
 ### Information Abstraction {.unlisted}
 
 Group together info sets that the agent will treat as the same state. This is the central operation of the pipeline — every phase from the merging criterion through the build-time pipeline is about *how* and *when* to perform information merges.
+
+That is why this subsection is deliberately short: information abstraction is only *named* here, and then built out over the sections that follow (The Merging Criterion, The Error Budget, The Build-Time Pipeline). Action abstraction, by contrast, is covered in full below.
 
 > **Note on regimes.** Under explicit information abstraction in vanilla CFR there is a subtle distinction between abstracting (a) the **node map** (memory only) and (b) the **traversal** (wall-clock per iteration). Only the second produces a wall-clock speedup.
 
@@ -90,14 +86,14 @@ Group together info sets that the agent will treat as the same state. This is th
 
 Restrict the set of actions the solver considers, run CFR on the restricted game, then handle whatever the real opponent does that lies outside that restriction. Two regimes:
 
-- **Discrete action spaces.** The base set is already finite. Abstraction means *pruning* (drop dominated or uninteresting actions before solving) or *macro-actions* (group sequences of primitives into one abstract action — a forward pointer to temporal abstraction in steps 1 and 11). Translation is usually trivial: if the abstract action set is a subset of the legal one, the agent's own moves are always in-abstraction.
+- **Discrete action spaces.** The base set is already finite. Abstraction means *pruning* (drop dominated or uninteresting actions before solving) or *macro-actions* (group sequences of primitives into one abstract action, i.e. temporal abstraction). Translation is usually trivial: if the abstract action set is a subset of the legal one, the agent's own moves are always in-abstraction.
 - **Continuous action spaces.** The base set is uncountable (bet sizes in no-limit poker, joint torques in continuous control). For tabular methods, action abstraction is *mandatory* — CFR cannot run on a continuous tree without first collapsing it to a finite proxy (typical poker grid: `{fold, call, 0.5×pot, 1×pot, 2×pot, all-in}`). The Deep RL alternative is a parameterised actor that outputs a continuous distribution over actions directly (PPO/SAC), eliminating the translation problem at the cost of formal guarantees.
 
 The translation problem is **acute** in the explicit-discretisation route: when the opponent plays a 0.7×pot bet but the abstraction only contains 0.5×pot and 1×pot, the agent must convert that bet to a node it has trained on. Three translators in common use:
 
 1. **Nearest-action** — round to the closest abstract bet on the linear scale. Worst on equity loss when bets cluster between abstract sizes.
 2. **Probability-split (linear)** — assign mass to the two nearest abstract bets in proportion to their distance from the actual bet.
-3. **Pseudo-harmonic mapping** — interpolate in *pot-fraction-odds* space rather than linear bet-amount space, which corresponds to how strategically equivalent two bets actually are. State-of-the-art for poker bet translation.
+3. **Pseudo-harmonic mapping** — interpolate in *pot-fraction* space rather than in the linear space of absolute bet amounts. This reflects far more accurately how strategically equivalent two different bets are, and is the leading standard (state-of-the-art) for bet translation in poker.
 
 Translation errors compound across betting rounds — an opponent who detects rounding can systematically bet just below or above grid points to coerce wrong-sized responses. This is empirically where practical poker AIs lose the most equity, and is the operational reason runtime patching (below) exists: re-solve the actual subgame with the actual bet rather than relying on the translator.
 
@@ -113,22 +109,15 @@ $$\text{exploit}_G(\sigma) = \tfrac{1}{2}\bigl[v_G(\text{BR}(\sigma_{1}),\, \sig
 
 where $\sigma_0$ and $\sigma_1$ are the two players' strategies, and $\text{BR}(\sigma)$ (Best Response) is the strategy that optimally maximizes profit specifically against the strategy $\sigma$.
 
-Step 4 introduces a derived metric, the **exploitability gap**: how much worse an abstract strategy is than the real game's exact Nash, *measured in the real game*.
+Chapter 4 introduces a derived metric, the **exploitability gap**: how much worse an abstract strategy is than the real game's exact Nash, *measured in the real game*.
 
-Let $G$ be the real game and $\hat G$ its abstraction. Let $\hat\sigma^*$ be the Nash of $\hat G$, and let $T(\hat\sigma^*)$ be its translation back into a playable strategy for $G$ (identity if $\hat G$ is purely an information abstraction; non-trivial if it is also an action abstraction — see action abstraction). Then
+Let $G$ be the real game and $\hat G$ its abstraction. Let $\hat\sigma^*$ be the Nash of $\hat G$, and let $T(\hat\sigma^*)$ be its translation back into a playable strategy for $G$ (identity if $\hat G$ is purely an information abstraction; non-trivial if it is also an action abstraction — see Axes of Abstraction above). Then
 
 $$\Delta_{\text{abs}}(\hat G) \;=\; \text{exploit}_G\bigl(T(\hat\sigma^*)\bigr) \;-\; \text{exploit}_G(\sigma^*_G)$$
 
 with $\sigma^*_G$ the exact Nash of $G$. By definition $\Delta_{\text{abs}} \ge 0$, with equality iff the abstraction is lossless (covered in the merging criterion below).
 
-This is the central quantity of Step 4. Every Pareto plot in the Pareto frontier has $\Delta_{\text{abs}}$ on one axis. Every "abstraction quality" claim is checked by computing it.
-
-Two complementary tools quantify $\Delta_{\text{abs}}$ before solving the abstract game outright:
-
-- **Reach-weighted error bound** (covered in the error budget below) — sums per-merge utility/probability errors weighted by reach probability to give an *upper bound* on $\Delta_{\text{abs}}$ from the abstraction's structural properties alone.
-- **Earth Mover's Distance between abstract and real distributions** (covered in the error budget below) — a *measured proxy* for $\Delta_{\text{abs}}$ that does not depend on solving anything: just compute EMD between the hand-strength distributions of merged info sets and read off how much information the merge is throwing away. Empirically the strongest predictor of post-solve exploitability.
-
-The two are complementary: the bound is rigorous but loose; the EMD proxy is empirical but tight. The Pareto view reports both alongside the directly-measured $\Delta_{\text{abs}}$ for every abstraction configuration.
+This is the central quantity of Chapter 4. Every Pareto plot in this chapter has $\Delta_{\text{abs}}$ on one axis. Every "abstraction quality" claim is checked by computing it — and where computing it outright is too expensive, the error budget below supplies a bound and a proxy in its place.
 
 > **Remember:** exploitability gap is the price paid for solving the smaller game instead of the real one.
 
@@ -144,11 +133,9 @@ EMD shows up across nearly every section that follows, so it earns a short stand
 
 **Why it beats mean-based comparisons.** EMD respects the *geometry* of where mass lives, not just average values. Two distributions concentrated near each other are close; two distributions concentrated at opposite ends are far apart, regardless of where their means happen to coincide. Expected-value comparisons throw all this structure away.
 
-**In this step's context.** Each information set has a *Hand Strength Distribution (HSD)* — the histogram of end-of-game win probabilities computed by rolling out unseen cards. Two HSDs with the same mean can have completely different shapes: a peaked "stable medium hand" vs a bimodal "boom-or-bust" hand. Expected-hand-strength clustering merges these together; EMD does not. That is why every quality criterion, every error proxy, and every clustering pipeline below uses EMD between HSDs as the core similarity signal.
+**In this chapter's context.** Each information set has a *Hand Strength Distribution (HSD)* — the histogram of end-of-game win probabilities computed by rolling out unseen cards. Two HSDs with the same mean can have completely different shapes: a peaked "stable medium hand" vs a bimodal "boom-or-bust" hand. Expected-hand-strength clustering merges these together; EMD does not. That is why every quality criterion, every error proxy, and every clustering pipeline below uses EMD between HSDs as the core similarity signal.
 
 **Cheap on 1-D histograms.** When the support is one-dimensional and ordered (binned win probability ∈ [0, 1]), EMD reduces to the L1 distance between cumulative distributions — a single linear sweep over the bins. This is why HSD + EMD is fast enough to cluster millions of info sets.
-
-> **Remember:** EMD compares distribution *shape*, not just the mean — that's why two hands with identical win rates can still be strategically different.
 
 ---
 
@@ -164,7 +151,7 @@ Merge two info sets only when they are *strategically identical*: same probabili
 
 When this holds, the merge is free: any optimal strategy in the abstract game lifts to an optimal strategy in the original game with **zero** exploitability cost.
 
-*Intuition:* A red Jack and a black Jack in a game where suits don't matter (no flushes possible) are losslessly mergeable. A red Jack in a game *with* flushes is not — the suit silently affects the opponent's flush odds through card removal.
+*Example:* A red Jack and a black Jack in a game where suits don't matter (no flushes possible) are losslessly mergeable. A red Jack in a game *with* flushes is not — the suit silently affects the opponent's flush odds through card removal.
 
 > **Remember:** lossless abstraction is free compression: same strategic meaning, fewer stored information sets.
 
@@ -172,7 +159,7 @@ When this holds, the merge is free: any optimal strategy in the abstract game li
 
 Relax "identical utilities" to "utilities differ by at most $\varepsilon$"; same idea for chance probabilities. The price is a quantifiable error — each merge contributes a slack budget that propagates into a bound on overall exploitability (used by the next section). Action sequences along merged paths still need to agree, so this is *controlled* forgetting, not arbitrary.
 
-*Intuition:* Putting J and Q into a single "low card" bucket forces the agent to play them identically, even though optimally they differ slightly. The system absorbs that mistake in exchange for a much smaller game.
+*Example:* Putting J and Q into a single "low card" bucket forces the agent to play them identically, even though optimally they differ slightly. The system absorbs that mistake in exchange for a much smaller game.
 
 > **Remember:** bounded lossy abstraction is controlled forgetting: the game shrinks, but each merge receives an error price.
 
@@ -180,7 +167,7 @@ Relax "identical utilities" to "utilities differ by at most $\varepsilon$"; same
 
 When the analytical bound is too pessimistic or the inputs too high-dimensional to enumerate (Texas hold'em has $\sim 10^9$ canonical river boards), drop the per-merge bound and replace it with a *learned distance function*:
 
-- Compute a feature vector per info set — typically the **Hand Strength Distribution (HSD)**: the histogram of end-of-game win probabilities after rolling out unseen cards.
+- Compute a feature vector per info set — typically the **Hand Strength Distribution (HSD)** defined in the primer above.
 - Use **Earth Mover's Distance (EMD)** between feature vectors as the similarity metric.
 - Cluster info sets whose feature distributions are close; merge within clusters.
 
@@ -188,33 +175,25 @@ There is no formal exploitability guarantee here — quality is checked *after* 
 
 > **Remember:** empirical abstraction is a budgeted guess that must be measured after solving.
 
-### Picking among the three
-
-The decision order is: first take every lossless merge available; then accept bounded lossy merges only when the error budget is tolerable; when exact checks are too pessimistic or too expensive, cluster with HSD + EMD and verify the resulting abstraction empirically.
-
 ---
 
 ## The Error Budget
 
 > **Further reading:** <https://www.cs.cmu.edu/~sandholm/imperfect_recall_abstraction.arxiv14.pdf> · <https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdf>
 
-Three quantification tools, increasing in tightness and decreasing in formal rigour.
+Three quantification tools, increasing in tightness and decreasing in formal rigour. The first two pair off with the strictness levels above — the analytical bound prices a Level 2 bounded-lossy merge, the EMD proxy scores a Level 3 empirical one — while the third measures the finished abstraction whichever way it was built.
 
 ### Tool 1 — Analytical bound
 
 Given a bounded-lossy abstraction with per-merge slack constants, sum them — weighted by how often each info set is actually reached during play — to get an upper bound on the exploitability gap.
 
-The reach-weighting is the key idea. Rare info sets can be merged aggressively without hurting overall exploitability; sloppy merges in dense, frequently-visited regions are catastrophic. This is what every practical poker abstraction since 2010 exploits.
-
-*Intuition:* The error of a bucket merge is weighted by how often players actually reach that situation. A sloppy merge in a rare endgame scenario costs almost nothing overall, allowing aggressive abstraction without losing money in expectation.
+The reach-weighting is the key idea. Rare info sets can be merged aggressively without hurting overall exploitability; sloppy merges in dense, frequently-visited regions are catastrophic. A sloppy merge in a rare endgame scenario costs almost nothing overall, which is what lets a practical abstraction be aggressive without losing money in expectation.
 
 > **Remember:** the analytical bound is rigorous but usually loose; its most important idea is reach-weighting.
 
 ### Tool 2 — EMD proxy
 
-A *measured* upper bound that does not require enumerating leaves: just compute EMD between the hand-strength histograms of two info sets. EMD is a *proxy*, not a bound — it correlates well with post-solve exploitability but carries no formal guarantee. (See the EMD primer above for the underlying mechanics.)
-
-> **Remember:** EMD remembers distribution shape; expected hand strength remembers only the mean.
+EMD between the hand-strength histograms of two info sets, measured without enumerating leaves (see the primer above for the mechanics). It is a *proxy*, not a bound — it correlates well with post-solve exploitability but carries no formal guarantee.
 
 ### Tool 3 — CFR-BR direct evaluator
 
@@ -224,9 +203,17 @@ In experiments, CFR-BR strategies show exploitability as low as $1/3$ of the cor
 
 > **Remember:** CFR-BR asks what the abstraction can express, not how well one solver happened to train.
 
-### Empirical findings worth memorising
+---
 
-Two robust comparisons on equal info-set budgets:
+## Choosing an Abstraction in Practice
+
+The three criterion levels and the three measurement tools leave one question open: on a real game, which do you actually reach for? Three findings settle it.
+
+**The decision order.** First take every lossless merge available; then accept bounded lossy merges only when the error budget is tolerable; when exact checks are too pessimistic or too expensive, cluster with HSD + EMD and verify the resulting abstraction empirically.
+
+**Global optimisation is off the table.** Picking the partition that minimises the analytical bound is **NP-complete**, even for a tiny single-player game two levels deep. So nobody minimises the bound exactly — practical pipelines approximate level-by-level (one round at a time) rather than globally. Under reasonable conditions, a single level reduces to k-centre clustering in a metric space, which has polynomial-time approximation algorithms with constant-factor guarantees. This is *why* every practical poker abstraction since 2010 is a level-by-level clustering pipeline rather than a global optimiser.
+
+**Two robust comparisons on equal info-set budgets.**
 
 - **Distribution-aware vs expectation-based.** HSD + EMD strictly dominates expected-win-rate clustering on both exploitability and head-to-head win rate against fixed opponents.
 - **Imperfect vs perfect recall.** Imperfect-recall abstractions outperform perfect-recall ones at matched info-set budget — the bucket-reallocation freedom is empirically worth more than the lost continuity.
@@ -235,7 +222,7 @@ Both are reasons the build-time pipeline defaults to imperfect recall + HSD + EM
 
 ---
 
-## The Build-Time Pipeline
+## Build-Time Decisions
 
 > **Further reading:** <https://www.cs.cmu.edu/~gilpin/papers/extensive.JACM.pdf> · <https://poker.cs.ualberta.ca/publications/AAMAS13-abstraction.pdf> · <https://www.cs.cmu.edu/~sandholm/imperfect_recall_abstraction.arxiv14.pdf>
 
@@ -266,11 +253,7 @@ Imperfect recall consistently wins at a fixed bucket budget — capacity is spen
 
 > **Remember:** HSD + EMD decides *what looks strategically similar*; imperfect recall decides *where to spend the bucket budget*.
 
-### A note on hardness
-
-Picking the partition that minimises the analytical bound is **NP-complete**, even for a tiny single-player game two levels deep. So nobody minimises the bound exactly — practical pipelines approximate level-by-level (one round at a time) rather than globally. Under reasonable conditions, a single level reduces to k-centre clustering in a metric space, which has polynomial-time approximation algorithms with constant-factor guarantees.
-
-This is *why* every practical poker abstraction since 2010 is a level-by-level clustering pipeline rather than a global optimiser.
+**The output.** The frozen result of both pipelines — the strategy obtained by solving the abstract game, and the starting point for everything that happens at runtime — is referred to throughout the rest of this summary as the **blueprint**.
 
 ---
 
@@ -298,7 +281,7 @@ In practice, the conservative blueprint payoffs can be replaced by *estimates* o
 
 ### Patch 2 — Nested subgame solving (the action-translation killer)
 
-When the *opponent* plays an action $a$ outside the abstraction (a $0.7\!\times\!\text{pot}$ bet when the abstraction has only $0.5\!\times\!\text{pot}$ and $1\!\times\!\text{pot}$), instead of rounding $a$ to a known action via a translator, *re-solve a fresh subgame that contains $a$*.
+This is the direct answer to the translation problem set out under Axes of Abstraction above. When the *opponent* plays an action $a$ outside the abstraction, do not round $a$ to a known action via a translator — *re-solve a fresh subgame that contains $a$*.
 
 The inexpensive version builds a subgame just after the off-tree action, re-solves it with the safe-subgame scaffold, and appends the new sub-strategy to the blueprint. If another off-tree action appears later, the process repeats — the blueprint grows only where play actually goes.
 
@@ -317,20 +300,9 @@ The full pipeline now adds up to a single architectural pattern that every compe
 1. **Build-time** — apply lossless and lossy abstraction to shrink the game; solve the resulting abstract game with CFR / CFR+ / MCCFR; freeze the resulting strategy as the **blueprint**.
 2. **Runtime** — when play descends into a subgame the blueprint covers coarsely, re-solve it with safe subgame solving (Patch 1). When the opponent plays an action outside the abstraction, re-solve a fresh subgame containing that action (Patch 2).
 
-The two halves complement each other: abstraction makes the build-time problem tractable; live patches recover the precision lost to abstraction at the points of play where it actually matters. Step 6 covers the full integrated systems; this step provides the abstraction-and-patch primitives they are built from.
+The two halves complement each other: abstraction makes the build-time problem tractable; live patches recover the precision lost to abstraction at the points of play where it actually matters.
 
 > **Remember:** the production architecture is one part precomputed blueprint, one part live re-solving — neither half stands alone.
-
----
-
-## Implicit Route: Deep RL Counterparts
-
-Each phase of the explicit pipeline has a Deep RL counterpart that occupies the same conceptual slot but trades formal guarantees for end-to-end learning. These are forward pointers — actual implementations land in steps 5–6.
-
-- **Merging criterion** — the three strictness levels map to network architectures: lossless ↔ permutation-equivariant networks (Deep Sets), bounded lossy ↔ information bottlenecks in recurrent/transformer policies, empirical similarity ↔ end-to-end learned latent embeddings (as in Deep CFR).
-- **Error budget** — no explicit per-merge bounds. Quality is monitored via rate-distortion curves (Information Bottleneck) and test-loss tracking, accepting asymptotic convergence in place of algorithmic guarantees.
-- **Build-time pipeline** — there is no separate build phase. The network's latent space learns its own abstract representation, shaped directly by gradient descent on the regret-minimization loss.
-- **Runtime patching** — exact equilibrium re-solvers are replaced by depth-limited heuristic search backed by neural-network value functions (DeepStack, ReBeL).
 
 ---
 
@@ -353,7 +325,7 @@ The lossy bucket runs show the other side of the tradeoff. Smaller bucketed game
 
 ![Mini-NL Leduc CFR+ abstraction results](day07_cfrplus_mini_nl_leduc.png)
 
-Action abstraction was the riskiest part of the step. In Mini-NL Leduc, restricting the action set reduced the information-set count from 4,704 to 936 and produced many more CFR+ iterations under the same time budget, but exploitability stayed high. In Extended Leduc, adding action abstraction on top of suit isomorphism produced a compact tree, but the translated strategy was highly exploitable. This is why the literature moves from static action translation toward nested subgame solving: the full action actually played by the opponent often matters too much to round away.
+Action abstraction was the riskiest part of the chapter. In Mini-NL Leduc, restricting the action set reduced the information-set count from 4,704 to 936 and produced many more CFR+ iterations under the same time budget, but exploitability stayed high. In Extended Leduc, adding action abstraction on top of suit isomorphism produced a compact tree, but the translated strategy was highly exploitable. This is why the literature moves from static action translation toward nested subgame solving: the full action actually played by the opponent often matters too much to round away.
 
 ![Extended Leduc CFR+ abstraction results](day07_cfrplus_extended_leduc.png)
 
@@ -361,12 +333,25 @@ Action abstraction was the riskiest part of the step. In Mini-NL Leduc, restrict
 
 The Pareto view is the right final diagnostic. Each point asks: how much smaller did the game become, and how much exploitability did that compression buy or cost? Lossless suit isomorphism lands on the attractive part of the frontier. Coarse buckets and action abstraction can reduce the game further, but they move onto a different regime where smaller size is paid for with strategy quality.
 
+---
+
+## Deep RL Counterparts
+
+Each phase of the explicit pipeline has a Deep RL counterpart that occupies the same conceptual slot but trades formal guarantees for end-to-end learning. These are forward pointers — actual implementations land in chapters 5–6.
+
+- **Merging criterion** — the three strictness levels map to network architectures: lossless ↔ permutation-equivariant networks (Deep Sets), bounded lossy ↔ information bottlenecks in recurrent/transformer policies, empirical similarity ↔ end-to-end learned latent embeddings (as in Deep CFR).
+- **Error budget** — no explicit per-merge bounds. Quality is monitored via rate-distortion curves (Information Bottleneck) and test-loss tracking, accepting asymptotic convergence in place of algorithmic guarantees.
+- **Build-time pipeline** — there is no separate build phase. The network's latent space learns its own abstract representation, shaped directly by gradient descent on the regret-minimization loss.
+- **Runtime patching** — exact equilibrium re-solvers are replaced by depth-limited heuristic search backed by neural-network value functions (DeepStack, ReBeL).
+
+---
+
 ## Connections and Forward Pointers
 
-Step 4 continues the progression started in Steps 2 and 3. Step 2 introduced CFR as local regret minimization over information sets. Step 3 made that solver faster and cheaper through CFR+ and MCCFR. Step 4 changes the input game itself: before solving, it asks which states and actions can be merged without destroying the strategic signal.
+Chapter 4 continues the progression started in Chapters 2 and 3. Chapter 2 introduced CFR as local regret minimization over information sets. Chapter 3 made that solver faster and cheaper through CFR+ and MCCFR. Chapter 4 changes the input game itself: before solving, it asks which states and actions can be merged without destroying the strategic signal.
 
-The bridge to Step 5 is the distinction between explicit and implicit abstraction. Step 4's abstractions are hand-built or clustering-built partitions over information sets and action sets. Deep CFR and neural equilibrium approximation replace those tables with learned function approximators: the representation is still compressed, but the compression lives inside a network rather than in a fixed bucket map.
+The bridge to Chapter 5 is the implicit route just described: Deep CFR and neural equilibrium approximation replace Chapter 4's hand-built and clustering-built partitions with learned function approximators. The representation is still compressed, but the compression lives inside a network rather than in a fixed bucket map.
 
-The bridge to Step 6 is the blueprint architecture. Modern poker agents solve a coarse abstract game first, then patch weaknesses online with subgame solving. Step 4 supplies the vocabulary: blueprint, action translation, exploitability gap, Pareto frontier, and safe/nested refinement. Step 6 turns those pieces into complete game-playing systems.
+The bridge to Chapter 6 is the blueprint architecture. Modern poker agents solve a coarse abstract game first, then patch weaknesses online with subgame solving. Chapter 4 supplies the vocabulary: blueprint, action translation, exploitability gap, Pareto frontier, and safe/nested refinement. Chapter 6 turns those pieces into complete game-playing systems.
 
-For the thesis, abstraction matters because opponent adaptation only works at the resolution the representation preserves. If the abstraction merges two strategically distinct opponent-facing states, no downstream opponent model can recover that distinction. Conversely, a representation that is too fine may be too expensive to solve or evaluate. The Step 4 Pareto frontier therefore becomes part of the evaluation methodology: strategy quality must be reported together with the size and granularity of the game representation that produced it.
+For the thesis, abstraction matters because opponent adaptation only works at the resolution the representation preserves. If the abstraction merges two strategically distinct opponent-facing states, no downstream opponent model can recover that distinction. Conversely, a representation that is too fine may be too expensive to solve or evaluate. The Chapter 4 Pareto frontier therefore becomes part of the evaluation methodology: strategy quality must be reported together with the size and granularity of the game representation that produced it.

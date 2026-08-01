@@ -18,21 +18,19 @@ Despite these advances, a critical limitation persists: state-of-the-art systems
 
 The present study plan is organized as a progressive program of fifteen study steps, grouped into seven thematic phases:
 
-- **Phase A — Foundation** (Steps 1–2): Reinforcement learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> and game-theoretic fundamentals required by all subsequent work. *(mid-February – mid-March 2026)*
-- **Phase B — Scaling the Toolbox** (Steps 3–4): Monte Carlo CFR<sup class="gl" data-gl="mccfr">gl</sup> variants and game abstraction techniques for handling larger game instances. *(beginning of April – mid-April 2026)*
-- **Phase C — Neural Methods for Games** (Steps 5–6): Neural network approximations of equilibrium strategies and end-to-end game AI architectures. *(mid-April – end of May 2026)*
-- **Phase D — Opponent Modeling and Exploitation** (Steps 7–8): Inference from behavioral traces<sup class="gl" data-gl="behavioral_trace">gl</sup> and safe exploitation algorithms — the thesis-critical core. *(end of May – beginning of July 2026)*
-- **Phase E — Multi-Agent Dynamics** (Steps 9–11): Multi-agent reinforcement learning<sup class="gl" data-gl="marl">gl</sup>, population-based training<sup class="gl" data-gl="population_based_training">gl</sup>, and coalition dynamics<sup class="gl" data-gl="coalition">gl</sup> in competitive settings. *(beginning of July – mid-August 2026)*
-- **Phase F — Data-Driven Approaches** (Steps 12–13): Sequence models and behavioral analysis pipelines connecting theory to real-world data. *(mid-August – beginning of September 2026)*
-- **Phase G — Integration** (Steps 14–15): Evaluation framework construction and research frontier mapping. *(beginning of September – beginning of October 2026)*
-
-*The dates above are estimates. An additional month of buffer time is built into the overall plan to accommodate unforeseen adjustments.*
+- **Foundation** (Chapters 1–2): Reinforcement learning<sup class="gl" data-gl="reinforcement_learning">gl</sup> and game-theoretic fundamentals required by all subsequent work.
+- **Scaling the Toolbox** (Chapters 3–4): Monte Carlo CFR<sup class="gl" data-gl="mccfr">gl</sup> variants and game abstraction techniques for handling larger game instances.
+- **Neural Methods for Games** (Chapters 5–6): Neural network approximations of equilibrium strategies and end-to-end game AI architectures.
+- **Opponent Modeling and Exploitation** (Chapters 7–8): Inference from behavioral traces<sup class="gl" data-gl="behavioral_trace">gl</sup> and safe exploitation algorithms — the thesis-critical core.
+- **Multi-Agent Dynamics** (Chapters 9–11): Multi-agent reinforcement learning<sup class="gl" data-gl="marl">gl</sup>, population-based training<sup class="gl" data-gl="population_based_training">gl</sup>, and coalition dynamics<sup class="gl" data-gl="coalition">gl</sup> in competitive settings.
+- **Data-Driven Approaches** (Chapters 12–13): Sequence models and behavioral analysis pipelines connecting theory to real-world data.
+- **Integration** (Chapters 14–15): Evaluation framework construction and research frontier mapping.
 
 Throughout the study plan, Kuhn Poker<sup class="gl" data-gl="kuhn_poker">gl</sup> and Leduc Hold'em<sup class="gl" data-gl="leduc_holdem">gl</sup> serve as the primary implementation testbeds. These games are chosen deliberately as pedagogical vehicles: their small state spaces (12 and approximately 936 information sets, respectively) and known analytical equilibria permit exact verification of every algorithm, while their imperfect-information structure retains the strategic complexity that the thesis demands. By working within well-understood domains, each step concentrates on algorithmic concepts rather than domain-specific engineering, maximizing the volume of theoretical material covered within the allotted timeframe. In later phases, the study plan validates generality beyond poker by applying the developed methods to matrix games, Goofspiel, So Long Sucker<sup class="gl" data-gl="so_long_sucker">gl</sup>, and anonymized real-world behavioral data.
 
 The planned thesis contributions are formulated in domain-agnostic terms — none is specific to poker or to any other single game. The Behavioral Adaptation Framework (Contribution 1) targets arbitrary imperfect-information games; the Multi-Agent Safe Exploitation heuristics (Contribution 2) will be defined over general N-player extensive-form structures; and the Evaluation Methodology (Contribution 3) is intended for cross-domain applicability.
 
-The study plan is aligned with the milestones of the university individual plan. Upon completion of each thematic phase, the corresponding material will be incorporated into Chapter I of the dissertation — covering the state-of-the-art analysis and the formulation of relevance, objectives, tasks, and thesis statements — which is due in November 2026. In this way, the literature review and foundational exposition accumulate incrementally rather than being composed retrospectively. Step 15 produces a detailed Chapter I outline and publication pipeline as its final deliverable.
+The study plan is aligned with the milestones of the university individual plan. Upon completion of each thematic phase, the corresponding material will be incorporated into Chapter I of the dissertation — covering the state-of-the-art analysis and the formulation of relevance, objectives, tasks, and thesis statements. In this way, the literature review and foundational exposition accumulate incrementally rather than being composed retrospectively. Chapter 15 produces a detailed Chapter I outline and publication pipeline.
 
 ### 1.2 Research Objective and Expected Contributions
 

@@ -4,17 +4,17 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 10 One-Pager — Population-Based Training and Evolutionary Game Theory"
+title: "Chapter 10 One-Pager — Population-Based Training and Evolutionary Game Theory"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
 lang: en
 ---
 
-# Step 10 One-Pager — Population-Based Training and Evolutionary Game Theory
+# Chapter 10 One-Pager — Population-Based Training and Evolutionary Game Theory
 
 **Problem.** Self-play can go in circles: in a cyclic game (rock-paper-scissors) "get better" has no
-meaning, so a population that only trains against itself spins instead of improving. Step 10 is the
+meaning, so a population that only trains against itself spins instead of improving. Chapter 10 is the
 population-level layer of the thesis — how to *diagnose* whether a game/population is a skill ladder
 or a wheel of counters, and how to *train and evaluate* a whole population of agents. It is the launch
 point for automated opponent modeling (#1), population safe-exploitation without a minimax anchor
@@ -25,7 +25,7 @@ as a diagnostic:** replicator dynamics on four solvable matrix games (checked ag
 ESS/Nash) and the transitive/cyclic **spinning-top** decomposition. **Part II — an AlphaStar-style
 PBT league** of neural PPO agents on Leduc Hold'em (three agent types: main / main-exploiter /
 league-exploiter, plus freezing and PFSP), evaluated with **EGTA/meta-Nash**, Elo, and diversity
-metrics — every neural policy extracted to a *tabular* policy so Step 07's **exact** best response
+metrics — every neural policy extracted to a *tabular* policy so Chapter 07's **exact** best response
 measures its exploitability. **All numbers below are measured.**
 
 **Key results (measured).**
@@ -47,12 +47,11 @@ measures its exploitability. **All numbers below are measured.**
   mixing behavioral policies can hurt. Diversity is thin (participation ratio $1.9$, a single
   behavioral cluster).
 
-**Thesis connection.** The league is Step 9's PSRO made asynchronous with neural oracles, reusing Step
-07's exact best response as the yardstick; main exploiters are automated opponent modelers
+**Thesis connection.** The league is Chapter 9's PSRO made asynchronous with neural oracles, reusing Chapter 07's exact best response as the yardstick; main exploiters are automated opponent modelers
 (Contribution #1); EGTA/meta-Nash is the population evaluation methodology (Contribution #3). The
 league's missing guarantee — it can regress, and its mixture can be exploitable — is the population
 form of the **missing $N>2$ safety anchor** (Contribution #2). The transitive/cyclic diagnostic
-predicts Step 11's FFA coalition games will be strongly cyclic.
+predicts Chapter 11's FFA coalition games will be strongly cyclic.
 
 **Open questions.** Does best-snapshot retention / population regularization remove the late
 regression (a training fix) or is it inherent to the three-type design (a design fix)? Should a

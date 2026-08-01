@@ -4,27 +4,27 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 5 One-Pager — Neural Networks for Imperfect-Information Games"
+title: "Chapter 5 One-Pager — Neural Networks for Imperfect-Information Games"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "May 2026"
 lang: en
 ---
 
-# Step 5 One-Pager — Neural Networks for Imperfect-Information Games
+# Chapter 5 One-Pager — Neural Networks for Imperfect-Information Games
 
-**Problem.** Steps 2-4 all store a strategy as a table indexed by information set, and Step 4
+**Problem.** Chapters 2-4 all store a strategy as a table indexed by information set, and Chapter 4
 showed both escapes from that table — a better solver, a smaller game — running out. The third
 escape is to stop enumerating: replace the regret table with a function approximator that
-*generalises* across similar information states, at fixed memory. Step 5 studies that
+*generalises* across similar information states, at fixed memory. Chapter 5 studies that
 substitution — Deep CFR, its single-network variants, NFSP — and what it costs in guarantees.
 
-**Approach.** Scope, stated honestly: **this step stopped after exploration and reading — there
+**Approach.** Scope, stated honestly: **this chapter stopped after exploration and reading — there
 is no from-scratch Phase-4 implementation and no implementation report**, and the survey's
 closing synthesis is still a stub. The measured work is a two-day exploration against
 OpenSpiel's reference solvers on Leduc and Kuhn — Deep CFR at three network sizes, NFSP on both
 games, tabular MCCFR and CFR+ as baselines — graded by OpenSpiel's own exploitability so the
-head-to-head is honest (Step 3's MCCFR runs on a custom engine and is not comparable). **All
+head-to-head is honest (Chapter 3's MCCFR runs on a custom engine and is not comparable). **All
 numbers below are measured**
 (`implementation/step05/exploration/logs/day0{1,2}_results.json`).
 
@@ -56,14 +56,14 @@ numbers below are measured**
   Leduc is a teaching benchmark, where neural methods lose to baselines they were never meant to
   beat.
 
-**Thesis connection.** Deep CFR's advantage network is Step 1's value network with a
-counterfactual target — the joint that lets Steps 6-8 leave table-sized games behind. More
-pointedly, the under-confident smoothing measured here is the failure mode Step 7 later prices:
+**Thesis connection.** Deep CFR's advantage network is Chapter 1's value network with a
+counterfactual target — the joint that lets Chapters 6-8 leave table-sized games behind. More
+pointedly, the under-confident smoothing measured here is the failure mode Chapter 7 later prices:
 a model with the right direction and the wrong frequency is what makes best-responding to an
 imperfect read lose to Nash.
 
 **Open questions.** The step's own gate is unmet: a hand-coded Deep CFR with a Vitter reservoir
 sampler, and DREAM's outcome sampling with baseline subtraction, both remain outstanding, so
 "can I build it" is unanswered. Untested: whether the tabular-versus-neural ordering flips
-exactly at Step 3's node-count crossover, and whether the info-state tensor's structure really
+exactly at Chapter 3's node-count crossover, and whether the info-state tensor's structure really
 matters more than network depth.

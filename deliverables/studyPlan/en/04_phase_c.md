@@ -1,10 +1,10 @@
-## 4. Phase C — Neural Methods for Games (Steps 5–6)
+## 4. Phase C — Neural Methods for Games (Chapters 5–6)
 
 ### 4.1 Phase Overview
 
-Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set^6^ — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree enumeration. Step 5 introduces the core approximation methods (Deep CFR^25^, NFSP^27^), while Step 6 studies the complete game-solving architectures (DeepStack, Libratus, Pluribus, ReBeL^28^, Student of Games) that integrate these components into competition-grade systems. Together, these steps complete the algorithmic toolbox from which the thesis contributions are developed: Contribution 1 builds on the public belief state^29^ framework of ReBeL, Contribution 2 addresses the theoretical gap exposed by Pluribus's multiplayer success without formal safety guarantees, and Contribution 3 draws on the exploitability metrics applied uniformly across all five architectures.
+Phases A and B established tabular equilibrium solvers and abstraction techniques for medium-scale games. However, tabular methods store explicit strategy and regret values at every information set^6^ — an approach whose memory requirements grow linearly with game size and become prohibitive for large-scale domains. This phase replaces tabular storage with neural network function approximation, enabling equilibrium computation without explicit game tree enumeration. Chapter 5 introduces the core approximation methods (Deep CFR^25^, NFSP^27^), while Chapter 6 studies the complete game-solving architectures (DeepStack, Libratus, Pluribus, ReBeL^28^, Student of Games) that integrate these components into competition-grade systems. Together, these chapters complete the algorithmic toolbox from which the thesis contributions are developed: Contribution 1 builds on the public belief state^29^ framework of ReBeL, Contribution 2 addresses the theoretical gap exposed by Pluribus's multiplayer success without formal safety guarantees, and Contribution 3 draws on the exploitability metrics applied uniformly across all five architectures.
 
-### 4.2 Step 5 — Neural Equilibrium Approximation (Deep CFR, DREAM)
+### 4.2 Chapter 5 — Neural Equilibrium Approximation (Deep CFR, DREAM)
 
 **Contribution Alignment.** Deep CFR^25^ and NFSP^27^ will be studied as methods for computing equilibrium strategies in games too large for tabular solvers — a capability needed for the planned behavioral adaptation work. NFSP’s anticipatory parameter, which interpolates between equilibrium and exploitative play, foreshadows the exploitation–safety tradeoff central to the thesis. The information state tensor encoding developed here will serve as the standard input representation for later neural architectures.
 
@@ -21,9 +21,9 @@ Phases A and B established tabular equilibrium solvers and abstraction technique
 - Implement NFSP as a comparative baseline; evaluate the effect of the anticipatory parameter on the Nash–exploitation tradeoff.
 - Compare convergence behavior (exploitability^3^ versus wall time) of Deep CFR, tabular MCCFR^23^, and NFSP on Leduc Hold'em.
 
-### 4.3 Step 6 — End-to-End Game AI Architectures
+### 4.3 Chapter 6 — End-to-End Game AI Architectures
 
-**Contribution Alignment.** This step will survey five landmark game-solving systems that define the current state of the art. ReBeL’s public belief state^29^ framework is of particular relevance to the planned belief-based opponent modeling (Contribution 1). Pluribus demonstrates empirical success in multiplayer poker without formal safety guarantees — highlighting the theoretical gap that Contribution 2 will seek to address. The exploitability metric applied uniformly across all architectures will inform the evaluation methodology design (Contribution 3).
+**Contribution Alignment.** This chapter will survey five landmark game-solving systems that define the current state of the art. ReBeL’s public belief state^29^ framework is of particular relevance to the planned belief-based opponent modeling (Contribution 1). Pluribus demonstrates empirical success in multiplayer poker without formal safety guarantees — highlighting the theoretical gap that Contribution 2 will seek to address. The exploitability metric applied uniformly across all architectures will inform the evaluation methodology design (Contribution 3).
 
 **Literature.**
 

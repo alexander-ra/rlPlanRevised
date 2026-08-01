@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 8 Summary — Safe Exploitation in Imperfect-Information Games"
+title: "Chapter 8 Summary — Safe Exploitation in Imperfect-Information Games"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
@@ -13,22 +13,21 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 8 — Safe Exploitation in Imperfect-Information Games
+# Chapter 8 — Safe Exploitation in Imperfect-Information Games
 
 This is a ground-up chapter on *safe* opponent exploitation: the problem, the mathematics, the
-family of methods, and a set of controlled experiments run on two small poker games. It serves
-two purposes — a self-contained refresher while later steps build on it, and a primary source
-for the Part-1 thesis synthesis. It is written to be read on its own; no prior familiarity with
+family of methods, and a set of controlled experiments run on two small poker games. It is
+written to be read on its own; no prior familiarity with
 the project's code is assumed. All experimental numbers reported here were **measured** on
 reproducible runs of the two testbeds (Kuhn Poker and Leduc Hold'em) and are bounded, wherever
 possible, by *exact* analytical references rather than simulated ones. Where a run contradicted
 what theory led me to expect, I say so and reconcile it — those gaps are the most instructive
-parts of the step.
+parts of the chapter.
 
-**Where this sits in the thesis.** Step 7 built a **sensor**: a model that watches how a
+**Where this sits in the thesis.** Chapter 7 built a **sensor**: a model that watches how a
 specific opponent plays and estimates their strategy. It also exposed the danger of acting on
 that sensor naively — a confident-but-underfit model, best-responded to, can open a hole in your
-own play (on Leduc it actually *lost* to an unexploitable Nash opponent). Step 8 builds the
+own play (on Leduc it actually *lost* to an unexploitable Nash opponent). Chapter 8 builds the
 **actuator**: the mechanism that turns a model into profit **without becoming exploitable**. That
 actuator is the second half of the thesis's Behavioral Adaptation Framework (Contribution #1),
 and pinning down *exactly where its guarantees depend on the two-player zero-sum assumption* is
@@ -36,11 +35,11 @@ the launch point for the multi-agent extension (Contribution #2).
 
 ---
 
-## 1. Why Safe Exploitation — the other half of the dial
+## Why Safe Exploitation — the other half of the dial
 
 A **Nash equilibrium** strategy is built never to lose in the long run. In a two-player
 zero-sum game that guarantee is exact: the strategy has a fixed *value* `v*`, and no opponent,
-however clever, can push you below it. Opponent modeling (Step 7) buys you the ability to
+however clever, can push you below it. Opponent modeling (Chapter 7) buys you the ability to
 *deviate* from that safe strategy to punish a specific opponent's mistakes. The obvious way to
 cash a model in is to compute the **best response** to it and play that. The trouble is that a
 best response is usually **wildly exploitable itself**: to punish "you always fold to a bet" it
@@ -55,9 +54,9 @@ weak style to bait a big deviation). **Safe exploitation** bolts a *governor* on
 lean toward exploitation as far as you like, but never past the point where a worst-case
 adversary could drag you below your safe baseline.
 
-![The safety-exploitation dial with a governor. Pure Nash is unexploitable but blind; a full best response extracts the most value but is maximally risky. Safe exploitation operates in between, capped by a floor on the worst-case value. Step 7 built the sensor (the model); Step 8 builds the actuator (safe exploitation). The only thing that differs between methods is where the floor sits.](dial_safe_exploitation.png)
+![The safety-exploitation dial with a governor. Pure Nash is unexploitable but blind; a full best response extracts the most value but is maximally risky. Safe exploitation operates in between, capped by a floor on the worst-case value. Chapter 7 built the sensor (the model); Chapter 8 builds the actuator (safe exploitation). The only thing that differs between methods is where the floor sits.](dial_safe_exploitation.png)
 
-The reason this is not paranoia is a number from Step 7 and again from this step: the full best
+The reason this is not paranoia is a number from Chapter 7 and again from this chapter: the full best
 response to the tight "Rock" style on Kuhn earns **+0.167 per hand**, but its **worst-case value
 is −0.5** — an adversary who best-responds back can take half a chip a hand off it. Nash's
 worst-case, by contrast, is the game value itself. Safe exploitation is the discipline of keeping
@@ -66,16 +65,14 @@ most of that +0.167 upside while refusing the −0.5 downside.
 **What "safe" means, informally.** Your *expected value over the match* must never fall below a
 chosen floor, **no matter what the opponent does**. It is a statement about the worst case, not
 about any single hand — you will still lose hands; the guarantee is on the long-run adversarial
-average. The whole design question of the step is *which floor*, and how to compute a strategy
-that respects it while extracting as much as possible above it.
-
-> **Read more:** Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Trans. Economics and Computation* — the paper that first made "exploit but never lose to the baseline" a theorem.
+average. The whole design question of the chapter is *which floor*, and how to compute a strategy
+that respects it while extracting as much as possible above it.[^ganzfried2015]
 
 ---
 
-## 2. Exploitation as Constrained Optimization
+## Exploitation as Constrained Optimization
 
-The single most useful idea in this step is that **every safe-exploitation method is the same
+The single most useful idea in this chapter is that **every safe-exploitation method is the same
 optimization problem** with one part swapped out. In words:
 
 > maximize the hero's expected value against the opponent model, **subject to** a safety floor on
@@ -97,7 +94,7 @@ because the hero's own action-probability product along any line *is* $x$ at tha
 sequence. So "maximize EV against the model" is a **linear objective** $c\cdot x$, the treeplex
 is a set of **linear constraints**, and the whole method is a **linear program**. A full best
 response is simply $\max_x c\cdot x$ over the treeplex — which lets us cross-check the LP against
-Step 7's exact best-response code (they agree to $10^{-6}$).
+Chapter 7's exact best-response code (they agree to $10^{-6}$).
 
 The safety floor is a constraint on the **worst-case** value — "for *every* opponent $\sigma'$,
 $\text{EV}(x,\sigma') \ge \text{floor}$." That inner "for every opponent" is itself a
@@ -107,19 +104,17 @@ policy, call an **exact best response as the worst-case oracle**, and if the wor
 the floor, add the single linear cut it implies and re-solve. This is finite (there are finitely
 many pure best responses), transparent, and debuggable.
 
-![One LP engine, five safety floors. The sequence-form treeplex gives a linear objective (EV vs the model); a constraint-generation loop calls an exact best response as the worst-case oracle and adds a safety cut until the floor is met. RNR, Ganzfried, prime-safe, SES and adaptation are the SAME solve with a different floor — and one validated primitive (Step 7's best response) powers both the objective and every safety check.](one_lp_engine.png)
+![One LP engine, five safety floors. The sequence-form treeplex gives a linear objective (EV vs the model); a constraint-generation loop calls an exact best response as the worst-case oracle and adds a safety cut until the floor is met. RNR, Ganzfried, prime-safe, SES and adaptation are the SAME solve with a different floor — and one validated primitive (Chapter 7's best response) powers both the objective and every safety check.](one_lp_engine.png)
 
 The pay-off of seeing it this way is conceptual economy: **five methods, one engine.** They
 differ only in the floor, which is the subject of the next section. And because both the
-objective (the payoff vector) and the safety oracle reuse Step 7's *validated* best-response
-code, the whole of Step 8 rests on one already-trusted primitive rather than a new pile of
-math.
-
-> **Read more:** Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, §3.4 (computing equilibria) and §4.6 (computing best responses) — the sequence-form machinery underneath every LP in this chapter.
+objective (the payoff vector) and the safety oracle reuse Chapter 7's *validated* best-response
+code, the whole of Chapter 8 rests on one already-trusted primitive rather than a new pile of
+math.[^shoham2008]
 
 ---
 
-## 3. What "Safe" Means — three definitions, in increasing realism
+## What "Safe" Means — three definitions, in increasing realism
 
 "Safety" sounds absolute, but it is not one thing. Three definitions matter, and the line of
 research is essentially a *weakening* of the demand to make it achievable in practice.
@@ -139,7 +134,7 @@ equilibrium, which is uncomputable in any large game.
 
 **(b) Prime-safe / ε-safety (Jeary & Turrini 2023): correct for an imperfect baseline.** Every
 real baseline is an **ε-equilibrium** (from abstraction and finite compute — the subject of
-Step 4), so it is itself exploitable by some amount $\varepsilon$. Anchoring to the exact $v^*$
+Chapter 4), so it is itself exploitable by some amount $\varepsilon$. Anchoring to the exact $v^*$
 is then unjustified; prime-safe lowers the floor by exactly the baseline's own exploitability,
 
 $$
@@ -178,18 +173,15 @@ collapses: a Nash strategy does *not* guarantee a fixed value against arbitrary 
 others can coordinate, and their payoffs no longer sum to the negative of yours), so there is no
 single $v^*$ to anchor to. **That is the open problem for Contribution #2** — whether an
 $N$-player analogue of the value guarantee exists, or whether a structural assumption (e.g. a
-coalition structure) must restore an anchor. This step does not solve it; it makes the failure
-*precise*, which is exactly what a thesis chapter needs.
-
-> **Read more:** Johanson, M., Zinkevich, M. & Bowling, M. (2007). "Computing Robust Counter-Strategies." *NeurIPS* — Restricted Nash Response, the tunable ancestor of all of the above. · Jeary, J. & Turrini, P. (2023). "Safe Opponent Exploitation for ε-Equilibrium Strategies," *arXiv:2307.12338*. · Ge, Z. et al. (2024). "Safe and Robust Subgame Exploitation…," *ICML*.
+coalition structure) must restore an anchor. This chapter does not solve it; it makes the failure
+*precise*, which is exactly what a thesis chapter needs.[^johanson2007][^jeary2023][^safe2024]
 
 ---
 
-## 4. The Engine — sequence-form LP and constraint generation
+## Sequence-Form LP and Constraint Generation
 
 This section is the "how it is built." The one primitive the whole step adds is a
-`HeroTreeplex` that (i) enumerates the hero's sequences and treeplex constraints (reusing Step
-7's sequence-form code), (ii) builds the payoff vector $c$ for a fixed opponent by one tree
+`HeroTreeplex` that (i) enumerates the hero's sequences and treeplex constraints (reusing Chapter 7's sequence-form code), (ii) builds the payoff vector $c$ for a fixed opponent by one tree
 traversal, and (iii) solves the safety-constrained LP with SciPy's HiGHS solver. Everything else
 is the constraint-generation loop, which is short enough to state in full:
 
@@ -223,13 +215,11 @@ the exact `wc ≥ floor` can make the LP eventually infeasible and, on an unluck
 an *unsafe* strategy. The fix is a small feasibility slack on the cuts (`floor − slack`, with
 `slack ≈ 5·10⁻⁴`, kept independent of the convergence tolerance) so the true max-min strategy
 always stays feasible. This is the kind of numerical detail that never appears in the papers but
-decides whether the method actually returns a safe strategy.
-
-> **Read more:** the constraint-generation / double-oracle idea traces to McMahan, Gordon & Blum (2003), "Planning in the Presence of Cost Functions Controlled by an Adversary," *ICML* — the general recipe for "optimize against a worst case you discover as you go."
+decides whether the method actually returns a safe strategy.[^gordon2003]
 
 ---
 
-## 5. Restricted Nash Response and the Bang-Bang Frontier
+## Restricted Nash Response and the Bang-Bang Frontier
 
 The oldest principled method, **Restricted Nash Response** (Johanson 2007), is the conceptual
 ancestor of all the rest and introduces the *tunable knob*. Its idea: compute the hero's
@@ -279,13 +269,11 @@ $-0.047$). The headline lesson survives — "choose *where* to deviate, not *how
 uniformly" — but the mechanism ("a smooth RNR dial") is a big-game artifact, and in a small game
 the honest picture is a discrete safe-vertex → BR-vertex switch whose threshold *moves with how
 exploitable the opponent is*. That last point recurs in §6: against a very exploitable opponent,
-even $p = 0.5$ is already past the jump.
-
-> **Read more:** Johanson, M. & Bowling, M. (2009). "Data Biased Robust Counter Strategies." *AISTATS* — makes the $p$ knob depend on how much data supports each part of the strategy, which is what smooths the frontier in practice.
+even $p = 0.5$ is already past the jump.[^johanson2009]
 
 ---
 
-## 6. Ganzfried on Kuhn — safe *and* profitable (the core result)
+## Ganzfried on Kuhn — safe *and* profitable (the core result)
 
 The central experiment solves each method against a *perfect* model of each opponent type and
 scores it on **profit** (EV vs that opponent) and **safety** (worst-case value), with the Nash
@@ -332,7 +320,7 @@ Ganzfried (+0.266 versus +0.222 on `AlwaysPass`). They appear "unsafe" in the ta
 the flag compares to $v^*$; against their *own* floor they are safe by construction. (Prime-safe
 and adaptation coincide here because, for this baseline, $v^* - \varepsilon =
 \text{worst-case(blueprint)}$ — the two floors are literally equal, which the run confirms rather
-than a bug.)
+than a bug.)[^ganzfried2015]
 
 > **A measurement-resolution note, because it bit me.** In the *smoke* run (30 000 CFR
 > iterations) even the Nash policy is flagged "unsafe" — its worst-case is $-0.0568$, i.e.
@@ -342,13 +330,9 @@ than a bug.)
 > safe-flag tolerance must exceed the baseline's own approximation error, or the baseline trips
 > its own test.
 
-> **Read more:** Ganzfried, S. & Sandholm, T. (2015), *op. cit.* — Theorem 1 is exactly the
-> guarantee this table exhibits on Kuhn (worst-case $\ge v^*$), and its minimax step is the
-> 2-player-zero-sum dependency of §3.
-
 ---
 
-## 7. Real-Time Safety — subgame gadgets (SES)
+## Real-Time Safety — subgame gadgets (SES)
 
 Ganzfried's guarantee is *global*: the safety constraint is enforced over the **whole** game
 tree. That is fine on Kuhn, but in a real game you cannot re-solve the entire tree every time the
@@ -368,13 +352,11 @@ which holds for natural choices like "Leduc round 2" or "after a King flops."
 ![Global versus local safety. Global methods re-solve the whole tree; on Leduc their constraint-generation loop did not converge within the iteration budget and left grossly unsafe strategies. The subgame method pins play outside a chosen subgame to the blueprint and re-solves only that subgame with a gadget — a far smaller problem that did converge and stayed near-safe.](global_vs_local.png)
 
 The importance of "local" is not aesthetic; §8 shows it is the difference between a solve that
-converges and one that does not.
-
-> **Read more:** Liu, W. et al. (2022). "Safe Opponent-Exploitation Subgame Refinement." *NeurIPS* (the gadget). · Ge, Z. et al. (2024), *op. cit.* — OX-Search bounds exploitation loss *per information set*, hardening the same idea against "teaching" attacks. · Milec, D., Kovařík, V. & Lisý, V. (2025). "Adapting Beyond the Depth Limit," *arXiv:2501.10464* — using opponent-model information *past* the search horizon.
+converges and one that does not.[^liu2022][^search2024][^milec2025]
 
 ---
 
-## 8. At Scale — Kuhn works; Leduc breaks globally, holds locally
+## At Scale — Kuhn works; Leduc breaks globally, holds locally
 
 Leduc Hold'em adds a second betting round and a shared community card — roughly two orders of
 magnitude more situations than Kuhn, still exactly solvable, but large enough to stress the
@@ -453,9 +435,9 @@ deliberately targets a floor *below* $v^*$, so it trips the $v^*$-referenced cou
 
 ---
 
-## 9. Connections and Forward Pointers
+## Connections and Forward Pointers
 
-**What this step establishes.** Safe exploitation is one idea — *maximize value against the
+**What this chapter establishes.** Safe exploitation is one idea — *maximize value against the
 model subject to a safety floor* — and on a fully solvable game it works exactly as the theory
 says: Ganzfried is safe against every opponent while beating equilibrium value on every
 exploitable one, where the naive best response earns more but is ruinously exploitable. Prime-safe
@@ -465,34 +447,39 @@ empirical: on a game as small as Leduc the *global* safe-exploitation solve does
 within a practical budget, while the *local* subgame method does — the theory-to-practice gap
 between global and local safety, measured rather than asserted.
 
-**Backward connections.** This step is the exact complement of the equilibrium and opponent-
-modeling work before it. Step 7's sensor produces the opponent model that becomes this step's
-*objective*; Step 7's exact best response becomes this step's *worst-case oracle*; and the
+**Backward connections.** This chapter is the exact complement of the equilibrium and opponent-
+modeling work before it. Chapter 7's sensor produces the opponent model that becomes this chapter's
+*objective*; Chapter 7's exact best response becomes this chapter's *worst-case oracle*; and the
 sequence-form representation from the CFR and consistency work becomes the *variable* the LP
-optimizes. The continuous model's self-inflicted leak against Nash on Leduc (Step 7, §7) is the
-empirical motivation that this step's safety floor is designed to prevent — and, indeed, Ganzfried
+optimizes. The continuous model's self-inflicted leak against Nash on Leduc (Chapter 7, §7) is the
+empirical motivation that this chapter's safety floor is designed to prevent — and, indeed, Ganzfried
 never leaks to Nash here.
 
 **Forward to the thesis.** The Kuhn results confirm the actuator is sound; the Leduc
 non-convergence is the concrete argument for the two scalable paths the thesis must choose
 between — an **exact one-shot dual LP** for the worst-case constraint, or a commitment to
 **local / subgame** safety (SES, OX-Search) as the real-time mechanism. Either way, the safety
-floor is what turns Step 7's fragile sensor into a deployable adaptive agent.
+floor is what turns Chapter 7's fragile sensor into a deployable adaptive agent.
 
-**Open questions carried forward.**
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
 
-- *Scalable safety.* Replace the cutting-plane loop with an exact dual LP, or adopt subgame
-  safety wholesale; confirm whether the Leduc global solvers are merely *slow* or *structurally*
-  stuck by re-running with a large budget.
-- *The SES gadget's residual exploitability.* Determine whether the 0.04 gap over tolerance is a
-  blueprint-bounding effect, a tolerance artifact, or a pinning leak — this decides whether the
-  subgame method is provably or only approximately safe.
-- *A punishing teaching attack.* Replace the Nash reveal with an adaptive counter-exploiter so
-  realized profit corroborates the worst-case view, and a safe method can be shown to *out-earn*
-  the greedy one under deception.
-- *From two players to N.* Every guarantee here rests on the two-player zero-sum fact that a Nash
-  strategy secures the value $v^*$ against any opponent — an anchor that vanishes for $N>2$.
-  Finding an $N$-player analogue (or a structural substitute) is the open problem this step makes
-  precise, and the heart of Contribution #2.
+[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Trans. Economics and Computation* — the paper that first made "exploit but never lose to the baseline" a theorem.
 
-> **Read more:** Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, Ch. 7 "Learning and Teaching" — the repeated-game framing in which your actions both *exploit* and *teach* the opponent, which is exactly the tension the teaching attack (§8) probes and the multi-agent extension must confront.
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems*, §3.4 (computing equilibria) and §4.6 (computing best responses) — the sequence-form machinery underneath every LP in this chapter.
+
+[^johanson2007]: Johanson, M., Zinkevich, M. & Bowling, M. (2007). "Computing Robust Counter-Strategies." *NeurIPS* — Restricted Nash Response, the tunable ancestor of all of the above.
+
+[^jeary2023]: Jeary, J. & Turrini, P. (2023). "Safe Opponent Exploitation for ε-Equilibrium Strategies," *arXiv:2307.12338*.
+
+[^safe2024]: Ge, Z. et al. (2024). "Safe and Robust Subgame Exploitation…," *ICML*.
+
+[^gordon2003]: the constraint-generation / double-oracle idea traces to McMahan, Gordon & Blum (2003), "Planning in the Presence of Cost Functions Controlled by an Adversary," *ICML* — the general recipe for "optimize against a worst case you discover as you go."
+
+[^johanson2009]: Johanson, M. & Bowling, M. (2009). "Data Biased Robust Counter Strategies." *AISTATS* — makes the $p$ knob depend on how much data supports each part of the strategy, which is what smooths the frontier in practice.
+
+[^liu2022]: Liu, W. et al. (2022). "Safe Opponent-Exploitation Subgame Refinement." *NeurIPS* (the gadget).
+
+[^search2024]: Ge, Z. et al. (2024), *op. cit.* — OX-Search bounds exploitation loss *per information set*, hardening the same idea against "teaching" attacks.
+
+[^milec2025]: Milec, D., Kovařík, V. & Lisý, V. (2025). "Adapting Beyond the Depth Limit," *arXiv:2501.10464* — using opponent-model information *past* the search horizon.

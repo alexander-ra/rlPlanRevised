@@ -4,23 +4,23 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 12 One-Pager — Sequence Models and LLM Agents in Strategic Settings"
+title: "Chapter 12 One-Pager — Sequence Models and LLM Agents in Strategic Settings"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
 lang: en
 ---
 
-# Step 12 One-Pager — Sequence Models and LLM Agents in Strategic Settings
+# Chapter 12 One-Pager — Sequence Models and LLM Agents in Strategic Settings
 
-**Problem.** Two post-classical ways to play a game bypass everything Steps 2-11 built.
+**Problem.** Two post-classical ways to play a game bypass everything Chapters 2-11 built.
 **Sequence modelling** recasts play as conditional prediction — feed a transformer
 `(return-to-go, state, action)` triples and ask for the next action given a desired return, no
 value function, no self-play — and **ARDT** adds minimax relabelling for worst-case robustness.
-**LLM agents** skip training entirely: hand a model the rules in English. Step 12 scores both
+**LLM agents** skip training entirely: hand a model the rules in English. Chapter 12 scores both
 against an exact benchmark.
 
-**Approach.** Kuhn Poker, where Step 2 supplies exact Nash and exact exploitability, with a narrow
+**Approach.** Kuhn Poker, where Chapter 2 supplies exact Nash and exact exploitability, with a narrow
 port to Leduc Hold'em as a complexity check. Compared: Nash-CFR, behavioural cloning, a Decision
 Transformer, ARDT, and four LLM backends (offline stub, gpt-oss-20b, Qwen2.5-7B, OpenThinker3-7B),
 plus follow-ons asking *why* that ranking falls out. **All numbers below are measured** from

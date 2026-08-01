@@ -4,11 +4,11 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 08 — Safe Exploitation in Imperfect-Information Games
+# Chapter 08 — Safe Exploitation in Imperfect-Information Games
 
-**Games:** Kuhn Poker (3-card, 2-player) and Leduc Hold'em (6-card, 2-round) — the smallest exact-solvable imperfect-information testbeds, reusing the Step 07 stack wholesale (the Step 02 Kuhn engine + CFR solver, the Step 03 Leduc engine, and Step 07's exact best-response / exploitability code and opponent-type zoo).
+**Games:** Kuhn Poker (3-card, 2-player) and Leduc Hold'em (6-card, 2-round) — the smallest exact-solvable imperfect-information testbeds, reusing the Chapter 07 stack wholesale (the Chapter 02 Kuhn engine + CFR solver, the Chapter 03 Leduc engine, and Chapter 07's exact best-response / exploitability code and opponent-type zoo).
 
-**PhD connection:** the **second half of Contribution #1 (Behavioral Adaptation Framework)** and the launch point for **Contribution #2 (Multi-Agent Safe Exploitation)**. Step 07 built the *sensor* (an opponent model that turns observed actions into a strategy estimate); Step 08 builds the *actuator* — turning that estimate into profit **without becoming exploitable** — and pins down exactly where the two-player zero-sum assumption enters the safety guarantees (the thesis attack point).
+**PhD connection:** the **second half of Contribution #1 (Behavioral Adaptation Framework)** and the launch point for **Contribution #2 (Multi-Agent Safe Exploitation)**. Chapter 07 built the *sensor* (an opponent model that turns observed actions into a strategy estimate); Chapter 08 builds the *actuator* — turning that estimate into profit **without becoming exploitable** — and pins down exactly where the two-player zero-sum assumption enters the safety guarantees (the thesis attack point).
 
 **Scope of results:** every number in this report is **measured from a real run** and read from the run artifacts under `implementation/step08/implementation/results/`, `.../plots/`, and `.../exploration/figures/`. Wherever possible a simulated number is bracketed by an *exact* analytical reference (the Nash game value, the exact best-response value) rather than another simulation. Two Phase-4 predictions were **contradicted** by the runs; per the project workflow they are kept as stated and reconciled with what actually happened (§7, §10).
 
@@ -18,11 +18,11 @@ BG: Изследване на възможностите за приложени
 
 # PART I — THE TRADEOFF, MADE VISIBLE ON KUHN
 
-## 1. What this step is about
+## 1. What this chapter is about
 
-A **Nash-equilibrium** strategy never loses in the long run against *anyone*, but it also never *punishes* a weak opponent — it plays identically against a world champion and against someone who folds every time you bet. Step 07 showed that a good opponent model unlocks 0.1–0.3 per hand against exploitable opponents, but also that best-responding to an imperfect model can open a leak in your own play (the continuous model *lost* to Nash on Leduc). **Safe exploitation** is the discipline that resolves that tension: lean toward exploiting the model, but bound how much a worst-case adversary can punish you.
+A **Nash-equilibrium** strategy never loses in the long run against *anyone*, but it also never *punishes* a weak opponent — it plays identically against a world champion and against someone who folds every time you bet. Chapter 07 showed that a good opponent model unlocks 0.1–0.3 per hand against exploitable opponents, but also that best-responding to an imperfect model can open a leak in your own play (the continuous model *lost* to Nash on Leduc). **Safe exploitation** is the discipline that resolves that tension: lean toward exploiting the model, but bound how much a worst-case adversary can punish you.
 
-Formally, every method in this step is the **same constrained optimization**:
+Formally, every method in this chapter is the **same constrained optimization**:
 
 > maximize the hero's expected value against the opponent model, **subject to** a safety floor on the hero's worst-case value.
 
@@ -92,7 +92,7 @@ Part I probes the *naive* end of this menu — a behavioral blend of Nash and be
 
 Part II evaluates the complete safe-exploitation system — **one sequence-form LP engine** and **five solver families** built on it — on both games, against exact analytical yardsticks.
 
-**The one engine.** A `HeroTreeplex` enumerates the hero's sequence-form realization plan (reusing Step 07's treeplex), turns "EV against a fixed opponent" into a linear objective `c·x`, and imposes the safety floor by **constraint generation (a double-oracle / cutting-plane loop)**: solve the LP → read the hero policy → call Step 07's **exact best response** as the worst-case opponent → if the worst case is below the floor, add the linear cut and re-solve. The five families differ only in the floor (§1). This means one validated primitive (Step 07's exact best response) powers both the objective and every safety check.
+**The one engine.** A `HeroTreeplex` enumerates the hero's sequence-form realization plan (reusing Chapter 07's treeplex), turns "EV against a fixed opponent" into a linear objective `c·x`, and imposes the safety floor by **constraint generation (a double-oracle / cutting-plane loop)**: solve the LP → read the hero policy → call Chapter 07's **exact best response** as the worst-case opponent → if the worst case is below the floor, add the linear cut and re-solve. The five families differ only in the floor (§1). This means one validated primitive (Chapter 07's exact best response) powers both the objective and every safety check.
 
 **Exact yardsticks.** Both games are small enough to solve exactly, so every solver's reported profit and worst-case are computed on the full tree — no sampling. The two anchors are the **Nash game value** (`v*` — the safe baseline) and the **exact full best-response value** (the exploitation ceiling). A safe method sits between them; an unsafe one has a worst-case below `v*`.
 
@@ -132,7 +132,7 @@ The core deliverable: each method solved against a perfect model of each opponen
 **Results — three carry the message.**
 
 1. **`full_br` is the cautionary tale.** It always wins the most against a fixed model (up to **+0.975** vs `AlwaysPass`), but its worst-case collapses to **−0.5** — an adversary can punish it catastrophically. This is the danger the whole step exists to prevent.
-2. **`ganzfried` is the safe-and-profitable sweet spot.** Against *every* opponent its worst-case stays at the Nash floor (safe within 1e-3) **and** it beats Nash's own EV on every exploitable type — most strikingly **+0.222 vs Nash's +0.146** against `AlwaysPass`, and +0.131 vs +0.118 against `LooseAggressive`. This is the central validated result of the step: you can exploit meaningfully while provably never dropping below equilibrium value.
+2. **`ganzfried` is the safe-and-profitable sweet spot.** Against *every* opponent its worst-case stays at the Nash floor (safe within 1e-3) **and** it beats Nash's own EV on every exploitable type — most strikingly **+0.222 vs Nash's +0.146** against `AlwaysPass`, and +0.131 vs +0.118 against `LooseAggressive`. This is the central validated result of the chapter: you can exploit meaningfully while provably never dropping below equilibrium value.
 3. **`rnr_0.5` is safe only for mild leaks.** Against `TightPassive` it is safe, but against the highly exploitable `AlwaysPass`/`AlwaysBet` it has *already jumped* to full best response (EV identical to `full_br`, worst-case −0.33 / −0.17, unsafe). The RNR transition is **opponent-dependent** — a single global *p* is not a safety setting (§7).
 
 **`prime_safe` / `adaptation` / `ses_subgame`** coincide on Kuhn (all target the same ε-adjusted / blueprint floor, and Kuhn's SES subgame is the whole game). They sit at worst-case −0.063 = `v* − 0.008`, flagged "unsafe" *only* because the flag compares to `v*` while they legitimately target a lower floor by design (§8).
@@ -263,10 +263,10 @@ Ranked by how much they qualify the conclusions:
 
 **Research directions** (each motivated by a measured effect above):
 
-- **Scalable safety — the central next step (§10).** Replace the cutting-plane loop with the **exact one-shot dual LP** for the worst-case constraint, *or* commit to **local / subgame** safety (SES / OX-Search) as the scalable path. The Leduc non-convergence is direct evidence for the latter.
+- **Scalable safety — the central next chapter (§10).** Replace the cutting-plane loop with the **exact one-shot dual LP** for the worst-case constraint, *or* commit to **local / subgame** safety (SES / OX-Search) as the scalable path. The Leduc non-convergence is direct evidence for the latter.
 - **Resolve the SES gadget's residual exploitability (§10).** Determine whether the 0.04 gap is a blueprint-bounding effect, a tolerance artifact, or a pinning leak — this decides whether the subgame method is provably or only approximately safe.
 - **A punishing teaching attack (§9).** Replace the Nash reveal with an adaptive counter-exploiter so realized profit corroborates the worst-case view, and a safe method can be shown to *out-earn* full_br under deception.
-- **N-player safety — thesis Contribution #2.** Every guarantee here rests on the two-player zero-sum fact that a Nash strategy secures `v*` against any opponent; for N > 2 there is no such `v*` anchor. Extending a value-anchored safety notion to the multi-agent case (or finding a structural substitute, e.g. coalition structure) is the open thesis problem this step makes precise.
+- **N-player safety — thesis Contribution #2.** Every guarantee here rests on the two-player zero-sum fact that a Nash strategy secures `v*` against any opponent; for N > 2 there is no such `v*` anchor. Extending a value-anchored safety notion to the multi-agent case (or finding a structural substitute, e.g. coalition structure) is the open thesis problem this chapter makes precise.
 - **Close the validation loop (§11).** Run and archive `validate.py` and the OpenSpiel cross-check; re-run the Leduc global solvers with a large budget / exact dual to distinguish "slow" from "structurally unsafe."
 
 ---

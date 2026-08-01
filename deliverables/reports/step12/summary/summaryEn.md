@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 12 Summary — Sequence Models and LLM Agents in Strategic Settings"
+title: "Chapter 12 Summary — Sequence Models and LLM Agents in Strategic Settings"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
@@ -13,7 +13,7 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 12 — Sequence Models and LLM Agents in Strategic Settings
+# Chapter 12 — Sequence Models and LLM Agents in Strategic Settings
 
 ## Why reframe reinforcement learning as sequence prediction
 
@@ -29,10 +29,7 @@ simply **condition**: ask for a high return-to-go and the model produces the act
 historically preceded such returns.
 
 The appeal for this thesis is that it works entirely **offline**, on a fixed dataset — the regime
-Step 13's Playtech logs live in, where self-play is unavailable.
-
-> **Read more:** Chen et al., *Decision Transformer: Reinforcement Learning via Sequence Modeling*,
-> NeurIPS 2021 (arXiv:2106.01345).
+Chapter 13's Playtech logs live in, where self-play is unavailable.[^chen2021]
 
 ## The luck-versus-skill trap
 
@@ -49,10 +46,7 @@ $$P(a = B \mid \hat{R} = 1.0) = 1.00 \quad \text{(measured)}$$
 
 The return-conditioned learner confidently selects the action with the *worse* expected value. This
 is not a bug in the model; it is what conditioning on an outcome means when the outcome is partly
-noise.
-
-> **Read more:** Paster, McIlraith & Ba, *You Can't Count on Luck: Why Decision Transformers and RvS
-> Fail in Stochastic Environments*, NeurIPS 2022 (arXiv:2205.15967).
+noise.[^paster2022]
 
 ## ARDT — conditioning on what you can guarantee
 
@@ -81,10 +75,7 @@ action* in this state is bad", which is exactly the discrimination the method re
 
 Measured on Kuhn with a deliberately simplified state-only proxy, the relabel target moves
 monotonically with $\tau$ as theory requires — but exploitability is *lowest* on the optimistic
-side, which is the signature of the missing action argument rather than evidence against ARDT.
-
-> **Read more:** Tang, Zhang, Gu et al., *Adversarially Robust Decision Transformer*, NeurIPS 2024
-> (arXiv:2407.18414) — Section 3 and Algorithm 1.
+side, which is the signature of the missing action argument rather than evidence against ARDT.[^tang2024]
 
 ## What return conditioning actually does in poker
 
@@ -106,7 +97,7 @@ not the failure. The failure is more fundamental: in a zero-sum imperfect-inform
 realised return is dominated by the opponent's private card and actions, which the protagonist does
 not control. No amount of payoff granularity makes an uncontrollable signal steerable.
 
-This is the argument that carries into Step 13. On fixed logs, a return-conditioned Decision
+This is the argument that carries into Chapter 13. On fixed logs, a return-conditioned Decision
 Transformer is the wrong instrument — and the value of ARDT's relabeling is precisely that it
 replaces an uncontrollable conditioning target with a controllable one.
 
@@ -127,7 +118,7 @@ Decomposing the loss per decision overturns the obvious reading. The King "failu
 visible deviation from equilibrium — costs **0.1%** of the total loss, because over-betting a hand
 that is never behind is nearly free. A single Queen decision costs **41.4%**. Deviation magnitude
 and cost are almost uncorrelated, which is the concrete argument for reporting per-decision
-diagnostics rather than a single exploitability number in the Step 14 evaluation framework.
+diagnostics rather than a single exploitability number in the Chapter 14 evaluation framework.
 
 ![Stated versus executed betting frequencies for two models, with the exploitability of each strategy.](impl_stated_vs_executed.png)
 
@@ -135,10 +126,7 @@ Asking a model what it intends is *worse* than measuring what it does. Scored as
 frequencies these models **state** are 2.6× and 4.0× more exploitable than the strategies they
 actually **play**. One model answers "50%" almost everywhere; the other answers "near 0%" almost
 everywhere, including with the strongest hand. Behavioural probing is not merely more convenient
-than introspection here — it is more accurate.
-
-> **Read more:** Guertler et al., *TextArena: A Framework for Text-Based Game Environments*, 2025
-> (arXiv:2504.11442).
+than introspection here — it is more accurate.[^guertler2025]
 
 ## Exploitation, adaptation, and the limits of the toy game
 
@@ -172,7 +160,7 @@ game.
   games; it is why ARDT's relabeling — not the Decision Transformer itself — is what transfers to
   fixed poker logs.
 - **The published ARDT relabels with a state-action value.** Reproducing the method's benefit
-  requires $\tilde{Q}(s,a)$, not $V(s)$ — the identified, evidence-backed fix for Step 13.
+  requires $\tilde{Q}(s,a)$, not $V(s)$ — the identified, evidence-backed fix for Chapter 13.
 - **A scalar score ranks methods but does not diagnose them.** One decision carried 41.4% of the
   loss while the most conspicuous deviation carried 0.1%.
 - **Measure behaviour, not self-report.** Verbalised strategy was substantially worse than played
@@ -180,6 +168,17 @@ game.
 - **In-context opponent adaptation did not emerge**, so an explicit opponent model is required rather
   than assumed — directly relevant to the first thesis contribution.
 - **Measurement protocol is part of the result.** At greedy decoding a language model plays a pure
-  strategy and every measured frequency degenerates to 0 or 1; four separate findings in this step
+  strategy and every measured frequency degenerates to 0 or 1; four separate findings in this chapter
   turned out to be measurement artefacts, each caught by a cheap check against an exactly computable
   quantity.
+
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
+
+[^chen2021]: Chen et al., *Decision Transformer: Reinforcement Learning via Sequence Modeling*, NeurIPS 2021 (arXiv:2106.01345).
+
+[^paster2022]: Paster, McIlraith & Ba, *You Can't Count on Luck: Why Decision Transformers and RvS Fail in Stochastic Environments*, NeurIPS 2022 (arXiv:2205.15967).
+
+[^tang2024]: Tang, Zhang, Gu et al., *Adversarially Robust Decision Transformer*, NeurIPS 2024 (arXiv:2407.18414) — Section 3 and Algorithm 1.
+
+[^guertler2025]: Guertler et al., *TextArena: A Framework for Text-Based Game Environments*, 2025 (arXiv:2504.11442).

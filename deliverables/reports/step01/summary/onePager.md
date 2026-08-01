@@ -4,22 +4,22 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 1 One-Pager — Reinforcement Learning Basics"
+title: "Chapter 1 One-Pager — Reinforcement Learning Basics"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "April 2026"
 lang: en
 ---
 
-# Step 1 One-Pager — Reinforcement Learning Basics
+# Chapter 1 One-Pager — Reinforcement Learning Basics
 
-**Problem.** Everything later in this plan — neural equilibrium finding (Step 5), the
-opponent-model actuator (Steps 7-8), multi-agent learning (Step 9) — is assembled out of value
-networks, policy gradients and experience replay. Step 1 is the foundation layer: how an agent
+**Problem.** Everything later in this plan — neural equilibrium finding (Chapter 5), the
+opponent-model actuator (Chapters 7-8), multi-agent learning (Chapter 9) — is assembled out of value
+networks, policy gradients and experience replay. Chapter 1 is the foundation layer: how an agent
 improves a policy from reward alone, in the fully observable single-agent setting, before that
 picture is complicated by a second, hidden, adversarial player. It feeds Contribution #1
 indirectly (the architecture patterns are reused by the adaptive opponent model) and directly
-supplies the implementation vocabulary every later step assumes.
+supplies the implementation vocabulary every later chapter assumes.
 
 **Approach.** One algorithm from each family, written from scratch in PyTorch: **DQN**
 (value-based, off-policy) on `CartPole-v1` — Q-network `[4->128->128->2]`, circular replay
@@ -53,13 +53,13 @@ the result. **All numbers below are measured.**
 **Thesis connection.** The 300-500-line stack (against SB3's ~10K) is the deliberate price paid
 for surgical modifiability: injecting belief-state observations into an actor-critic is a deep
 subclassing exercise in SB3 and a local edit here, which is exactly what the exploitation work
-in Steps 7-8 needs. The same actor-critic pair returns as MAPPO/MADDPG in Step 9, and the
-value-network machinery returns as Deep CFR's advantage network in Step 5.
+in Chapters 7-8 needs. The same actor-critic pair returns as MAPPO/MADDPG in Chapter 9, and the
+value-network machinery returns as Deep CFR's advantage network in Chapter 5.
 
 **Open questions.** The MDP assumption that makes all of this work — a fully observable state —
 is precisely what poker breaks: over an information set, DQN's `max` and PPO's per-state policy
-are both ill-posed, which is why Step 2 changes tool rather than scale. Open: how much of the
+are both ill-posed, which is why Chapter 2 changes tool rather than scale. Open: how much of the
 single-agent stability toolkit (target networks, trust regions, advantage normalisation)
-survives when the environment is itself a learning agent (deferred to Step 9's
+survives when the environment is itself a learning agent (deferred to Chapter 9's
 non-stationarity), and whether the sample-efficiency edge measured here is a real property or an
 artifact of two small, well-conditioned control tasks.

@@ -1,5 +1,5 @@
 ---
-title: "Step 6 Summary — End-to-End Game AI Architectures"
+title: "Chapter 6 Summary — End-to-End Game AI Architectures"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "June 2026"
@@ -8,13 +8,13 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 6 — End-to-End Game AI Architectures
+# Chapter 6 — End-to-End Game AI Architectures
 
 <!--
 SKELETON / WORK IN PROGRESS.
 Build order and the per-system template (the "spine") are defined in ../CHAPTER_PLAN.md.
 Each system section follows the same template so cross-system comparison stands out.
-Wrap finished/approved sections in the APPROVED-HIGHLIGHT markers (see Step 5 summary).
+Wrap finished/approved sections in the APPROVED-HIGHLIGHT markers (see Chapter 5 summary).
 -->
 
 <!-- INTRODUCTION — drafted (subtask #7), awaiting review. Written last, per the plan, after all five
@@ -25,7 +25,7 @@ Not wrapped in APPROVED-HIGHLIGHT until sign-off. -->
 
 ## Introduction
 
-Chapter 6 is the keystone of this study plan. Steps 1–5 assembled the parts in isolation — the
+Chapter 6 is the keystone of this study plan. Chapters 1–5 assembled the parts in isolation — the
 game-theoretic vocabulary of extensive-form games and Nash equilibria, counterfactual regret minimization
 (CFR) and its Monte-Carlo variants, game abstraction, and the neural function approximators that replace
 tabular storage once a game outgrows it — and this chapter is where those parts converge into complete,
@@ -75,14 +75,14 @@ that, in belief-state form, becomes the inner loop of ReBeL and Student of Games
 tissue — referenced wherever a system instantiates it — rather than as a sixth entry, because depth-limited
 solving is the mechanism *through which* the offline-to-search axis actually operates.
 
-Finally, because this chapter is the hinge between the fundamentals of Steps 1–5 and the opponent-modelling
-and exploitation work of Steps 7–15, it is worth flagging at the outset the single thread the synthesis
+Finally, because this chapter is the hinge between the fundamentals of Chapters 1–5 and the opponent-modelling
+and exploitation work of Chapters 7–15, it is worth flagging at the outset the single thread the synthesis
 returns to. Every system here is, by deliberate design, **opponent-blind**: each computes a strategy that is
 hard to beat *in the worst case* and then plays it without regard to who is actually across the table —
 Pluribus does not even know its opponents' identities, and both it and Libratus refuse on principle to model
 or adapt to them, so as never to be counter-exploited in return. This robustness-first stance is the field's
 great strength and, for a dissertation about *adaptive* play, its defining limitation: it is exactly the
-opponent-awareness these systems omit that Steps 7–15 set out to add. The chapter therefore closes not with
+opponent-awareness these systems omit that Chapters 7–15 set out to add. The chapter therefore closes not with
 a winner but with a synthesis — a map of what the five systems share, what each gave up, and where the open
 problems that motivate the rest of this work actually lie.
 
@@ -227,7 +227,7 @@ conservative blend most of the time but in an aggressive variant (when acting fi
 re-solving guarantees when the opponent's range estimate is wrong." And the pre-flop, far from cheap, requires
 enumerating all 22,100 possible flops through the flop network, mitigated only by caching repeated betting
 sequences. Finally, the choice of re-solving gadget (the CFR-D gadget over the max-margin alternative) was
-made because it "performed better in early testing," not derived — and, echoing Step 5, the network's useful
+made because it "performed better in early testing," not derived — and, echoing Chapter 5, the network's useful
 depth was capped by data rather than architecture, with validation error flattening past five layers at the
 ten-million-sample budget. None of these undermine the result, but together they show that the headline
 "sound, abstraction-free search" is an aspiration the implementation approximates rather than attains.
@@ -393,7 +393,7 @@ tries to model and punish the humans' mistakes (which would expose Libratus to c
 Instead it uses the opponents' bets only as a hint about *which of Libratus's own holes to patch*, and the
 patches are universal, improving play against any future opponent.
 
-The classic building blocks of earlier steps sit in plain view: game abstraction and MCCFR build the
+The classic building blocks of earlier chapters sit in plain view: game abstraction and MCCFR build the
 blueprint offline, CFR+ does the online subgame solving, and "search" is the per-decision real-time re-solve.
 The conspicuous absence — no value network, no policy network, nothing learned by gradient descent — is the
 architectural signature that separates Libratus from every other system in this chapter.
@@ -900,8 +900,8 @@ any kind: where DeepStack, Libratus, and Pluribus all bucketed strategically sim
 distinct policy for every infostate, feeding the network only the raw belief distribution over both players'
 1,326 possible hands plus the board, pot, and a single "has anyone bet this round" flag. And the CFR search runs
 on a **single CPU thread** with no abstraction at all; the heavy compute is the GPU self-play that trains the
-value net (a balance discussed under *Compute*). The classic building blocks of the earlier steps are still
-visible — CFR (Step 3) is the search engine and neural value approximation (Step 5) is the leaf evaluator — but
+value net (a balance discussed under *Compute*). The classic building blocks of the earlier chapters are still
+visible — CFR (Chapter 3) is the search engine and neural value approximation (Chapter 5) is the leaf evaluator — but
 they are now fused into a single self-play-plus-search loop, with the public belief state (the section below) as
 the representation that makes the fusion possible.
 
@@ -1176,8 +1176,8 @@ and the **sound self-play** loop is what trains the network from the search's ow
 play self-play games, run a GT-CFR search at every decision, and emit two kinds of training data — full-game
 trajectories and the belief states the network was queried at during search — while trainers fit a new CVPN
 and periodically push it back. Online, the agent runs the very same GT-CFR search (via continual re-solving)
-to choose each move. The classic building blocks are all visible — CFR⁺ (Step 3) is the search's inner
-loop, value-and-policy approximation (Step 5) is the CVPN, and public belief states and decomposition (the
+to choose each move. The classic building blocks are all visible — CFR⁺ (Chapter 3) is the search's inner
+loop, value-and-policy approximation (Chapter 5) is the CVPN, and public belief states and decomposition (the
 DeepStack/ReBeL lineage) are the representation — but the binding novelty is GT-CFR, the search that *grows*
 its tree, and the sound self-play that keeps every search consistent with every other.
 
@@ -1355,7 +1355,7 @@ ReBeL pointed toward — it grows its tree instead of fixing a depth-limited sub
 search from training (so, like AlphaZero, it can simply search harder at test time for stronger play), and
 is validated across game classes rather than on imperfect information alone. Its most visible *unmet*
 neighbour is **MuZero**: where MuZero removed AlphaZero's need for a known model by learning the dynamics,
-Student of Games still assumes a perfect simulator, so the natural next step — uniting GT-CFR with a learned
+Student of Games still assumes a perfect simulator, so the natural next chapter — uniting GT-CFR with a learned
 model and a generative belief sampler — would dissolve both of its named limitations at once. And it sits
 one axis away from **CICERO**, Meta's human-level Diplomacy player, which carries search-plus-learning into a
 seven-player, mixed-motive, natural-language game: a vivid reminder that Student of Games unifies *information
@@ -1432,10 +1432,10 @@ section's scorecard and are not repeated here.
 ### What carries forward
 
 Almost nothing in these systems is wholly new; each is a recombination of a small set of building blocks,
-most of them introduced in Steps 3–5. **CFR and CFR⁺** (Step 3) are the inner solver of every system;
-**Monte-Carlo CFR** (Step 3) trains the blueprints of Libratus and Pluribus; **card and action abstraction**
-(Step 4) underpin Libratus and Pluribus and survive only as a vestigial betting menu in ReBeL and Student of
-Games; and **neural value — then value-and-policy — approximation** (Step 5) is precisely what lets
+most of them introduced in Chapters 3–5. **CFR and CFR⁺** (Chapter 3) are the inner solver of every system;
+**Monte-Carlo CFR** (Chapter 3) trains the blueprints of Libratus and Pluribus; **card and action abstraction**
+(Chapter 4) underpin Libratus and Pluribus and survive only as a vestigial betting menu in ReBeL and Student of
+Games; and **neural value — then value-and-policy — approximation** (Chapter 5) is precisely what lets
 DeepStack, ReBeL, and Student of Games dissolve the abstraction the others depend on. Onto these the chapter
 layers its own native primitives, each introduced by one system and reused by its successors:
 **depth-limited solving**, **continual re-solving**, **safe nested subgame solving**, the **public belief
@@ -1443,7 +1443,7 @@ state**, and **Growing-Tree CFR**. Read down the list of *first appearances* and
 restates itself in components: the blocks accumulate, the abstraction-era ones fade, and the learned ones
 take over.
 
-![Component-reuse map: Step 3–5 building blocks and chapter-native primitives (rows) against the five systems in chronological order (columns); stars mark the system that introduced each native primitive, connected by a staircase of first appearances.](component_reuse.png){width=90% fig-pos="H"}
+![Component-reuse map: Chapters 3–5 building blocks and chapter-native primitives (rows) against the five systems in chronological order (columns); stars mark the system that introduced each native primitive, connected by a staircase of first appearances.](component_reuse.png){width=90% fig-pos="H"}
 
 ### Why this matters for our research
 
@@ -1488,12 +1488,12 @@ systems, and that uniformity is itself the template for a cross-system evaluatio
 the dissertation two instruments, repurposed. The **local-best-response (LBR) probe**, used throughout the
 chapter to *certify* unexploitability, becomes a *safety stress-test* when pointed at an adaptive agent —
 does chasing a weak opponent make you counter-exploitable? — which is precisely the adversarial,
-teaching-attack-style evaluation Step 8 calls for. And **AIVAT**, the learned-value variance reducer behind
+teaching-attack-style evaluation Chapter 8 calls for. And **AIVAT**, the learned-value variance reducer behind
 DeepStack's and Pluribus's reported results, is the instrument that makes a small but *growing* adaptation
 edge statistically visible against the brutal variance of card games, where raw winnings would mislead.
 
 *Further leverage points (candidate — to keep or trim against final length).* The following are compact
-extrapolations rather than claims already made by the systems; each is a one-line seed for later steps.
+extrapolations rather than claims already made by the systems; each is a one-line seed for later chapters.
 
 - **A reusable proof shape (C2).** Every guarantee in the chapter has the same form — a value-approximation
   term plus a $1/\sqrt{T}$ convergence term (DeepStack's $k_1\epsilon + k_2/\sqrt{T}$, Libratus's $2\Delta$,
@@ -1502,7 +1502,7 @@ extrapolations rather than claims already made by the systems; each is a one-lin
   deviation.
 - **Depth-limited exploitation (C1/C2).** Pluribus's multi-valued leaves ($k$ selectable continuation
   strategies) are structurally a menu of opponent behaviours at the horizon; reinterpreting that menu as
-  opponent *types* yields tractable exploitation past the search depth — the exact problem Step 8's
+  opponent *types* yields tractable exploitation past the search depth — the exact problem Chapter 8's
   "adapting beyond the depth limit" takes up.
 - **A build-vs-cite map (methodology).** The "Compute & accessibility" subsections sort the field into what
   is reproducible at PhD scale (Pluribus's single-server CFR, ReBeL's single-thread CPU solver, the open
@@ -1519,27 +1519,27 @@ extrapolations rather than claims already made by the systems; each is a one-lin
 - **Consistency-as-safety (C2).** Student of Games' "sound self-play" requires every local search to stay
   *consistent with* a safe reference, conceptually the same constraint as the KL-regularized (PiKL)
   exploitation Contribution 2 will use — an analogy worth borrowing.
-- **Abstraction transferred to type-space (C3).** Step 4's lesson that lossy abstraction creates exploitable
+- **Abstraction transferred to type-space (C3).** Chapter 4's lesson that lossy abstraction creates exploitable
   seams carries from state-space to opponent-*type* space: a too-coarse type model is exploitable the way a
   too-coarse card abstraction is, predicting a failure mode for Contribution 3 to catch.
 
-### Open problems and the hand-off to Steps 7–15
+### Open problems and the hand-off to Chapters 7–15
 
-Four open problems fall directly out of the synthesis, and each is the seed of a later step. The first is
+Four open problems fall directly out of the synthesis, and each is the seed of a later chapter. The first is
 **opponent-blindness** itself: the entire frontier computes a fixed, worst-case-optimal strategy and plays
 it unconditionally, leaving the gap between static equilibrium and dynamic, opponent-aware play wide open —
-the subject of Step 7 (inferring opponent behaviour from action traces) and the inference half of
+the subject of Chapter 7 (inferring opponent behaviour from action traces) and the inference half of
 Contribution 1. The second is **multiplayer safety**: Pluribus proved that Nash-and-search methods *win* in
 N-player imperfect-information games while offering no safety guarantee at all, and Student of Games
 confirmed that even the most general sound-search framework still restricts its guarantees to two players —
-so a tractable theory of *safe exploitation beyond two-player zero-sum* (Step 8, Contribution 2) remains
+so a tractable theory of *safe exploitation beyond two-player zero-sum* (Chapter 8, Contribution 2) remains
 genuinely open. The third is **adaptation beyond the depth limit**: the chapter's real-time solvers all look
 only a little way ahead, and carrying an opponent model soundly past that horizon — rather than discarding
-it at the leaf — is an unsolved problem Step 8 takes up directly. The fourth is **real-time compute
+it at the leaf — is an unsolved problem Chapter 8 takes up directly. The fourth is **real-time compute
 budgets**: the systems' costs range over six orders of magnitude, and an adaptive agent that must re-solve
 *and* re-estimate an opponent online inherits the tightest version of that constraint.
 
-These problems define Phase D (Steps 7–8), the thesis-critical core, and they ramify through the phases that
+These problems define Phase D (Chapters 7–8), the thesis-critical core, and they ramify through the phases that
 follow — multi-agent dynamics and coalition formation (Phase E), the data-driven behavioural pipelines that
 ground the models in real traces (Phase F), and the cross-domain evaluation framework that closes the plan
 (Phase G). The five systems of this chapter are, collectively, the platform this dissertation stands on and

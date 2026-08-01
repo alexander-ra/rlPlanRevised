@@ -1,12 +1,12 @@
-## 7. Phase F — Data-Driven Approaches (Steps 12–13)
+## 7. Phase F — Data-Driven Approaches (Chapters 12–13)
 
 ### 7.1 Phase Overview
 
-The preceding phases developed methods entirely within synthetic, self-play environments. Phase F will bridge the gap between theoretical methods and real-world behavioral data. Step 12 introduces sequence models (Decision Transformers^46^) and assesses large language model agents in strategic settings. Step 13 applies the resulting pipeline to anonymized real-world poker hand histories, constructing player embeddings^48^, behavioral classification systems, and a collusion detection^50^ module.
+The preceding phases developed methods entirely within synthetic, self-play environments. Phase F will bridge the gap between theoretical methods and real-world behavioral data. Chapter 12 introduces sequence models (Decision Transformers^46^) and assesses large language model agents in strategic settings. Chapter 13 applies the resulting pipeline to anonymized real-world poker hand histories, constructing player embeddings^48^, behavioral classification systems, and a collusion detection^50^ module.
 
-### 7.2 Step 12 — Sequence Models and LLM Agents in Strategic Settings
+### 7.2 Chapter 12 — Sequence Models and LLM Agents in Strategic Settings
 
-**Contribution Alignment.** This step will study the Decision Transformer^46^ architecture and its adversarially robust variant (ARDT^47^), which recovers near-Nash strategies from offline data — a potential alternative path for Contribution 2 that bypasses intractable equilibrium computation in N-player settings. A critical limitation of return conditioning in stochastic environments will constrain the design of the real-world data pipeline in Step 13. The multi-paradigm comparison table produced here will serve as a prototype for the evaluation framework of Contribution 3.
+**Contribution Alignment.** This chapter will study the Decision Transformer^46^ architecture and its adversarially robust variant (ARDT^47^), which recovers near-Nash strategies from offline data — a potential alternative path for Contribution 2 that bypasses intractable equilibrium computation in N-player settings. A critical limitation of return conditioning in stochastic environments will constrain the design of the real-world data pipeline in Chapter 13. The multi-paradigm comparison table produced here will serve as a prototype for the evaluation framework of Contribution 3.
 
 **Literature.**
 
@@ -19,16 +19,16 @@ The preceding phases developed methods entirely within synthetic, self-play envi
 
 **Practical Tasks.**
 
-- Generate a poker trajectory dataset (50,000+ Kuhn Poker^19^ hands) using CFR agents from Step 3; design the poker state tensor encoding that will transfer to the real-world data pipeline in Step 13.
+- Generate a poker trajectory dataset (50,000+ Kuhn Poker^19^ hands) using CFR agents from Chapter 3; design the poker state tensor encoding that will transfer to the real-world data pipeline in Chapter 13.
 - Adapt and train a Decision Transformer^46^ for poker state and action spaces; validate return-to-go conditioning and demonstrate the stochasticity limitation (Paster et al., 2022) whereby the model conflates lucky card deals with skilled play.
-- Implement ARDT^47^ with minimax expectile regression; train on mixed-quality opponent data and verify recovery of near-Nash strategies on Kuhn Poker (measured by exploitability^3^ against the known analytical equilibrium from Step 2).
+- Implement ARDT^47^ with minimax expectile regression; train on mixed-quality opponent data and verify recovery of near-Nash strategies on Kuhn Poker (measured by exploitability^3^ against the known analytical equilibrium from Chapter 2).
 - Deploy LLM agents on TextArena strategic games to assess capabilities in negotiation, deception, and theory-of-mind reasoning.
 - Evaluate LLM agents on Kuhn Poker with standardized metrics: exploitability, bluff frequency, value bet frequency, illegal move rate, and opponent adaptation.
 - Produce a unified multi-paradigm comparison table (CFR, Decision Transformer, ARDT, behavioral cloning, LLM agents) on Kuhn Poker with standardized metrics.
 
-### 7.3 Step 13 — Behavioral Analysis Pipelines and Real-World Data
+### 7.3 Chapter 13 — Behavioral Analysis Pipelines and Real-World Data
 
-**Contribution Alignment.** This step will apply the behavioral adaptation methodology from Steps 7, 8, and 12 to anonymized industry data, providing practical validation for Contribution 1. The behavioral deviation from equilibrium play measured on real player data will quantify exploitation opportunities relevant to Contribution 2. The collusion detection^50^ module — transferring coalition detection principles from Step 11 to a practical fraud detection application — will represent a direct contribution to the evaluation methodology (Contribution 3).
+**Contribution Alignment.** This chapter will apply the behavioral adaptation methodology from Chapter 7, 8, and 12 to anonymized industry data, providing practical validation for Contribution 1. The behavioral deviation from equilibrium play measured on real player data will quantify exploitation opportunities relevant to Contribution 2. The collusion detection^50^ module — transferring coalition detection principles from Chapter 11 to a practical fraud detection application — will represent a direct contribution to the evaluation methodology (Contribution 3).
 
 **Literature.**
 
@@ -41,10 +41,10 @@ The preceding phases developed methods entirely within synthetic, self-play envi
 **Practical Tasks.**
 
 - Build a data pipeline from anonymized Playtech hand histories (~50,000–100,000 hands, cash game six-max tables) to structured game records and state tensors; validate for impossible states (duplicate cards, negative stacks, pot mismatches).
-- Extend Step 12's poker state tensor encoding from Kuhn and Leduc to full Hold'em (52-dimensional one-hot card encoding, position, pot/stack ratios, betting history, street indicator, active player count).
+- Extend Chapter 12's poker state tensor encoding from Kuhn and Leduc to full Hold'em (52-dimensional one-hot card encoding, position, pot/stack ratios, betting history, street indicator, active player count).
 - Compute standard behavioral statistics per player: VPIP^49^, PFR, Aggression Factor, WTSD, W\$SD, 3-bet percentage, and continuation bet percentage.
 - Train player embeddings^48^ (player2vec approach) by treating poker actions as tokens and training a Transformer encoder with masked action prediction; extract per-player embedding vectors.
 - Apply k-means clustering (four classic archetypes: tight-aggressive, loose-aggressive, tight-passive, loose-passive) and DBSCAN on the embedding space; validate against manual VPIP×PFR classification and test temporal stability.
 - Implement a collusion detection^50^ module with three signals — co-occurrence anomaly, chip dumping score, and soft play score — combined via weighted composite scoring; validate by injecting synthetic collusion patterns and measuring detection recall (target >90%) and false positive rate (target <5%).
-- Apply the Decision Transformer^46^ from Step 12 to Playtech data; compare return-conditioned versus EV-conditioned training per the Paster et al. stochasticity warning.
+- Apply the Decision Transformer^46^ from Chapter 12 to Playtech data; compare return-conditioned versus EV-conditioned training per the Paster et al. stochasticity warning.
 

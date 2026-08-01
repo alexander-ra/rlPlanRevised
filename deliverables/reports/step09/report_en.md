@@ -4,13 +4,13 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 
-# Step 9 — Multi-Agent Reinforcement Learning: Experiment Report
+# Chapter 9 — Multi-Agent Reinforcement Learning: Experiment Report
 
-**Testbeds:** four canonical $2\times2$ matrix games (Prisoner's Dilemma, Matching Pennies, Stag Hunt, Battle of the Sexes); Kuhn Poker and Leduc Hold'em (via the Step 07 exact stack); a native Goofspiel engine ($K=3,4$); two small cooperative environments (a one-step referential "CoopSignal" game and the Claus–Boutilier climbing game); and the memory-1 Iterated Prisoner's Dilemma. The poker games reuse the Step 02 Kuhn engine, the Step 03 Leduc engine, and Step 07's exact best-response / NashConv code wholesale.
+**Testbeds:** four canonical $2\times2$ matrix games (Prisoner's Dilemma, Matching Pennies, Stag Hunt, Battle of the Sexes); Kuhn Poker and Leduc Hold'em (via the Chapter 07 exact stack); a native Goofspiel engine ($K=3,4$); two small cooperative environments (a one-step referential "CoopSignal" game and the Claus–Boutilier climbing game); and the memory-1 Iterated Prisoner's Dilemma. The poker games reuse the Chapter 02 Kuhn engine, the Chapter 03 Leduc engine, and Chapter 07's exact best-response / NashConv code wholesale.
 
-**PhD connection:** the pivot from two-player zero-sum (Steps 2–8) into multi-agent RL. Three hooks: **LOLA** as *dynamic* opponent modeling (Contribution #1); **PSRO** as a population-level evaluation methodology (Contribution #3); and the **missing $N>2$ minimax anchor** where two-player safety guarantees vanish (Contribution #2).
+**PhD connection:** the pivot from two-player zero-sum (Chapters 2–8) into multi-agent RL. Three hooks: **LOLA** as *dynamic* opponent modeling (Contribution #1); **PSRO** as a population-level evaluation methodology (Contribution #3); and the **missing $N>2$ minimax anchor** where two-player safety guarantees vanish (Contribution #2).
 
-**Scope of results:** every number in this report is **measured from a real run** and read from the run artifacts under `implementation/step09/implementation/results/{smoke,scale}_results.json` and `implementation/step09/exploration/figures/*.json`. Wherever possible a simulated number is bracketed by an *exact* analytical reference (analytic Nash for the matrix games; Step 07's exact best response / NashConv for Kuhn, Leduc, and Goofspiel). Four Phase-4 predictions were **contradicted** by the runs; per the project workflow (§0.1) they are kept as stated and reconciled with what actually happened (§9).
+**Scope of results:** every number in this report is **measured from a real run** and read from the run artifacts under `implementation/step09/implementation/results/{smoke,scale}_results.json` and `implementation/step09/exploration/figures/*.json`. Wherever possible a simulated number is bracketed by an *exact* analytical reference (analytic Nash for the matrix games; Chapter 07's exact best response / NashConv for Kuhn, Leduc, and Goofspiel). Four Phase-4 predictions were **contradicted** by the runs; per the project workflow (§0.1) they are kept as stated and reconciled with what actually happened (§9).
 
 > **How to read this report.** Both parts follow the same arc: **what we test → how → results → conclusion.** **Part I (§1–§4)** shows *why* multi-agent learning is hard, on matrix games and Kuhn self-play. **Part II (§5–§8)** evaluates the structural fixes — PSRO, CTDE, communication, LOLA — against exact yardsticks. §9 reconciles the four contradicted predictions; §10–§12 cover trust, limitations, and directions; §13 lists reproduction commands.
 
@@ -18,7 +18,7 @@ BG: Изследване на възможностите за приложени
 
 # PART I — WHY MULTI-AGENT LEARNING IS HARD
 
-## 1. What this step is about
+## 1. What this chapter is about
 
 Single-agent RL assumes a **stationary** environment; multi-agent RL does not, because the other agents are *also learning*, so each agent's effective environment is a moving target (**non-stationarity**). Part I makes that failure visible with the cleanest possible controls — independent gradient learners on games whose Nash equilibria are known exactly — before Part II introduces the machinery that repairs it. All Part I numbers come from the seeded exploration scripts (`exploration/figures/*.json`); the learners use **exact gradients**, so the dynamics carry no sampling noise and "did it converge?" is unambiguous.
 
@@ -70,7 +70,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **What we test.** In fictitious-play self-play on a real imperfect-information game, does the *average* strategy converge to Nash even when the *last* iterate does not?
 
-**How.** Fictitious play on Kuhn (each player best-responds to the opponent's running average via Step 07's exact best response), $200$ iterations, measured every 5. Track the average-iterate NashConv and the last-iterate NashConv. Data: `exploration/figures/selfplay_vs_nash.json`.
+**How.** Fictitious play on Kuhn (each player best-responds to the opponent's running average via Chapter 07's exact best response), $200$ iterations, measured every 5. Track the average-iterate NashConv and the last-iterate NashConv. Data: `exploration/figures/selfplay_vs_nash.json`.
 
 | Iteration | average-iterate NashConv | last-iterate NashConv |
 |---:|---:|---:|
@@ -94,7 +94,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **What we test.** Does PSRO (population + meta-Nash + best-response oracle) drive the meta-Nash mixture's exploitability down toward zero, and does that hold across game sizes?
 
-**How.** PSRO with Step 07's **exact** best-response oracle. The opponent's meta-Nash mixture over behavioral policies is collapsed to a single realization-equivalent behavioral policy (Kuhn's theorem, perfect recall) so the exact BR engine applies. Exploitability = NashConv of the meta-mixture in the full game. Data: `results/scale_results.json` (`psro` block); RPS from `exploration/figures/psro_peek.json`.
+**How.** PSRO with Chapter 07's **exact** best-response oracle. The opponent's meta-Nash mixture over behavioral policies is collapsed to a single realization-equivalent behavioral policy (Kuhn's theorem, perfect recall) so the exact BR engine applies. Exploitability = NashConv of the meta-mixture in the full game. Data: `results/scale_results.json` (`psro` block); RPS from `exploration/figures/psro_peek.json`.
 
 | Game | round 0 | final (round) | verdict |
 |---|---:|---:|---|
@@ -107,7 +107,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **Results.** On the small games (Kuhn, matrix, RPS, Goofspiel $K=3$) exploitability collapses to (near) zero within a handful of rounds — textbook double-oracle behavior. Leduc declines steadily ($4.75\to2.16$) but stays far above the $0.5$ target after 20 rounds. Goofspiel $K=4$ oscillates between $\sim\!1.4$ and $\sim\!2.0$ without settling.
 
-**Conclusion.** PSRO is validated as the game-theory↔MARL bridge on the small games, using the same exact exploitability metric as Steps 2–8. Two results — Leduc's slow convergence and Goofspiel $K=4$'s oscillation — did not match predictions and are reconciled in §9.
+**Conclusion.** PSRO is validated as the game-theory↔MARL bridge on the small games, using the same exact exploitability metric as Chapters 2–8. Two results — Leduc's slow convergence and Goofspiel $K=4$'s oscillation — did not match predictions and are reconciled in §9.
 
 ---
 
@@ -170,7 +170,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **Results.** Naive learning converges to mutual defection ($1.04$); LOLA reaches near-cooperation ($2.82$). A built-in check confirms the mechanism: with the look-ahead rate set to zero, LOLA's gradient equals the naive gradient exactly, so the cooperation comes from the second-order term.
 
-**Conclusion.** LOLA reshapes the learning dynamics — *dynamic* opponent modeling — turning IPD defectors into cooperators. This is the moving-target complement to Step 7's static opponent read (Contribution #1).
+**Conclusion.** LOLA reshapes the learning dynamics — *dynamic* opponent modeling — turning IPD defectors into cooperators. This is the moving-target complement to Chapter 7's static opponent read (Contribution #1).
 
 ---
 
@@ -192,7 +192,7 @@ A cross-cutting methodological note: the two neural effects (critic variance §6
 
 ## 10. Trustworthiness and sample adequacy
 
-- **Game-theoretic results are bounded by exact references.** Matrix outcomes are checked against analytic Nash; Kuhn/Leduc/Goofspiel exploitability is Step 07's *exact* NashConv (not a simulation). PSRO's Kuhn result reaching $\sim\!2\times10^{-16}$ is machine-precision zero, the strongest possible confirmation.
+- **Game-theoretic results are bounded by exact references.** Matrix outcomes are checked against analytic Nash; Kuhn/Leduc/Goofspiel exploitability is Chapter 07's *exact* NashConv (not a simulation). PSRO's Kuhn result reaching $\sim\!2\times10^{-16}$ is machine-precision zero, the strongest possible confirmation.
 - **Matrix and PSRO learners are deterministic** (exact gradients / exact BR + fixed seeds), so those numbers are exactly reproducible.
 - **Neural results are seeds-limited.** The coop/comm/LOLA results are reported at one primary seed (scale allows 3); they are *qualitative inequalities* (central $<$ independent; comm ON $>$ OFF; LOLA $>$ naive), robust in direction but seed- and library-version-sensitive in magnitude. They should not be read as precise point estimates.
 - **Not captured on this run:** the `validate.py` PASS/FAIL log and the experiment PNGs (only the JSON artifacts were saved). Listed as "to close" in `../figures/README.md`.
@@ -218,7 +218,7 @@ A cross-cutting methodological note: the two neural effects (critic variance §6
 
 - *Approximate oracles for PSRO scaling* — Leduc's $2.16$-after-20-rounds (§5) motivates an RL/approximate best-response oracle and measuring the guarantee it costs.
 - *Fix and re-validate the two flagged pieces* — Goofspiel $K=4$ de-duplication + mixed-strategy population (§9.3); MADDPG's counterfactual baseline (§9.4).
-- *Dynamic + static opponent modeling* — combine LOLA's look-ahead (§8) with Step 7's static read (Contribution #1).
+- *Dynamic + static opponent modeling* — combine LOLA's look-ahead (§8) with Chapter 7's static read (Contribution #1).
 - *Safety without a minimax anchor* — the $N>2$ gap named in the summary (§2 there): can PSRO's meta-game supply a usable safety substitute where no single game value exists (Contribution #2)?
 
 ---

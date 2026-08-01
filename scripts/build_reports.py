@@ -71,8 +71,12 @@ ONEPAGER_FILTER = REPO_ROOT / "scripts" / "filters" / "onepager.lua"
 GLYPH_FALLBACK = REPO_ROOT / "scripts" / "glyph_fallback.tex"
 # Float parameters. Without these a heading between figures can go untypeset.
 FLOAT_LAYOUT = REPO_ROOT / "scripts" / "float_layout.tex"
+# Makes pagestyle=empty stick even on a page \maketitle marked as `plain`.
+NO_PAGE_NUMBERS = REPO_ROOT / "scripts" / "no_page_numbers.tex"
 # Bundle parts only: strips a hand-written Contents section from the markdown.
-DROP_TOC_FILTER = REPO_ROOT / "scripts" / "filters" / "drop_manual_toc.lua"
+BUNDLE_PART_FILTER = REPO_ROOT / "scripts" / "filters" / "bundle_part.lua"
+# Prints a repeated citation once, then points back at that number.
+DEDUPE_FOOTNOTES = REPO_ROOT / "scripts" / "filters" / "dedupe_footnotes.lua"
 ONEPAGER_FIT_LADDER = [
     ("11pt", "1.15", "2.0cm"),
     ("10pt", "1.05", "1.8cm"),
@@ -285,16 +289,25 @@ def run_pandoc(
     extra_args: list[str] | None = None,
     geometry: str | None = None,
     number_offset: int = 0,
+    footnote_offset: int = 0,
     toc: bool = True,
     number_sections: bool = True,
     fontsize: str = "11pt",
     linestretch: str = "1.25",
+    pagestyle: str | None = None,
     quiet: bool = False,
 ) -> bool:
     """Run pandoc to convert a markdown file to PDF.
-    
+
     number_offset: shifts section numbering so step N starts at N.1, N.2, etc.
                    e.g. number_offset=1 makes sections start at 2.x
+    footnote_offset: starts footnote numbering at N+1. Each bundle part is
+                   compiled on its own, so without this every chapter restarts
+                   its notes at 1; the bundle wants one continuous run.
+    pagestyle:     LaTeX page style. "empty" suppresses the footer entirely,
+                   which is what a bundle part wants: its own numbering would
+                   restart at 1 inside the merged document. merge_pdfs() stamps
+                   continuous numbers instead.
     """
     # Use custom geometry if provided, otherwise use default
     margin = geometry if geometry else "2.5cm"
@@ -313,6 +326,10 @@ def run_pandoc(
         cmd += ["--toc", "--toc-depth=2"]
     if number_sections:
         cmd += ["--number-sections", "-V", "secnumdepth=3"]
+    if pagestyle:
+        cmd += ["-V", f"pagestyle={pagestyle}"]
+        if pagestyle == "empty" and NO_PAGE_NUMBERS.exists():
+            cmd += ["--include-in-header", str(NO_PAGE_NUMBERS)]
 
     # For Bulgarian: Cyrillic-capable fonts + lang flag for hyphenation/layout
     if lang == "bg":
@@ -327,9 +344,14 @@ def run_pandoc(
         if preamble.exists():
             cmd += ["--include-in-header", str(preamble)]
 
+    if DEDUPE_FOOTNOTES.exists():
+        cmd += ["--lua-filter", str(DEDUPE_FOOTNOTES)]
+
     # Inject LaTeX section counter offset (--number-offset is ignored for PDF engines)
     if number_offset > 0:
         cmd += ["-V", f"header-includes=\\setcounter{{section}}{{{number_offset}}}"]
+    if footnote_offset > 0:
+        cmd += ["-V", f"header-includes=\\setcounter{{footnote}}{{{footnote_offset}}}"]
 
     if extra_args:
         cmd += extra_args
@@ -427,7 +449,7 @@ def build_onepager(step: str, lang: str, engine: str, pandoc_bin: str) -> bool:
         ok = run_pandoc(
             md_file, pdf_file, lang, engine, pandoc_bin,
             geometry=margin, toc=False, number_sections=False,
-            fontsize=fontsize, linestretch=linestretch,
+            fontsize=fontsize, linestretch=linestretch, pagestyle="empty",
             extra_args=["--lua-filter", str(ONEPAGER_FILTER)],
             quiet=True,
         )
@@ -468,12 +490,12 @@ BUNDLE_TYPES = {
 }
 
 BUNDLE_TITLES = {
-    ("report", "en"):   "All Step Reports",
-    ("report", "bg"):   "Доклади по стъпки",
-    ("summary", "en"):  "All Step Summaries",
-    ("summary", "bg"):  "Обобщения по стъпки",
-    ("onepager", "en"): "All Step One-Pagers",
-    ("onepager", "bg"): "Резюмета по стъпки",
+    ("report", "en"):   "All Chapter Reports",
+    ("report", "bg"):   "Доклади по глави",
+    ("summary", "en"):  "All Chapter Summaries",
+    ("summary", "bg"):  "Обобщения по глави",
+    ("onepager", "en"): "All Chapter One-Pagers",
+    ("onepager", "bg"): "Резюмета по глави",
 }
 CONTENTS_HEADING = {"en": "Contents", "bg": "Съдържание"}
 PREFACE_HEADING = {"en": "Preface", "bg": "Предговор"}
@@ -515,7 +537,8 @@ def build_title_pdf(build_type: str, lang: str, out_file: Path,
     md_file = out_file.with_suffix(".title.md")
     md_file.write_text(f"```{{=latex}}\n{body}\n```\n", encoding="utf-8")
     ok = run_pandoc(md_file, out_file, lang, engine, pandoc_bin,
-                    geometry="2.5cm", toc=False, number_sections=False, quiet=True)
+                    geometry="2.5cm", toc=False, number_sections=False,
+                    pagestyle="empty", quiet=True)
     md_file.unlink(missing_ok=True)
     return ok
 
@@ -547,7 +570,8 @@ def build_preface_pdf(lang: str, out_file: Path,
     md_file = out_file.with_suffix(".preface.md")
     md_file.write_text(text, encoding="utf-8")
     ok = run_pandoc(md_file, out_file, lang, engine, pandoc_bin,
-                    geometry="2.5cm", toc=False, number_sections=False, quiet=True)
+                    geometry="2.5cm", toc=False, number_sections=False,
+                    pagestyle="empty", quiet=True)
     md_file.unlink(missing_ok=True)
     return ok
 
@@ -606,13 +630,29 @@ def build_toc_pdf(entries: list[tuple[int, str, int]], lang: str, heading: str,
     md_file.write_text(md, encoding="utf-8")
     ok = run_pandoc(md_file, out_file, lang, engine, pandoc_bin,
                     geometry="2.2cm", toc=False, number_sections=False,
-                    linestretch="1.05", quiet=True)
+                    linestretch="1.05", pagestyle="empty", quiet=True)
     md_file.unlink(missing_ok=True)
     return ok
 
 
+def footnote_count(md_file: Path) -> int:
+    """How many distinct footnotes a document will print.
+
+    Mirrors filters/dedupe_footnotes.lua: every `[^key]` that has a definition
+    contributes once, however often it is cited. Counting from the markdown
+    rather than reading it back out of the PDF keeps bundling to a single pass.
+    """
+    if not md_file.exists():
+        return 0
+    text = md_file.read_text(encoding="utf-8")
+    defined = {m.group(1) for m in re.finditer(r"^\[\^([\w-]+)\]:", text, re.M)}
+    used = [m.group(1) for m in re.finditer(r"\[\^([\w-]+)\](?!:)", text)]
+    return len([k for k in dict.fromkeys(used) if k in defined])
+
+
 def bundle_part(build_type: str, step: str, lang: str,
-                engine: str, pandoc_bin: str) -> Path | None:
+                engine: str, pandoc_bin: str,
+                footnote_offset: int = 0) -> Path | None:
     """A step PDF rendered for inclusion in a bundle, i.e. without its own TOC.
 
     A per-step TOC is right in a standalone PDF and wrong in a bundle: its page
@@ -633,13 +673,22 @@ def bundle_part(build_type: str, step: str, lang: str,
 
     BUNDLE_PARTS_DIR.mkdir(parents=True, exist_ok=True)
     out = BUNDLE_PARTS_DIR / f"{build_type}_{step}_{lang}.pdf"
-    if out.exists() and out.stat().st_mtime >= md_file.stat().st_mtime:
+    # The cache keys on the offset too: an earlier chapter gaining a footnote
+    # shifts every later part's numbering even though its own markdown is
+    # untouched, and a stale part would silently renumber mid-bundle.
+    stamp = out.with_suffix(".offset")
+    cached = stamp.read_text(encoding="utf-8").strip() if stamp.exists() else None
+    if (out.exists() and out.stat().st_mtime >= md_file.stat().st_mtime
+            and cached == str(footnote_offset)):
         return out
 
     opts = report_opts(step) if build_type == "report" else summary_opts(step)
     ok = run_pandoc(md_file, out, lang, engine, pandoc_bin,
-                    toc=False, quiet=True,
-                    extra_args=["--lua-filter", str(DROP_TOC_FILTER)], **opts)
+                    toc=False, quiet=True, pagestyle="empty",
+                    footnote_offset=footnote_offset,
+                    extra_args=["--lua-filter", str(BUNDLE_PART_FILTER)], **opts)
+    if ok:
+        stamp.write_text(str(footnote_offset), encoding="utf-8")
     return out if ok else None
 
 
@@ -747,9 +796,36 @@ def read_outline(pdf_file: Path) -> list[tuple[int, str, int]]:
     return out
 
 
+def stamp_page_numbers(doc, skip_first: int = 1) -> None:
+    """Draw a continuous page number at the foot of every page.
+
+    Each part is rendered with pagestyle=empty, because a part that numbered
+    its own pages restarted at 1 inside the bundle - so the reader saw a dozen
+    "page 1"s and the contents pointed at numbers that appeared nowhere. The
+    number has to be applied after merging, since only then is it known.
+
+    skip_first leaves the bundle's title page bare, as a title page should be;
+    it still counts, so physical page N reads "N" and matches the contents,
+    which is computed from physical positions.
+    """
+    import fitz  # caller already established it is importable
+
+    for i, page in enumerate(doc, start=1):
+        if i <= skip_first:
+            continue
+        label = str(i)
+        # Helvetica is metrically known to PyMuPDF without embedding, and the
+        # glyphs needed are digits - no Cyrillic coverage problem here.
+        width = fitz.get_text_length(label, fontname="helv", fontsize=10)
+        page.insert_text(
+            fitz.Point((page.rect.width - width) / 2, page.rect.height - 28),
+            label, fontname="helv", fontsize=10)
+
+
 def merge_pdfs(paths: list[Path], outline: list[tuple[int, str, int]],
                output_file: Path) -> bool:
-    """Concatenate `paths` and attach `outline` as the bundle's bookmarks.
+    """Concatenate `paths`, number the pages continuously, and attach `outline`
+    as the bundle's bookmarks.
 
     PyMuPDF is preferred because it can set a nested outline in one call;
     pypdf is the fallback and gets a flattened version.
@@ -764,6 +840,7 @@ def merge_pdfs(paths: list[Path], outline: list[tuple[int, str, int]],
         for path in paths:
             with fitz.open(str(path)) as src:
                 out.insert_pdf(src)
+        stamp_page_numbers(out)
         if outline:
             out.set_toc([[lvl, title, page] for lvl, title, page in outline])
         out.save(str(output_file))
@@ -794,8 +871,11 @@ def build_bundle(build_type: str, lang: str, engine: str, pandoc_bin: str) -> bo
     output_file = BUNDLES_DIR / f"{stem}_{lang}.pdf"
 
     parts, missing = [], []
+    running_notes = 0
     for step in BUNDLE_STEPS:
-        part = bundle_part(build_type, step, lang, engine, pandoc_bin)
+        part = bundle_part(build_type, step, lang, engine, pandoc_bin,
+                           footnote_offset=running_notes)
+        running_notes += footnote_count(md_for_step(step, lang))
         if part is None:
             missing.append(step)
             continue
@@ -827,27 +907,43 @@ def build_bundle(build_type: str, lang: str, engine: str, pandoc_bin: str) -> bo
         else:
             preface_pdf = None
 
-    def merged_outline(offset: int) -> list[tuple[int, str, int, str]]:
-        """Every part's own outline, shifted into bundle page numbers."""
+    def merged_outline(offset: int, max_level: int | None = None) -> list[tuple[int, str, int, str]]:
+        """Every part's own outline, shifted into bundle page numbers.
+
+        max_level caps how deep the *printed* contents goes - the PDF's
+        navigable bookmark outline (set_toc(), below) always keeps every
+        level regardless, since a reader's sidebar isn't the space-constrained
+        page a chapter's own H3s were cluttering.
+        """
         entries: list[tuple[int, str, int, str]] = []
         page = offset + 1
         for title, _path, n, own in parts:
             if own:
                 # A part's outline already names the document at level 1.
                 for lvl, t, p, num in own:
-                    entries.append((lvl, t, page + p - 1, num))
+                    if max_level is None or lvl <= max_level:
+                        entries.append((lvl, t, page + p - 1, num))
             else:
                 entries.append((1, title, page, ""))
             page += n
         return entries
 
-    def contents_entries(toc_pages: int) -> list[tuple[int, str, int, str]]:
-        """What the contents page lists: the preface, then every step."""
+    def contents_entries(toc_pages: int, max_level: int | None = 2
+                         ) -> list[tuple[int, str, int, str]]:
+        """What the contents page lists: the preface, then every step.
+
+        Capped at 2 levels (chapter title + its top-level sections) by
+        default - a third level of subsections was cluttering a printed
+        contents that already runs to several pages, without helping anyone
+        find a chapter. The PDF's own sidebar bookmarks are a different,
+        space-unconstrained UI and call this with max_level=None to keep
+        every level for in-reader navigation.
+        """
         first = title_pages + toc_pages
         entries: list[tuple[int, str, int, str]] = []
         if preface_pages:
             entries.append((1, PREFACE_HEADING[lang], first + 1, ""))
-        return entries + merged_outline(first + preface_pages)
+        return entries + merged_outline(first + preface_pages, max_level=max_level)
 
     # The contents pages shift every page number, and how many pages they take
     # depends on how many entries they hold. Render, measure, repeat until the
@@ -880,10 +976,14 @@ def build_bundle(build_type: str, lang: str, engine: str, pandoc_bin: str) -> bo
     if preface_pdf:
         paths.append(preface_pdf)
     paths += [p for _t, p, _n, _o in parts]
+    # The sidebar has room for the depth the printed page doesn't: recomputed
+    # at max_level=None rather than reusing `body`, so a chapter's H3s stay
+    # navigable even though they're not listed on the contents page.
+    full_body = contents_entries(toc_pages, max_level=None)
     # Carry the section number into the bookmark label too, so the PDF sidebar
     # and the printed contents read the same.
     outline += [(lvl, f"{num} {t}".strip() if num else t, page)
-                for lvl, t, page, num in body]
+                for lvl, t, page, num in full_body]
 
     bits = [f"title {title_pages}p"]
     if toc_pages:

@@ -4,7 +4,7 @@ EN: Research on the possibilities for applying Artificial Intelligence in comput
 BG: Изследване на възможностите за приложение на изкуствения интелект в компютърни игри
 -->
 ---
-title: "Step 11 Summary — Dynamic Coalition Formation in Competitive FFA Games (So Long Sucker)"
+title: "Chapter 11 Summary — Dynamic Coalition Formation and Detection in Competitive FFA Games (So Long Sucker)"
 subtitle: "Research on the possibilities for applying Artificial Intelligence in computer games"
 author: "Alexander Andreev"
 date: "July 2026"
@@ -13,27 +13,25 @@ vars:
   research_focus: "Adaptive Strategy Learning in Multi-Agent Imperfect-Information Environments"
 ---
 
-# Step 11 — Dynamic Coalition Formation in Competitive FFA Games
+# Chapter 11 — Dynamic Coalition Formation and Detection in Competitive FFA Games
 
 This is a ground-up chapter on the thing that only exists once a game has a **third player**:
 temporary **alliances** that form, get exploited, and get betrayed. It builds the first
 coalition-aware reinforcement-learning treatment of **So Long Sucker (SLS)** — the 1950 game Nash,
 Shapley, Shubik & Hausner designed to study exactly this — and uses it to internalize the jump from
 $N=2$ to $N\ge 3$, where **Nash and exploitability stop being tractable *and* stop being
-meaningful**, so "did it work?" can no longer be a single number. It serves two purposes — a
-self-contained primer for later steps and a primary source for the thesis's multi-agent
-contributions. It is written to be read on its own. **All experimental numbers reported here were
+meaningful**, so "did it work?" can no longer be a single number. It is written to be read on its own. **All experimental numbers reported here were
 measured** on reproducible runs and, wherever possible, are bounded by *exact* references (textbook
 Shapley/core values for the cooperative-game toys; an exact 2-player minimax solver for the SLS
 endgame). Where a run contradicted what I expected — including a real engine bug — I keep the
 original expectation and reconcile it with what happened; those gaps are the most instructive parts
-of the step.
+of the chapter.
 
-**Where this sits in the thesis.** Steps 2-10 all leaned on a 2-player game with an *exact*
-best-response oracle. Step 11 removes it and enters the frontier. Three thesis hooks live here. The
+**Where this sits in the thesis.** Chapters 2-10 all leaned on a 2-player game with an *exact*
+best-response oracle. Chapter 11 removes it and enters the frontier. Three thesis hooks live here. The
 **coalition detector** lifts opponent modeling from "what kind of player is this?" to "who is allied
 with whom?" (Contribution #1). The **safe baseline loses its Nash anchor** — with an empty core there
-is no stable allocation, so "safe" must become behavioral/population-based (piKL), the gap this step
+is no stable allocation, so "safe" must become behavioral/population-based (piKL), the gap this chapter
 frames but does not close (Contribution #2). And the **EGTA meta-game + Shapley credit** replaces
 exploitability, which has no meaning against a coalition (Contribution #3).
 
@@ -43,7 +41,7 @@ exploitability, which has no meaning against a coalition (Contribution #3).
 
 With two players, a zero-sum game has a *value*: there is a minimax-optimal strategy, and "how far
 from optimal are you?" (exploitability) is a single, meaningful number that anchored every step since
-Step 2. Add a third player and the ground shifts. Now two players can **gang up** on the third, and
+Chapter 2. Add a third player and the ground shifts. Now two players can **gang up** on the third, and
 the interesting question is not "what is the equilibrium?" but "who allies with whom, for how long,
 and who betrays first?" Nash equilibrium in a 4-player free-for-all is both **intractable** to
 compute and **strategically empty** — it says nothing about the coalitions that actually decide the
@@ -68,13 +66,12 @@ subgame that *is* exactly solvable, the 2-player endgame.
 
 ## The coalition detector — reading alliances off the moves
 
-The first tool generalizes opponent modeling. Instead of inferring a hidden *type* or *hand* (Step
-7), the detector infers a hidden *social structure*. It watches the move log and accumulates two
+The first tool generalizes opponent modeling. Instead of inferring a hidden *type* or *hand* (Chapter 7), the detector infers a hidden *social structure*. It watches the move log and accumulates two
 matrices: **help** (player $i$ placed a chip into player $j$'s pile) and **harm** (player $i$
 captured player $j$'s pile). Their difference is **net support**; the pair with the highest mutual
 net support is the strongest coalition.
 
-![The coalition detector: from the SLS move stream, placing a chip into another player's pile counts as HELP and capturing a pile counts as HARM. Accumulated into help/harm matrices and differenced into net support, a reciprocal alliance shows up as a strong mutual edge. Opponent modeling (Step 7) lifted from "what hand?" to "who is allied with whom?" (Contribution #1).](sls_coalition.png)
+![The coalition detector: from the SLS move stream, placing a chip into another player's pile counts as HELP and capturing a pile counts as HARM. Accumulated into help/harm matrices and differenced into net support, a reciprocal alliance shows up as a strong mutual edge. Opponent modeling (Chapter 7) lifted from "what hand?" to "who is allied with whom?" (Contribution #1).](sls_coalition.png)
 
 Does it work? We script two players to systematically help each other and harm the rest, tell the
 detector nothing, and ask it to name the coalition. Measured, it recovers the planted $\{0,1\}$
@@ -83,7 +80,7 @@ else). The alliance is fully legible from chip placement alone.
 
 ![Coalition graph inferred purely from chip placement: the planted {0,1} alliance appears as a strong reciprocal help edge; cross-pair edges are neutral or hostile. The detector cleanly recovers a coalition it was never told about.](impl_coalition_graph.png)
 
-> **Read more:** the Step 07 opponent-modeling engine (this repo) — the "observe actions -> update
+> **Read more:** the Chapter 07 opponent-modeling engine (this repo) — the "observe actions -> update
 > beliefs" principle the detector re-derives as help/harm matrices.
 
 ---
@@ -100,7 +97,7 @@ orders. Two textbook toys pin down what "fair" and "stable" mean, and both repro
 | Glove game | $(2/3,1/6,1/6)$ | **non-empty** (a stable split exists) |
 | 3-player majority | $(1/3,1/3,1/3)$ | **empty** (no stable split) |
 
-The **empty core** of the majority game is the conceptual heart of the step: it is a game where *any*
+The **empty core** of the majority game is the conceptual heart of the chapter: it is a game where *any*
 allocation can be overturned by some coalition, so cooperation is *inherently unstable*. That is the
 SLS situation — and the reason N-player "safe" play cannot be anchored to a stable equilibrium
 (Contribution #2).
@@ -112,7 +109,7 @@ value** as *the probability that a member of the coalition wins*, estimated by M
 Each player's credit is then the Shapley value of that win-probability function. Measured on SLS
 positions: a genuinely symmetric position gives near-equal credit (spread $0.013$), and an asymmetric
 $[8,8,1,1]$ position hands *all* credit to the strong pair (coalition value $1.0$). The symmetric
-result is reported **after** a bug fix — see the reconciliation below.
+result is reported **after** a bug fix — see the reconciliation below.[^shapley1953]
 
 ![Shapley credit attribution on SLS positions: near-flat across seats in the symmetric case (spread 0.013, post-fix), and fully concentrated on the strong pair in the asymmetric [8,8,1,1] case. Credit tracks real contribution once the engine tie-break is unbiased.](impl_shapley_attribution.png)
 
@@ -127,10 +124,6 @@ result is reported **after** a bug fix — see the reconciliation below.
 > $\sim 0.41$. The lesson: in a game that almost always ends in a near-tie, the tie-break rule is the
 > most load-bearing line in the engine, and a symmetric *position* is not a symmetric *outcome* until
 > it is unbiased.
-
-> **Read more:** Shapley, L. S. (1953). "A value for n-person games." *Contributions to the Theory of
-> Games*; Chalkiadakis, Elkind & Wooldridge (2011), *Computational Aspects of Cooperative Game
-> Theory* (core, Shapley, nucleolus); and Wang et al. on Shapley-based credit assignment in MARL.
 
 ---
 
@@ -173,11 +166,7 @@ agents; `**` = significant at $>2\times$ SE):
 
 There is no free lunch: pure coalition credit ($\alpha=0$) drops win-rate to $\sim 0.29$ (near the
 $0.25$ random floor), while $\alpha\ge 0.1$ keeps it $\sim 0.52$. Coalition-*forming* is the primary
-target and winning is secondary — exactly the raw step's framing, now quantified.
-
-> **Read more:** the Step 09 MARL stack (this repo) for MAPPO with a centralized critic; and Bakhtin
-> et al. (2022) on **piKL** — regularizing toward a behavioral prior instead of Nash, the N-player
-> safe-play recipe this step points at.
+target and winning is secondary — exactly the raw step's framing, now quantified.[^chapter2022]
 
 ---
 
@@ -185,15 +174,15 @@ target and winning is secondary — exactly the raw step's framing, now quantifi
 
 The final tool evaluates the *population*. **Empirical game-theoretic analysis (EGTA)** treats whole
 strategies as the atoms of a meta-game, plays every pair to fill an empirical payoff matrix, and
-analyzes its structure. To reuse Step 9's meta-Nash solver and Step 10's **spinning-top** (Hodge)
+analyzes its structure. To reuse Chapter 9's meta-Nash solver and Chapter 10's **spinning-top** (Hodge)
 decomposition — both 2-player tools — the 4-player payoff *tensor* is **projected** to a pairwise
 matchup matrix, then split into a **transitive** (skill-ladder) component and a **cyclic**
 (rock-paper-scissors) component.
 
 ![The EGTA + spinning-top pipeline for SLS: play every pair of strategies to fill a payoff tensor, project the 4-player tensor to a pairwise matchup matrix, and Hodge-decompose it into transitive (skill ladder) and cyclic (coalition counters) parts. Measured caveat: the 2-type projection likely discards 3-/4-player coalition effects, so the cyclic ratio is a lower bound.](egta_spinning_top.png)
 
-Step 10 predicted FFA coalition games would be strongly cyclic. Measured, it depends entirely on
-**which population you decompose** — the same lesson Step 10 taught:
+Chapter 10 predicted FFA coalition games would be strongly cyclic. Measured, it depends entirely on
+**which population you decompose** — the same lesson Chapter 10 taught:[^balduzzi2019]
 
 | Population | Cyclic ratio | Structure |
 |---|---|---|
@@ -212,9 +201,6 @@ Step 10 predicted FFA coalition games would be strongly cyclic. Measured, it dep
 
 ![Spinning-top transitive/cyclic ratios: the skill-ladder pool is transitive-dominant (cyclic ~0.25-0.31), while the coalition pool is strongly cyclic (~0.57-0.69). Coalition play injects large non-transitivity, confirming the Step-10 direction while staying just under strict cyclic dominance.](impl_spinning_top.png)
 
-> **Read more:** Balduzzi, D. et al. (2019). "Open-ended Learning in Symmetric Zero-sum Games."
-> *ICML* (the spinning top); and Lanctot, M. et al. (2017), the PSRO / EGTA line (Step 9-10 stack).
-
 ---
 
 ## Honest notes, limitations, and where this hands off
@@ -230,7 +216,7 @@ was not symmetric — a most-chips **tie-break bug** handed seat 0 ~2x its fair 
 hero win-rate from a true $\sim 0.41$ to a false $\sim 0.87$; fixed, but it proves the engine's
 *rules*, not its solver, are where the risk lives. (2) "Coalitions don't emerge at scale" was a
 **mis-set blend weight** ($\alpha=0.3$ is a dead zone), not a failure of the method. A methodological
-echo of Steps 9-10: **a single config hides what a seeded sweep reveals.**
+echo of Chapters 9-10: **a single config hides what a seeded sweep reveals.**
 
 **Trust.** Every exact target (endgame minimax, cooperative-GT toys) is deterministic and
 reproducible; the training claims rest on a 5-seed paired sweep with error bars, so the *directions*
@@ -240,18 +226,12 @@ tie-break bug shows that reconciliation is not cosmetic. (The committed `scale_r
 pre-fix artifact, cited only as evidence of the bug; authoritative scale numbers come from the
 sweep.)
 
-**Backward and forward connections.** Backward: the detector is Step 7's opponent model lifted to
-social structure; the meta-Nash and spinning-top are Steps 9-10 reused on the projected meta-game;
-the empty core makes Step 8's "safe = bounded deviation from Nash" impossible, forcing piKL's
-behavioral prior. Forward: the behavioral-prior safety gap points at **Step 12** (language /
+**Backward and forward connections.** Backward: the detector is Chapter 7's opponent model lifted to
+social structure; the meta-Nash and spinning-top are Chapters 9-10 reused on the projected meta-game;
+the empty core makes Chapter 8's "safe = bounded deviation from Nash" impossible, forcing piKL's
+behavioral prior. Forward: the behavioral-prior safety gap points at **Chapter 12** (language /
 negotiation, CICERO / Welfare-Diplomacy), and the EGTA-tensor evaluation is the multi-agent
-generalization of exploitability that **Step 14** inherits (Contribution #3).
-
-**Open questions.** Does the SLS engine match De Carufel & Jerade's exact rules (the tie-break bug
-says this matters)? Does a 3-/4-player-aware EGTA projection push the cyclic ratio past strict
-dominance? Is the cheap proxy credit "good enough" in general, or only on SLS? And underneath all of
-it: with no Nash value and an empty core, **what does "safe" even mean** for an N-player coalition
-setting — the Contribution #2 gap this step frames but does not close.
+generalization of exploitability that **Chapter 14** inherits (Contribution #3).
 
 ---
 
@@ -275,3 +255,12 @@ setting — the Contribution #2 gap this step frames but does not close.
 - **Engine rule fidelity outranks solver code.** Both remaining weaknesses (the seat bias, the
   sub-dominant cyclic ratio) live in the engine's simplifications, not in the Shapley/EGTA math —
   which passed its textbook checks exactly.
+
+<!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
+     together here keeps the prose readable and the EN/BG pair easy to compare. -->
+
+[^shapley1953]: Shapley, L. S. (1953). "A value for n-person games." *Contributions to the Theory of Games*; Chalkiadakis, Elkind & Wooldridge (2011), *Computational Aspects of Cooperative Game Theory* (core, Shapley, nucleolus); and Wang et al. on Shapley-based credit assignment in MARL.
+
+[^chapter2022]: the Chapter 09 MARL stack (this repo) for MAPPO with a centralized critic; and Bakhtin et al. (2022) on **piKL** — regularizing toward a behavioral prior instead of Nash, the N-player safe-play recipe this chapter points at.
+
+[^balduzzi2019]: Balduzzi, D. et al. (2019). "Open-ended Learning in Symmetric Zero-sum Games." *ICML* (the spinning top); and Lanctot, M. et al. (2017), the PSRO / EGTA line (Chapters 9-10 stack).
