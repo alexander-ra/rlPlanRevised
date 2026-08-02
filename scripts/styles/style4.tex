@@ -1,0 +1,24 @@
+% Style 4 — Модерен академичен (airy; light headings; rule-free tables; sans captions)
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+\definecolor{rlnum}{gray}{0.55}
+
+\titleformat{\section}{\LARGE\mdseries}{\color{rlnum}\thesection}{0.9em}{}
+\titlespacing*{\section}{0pt}{3.4ex}{2.0ex}
+\titleformat{\subsection}{\large\mdseries}{\color{rlnum}\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{2.6ex}{1.3ex}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\color{rlnum}\thesubsubsection}{0.7em}{}
+
+\captionsetup{font={sf,footnotesize}, labelfont={sf,bf}, labelsep=quad,
+              justification=raggedright, singlelinecheck=false}
+
+% rule-free: booktabs rules made invisible
+\setlength{\heavyrulewidth}{0pt}
+\setlength{\lightrulewidth}{0pt}
+
+\renewenvironment{quote}
+  {\begin{list}{}{\leftmargin=1.6em\rightmargin=1.6em\topsep=10pt}\item[]}
+  {\end{list}}

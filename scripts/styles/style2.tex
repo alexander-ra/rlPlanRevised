@@ -1,0 +1,22 @@
+% Style 2 — Технически доклад (sans headings, ruled sections, zebra tables)
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{mdframed}
+
+\definecolor{rlrule}{gray}{0.55}
+\definecolor{rlzebra}{gray}{0.94}
+\definecolor{rlcallout}{gray}{0.96}
+
+\titleformat{\section}{\Large\sffamily\bfseries}{\thesection}{0.7em}{}[{\color{rlrule}\titlerule[0.4pt]}]
+\titleformat{\subsection}{\large\sffamily\bfseries}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalsize\sffamily\bfseries}{\thesubsubsection}{0.5em}{}
+
+\captionsetup{font={sf,small}, labelfont={sf,bf}, labelsep=colon}
+\rowcolors{2}{rlzebra}{white}
+
+\renewenvironment{quote}
+  {\begin{mdframed}[backgroundcolor=rlcallout,linewidth=0pt,%
+     innertopmargin=6pt,innerbottommargin=6pt,skipabove=8pt]}
+  {\end{mdframed}}

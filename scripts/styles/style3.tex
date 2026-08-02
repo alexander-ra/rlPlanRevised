@@ -1,0 +1,20 @@
+% Style 3 — Списание (compact; run-in H3; caption above tables)
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{booktabs}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.6ex}{0.8ex}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{1.3ex}{0.6ex}
+% run-in: the heading starts the paragraph
+\titleformat{\subsubsection}[runin]{\normalsize\bfseries}{}{0pt}{}[.\quad]
+\titlespacing*{\subsubsection}{0pt}{1.1ex}{0.5em}
+
+\captionsetup{font=small, labelfont=bf, labelsep=period, skip=4pt}
+\captionsetup[table]{position=above}
+\captionsetup[figure]{position=below}
+
+\renewenvironment{quote}
+  {\begin{list}{}{\leftmargin=1.2em\rightmargin=1.2em\topsep=4pt}\item[]\small}
+  {\end{list}}

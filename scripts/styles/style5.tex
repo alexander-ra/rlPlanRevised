@@ -1,0 +1,27 @@
+% Style 5 — Формален монографичен (centred openers; ruled tables; vertical-rule callouts)
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+\definecolor{rlbar}{gray}{0.35}
+
+\titleformat{\section}[display]
+  {\centering\Large\bfseries}{\MakeUppercase{\sectionname~\thesection}}{0.6ex}{}[{\titlerule[0.8pt]}]
+\providecommand{\sectionname}{Раздел}
+\titlespacing*{\section}{0pt}{3ex}{2ex}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.6em}{}
+
+\captionsetup{font=small, labelfont=bf, labelsep=endash, width=0.88\textwidth}
+
+% full-width ruled tables
+\setlength{\heavyrulewidth}{1.2pt}
+\setlength{\lightrulewidth}{0.6pt}
+\setlength{\arrayrulewidth}{0.5pt}
+
+\renewenvironment{quote}
+  {\begin{mdframed}[leftline=true,rightline=false,topline=false,bottomline=false,%
+     linewidth=2.5pt,linecolor=rlbar,innerleftmargin=10pt,innertopmargin=4pt,%
+     innerbottommargin=4pt,skipabove=8pt]}
+  {\end{mdframed}}

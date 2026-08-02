@@ -1,0 +1,18 @@
+% Style 1 — Класически (conservative dissertation)
+% Serif throughout; small-caps section titles; booktabs rules; italic captions.
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{booktabs}
+
+\titleformat{\section}{\Large\scshape}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\scshape}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 1ex minus .2ex}{1.4ex plus .2ex}
+
+\captionsetup{font=it, labelfont={it,bf}, labelsep=period, width=0.9\textwidth}
+\captionsetup[table]{position=above}
+
+% callout: a quiet indented block, no ornament
+\renewenvironment{quote}
+  {\begin{list}{}{\leftmargin=2em\rightmargin=2em}\item[]\itshape}
+  {\end{list}}
