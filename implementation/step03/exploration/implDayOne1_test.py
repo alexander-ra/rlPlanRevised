@@ -1,215 +1,218 @@
 """
-Test version of implDayOne1.py with reduced iterations (10k max) for debugging.
-Now includes training custom CFR alongside MCCFR variants and OpenSpiel's CFR/CFR+.
+Test suite: MCCFR variants — Kuhn Poker (OpenSpiel) + Leduc Hold'em (custom).
+
+Compares six algorithms:
+  1. OpenSpiel External Sampling MCCFR  (Kuhn Poker)
+  2. OpenSpiel Outcome Sampling MCCFR   (Kuhn Poker)
+  3. Custom CFR from step02             (Kuhn Poker, hand-coded)
+  4. Custom ES-MCCFR                    (Leduc Hold'em, our engine)
+  5. Custom OS-MCCFR                    (Leduc Hold'em, our engine)
+  6. OpenSpiel CFR+                     (Kuhn Poker)
+
+Algorithms 1-3, 6 use OpenSpiel for Kuhn Poker exploitability.
+Algorithms 4-5 use our custom exploitability evaluation on Leduc Hold'em.
+
+Results are saved to exploration/figures/kuhn_results_cache.json.
+Two convergence charts are generated (iterations and wall-clock).
 """
+
 import pyspiel
 from open_spiel.python.algorithms import external_sampling_mccfr
 from open_spiel.python.algorithms import outcome_sampling_mccfr
 from open_spiel.python.algorithms import cfr as cfr_module
 from open_spiel.python.algorithms import exploitability as expl
 import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import json
 import time
 import sys
 import os
+import random
 
-# Add step02 to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'step02'))
-from cfr.cfr_trainer import KuhnTrainer
+# ── Path setup ─────────────────────────────────────────────────────────────
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+STEP02_DIR = os.path.join(SCRIPT_DIR, '..', '..', 'step02')
+STEP03_DIR = os.path.join(SCRIPT_DIR, '..')
 
+sys.path.insert(0, STEP02_DIR)
+sys.path.insert(0, STEP03_DIR)
+
+from cfr.cfr_trainer import KuhnTrainer                             # step02
+from cfr.mccfr_external_trainer import LeducExternalSamplingTrainer # step03 custom
+from cfr.mccfr_outcome_trainer import LeducOutcomeSamplingTrainer   # step03 custom
+from evaluate.exploitability import compute_exploitability           # step03 Leduc
+
+# ── Config ──────────────────────────────────────────────────────────────────
 game = pyspiel.load_game("kuhn_poker")
-relativePath = "exploration/figures/"
+FIGURES_DIR = os.path.join(SCRIPT_DIR, 'figures')
+os.makedirs(FIGURES_DIR, exist_ok=True)
 
-# Cache for results with timing
-cache_data = {'iterations': [], 'es_results': [], 'os_results': [], 'customCRF_results': [], 'osCFR_results': [], 'osCFRPlus_results': []}
-maxSteps = 5000  # Reduced for faster testing
+MAX_STEPS = 5000
+PRINT_STEPS = [100]
+while PRINT_STEPS[-1] < MAX_STEPS:
+    PRINT_STEPS.append(int(PRINT_STEPS[-1] * 1.5))
+PRINT_STEPS = [s for s in PRINT_STEPS if s <= MAX_STEPS]
 
-# Print steps: 100, iterations *1.5 until maxSteps
-printSteps = [100]
-while printSteps[-1] < maxSteps:
-    printSteps.append(int(printSteps[-1] * 1.5))
-printSteps = [s for s in printSteps if s <= maxSteps]
+print('=' * 70)
+print('  MCCFR Variants — Test Run (5k iterations max)')
+print('=' * 70)
+print(f'  Checkpoints: {PRINT_STEPS}\n')
 
-print(f"Print steps: {printSteps}\n")
+# ── Accumulator ────────────────────────────────────────────────────────────
+cache_data = {
+    'iterations': [],
+    'es_results': [],
+    'os_results': [],
+    'customCFR_results': [],
+    'customES_results': [],
+    'customOS_results': [],
+    'osCFRPlus_results': [],
+}
 
-# External sampling MCCFR
-print("Running External Sampling MCCFR (5k iterations)...")
+# ── 1. OpenSpiel External Sampling MCCFR (Kuhn) ────────────────────────────
+print('  [1/6] OpenSpiel External Sampling MCCFR (Kuhn)...')
 es_solver = external_sampling_mccfr.ExternalSamplingSolver(game)
-es_start_time = time.time()
-for i in range(maxSteps):
+t0 = time.time()
+for i in range(MAX_STEPS):
     es_solver.iteration()
-    if i + 1 in printSteps:
-        es_policy = es_solver.average_policy()
-        es_exploit = expl.nash_conv(game, es_policy)
-        elapsed = time.time() - es_start_time
+    if i + 1 in PRINT_STEPS:
+        exploit = expl.nash_conv(game, es_solver.average_policy())
+        elapsed = time.time() - t0
         cache_data['iterations'].append(i + 1)
-        cache_data['es_results'].append({'exploitability': es_exploit, 'time_elapsed': elapsed})
-        print(f"  ES - Iteration {i+1:>5}: Exploit = {es_exploit:.6f} (Time: {elapsed:6.2f}s)")
+        cache_data['es_results'].append({'exploitability': exploit, 'time_elapsed': elapsed})
+        print(f'    Iter {i+1:>5}: exploit={exploit:.5f}  ({elapsed:.2f}s)')
 
-# Outcome sampling MCCFR
-print("\nRunning Outcome Sampling MCCFR (5k iterations)...")
+# ── 2. OpenSpiel Outcome Sampling MCCFR (Kuhn) ─────────────────────────────
+print('\n  [2/6] OpenSpiel Outcome Sampling MCCFR (Kuhn)...')
 os_solver = outcome_sampling_mccfr.OutcomeSamplingSolver(game)
-os_start_time = time.time()
-for i in range(maxSteps):
+t0 = time.time()
+for i in range(MAX_STEPS):
     os_solver.iteration()
-    if i + 1 in printSteps:
-        os_policy = os_solver.average_policy()
-        os_exploit = expl.nash_conv(game, os_policy)
-        elapsed = time.time() - os_start_time
-        cache_data['os_results'].append({'exploitability': os_exploit, 'time_elapsed': elapsed})
-        print(f"  OS - Iteration {i+1:>5}: Exploit = {os_exploit:.6f} (Time: {elapsed:6.2f}s)")
+    if i + 1 in PRINT_STEPS:
+        exploit = expl.nash_conv(game, os_solver.average_policy())
+        elapsed = time.time() - t0
+        cache_data['os_results'].append({'exploitability': exploit, 'time_elapsed': elapsed})
+        print(f'    Iter {i+1:>5}: exploit={exploit:.5f}  ({elapsed:.2f}s)')
 
-# Custom CFR from step02
-print("\nTraining Custom CFR (5k iterations)...")
-cfr_trainer = KuhnTrainer()
-
-# Print steps: 100, 150, 225, 337, 505, 757, 1135, 1702, 2553, 3829, 5743, 8614
-printSteps = [100]
-while printSteps[-1] < maxSteps:
-    printSteps.append(int(printSteps[-1] * 1.5))
-printSteps = [s for s in printSteps if s <= maxSteps]
-
-# Theoretical value for Kuhn Poker
-theoretical_value = -1.0 / 18.0  # ≈ -0.0556
-
-cfr_start_time = time.time()
+# ── 3. Custom CFR from step02 (Kuhn, hand-coded) ───────────────────────────
+print('\n  [3/6] Custom CFR step02 (Kuhn, hand-coded)...')
+theoretical_value = -1.0 / 18.0
 cfr_solver = KuhnTrainer()
 cumulative_util = 0.0
-
-for i in range(maxSteps):
-    import random
+t0 = time.time()
+for i in range(MAX_STEPS):
     cards = [1, 2, 3]
     random.shuffle(cards)
-    cumulative_util += cfr_solver.cfr(cards, "", 1.0, 1.0)
-    
-    if i + 1 in printSteps:
-        avg_game_value = cumulative_util / (i + 1)
-        cfr_exploit = abs(avg_game_value - theoretical_value)
-        elapsed = time.time() - cfr_start_time
-        cache_data['customCRF_results'].append({'exploitability': cfr_exploit, 'time_elapsed': elapsed})
-        print(f"  CFR - Iteration {i+1:>5}: Exploit = {cfr_exploit:.6f} (Time: {elapsed:6.2f}s)")
+    cumulative_util += cfr_solver.cfr(cards, '', 1.0, 1.0)
+    if i + 1 in PRINT_STEPS:
+        avg_val = cumulative_util / (i + 1)
+        exploit = abs(avg_val - theoretical_value)
+        elapsed = time.time() - t0
+        cache_data['customCFR_results'].append({'exploitability': exploit, 'time_elapsed': elapsed})
+        print(f'    Iter {i+1:>5}: exploit≈{exploit:.5f}  ({elapsed:.2f}s)')
 
+# ── 4. Custom ES-MCCFR (Leduc Hold'em, our engine) ─────────────────────────
+print("\n  [4/6] Custom ES-MCCFR (Leduc Hold'em, our engine)...")
+es_custom = LeducExternalSamplingTrainer()
+t0 = time.time()
+for i in range(MAX_STEPS):
+    es_custom.train_iteration()
+    if i + 1 in PRINT_STEPS:
+        exploit = compute_exploitability(es_custom.node_map)
+        elapsed = time.time() - t0
+        cache_data['customES_results'].append({'exploitability': exploit, 'time_elapsed': elapsed})
+        print(f'    Iter {i+1:>5}: exploit={exploit:.5f}  ({elapsed:.2f}s)')
 
-# OpenSpiel CFR
-print("\nTraining OpenSpiel CFR (5k iterations)...")
-os_cfr_solver = cfr_module.CFRSolver(game)
-os_cfr_start_time = time.time()
-for i in range(maxSteps):
-    os_cfr_solver.evaluate_and_update_policy()
-    if i + 1 in printSteps:
-        os_cfr_policy = os_cfr_solver.average_policy()
-        os_cfr_exploit = expl.nash_conv(game, os_cfr_policy)
-        elapsed = time.time() - os_cfr_start_time
-        cache_data['osCFR_results'].append({'exploitability': os_cfr_exploit, 'time_elapsed': elapsed})
-        print(f"  OS-CFR - Iteration {i+1:>5}: Exploit = {os_cfr_exploit:.6f} (Time: {elapsed:6.2f}s)")
+# ── 5. Custom OS-MCCFR (Leduc Hold'em, our engine) ─────────────────────────
+print("\n  [5/6] Custom OS-MCCFR (Leduc Hold'em, our engine)...")
+os_custom = LeducOutcomeSamplingTrainer()
+t0 = time.time()
+for i in range(MAX_STEPS):
+    os_custom.train_iteration()
+    if i + 1 in PRINT_STEPS:
+        exploit = compute_exploitability(os_custom.node_map)
+        elapsed = time.time() - t0
+        cache_data['customOS_results'].append({'exploitability': exploit, 'time_elapsed': elapsed})
+        print(f'    Iter {i+1:>5}: exploit={exploit:.5f}  ({elapsed:.2f}s)')
 
-# OpenSpiel CFR+
-print("\nTraining OpenSpiel CFR+ (5k iterations)...")
-os_cfrplus_solver = cfr_module.CFRPlusSolver(game)
-os_cfrplus_start_time = time.time()
-for i in range(maxSteps):
-    os_cfrplus_solver.evaluate_and_update_policy()
-    if i + 1 in printSteps:
-        os_cfrplus_policy = os_cfrplus_solver.average_policy()
-        os_cfrplus_exploit = expl.nash_conv(game, os_cfrplus_policy)
-        elapsed = time.time() - os_cfrplus_start_time
-        cache_data['osCFRPlus_results'].append({'exploitability': os_cfrplus_exploit, 'time_elapsed': elapsed})
-        print(f"  OS-CFR+ - Iteration {i+1:>5}: Exploit = {os_cfrplus_exploit:.6f} (Time: {elapsed:6.2f}s)")
+# ── 6. OpenSpiel CFR+ (Kuhn) ───────────────────────────────────────────────
+print('\n  [6/6] OpenSpiel CFR+ (Kuhn)...')
+cfrplus_solver = cfr_module.CFRPlusSolver(game)
+t0 = time.time()
+for i in range(MAX_STEPS):
+    cfrplus_solver.evaluate_and_update_policy()
+    if i + 1 in PRINT_STEPS:
+        exploit = expl.nash_conv(game, cfrplus_solver.average_policy())
+        elapsed = time.time() - t0
+        cache_data['osCFRPlus_results'].append({'exploitability': exploit, 'time_elapsed': elapsed})
+        print(f'    Iter {i+1:>5}: exploit={exploit:.5f}  ({elapsed:.2f}s)')
 
-# Save cache
-test_cache_path = relativePath + 'kuhn_results_cache.json'
-with open(test_cache_path, 'w') as f:
+# ── Save results ───────────────────────────────────────────────────────────
+cache_path = os.path.join(FIGURES_DIR, 'kuhn_results_cache.json')
+with open(cache_path, 'w') as f:
     json.dump(cache_data, f, indent=2)
-print(f"\nResults cached to '{test_cache_path}'")
+print(f'\n  Results saved → {cache_path}')
 
-# Extract exploitabilities
-es_exploits = [r['exploitability'] for r in cache_data['es_results']]
-os_exploits = [r['exploitability'] for r in cache_data['os_results']]
-cfr_exploits = [r['exploitability'] for r in cache_data.get('customCRF_results', [])]
-oscfr_exploits = [r['exploitability'] for r in cache_data.get('osCFR_results', [])]
-oscfrplus_exploits = [r['exploitability'] for r in cache_data.get('osCFRPlus_results', [])]
-iterations = cache_data['iterations']
+# ── Plot 1: Exploitability vs Iterations ───────────────────────────────────
+print('\n  Generating charts...')
+iters = cache_data['iterations']
 
-print(f"\nData lengths: iterations={len(iterations)}, ES={len(es_exploits)}, OS={len(os_exploits)}, CFR={len(cfr_exploits)}, OS-CFR={len(oscfr_exploits)}, OS-CFR+={len(oscfrplus_exploits)}")
+fig, ax = plt.subplots(figsize=(14, 7))
+ax.loglog(iters, [r['exploitability'] for r in cache_data['es_results']],
+          'o-', label='OpenSpiel ES-MCCFR (Kuhn)', linewidth=2)
+ax.loglog(iters, [r['exploitability'] for r in cache_data['os_results']],
+          's-', label='OpenSpiel OS-MCCFR (Kuhn)', linewidth=2)
+ax.loglog(iters, [r['exploitability'] for r in cache_data['customCFR_results']],
+          '^-', label='Custom CFR step02 (Kuhn)', linewidth=2, color='red')
+ax.loglog(iters, [r['exploitability'] for r in cache_data['customES_results']],
+          'D-', label="Custom ES-MCCFR (Leduc)", linewidth=2, color='#2196F3')
+ax.loglog(iters, [r['exploitability'] for r in cache_data['customOS_results']],
+          'v-', label="Custom OS-MCCFR (Leduc)", linewidth=2, color='#FF5722')
+ax.loglog(iters, [r['exploitability'] for r in cache_data['osCFRPlus_results']],
+          'p-', label='OpenSpiel CFR+ (Kuhn)', linewidth=2, color='green')
+ax.set_xlabel('Iterations (log scale)', fontsize=12)
+ax.set_ylabel('Exploitability (log scale)', fontsize=12)
+ax.set_title('Exploitability vs Iterations — MCCFR Variants (5k test run)', fontsize=13)
+ax.legend(fontsize=9)
+ax.grid(True, which='both', ls='--', alpha=0.4)
+fig.tight_layout()
+p1 = os.path.join(FIGURES_DIR, 'kuhn_exploitability_iterations.png')
+fig.savefig(p1, dpi=150)
+plt.close(fig)
+print(f'  ✓ Iterations chart → {p1}')
 
-# Plot 1: Iterations
-print("\nCreating iteration plot...")
-plt.figure(figsize=(14, 7))
-plt.plot(iterations, es_exploits, label='External Sampling MCCFR', marker='o', linewidth=2)
-plt.plot(iterations, os_exploits, label='Outcome Sampling MCCFR', marker='s', linewidth=2)
-if cfr_exploits:
-    plt.plot(iterations, cfr_exploits, label='Custom CFR (Hand-coded)', marker='^', linewidth=2, color='red')
-if oscfr_exploits:
-    plt.plot(iterations, oscfr_exploits, label='OpenSpiel CFR', marker='D', linewidth=2, color='green')
-if oscfrplus_exploits:
-    plt.plot(iterations, oscfrplus_exploits, label='OpenSpiel CFR+', marker='v', linewidth=2, color='purple')
-plt.xscale('log')
-plt.yscale('log')
+# ── Plot 2: Exploitability vs Wall-clock Time ──────────────────────────────
+fig, ax = plt.subplots(figsize=(14, 7))
+ax.loglog([r['time_elapsed'] for r in cache_data['es_results']],
+          [r['exploitability'] for r in cache_data['es_results']],
+          'o-', label='OpenSpiel ES-MCCFR (Kuhn)', linewidth=2)
+ax.loglog([r['time_elapsed'] for r in cache_data['os_results']],
+          [r['exploitability'] for r in cache_data['os_results']],
+          's-', label='OpenSpiel OS-MCCFR (Kuhn)', linewidth=2)
+ax.loglog([r['time_elapsed'] for r in cache_data['customCFR_results']],
+          [r['exploitability'] for r in cache_data['customCFR_results']],
+          '^-', label='Custom CFR step02 (Kuhn)', linewidth=2, color='red')
+ax.loglog([r['time_elapsed'] for r in cache_data['customES_results']],
+          [r['exploitability'] for r in cache_data['customES_results']],
+          'D-', label="Custom ES-MCCFR (Leduc)", linewidth=2, color='#2196F3')
+ax.loglog([r['time_elapsed'] for r in cache_data['customOS_results']],
+          [r['exploitability'] for r in cache_data['customOS_results']],
+          'v-', label="Custom OS-MCCFR (Leduc)", linewidth=2, color='#FF5722')
+ax.loglog([r['time_elapsed'] for r in cache_data['osCFRPlus_results']],
+          [r['exploitability'] for r in cache_data['osCFRPlus_results']],
+          'p-', label='OpenSpiel CFR+ (Kuhn)', linewidth=2, color='green')
+ax.set_xlabel('Wall Clock Time (seconds, log scale)', fontsize=12)
+ax.set_ylabel('Exploitability (log scale)', fontsize=12)
+ax.set_title('Exploitability vs Wall-clock Time — MCCFR Variants (5k test run)', fontsize=13)
+ax.legend(fontsize=9)
+ax.grid(True, which='both', ls='--', alpha=0.4)
+fig.tight_layout()
+p2 = os.path.join(FIGURES_DIR, 'kuhn_exploitability_time.png')
+fig.savefig(p2, dpi=150)
+plt.close(fig)
+print(f'  ✓ Wall-clock chart → {p2}')
 
-# Dynamic axis limits so all lines are fully visible
-all_exploits_iter = es_exploits + os_exploits + cfr_exploits + oscfr_exploits + oscfrplus_exploits
-if iterations and all_exploits_iter:
-    min_expl_iter = min([e for e in all_exploits_iter if e > 0] or [1e-6])
-    max_expl_iter = max(all_exploits_iter)
-    plt.xlim([min(iterations) * 0.8, max(iterations) * 1.2])
-    plt.ylim([min_expl_iter * 0.5, max_expl_iter * 2.0])
-
-plt.xlabel('Iterations (log scale)')
-plt.ylabel('Exploitability (log scale)')
-plt.title('Exploitability vs Iterations: Kuhn Poker - All Algorithms')
-plt.legend(fontsize=10)
-plt.grid(True, which="both", ls="--")
-plt.tight_layout()
-plot1_path = relativePath + 'kuhn_exploitability_iterations.png'
-plt.savefig(plot1_path, dpi=150)
-print(f"✓ Plot saved: {plot1_path}")
-plt.close()
-
-
-# Plot 2: Wall clock time
-print("Creating wall clock time plot...")
-es_times = [r['time_elapsed'] for r in cache_data['es_results']]
-os_times = [r['time_elapsed'] for r in cache_data['os_results']]
-cfr_times = [r['time_elapsed'] for r in cache_data.get('customCRF_results', [])]
-oscfr_times = [r['time_elapsed'] for r in cache_data.get('osCFR_results', [])]
-oscfrplus_times = [r['time_elapsed'] for r in cache_data.get('osCFRPlus_results', [])]
-
-plt.figure(figsize=(14, 7))
-plt.plot(es_times, es_exploits, label='External Sampling MCCFR', marker='o', linewidth=2)
-plt.plot(os_times, os_exploits, label='Outcome Sampling MCCFR', marker='s', linewidth=2)
-if cfr_exploits:
-    plt.plot(cfr_times, cfr_exploits, label='Custom CFR (Hand-coded)', marker='^', linewidth=2, color='red')
-if oscfr_exploits:
-    plt.plot(oscfr_times, oscfr_exploits, label='OpenSpiel CFR', marker='D', linewidth=2, color='green')
-if oscfrplus_exploits:
-    plt.plot(oscfrplus_times, oscfrplus_exploits, label='OpenSpiel CFR+', marker='v', linewidth=2, color='purple')
-plt.xscale('log')
-plt.yscale('log')
-
-# Dynamic axis limits for all methods
-all_times = es_times + os_times + cfr_times + oscfr_times + oscfrplus_times
-all_exploits = es_exploits + os_exploits + cfr_exploits + oscfr_exploits + oscfrplus_exploits
-if all_times and all_exploits:
-    min_time = min([t for t in all_times if t > 0] or [1e-3])
-    max_time = max(all_times)
-    min_expl = min([e for e in all_exploits if e > 0] or [1e-6])
-    max_expl = max(all_exploits)
-    plt.xlim([min_time * 0.8, max_time * 1.2])
-    plt.ylim([min_expl * 0.8, max_expl * 1.2])
-
-plt.xlabel('Wall Clock Time (seconds, log scale)')
-plt.ylabel('Exploitability (log scale)')
-plt.title('Exploitability vs Wall Clock Time: Kuhn Poker - All Algorithms')
-plt.legend(fontsize=10)
-plt.grid(True, which="both", ls="--")
-plt.tight_layout()
-plot2_path = relativePath + 'kuhn_exploitability_time.png'
-plt.savefig(plot2_path, dpi=150)
-print(f"✓ Plot saved: {plot2_path}")
-plt.close()
-
-print("\n" + "=" * 60)
-print("KUHN POKER RUN (5k iterations) COMPLETE - All systems OK!")
-print("=" * 60)
+print('\n' + '=' * 70)
+print('  Test run complete — all algorithms OK')
+print('=' * 70)

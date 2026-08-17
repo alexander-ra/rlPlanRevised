@@ -187,6 +187,14 @@ class LeducOutcomeSamplingTrainer:
 
         return value_estimate
 
+    def train_iteration(self) -> None:
+        """Run a single pair of iterations (one per player)."""
+        for update_player in range(2):
+            cards = random.sample(range(NUM_CARDS), 3)
+            p0_card, p1_card, community = cards[0], cards[1], cards[2]
+            state = LeducState((p0_card, p1_card), community)
+            self.outcome_cfr(state, update_player, 1.0, 1.0, 1.0)
+
     def get_strategy_table(self) -> dict:
         """Return dict: info_set → {actions, strategy (action_name: prob)}."""
         table = {}
