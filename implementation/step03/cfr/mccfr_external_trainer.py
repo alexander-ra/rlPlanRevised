@@ -139,6 +139,23 @@ class LeducExternalSamplingTrainer:
             next_state = state.apply_action(legal_actions[sampled_idx])
             return self.external_cfr(next_state, update_player)
 
+    def train_iteration(self) -> None:
+        """Run a single pair of iterations (one per player)."""
+        for update_player in range(2):
+            cards = random.sample(range(NUM_CARDS), 3)
+            p0_card, p1_card, community = cards[0], cards[1], cards[2]
+            state = LeducState((p0_card, p1_card), community)
+            self.external_cfr(state, update_player)
+        self._iterations += 1
+
+    @property
+    def _iterations(self):
+        return getattr(self, '_iter_count', 0)
+
+    @_iterations.setter
+    def _iterations(self, v):
+        self._iter_count = v
+
     def get_strategy_table(self) -> dict:
         """Return dict: info_set → {actions, strategy (action_name: prob)}."""
         table = {}
