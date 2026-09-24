@@ -936,6 +936,21 @@ def strip_front_matter(text: str) -> str:
     return text.lstrip("\n")
 
 
+FOOTNOTE_LABEL_RE = re.compile(r"\[\^([^\]\s]+)\]")
+
+
+def scope_footnote_labels(text: str, step: str) -> str:
+    """Prefix every footnote label with its chapter: `[^key]` -> `[^step07-key]`.
+
+    Chapters reuse labels for works they share (`[^shoham2008]` in four of
+    them). Concatenated into one document, pandoc keeps only the first
+    definition, so a later chapter printed chapter 1's note, or none. Scoped
+    labels give each chapter its own notes; dedupe_footnotes.lua then merges
+    repeats only within a chapter.
+    """
+    return FOOTNOTE_LABEL_RE.sub(lambda m: f"[^{step}-{m.group(1)}]", text)
+
+
 def assemble_bundle_markdown(build_type: str, lang: str) -> tuple[str, list[str], list[str]]:
     """-> (markdown, steps included, steps missing a source)."""
     _pdf_for_step, _stem, md_for_step = BUNDLE_TYPES[build_type]
@@ -965,6 +980,7 @@ def assemble_bundle_markdown(build_type: str, lang: str) -> tuple[str, list[str]
             continue
         text = strip_front_matter(md_file.read_text(encoding="utf-8"))
         text = rewrite_image_paths(text, md_file)
+        text = scope_footnote_labels(text, step)
         if included:
             body.append(r"\newpage")
             body.append("")

@@ -25,7 +25,7 @@ local function label_inline(n)
   return pandoc.RawInline("latex", "\\label{fn:" .. n .. "}")
 end
 
-function Note(el)
+local function handle_note(el)
   local key = pandoc.utils.stringify(el.content)
   if key == "" then
     return nil                       -- nothing to compare on; leave it alone
@@ -49,4 +49,24 @@ function Note(el)
     table.insert(blocks, pandoc.Plain({label_inline(count)}))
   end
   return el
+end
+
+
+-- Scope: one chapter. In a single-document bundle a work cited in chapters 1
+-- and 7 would otherwise print its note once, in chapter 1, and chapter 7 would
+-- point 150 pages back. Resetting at every level-1 heading gives each chapter
+-- its own note and keeps the merging within it. The walk is explicit, block by
+-- block, because a plain Note filter would run before any heading is seen.
+function Pandoc(doc)
+  local blocks = {}
+  for _, block in ipairs(doc.blocks) do
+    if block.t == "Header" and block.level == 1 then
+      seen = {}
+    else
+      block = block:walk({ Note = handle_note })
+    end
+    table.insert(blocks, block)
+  end
+  doc.blocks = blocks
+  return doc
 end
