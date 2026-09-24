@@ -1,0 +1,31 @@
+
+===== approx_br started 2026-09-25T00:23:50 =====
+[00:24:11] [kuhn] Random        exact 0.4583 | 100:+0.319 300:+0.403 1000:+0.458 3000:+0.458 10000:+0.458 30000:+0.458 100000:+0.458
+[00:24:11] [kuhn] TightPassive  exact 0.2420 | 100:+0.156 300:+0.160 1000:+0.216 3000:+0.241 10000:+0.241 30000:+0.242 100000:+0.242
+[00:24:11] [kuhn] LooseAggr     exact 0.3333 | 100:+0.214 300:+0.261 1000:+0.332 3000:+0.332 10000:+0.332 30000:+0.333 100000:+0.333
+[00:24:11] [kuhn] AlwaysBet     exact 0.3333 | 100:+0.218 300:+0.328 1000:+0.329 3000:+0.329 10000:+0.330 30000:+0.331 100000:+0.333
+[00:24:11] [kuhn] LLM-Qwen7B    exact 0.1786 | 100:+0.086 300:+0.086 1000:+0.154 3000:+0.178 10000:+0.178 30000:+0.178 100000:+0.178
+[00:24:11] [kuhn] LLM-GPT20B    exact 0.1959 | 100:+0.111 300:+0.162 1000:+0.182 3000:+0.188 10000:+0.188 30000:+0.188 100000:+0.188
+[00:24:11] [kuhn] BR-Tight      exact 0.5000 | 100:+0.167 300:+0.250 1000:+0.417 3000:+0.444 10000:+0.500 30000:+0.500 100000:+0.500
+[00:24:11] [kuhn] Nash          exact 0.0000 | 100:-0.083 300:-0.059 1000:-0.019 3000:-0.009 10000:+0.000 30000:+0.000 100000:+0.000
+[00:24:13] [kuhn] online MC learner vs TypeBR   : damage +0.184 ± 0.077 (agent's mean exposure 0.378)
+[00:24:13] [kuhn] online MC learner vs DirBR    : damage -0.018 ± 0.026 (agent's mean exposure 0.264)
+[00:24:13] [kuhn] online MC learner vs DirBR-CP : damage -0.065 ± 0.012 (agent's mean exposure 0.246)
+[00:24:13] [kuhn] online MC learner vs RNR(0.5) : damage -0.033 ± 0.011 (agent's mean exposure 0.009)
+[00:24:13] [kuhn] online MC learner vs BestEq   : damage -0.045 ± 0.026 (agent's mean exposure 0.000)
+[00:24:13] [kuhn] online MC learner vs Nash     : damage -0.019 ± 0.005 (agent's mean exposure 0.000)
+[00:24:13] [kuhn] done in 23 s
+[00:24:45] [leduc] Random        exact 2.3736 | 100:-0.543 300:-0.165 1000:+0.781 3000:+1.060 10000:+1.633 30000:+1.982 100000:+2.148
+[00:24:45] [leduc] Rock          exact 1.0289 | 100:-0.634 300:-0.559 1000:-0.202 3000:+0.196 10000:+0.489 30000:+0.631 100000:+0.727
+[00:24:45] [leduc] Maniac        exact 2.3175 | 100:-1.164 300:-0.667 1000:-0.124 3000:+0.573 10000:+1.157 30000:+1.770 100000:+1.946
+[00:24:45] [leduc] CallingStation exact 1.4826 | 100:-0.203 300:+0.383 1000:+0.695 3000:+1.121 10000:+1.270 30000:+1.369 100000:+1.448
+[00:24:45] [leduc] LoosePassive  exact 1.4889 | 100:-0.427 300:+0.142 1000:+0.733 3000:+1.165 10000:+1.320 30000:+1.382 100000:+1.448
+[00:24:45] [leduc] BR-Rock       exact 1.4000 | 100:-0.404 300:-0.243 1000:+0.211 3000:+0.783 10000:+1.132 30000:+1.269 100000:+1.300
+[00:24:45] [leduc] Nash          exact 0.0001 | 100:-0.545 300:-0.377 1000:-0.328 3000:-0.139 10000:-0.074 30000:-0.036 100000:-0.019
+[00:24:54] [leduc] online MC learner vs TypeBR   : damage -0.532 ± 0.168 (agent's mean exposure 2.847)
+[00:24:54] [leduc] online MC learner vs DirBR    : damage -0.859 ± 0.106 (agent's mean exposure 3.167)
+[00:24:54] [leduc] online MC learner vs DirBR-CP : damage -0.794 ± 0.099 (agent's mean exposure 2.871)
+[00:24:54] [leduc] online MC learner vs RNR(0.5) : damage -0.571 ± 0.058 (agent's mean exposure 0.183)
+[00:24:54] [leduc] online MC learner vs BestEq   : damage -0.353 ± 0.034 (agent's mean exposure 0.000)
+[00:24:54] [leduc] online MC learner vs Nash     : damage -0.358 ± 0.031 (agent's mean exposure 0.000)
+[00:24:54] [leduc] done in 41 s

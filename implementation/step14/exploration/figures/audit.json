@@ -1,0 +1,42 @@
+[
+ {
+  "chapter": "Ch. 3",
+  "evaluator": "Leduc CFR (20 it.) exploitability = NashConv/2",
+  "theirs": 0.42214383569933894,
+  "mine": 0.4221438356993391,
+  "agree": true,
+  "note": ""
+ },
+ {
+  "chapter": "Ch. 7",
+  "evaluator": "Kuhn NashConv(TightPassive self-play)",
+  "theirs": 0.48395833333333316,
+  "mine": 0.48395833333333327,
+  "agree": true,
+  "note": ""
+ },
+ {
+  "chapter": "Ch. 8",
+  "evaluator": "Kuhn worst case of seat-0 LooseAggressive",
+  "theirs": -0.33333333333333326,
+  "mine": -0.33333333333333326,
+  "agree": true,
+  "note": ""
+ },
+ {
+  "chapter": "Ch. 10",
+  "evaluator": "transitive ratio of RPS (Hodge)",
+  "theirs": 0.0,
+  "mine": 0.0,
+  "agree": true,
+  "note": ""
+ },
+ {
+  "chapter": "Ch. 10",
+  "evaluator": "Elo gap A-C on a 3-agent ladder (online vs ML fit)",
+  "theirs": 381.6883990684528,
+  "mine": 381.6346102676548,
+  "agree": false,
+  "note": "different fitting procedures; same order expected"
+ }
+]

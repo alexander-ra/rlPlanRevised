@@ -1,0 +1,56 @@
+
+===== adaptation started 2026-09-25T00:17:47 =====
+[00:17:47] [kuhn] 7 agents x 16 opponent conditions x 10 seeds x 2 seats = 2240 matches of 2000 hands
+[00:18:17] [kuhn] Nash      gain +0.000±0.000  capture -0.00 h50 med nan expo 0.000 | teach loss TightPassive@1000 +0.000 LooseAggr@1000 +0.000 AlwaysBet@1000 +0.000
+[00:18:17] [kuhn] BR-Tight  gain +0.054±0.000  capture 0.13 h50 med 0.0 expo 0.500 | teach loss TightPassive@1000 +0.500 LooseAggr@1000 +0.500 AlwaysBet@1000 +0.500
+[00:18:17] [kuhn] TypeBR    gain +0.229±0.002  capture 0.75 h50 med 1.0 expo 0.352 | teach loss TightPassive@1000 +0.379 LooseAggr@1000 +0.343 AlwaysBet@1000 +0.291
+[00:18:17] [kuhn] DirBR     gain +0.273±0.001  capture 0.97 h50 med 1.0 expo 0.338 | teach loss TightPassive@1000 +0.345 LooseAggr@1000 +0.205 AlwaysBet@1000 +0.187
+[00:18:17] [kuhn] DirBR-CP  gain +0.230±0.002  capture 0.79 h50 med 1.0 expo 0.305 | teach loss TightPassive@1000 +0.221 LooseAggr@1000 +0.189 AlwaysBet@1000 +0.187
+[00:18:17] [kuhn] RNR(0.5)  gain +0.210±0.002  capture 0.60 h50 med 11.0 expo 0.090 | teach loss TightPassive@1000 -0.000 LooseAggr@1000 +0.067 AlwaysBet@1000 +0.068
+[00:18:17] [kuhn] BestEq    gain +0.020±0.000  capture 0.09 h50 med 37.0 expo 0.000 | teach loss TightPassive@1000 +0.000 LooseAggr@1000 +0.000 AlwaysBet@1000 +0.000
+[00:18:17] [kuhn] FM5: chips: |h50 err| median 7, hands for ±0.25 capture 3383; aivat: |h50 err| median 5, hands for ±0.25 capture 379
+[00:18:17] [kuhn] done in 30 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\adaptation_kuhn.json
+
+===== adaptation started 2026-09-25T00:18:55 =====
+[00:18:55] [kuhn] 7 agents x 16 opponent conditions x 10 seeds x 2 seats = 2240 matches of 2000 hands
+[00:19:24] [kuhn] Nash      gain +0.000±0.000  capture -0.00 h50 med nan expo 0.000 | teach loss TightPassive@1000 +0.000 LooseAggr@1000 +0.000 AlwaysBet@1000 +0.000
+[00:19:24] [kuhn] BR-Tight  gain +0.054±0.000  capture 0.13 h50 med 0.0 expo 0.500 | teach loss TightPassive@1000 +0.500 LooseAggr@1000 +0.500 AlwaysBet@1000 +0.500
+[00:19:24] [kuhn] TypeBR    gain +0.229±0.002  capture 0.75 h50 med 50.0 expo 0.352 | teach loss TightPassive@1000 +0.379 LooseAggr@1000 +0.343 AlwaysBet@1000 +0.291
+[00:19:24] [kuhn] DirBR     gain +0.273±0.001  capture 0.97 h50 med 50.0 expo 0.338 | teach loss TightPassive@1000 +0.345 LooseAggr@1000 +0.205 AlwaysBet@1000 +0.187
+[00:19:24] [kuhn] DirBR-CP  gain +0.230±0.002  capture 0.79 h50 med 50.0 expo 0.305 | teach loss TightPassive@1000 +0.221 LooseAggr@1000 +0.189 AlwaysBet@1000 +0.187
+[00:19:24] [kuhn] RNR(0.5)  gain +0.210±0.002  capture 0.60 h50 med 50.0 expo 0.090 | teach loss TightPassive@1000 -0.000 LooseAggr@1000 +0.067 AlwaysBet@1000 +0.068
+[00:19:24] [kuhn] BestEq    gain +0.020±0.000  capture 0.09 h50 med 50.0 expo 0.000 | teach loss TightPassive@1000 +0.000 LooseAggr@1000 +0.000 AlwaysBet@1000 +0.000
+[00:19:24] [kuhn] FM5: chips: |h50 err| median 50, hands for ±0.25 capture 3383; aivat: |h50 err| median 0, hands for ±0.25 capture 379
+[00:19:24] [kuhn] done in 30 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\adaptation_kuhn.json
+[00:19:24] [leduc] 7 agents x 12 opponent conditions x 10 seeds x 2 seats = 1680 matches of 2000 hands
+[00:22:43] [leduc] Nash      gain +0.000±0.000  capture 0.00 h50 med nan expo 0.000 | teach loss Rock@1000 +0.000 Maniac@1000 +0.000 CallingStation@1000 +0.000
+[00:22:43] [leduc] BR-Rock   gain +0.573±0.000  capture 0.55 h50 med 0.0 expo 1.400 | teach loss Rock@1000 +1.400 Maniac@1000 +1.400 CallingStation@1000 +1.400
+[00:22:43] [leduc] TypeBR    gain +0.961±0.000  capture 0.83 h50 med 50.0 expo 1.885 | teach loss Rock@1000 +1.616 Maniac@1000 +2.152 CallingStation@1000 +2.232
+[00:22:43] [leduc] DirBR     gain +0.988±0.005  capture 0.94 h50 med 150.0 expo 2.461 | teach loss Rock@1000 +1.228 Maniac@1000 +1.006 CallingStation@1000 +1.488
+[00:22:43] [leduc] DirBR-CP  gain +0.441±0.007  capture 0.34 h50 med 150.0 expo 2.459 | teach loss Rock@1000 +1.742 Maniac@1000 +1.806 CallingStation@1000 +1.723
+[00:22:43] [leduc] RNR(0.5)  gain +0.797±0.007  capture 0.71 h50 med 50.0 expo 0.264 | teach loss Rock@1000 +0.122 Maniac@1000 +0.274 CallingStation@1000 +0.141
+[00:22:43] [leduc] BestEq    gain +0.047±0.000  capture 0.04 h50 med nan expo 0.000 | teach loss Rock@1000 +0.000 Maniac@1000 +0.000 CallingStation@1000 +0.000
+[00:22:43] [leduc] FM5: chips: |h50 err| median 50, hands for ±0.25 capture 1313; aivat: |h50 err| median 50, hands for ±0.25 capture 354
+[00:22:43] [leduc] done in 198 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\adaptation_leduc.json
+
+===== adaptation started 2026-09-25T00:50:17 =====
+[00:50:17] [kuhn] 7 agents x 16 opponent conditions x 10 seeds x 2 seats = 2240 matches of 2000 hands
+[00:50:48] [kuhn] Nash      gain +0.000±0.000  capture -0.00 h50 med nan expo 0.000 | teach loss TightPassive@1000 +0.000 LooseAggr@1000 +0.000 AlwaysBet@1000 +0.000
+[00:50:48] [kuhn] BR-Tight  gain +0.054±0.000  capture 0.13 h50 med 0.0 expo 0.500 | teach loss TightPassive@1000 +0.500 LooseAggr@1000 +0.500 AlwaysBet@1000 +0.500
+[00:50:48] [kuhn] TypeBR    gain +0.229±0.002  capture 0.75 h50 med 50.0 expo 0.352 | teach loss TightPassive@1000 +0.379 LooseAggr@1000 +0.343 AlwaysBet@1000 +0.291
+[00:50:48] [kuhn] DirBR     gain +0.273±0.001  capture 0.97 h50 med 50.0 expo 0.338 | teach loss TightPassive@1000 +0.345 LooseAggr@1000 +0.205 AlwaysBet@1000 +0.187
+[00:50:48] [kuhn] DirBR-CP  gain +0.230±0.002  capture 0.79 h50 med 50.0 expo 0.305 | teach loss TightPassive@1000 +0.221 LooseAggr@1000 +0.189 AlwaysBet@1000 +0.187
+[00:50:48] [kuhn] RNR(0.5)  gain +0.210±0.002  capture 0.60 h50 med 50.0 expo 0.090 | teach loss TightPassive@1000 -0.000 LooseAggr@1000 +0.067 AlwaysBet@1000 +0.068
+[00:50:48] [kuhn] BestEq    gain +0.020±0.000  capture 0.09 h50 med 50.0 expo 0.000 | teach loss TightPassive@1000 +0.000 LooseAggr@1000 +0.000 AlwaysBet@1000 +0.000
+[00:50:48] [kuhn] FM5: chips: |h50 err| median 50, hands for ±0.25 capture 3383; aivat: |h50 err| median 0, hands for ±0.25 capture 379
+[00:50:48] [kuhn] done in 31 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\adaptation_kuhn.json
+[00:50:49] [leduc] 7 agents x 12 opponent conditions x 10 seeds x 2 seats = 1680 matches of 2000 hands
+[00:53:22] [leduc] Nash      gain +0.000±0.000  capture 0.00 h50 med nan expo 0.000 | teach loss Rock@1000 +0.000 Maniac@1000 +0.000 CallingStation@1000 +0.000
+[00:53:22] [leduc] BR-Rock   gain +0.573±0.000  capture 0.55 h50 med 0.0 expo 1.400 | teach loss Rock@1000 +1.400 Maniac@1000 +1.400 CallingStation@1000 +1.400
+[00:53:22] [leduc] TypeBR    gain +0.961±0.000  capture 0.83 h50 med 50.0 expo 1.885 | teach loss Rock@1000 +1.616 Maniac@1000 +2.152 CallingStation@1000 +2.232
+[00:53:22] [leduc] DirBR     gain +0.988±0.005  capture 0.94 h50 med 150.0 expo 2.461 | teach loss Rock@1000 +1.228 Maniac@1000 +1.006 CallingStation@1000 +1.488
+[00:53:22] [leduc] DirBR-CP  gain +0.441±0.007  capture 0.34 h50 med 150.0 expo 2.459 | teach loss Rock@1000 +1.742 Maniac@1000 +1.806 CallingStation@1000 +1.723
+[00:53:22] [leduc] RNR(0.5)  gain +0.797±0.007  capture 0.71 h50 med 50.0 expo 0.264 | teach loss Rock@1000 +0.122 Maniac@1000 +0.274 CallingStation@1000 +0.141
+[00:53:22] [leduc] BestEq    gain +0.047±0.000  capture 0.04 h50 med nan expo 0.000 | teach loss Rock@1000 +0.000 Maniac@1000 +0.000 CallingStation@1000 +0.000
+[00:53:22] [leduc] FM5: chips: |h50 err| median 50, hands for ±0.25 capture 1313; aivat: |h50 err| median 50, hands for ±0.25 capture 354
+[00:53:22] [leduc] done in 154 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\adaptation_leduc.json

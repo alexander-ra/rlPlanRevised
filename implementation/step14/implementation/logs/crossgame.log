@@ -1,0 +1,22 @@
+
+===== crossgame started 2026-09-25T00:47:30 =====
+[00:47:30] -> results/crossgame.json
+[00:47:30] [kuhn] FM4 top by method: Elo DirBR, population return DirBR, RRPS DirBR, VasE ['Nash'], Nash-avg support {'Nash': 0.500566301808489, 'TypeBR': 0.008364647418427582, 'BestEq': 0.49059952257683037}, alpha-Rank {'0.01': 'DirBR', '0.03': 'DirBR', '0.1': 'DirBR', '0.3': 'RNR(0.5)', '1.0': 'RNR(0.5)', '3.0': 'RNR(0.5)', '10.0': 'Nash', '30.0': 'Nash', '100.0': 'Nash'}
+[00:47:30] [kuhn] FM4 bootstrap stability: {'elo': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}, 'nash_avg': {'top_agent_share': 0.94, 'mean_rank_sd': 0.10600492496240904}, 'alpharank_a10': {'top_agent_share': 0.215, 'mean_rank_sd': 0.1672768130974376}, 'vase_iml': {'top_agent_share': 0.94, 'mean_rank_sd': 0.02968585521759481}, 'population_return': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}}
+[00:47:30] [kuhn] FM4 Elo gap to Nash with k clones of AlwaysPass: DirBR: +166->+181, RNR(0.5): +121->+136, BestEq: +27->+35; Nash-avg skill max change 2.6e-06
+[00:47:30] [kuhn] FM4 horizon: H=100: Elo top TypeBR; H=300: Elo top DirBR-CP; H=1000: Elo top DirBR; H=2000: Elo top DirBR
+[00:47:30] [leduc] FM4 top by method: Elo RNR(0.5), population return DirBR, RRPS RNR(0.5), VasE ['BestEq'], Nash-avg support {'Nash': 0.11071925246676256, 'TypeBR': 0.005919161963170972, 'BestEq': 0.8833615855700665}, alpha-Rank {'0.01': 'DirBR', '0.03': 'RNR(0.5)', '0.1': 'RNR(0.5)', '0.3': 'BestEq', '1.0': 'BestEq', '3.0': 'BestEq', '10.0': 'BestEq', '30.0': 'Nash', '100.0': 'Nash'}
+[00:47:30] [leduc] FM4 bootstrap stability: {'elo': {'top_agent_share': 1.0, 'mean_rank_sd': 0.057831171909658315}, 'nash_avg': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}, 'alpharank_a10': {'top_agent_share': 1.0, 'mean_rank_sd': 0.5207438340292502}, 'vase_iml': {'top_agent_share': 1.0, 'mean_rank_sd': 0.11612896925401511}, 'population_return': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}}
+[00:47:30] [leduc] FM4 Elo gap to Nash with k clones of CallingStation: DirBR: +84->+113, RNR(0.5): +128->+156, BestEq: +15->+23; Nash-avg skill max change 5.3e-06
+[00:47:30] [leduc] FM4 horizon: H=100: Elo top BR-Rock; H=300: Elo top RNR(0.5); H=1000: Elo top RNR(0.5); H=2000: Elo top RNR(0.5)
+
+===== crossgame started 2026-09-25T00:53:23 =====
+[00:53:23] -> results/crossgame.json
+[00:53:23] [kuhn] FM4 top by method: Elo DirBR, population return DirBR, RRPS DirBR, VasE ['Nash'], Nash-avg support {'Nash': 0.500566301808489, 'TypeBR': 0.008364647418427582, 'BestEq': 0.49059952257683037}, alpha-Rank {'0.01': 'DirBR', '0.03': 'DirBR', '0.1': 'DirBR', '0.3': 'RNR(0.5)', '1.0': 'RNR(0.5)', '3.0': 'RNR(0.5)', '10.0': 'Nash', '30.0': 'Nash', '100.0': 'Nash'}
+[00:53:23] [kuhn] FM4 bootstrap stability: {'elo': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}, 'nash_avg': {'top_agent_share': 0.94, 'mean_rank_sd': 0.10600492496240904}, 'alpharank_a10': {'top_agent_share': 0.215, 'mean_rank_sd': 0.1672768130974376}, 'vase_iml': {'top_agent_share': 0.94, 'mean_rank_sd': 0.02968585521759481}, 'population_return': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}}
+[00:53:23] [kuhn] FM4 Elo gap to Nash with k clones of AlwaysPass: DirBR: +166->+181, RNR(0.5): +121->+136, BestEq: +27->+35; Nash-avg skill max change 2.6e-06
+[00:53:23] [kuhn] FM4 horizon: H=100: Elo top TypeBR; H=300: Elo top DirBR-CP; H=1000: Elo top DirBR; H=2000: Elo top DirBR
+[00:53:23] [leduc] FM4 top by method: Elo RNR(0.5), population return DirBR, RRPS RNR(0.5), VasE ['BestEq'], Nash-avg support {'Nash': 0.11071925246676256, 'TypeBR': 0.005919161963170972, 'BestEq': 0.8833615855700665}, alpha-Rank {'0.01': 'DirBR', '0.03': 'RNR(0.5)', '0.1': 'RNR(0.5)', '0.3': 'BestEq', '1.0': 'BestEq', '3.0': 'BestEq', '10.0': 'BestEq', '30.0': 'Nash', '100.0': 'Nash'}
+[00:53:23] [leduc] FM4 bootstrap stability: {'elo': {'top_agent_share': 1.0, 'mean_rank_sd': 0.057831171909658315}, 'nash_avg': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}, 'alpharank_a10': {'top_agent_share': 1.0, 'mean_rank_sd': 0.5207438340292502}, 'vase_iml': {'top_agent_share': 1.0, 'mean_rank_sd': 0.11612896925401511}, 'population_return': {'top_agent_share': 1.0, 'mean_rank_sd': 0.0}}
+[00:53:23] [leduc] FM4 Elo gap to Nash with k clones of CallingStation: DirBR: +84->+113, RNR(0.5): +128->+156, BestEq: +15->+23; Nash-avg skill max change 5.3e-06
+[00:53:23] [leduc] FM4 horizon: H=100: Elo top BR-Rock; H=300: Elo top RNR(0.5); H=1000: Elo top RNR(0.5); H=2000: Elo top RNR(0.5)

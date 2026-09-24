@@ -1,0 +1,13 @@
+
+===== sls started 2026-09-25T00:34:04 =====
+[00:34:20] layer 2: transitive ratio 0.955; margins
+[[ 0.     0.197  0.007 -0.091]
+ [-0.197  0.    -0.232 -0.173]
+ [-0.007  0.232  0.    -0.132]
+ [ 0.091  0.173  0.132  0.   ]]
+[00:34:20] layer 2: Elo [1507.0, 1460.0, 1506.0, 1526.0]; Nash-avg p [0.0, 0.0, 0.0, 1.0]
+[00:34:24] coalition probe random         : win rate independent 0.246 vs alliance 0.238 (drop +0.008)
+[00:34:30] coalition probe greedy_capture : win rate independent 0.126 vs alliance 0.118 (drop +0.008)
+[00:34:35] coalition probe fixed_ally_1   : win rate independent 0.242 vs alliance 0.223 (drop +0.019)
+[00:34:39] coalition probe betrayer_1     : win rate independent 0.292 vs alliance 0.277 (drop +0.016)
+[00:34:39] done in 35 s

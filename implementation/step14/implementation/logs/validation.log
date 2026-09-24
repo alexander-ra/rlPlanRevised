@@ -1,0 +1,81 @@
+
+===== validation started 2026-09-25T00:11:34 =====
+[00:11:35] V1 kuhn   uniform      NashConv mine 0.9166666667  OpenSpiel 0.9166666667
+[00:11:35] V1 kuhn   Nash         NashConv mine 0.0000192655  OpenSpiel 0.0000192655
+[00:11:35] V1 kuhn   Random       NashConv mine 0.9166666667  OpenSpiel 0.9166666667
+[00:11:35] V1 kuhn   AlwaysPass   NashConv mine 1.9339583333  OpenSpiel 1.9339583333
+[00:11:35] V1 kuhn   AlwaysBet    NashConv mine 0.6666666667  OpenSpiel 0.6666666667
+[00:11:35] V1 leduc  uniform      NashConv mine 4.7472222222  OpenSpiel 4.7472222222
+[00:11:35] V1 leduc  Nash         NashConv mine 0.0001699555  OpenSpiel 0.0001699555
+[00:11:35] V1 leduc  Random       NashConv mine 4.7472222222  OpenSpiel 4.7472222222
+[00:11:35] V1 leduc  CallingStation NashConv mine 2.9651010113  OpenSpiel 2.9651010113
+[00:11:36] V1 leduc  Maniac       NashConv mine 4.6350551063  OpenSpiel 4.6350551063
+[00:11:41] V1 kuhn3  uniform      NashConv mine 2.0625000000  OpenSpiel 2.0625000000
+[00:11:41] V1 kuhn3  cfr_10k      NashConv mine 0.0003614453  OpenSpiel 0.0003614453
+[00:11:42] V2 Chapter 7 bridge: 39 pairs, max |diff| = 9.99e-15
+[00:11:42] V3 Chapter 3 Leduc CFR 10 it.: exploitability ch3 0.811708  mine 0.811708
+[00:11:44] V3 Chapter 3 Leduc CFR 100 it.: exploitability ch3 0.090002  mine 0.090002
+[00:11:44] V4 kuhn: LP value -0.055556 (reference -0.0556); blueprint NashConv 1.93e-05 (exploitability 9.63e-06)
+[00:11:44] V4 leduc: LP value -0.085606 (reference -0.0856); blueprint NashConv 1.70e-04 (exploitability 8.50e-05)
+[00:11:45] V5 hero 0 vs TightPassive    best_equilibrium  EV ch8 -0.0442 ch14 -0.0444 | wc ch8 -0.0560 ch14 -0.0556 | diff 2.4e-04
+[00:11:45] V5 hero 0 vs TightPassive    rnr_0.3           EV ch8 -0.0444 ch14 -0.0444 | wc ch8 -0.0556 ch14 -0.0556 | diff 2.8e-17
+[00:11:45] V5 hero 0 vs TightPassive    rnr_0.5           EV ch8 -0.0444 ch14 -0.0444 | wc ch8 -0.0556 ch14 -0.0556 | diff 2.8e-17
+[00:11:45] V5 hero 0 vs TightPassive    rnr_0.8           EV ch8 +0.1667 ch14 +0.1667 | wc ch8 -0.5000 ch14 -0.5000 | diff 2.8e-17
+[00:11:45] V5 hero 0 vs LooseAggressive best_equilibrium  EV ch8 +0.1310 ch14 +0.1297 | wc ch8 -0.0560 ch14 -0.0556 | diff 1.3e-03
+[00:11:45] V5 hero 0 vs LooseAggressive rnr_0.3           EV ch8 +0.2781 ch14 +0.2781 | wc ch8 -0.1111 ch14 -0.1111 | diff 2.8e-17
+[00:11:45] V5 hero 0 vs LooseAggressive rnr_0.5           EV ch8 +0.2781 ch14 +0.2781 | wc ch8 -0.1111 ch14 -0.1111 | diff 5.6e-17
+[00:11:45] V5 hero 0 vs LooseAggressive rnr_0.8           EV ch8 +0.3333 ch14 +0.3333 | wc ch8 -0.1667 ch14 -0.1667 | diff 5.6e-17
+[00:11:45] V5 hero 0 vs AlwaysBet       best_equilibrium  EV ch8 +0.1149 ch14 +0.1139 | wc ch8 -0.0560 ch14 -0.0556 | diff 1.0e-03
+[00:11:45] V5 hero 0 vs AlwaysBet       rnr_0.3           EV ch8 +0.1139 ch14 +0.1139 | wc ch8 -0.0556 ch14 -0.0556 | diff 2.1e-17
+[00:11:45] V5 hero 0 vs AlwaysBet       rnr_0.5           EV ch8 +0.3333 ch14 +0.3333 | wc ch8 -0.1667 ch14 -0.1667 | diff 0.0e+00
+[00:11:45] V5 hero 0 vs AlwaysBet       rnr_0.8           EV ch8 +0.3333 ch14 +0.3333 | wc ch8 -0.1667 ch14 -0.1667 | diff 0.0e+00
+[00:11:45] V5 hero 0 vs Random          best_equilibrium  EV ch8 +0.1686 ch14 +0.1667 | wc ch8 -0.0560 ch14 -0.0556 | diff 1.9e-03
+[00:11:45] V5 hero 0 vs Random          rnr_0.3           EV ch8 +0.3889 ch14 +0.3889 | wc ch8 -0.1111 ch14 -0.1111 | diff 0.0e+00
+[00:11:45] V5 hero 0 vs Random          rnr_0.5           EV ch8 +0.3889 ch14 +0.3889 | wc ch8 -0.1111 ch14 -0.1111 | diff 0.0e+00
+[00:11:45] V5 hero 0 vs Random          rnr_0.8           EV ch8 +0.5000 ch14 +0.5000 | wc ch8 -0.3333 ch14 -0.3333 | diff 0.0e+00
+[00:11:45] V5 hero 1 vs TightPassive    best_equilibrium  EV ch8 +0.0616 ch14 +0.0611 | wc ch8 +0.0550 ch14 +0.0556 | diff 4.8e-04
+[00:11:45] V5 hero 1 vs TightPassive    rnr_0.3           EV ch8 +0.0611 ch14 +0.0611 | wc ch8 +0.0556 ch14 +0.0556 | diff 1.4e-17
+[00:11:45] V5 hero 1 vs TightPassive    rnr_0.5           EV ch8 +0.0611 ch14 +0.0611 | wc ch8 +0.0556 ch14 +0.0556 | diff 1.4e-17
+[00:11:45] V5 hero 1 vs TightPassive    rnr_0.8           EV ch8 +0.3171 ch14 +0.3171 | wc ch8 -0.3333 ch14 -0.3333 | diff 0.0e+00
+[00:11:45] V5 hero 1 vs LooseAggressive best_equilibrium  EV ch8 +0.1306 ch14 +0.1297 | wc ch8 +0.0550 ch14 +0.0556 | diff 8.8e-04
+[00:11:45] V5 hero 1 vs LooseAggressive rnr_0.3           EV ch8 +0.1297 ch14 +0.1297 | wc ch8 +0.0556 ch14 +0.0556 | diff 2.8e-17
+[00:11:45] V5 hero 1 vs LooseAggressive rnr_0.5           EV ch8 +0.3210 ch14 +0.3210 | wc ch8 -0.0556 ch14 -0.0556 | diff 0.0e+00
+[00:11:45] V5 hero 1 vs LooseAggressive rnr_0.8           EV ch8 +0.3210 ch14 +0.3210 | wc ch8 -0.0556 ch14 -0.0556 | diff 2.8e-17
+[00:11:45] V5 hero 1 vs AlwaysBet       best_equilibrium  EV ch8 +0.1149 ch14 +0.1139 | wc ch8 +0.0550 ch14 +0.0556 | diff 1.0e-03
+[00:11:45] V5 hero 1 vs AlwaysBet       rnr_0.3           EV ch8 +0.1139 ch14 +0.1139 | wc ch8 +0.0556 ch14 +0.0556 | diff 1.5e-16
+[00:11:45] V5 hero 1 vs AlwaysBet       rnr_0.5           EV ch8 +0.3307 ch14 +0.3307 | wc ch8 -0.0556 ch14 -0.0556 | diff 5.6e-17
+[00:11:45] V5 hero 1 vs AlwaysBet       rnr_0.8           EV ch8 +0.3307 ch14 +0.3307 | wc ch8 -0.0556 ch14 -0.0556 | diff 5.6e-17
+[00:11:45] V5 hero 1 vs Random          best_equilibrium  EV ch8 +0.1674 ch14 +0.1667 | wc ch8 +0.0550 ch14 +0.0556 | diff 7.7e-04
+[00:11:45] V5 hero 1 vs Random          rnr_0.3           EV ch8 +0.1667 ch14 +0.1667 | wc ch8 +0.0556 ch14 +0.0556 | diff 1.4e-17
+[00:11:45] V5 hero 1 vs Random          rnr_0.5           EV ch8 +0.3333 ch14 +0.3333 | wc ch8 -0.0556 ch14 -0.0556 | diff 5.6e-17
+[00:11:45] V5 hero 1 vs Random          rnr_0.8           EV ch8 +0.4167 ch14 +0.4167 | wc ch8 -0.3333 ch14 -0.3333 | diff 5.6e-17
+[00:11:45] V5 Leduc full-game LP solve times (s): [0.032, 0.026, 0.037, 0.024]
+[00:11:45] V6 rps          alpharank_a0.1     |diff| 2.3e-15
+[00:11:45] V6 rps          alpharank_a1.0     |diff| 1.1e-16
+[00:11:45] V6 rps          alpharank_a10.0    |diff| 1.1e-16
+[00:11:45] V6 rps          alpharank_a100.0   |diff| 1.1e-16
+[00:11:45] V6 rps          nash_average       |diff| 4.7e-10
+[00:11:45] V6 rps          maximal_lottery    |diff| 2.4e-15
+[00:11:45] V6 transitive   alpharank_a0.1     |diff| 2.6e-15
+[00:11:45] V6 transitive   alpharank_a1.0     |diff| 8.9e-16
+[00:11:45] V6 transitive   alpharank_a10.0    |diff| 0.0e+00
+[00:11:45] V6 transitive   alpharank_a100.0   |diff| 2.2e-16
+[00:11:45] V6 transitive   nash_average       |diff| 2.5e-09
+[00:11:45] V6 transitive   maximal_lottery    |diff| 1.4e-09
+[00:11:45] V6 random8      alpharank_a0.1     |diff| 3.0e-15
+[00:11:45] V6 random8      alpharank_a1.0     |diff| 2.6e-15
+[00:11:45] V6 random8      alpharank_a10.0    |diff| 1.2e-15
+[00:11:45] V6 random8      alpharank_a100.0   |diff| 6.7e-16
+[00:11:45] V6 random8      nash_average       |diff| 1.9e-08
+[00:11:45] V6 random8      maximal_lottery    |diff| 1.5e-08
+[00:11:45] V6 vote_profile iml                mine [['a', 'c'], ['b'], ['d']] os ['a', 'c', 'b', 'd']
+[00:11:45] V6 random3x3x3  multipop_a0.5      |diff| 1.6e-14
+[00:11:45] V6 random3x3x3  multipop_a1.0      |diff| 4.1e-15
+[00:11:45] V7 spinning top: RPS 0.0000 (target 0), ladder 1.0000 (target 1)
+[00:11:46] V8 MC kuhn seat 0 Nash vs Random, n=20000: exact +0.1298 | raw +0.1313 ± 0.0189 | AIVAT +0.1233 ± 0.0062 | sample VR 9.3
+[00:11:47] V8 MC kuhn seat 1 Nash vs Random, n=20000: exact +0.1667 | raw +0.1527 ± 0.0194 | AIVAT +0.1655 ± 0.0055 | sample VR 12.4
+[00:11:48] V8 MC leduc seat 0 Nash vs Random, n=20000: exact +0.5916 | raw +0.6105 ± 0.0568 | AIVAT +0.5783 ± 0.0213 | sample VR 7.1
+[00:11:49] V8 MC leduc seat 1 Nash vs Random, n=20000: exact +0.8227 | raw +0.8368 ± 0.0633 | AIVAT +0.8189 ± 0.0244 | sample VR 6.8
+[00:11:49] V8 kuhn: AIVAT (chance+x) variance reduction min 2.2 median 48.0 max 2435969803.9; 18/20 pairs >= 5.0x; max |bias| 1.7e-16; chance-only median 3.9; both-known median 749.7
+[00:11:49] V8 leduc: AIVAT (chance+x) variance reduction min 6.9 median 12.2 max 23518.8; 7/12 pairs >= 10.0x; max |bias| 1.0e-15; chance-only median 3.7; both-known median 33.3
+[00:11:49] done in 14.2 s -> results/validation.json

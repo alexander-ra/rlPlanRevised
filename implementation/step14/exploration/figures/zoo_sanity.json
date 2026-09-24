@@ -1,0 +1,56 @@
+{
+ "kuhn": {
+  "exploitability": {
+   "Nash": 9.632756980820778e-06,
+   "Random": 0.45833333333333337,
+   "AlwaysPass": 0.9669791666666666,
+   "AlwaysBet": 0.33333333333333326,
+   "TightPassive": 0.24197916666666663,
+   "LooseAggr": 0.33333333333333326,
+   "Threshold": 0.11849999999999997,
+   "LLM-Qwen7B": 0.1785688592445324,
+   "LLM-GPT20B": 0.19586033143609607,
+   "LLM-OT7B": 0.4470173865401489,
+   "BR-Tight": 0.5
+  },
+  "population_return": {
+   "Nash": 0.09290672789928434,
+   "Random": -0.14670512213520592,
+   "AlwaysPass": -0.5172094651382931,
+   "AlwaysBet": 0.12484849400179018,
+   "TightPassive": 0.0009040320914502409,
+   "LooseAggr": 0.05377223548163094,
+   "Threshold": 0.019273193862133463,
+   "LLM-Qwen7B": 0.11806164478526157,
+   "LLM-GPT20B": 0.07330865453910543,
+   "LLM-OT7B": 0.03668749595557365,
+   "BR-Tight": 0.14415210865726918
+  },
+  "random_beats": [
+   "AlwaysPass"
+  ],
+  "lowest_population_return": "AlwaysPass"
+ },
+ "leduc": {
+  "exploitability": {
+   "Nash": 8.497776239094895e-05,
+   "Random": 2.373611111111111,
+   "CallingStation": 1.4825505056423611,
+   "Maniac": 2.3175275531597226,
+   "Rock": 1.0289285919199627,
+   "LoosePassive": 1.4889389525462962,
+   "BR-Rock": 1.4000000000000001
+  },
+  "population_return": {
+   "Nash": 0.4633505527472818,
+   "Random": -0.7716293139221242,
+   "CallingStation": -0.5375514010226002,
+   "Maniac": -0.33447613941899856,
+   "Rock": 0.3678183418235665,
+   "LoosePassive": -0.22093321070883631,
+   "BR-Rock": 1.0334211705017111
+  },
+  "random_beats": [],
+  "lowest_population_return": "Random"
+ }
+}

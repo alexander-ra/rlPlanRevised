@@ -1,0 +1,48 @@
+
+===== population started 2026-09-25T00:14:16 =====
+[00:14:16] [kuhn] 16 agents (11 stationary, exact block done); seeds 5, K=2000
+[00:14:16] [kuhn] 65 simulated pairs, 650 matches
+
+===== population started 2026-09-25T00:14:45 =====
+[00:14:45] [kuhn] 16 agents (11 stationary, exact block done); seeds 5, K=2000
+[00:14:45] [kuhn] 65 simulated pairs, 650 matches
+[00:15:04] [kuhn] done in 19 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\population_kuhn.json
+[00:15:04] [kuhn] transitive ratio 0.883; Elo order: DirBR 1826, DirBR-CP 1818, RNR(0.5) 1782, BestEq 1688, TypeBR 1684, Nash 1661, LLM-Qwen7B 1537, BR-Tight 1505, LLM-GPT20B 1473, Threshold 1458, TightPassive 1448, AlwaysBet 1443, LooseAggr 1381, LLM-OT7B 1339, Random 1118, AlwaysPass 838
+[00:15:04] [kuhn] Nash-avg support: Nash 0.67, BestEq 0.33
+[00:15:04] [kuhn] Kendall tau: elo|population_return +0.92, elo|nash_avg +0.60, elo|alpharank_a1 +0.60, elo|alpharank_a10 +0.55, elo|alpharank_a100 +0.27, elo|vase_iml +0.68, elo|exploitability +0.45, elo|rrps_aggregate +0.85, exploitability|rrps_aggregate +0.60
+
+===== population started 2026-09-25T00:15:11 =====
+[00:15:11] [leduc] 12 agents (7 stationary, exact block done); seeds 5, K=2000
+[00:15:11] [leduc] 45 simulated pairs, 450 matches
+[00:16:27] [leduc] done in 76 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\population_leduc.json
+[00:16:27] [leduc] transitive ratio 0.911; Elo order: RNR(0.5) 1894, DirBR 1847, BestEq 1779, Nash 1764, BR-Rock 1695, TypeBR 1689, DirBR-CP 1648, Rock 1480, LoosePassive 1199, Maniac 1149, CallingStation 951, Random 904
+[00:16:27] [leduc] Nash-avg support: Nash 0.00, BestEq 1.00
+[00:16:27] [leduc] Kendall tau: elo|population_return +0.73, elo|nash_avg +0.67, elo|alpharank_a1 +0.73, elo|alpharank_a10 +0.70, elo|alpharank_a100 +0.61, elo|vase_iml +0.85, elo|exploitability +0.36, elo|rrps_aggregate +0.91, exploitability|rrps_aggregate +0.33
+
+===== population started 2026-09-25T00:34:53 =====
+[00:34:53] [kuhn] 16 agents (11 stationary, exact block done); seeds 10, K=2000
+[00:34:53] [kuhn] 65 simulated pairs, 1300 matches
+[00:35:26] [kuhn] done in 33 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\population_kuhn.json
+[00:35:26] [kuhn] transitive ratio 0.883; Elo order: DirBR 1827, DirBR-CP 1817, RNR(0.5) 1782, BestEq 1688, TypeBR 1684, Nash 1661, LLM-Qwen7B 1537, BR-Tight 1505, LLM-GPT20B 1473, Threshold 1459, TightPassive 1448, AlwaysBet 1443, LooseAggr 1381, LLM-OT7B 1339, Random 1118, AlwaysPass 838
+[00:35:26] [kuhn] Nash-avg support: Nash 0.89, BestEq 0.11
+[00:35:26] [kuhn] Kendall tau: elo|population_return +0.92, elo|nash_avg +0.62, elo|alpharank_a1 +0.60, elo|alpharank_a10 +0.57, elo|alpharank_a100 +0.32, elo|vase_iml +0.68, elo|exploitability +0.45, elo|rrps_aggregate +0.85, exploitability|rrps_aggregate +0.60
+[00:35:27] [leduc] 12 agents (7 stationary, exact block done); seeds 10, K=2000
+[00:35:27] [leduc] 45 simulated pairs, 900 matches
+[00:37:55] [leduc] done in 149 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\population_leduc.json
+[00:37:55] [leduc] transitive ratio 0.911; Elo order: RNR(0.5) 1892, DirBR 1848, BestEq 1779, Nash 1763, BR-Rock 1696, TypeBR 1690, DirBR-CP 1647, Rock 1480, LoosePassive 1200, Maniac 1149, CallingStation 952, Random 905
+[00:37:55] [leduc] Nash-avg support: Nash 0.41, TypeBR 0.05, BestEq 0.54
+[00:37:55] [leduc] Kendall tau: elo|population_return +0.73, elo|nash_avg +0.70, elo|alpharank_a1 +0.73, elo|alpharank_a10 +0.70, elo|alpharank_a100 +0.45, elo|vase_iml +0.85, elo|exploitability +0.36, elo|rrps_aggregate +0.91, exploitability|rrps_aggregate +0.33
+
+===== population started 2026-09-25T00:41:41 =====
+[00:41:41] [kuhn] 16 agents (11 stationary, exact block done); seeds 10, K=2000
+[00:41:41] [kuhn] 65 simulated pairs, 1300 matches
+[00:42:25] [kuhn] done in 44 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\population_kuhn.json
+[00:42:25] [kuhn] transitive ratio 0.883; Elo order: DirBR 1827, DirBR-CP 1817, RNR(0.5) 1782, BestEq 1688, TypeBR 1684, Nash 1661, LLM-Qwen7B 1537, BR-Tight 1505, LLM-GPT20B 1473, Threshold 1459, TightPassive 1448, AlwaysBet 1443, LooseAggr 1381, LLM-OT7B 1339, Random 1118, AlwaysPass 838
+[00:42:25] [kuhn] Nash-avg support: Nash 0.50, TypeBR 0.01, RNR(0.5) 0.00, BestEq 0.49
+[00:42:25] [kuhn] Kendall tau: elo|population_return +0.92, elo|nash_avg +0.62, elo|alpharank_a1 +0.60, elo|alpharank_a10 +0.57, elo|alpharank_a100 +0.32, elo|vase_iml +0.68, elo|exploitability +0.45, elo|rrps_aggregate +0.85, exploitability|rrps_aggregate +0.60
+[00:42:26] [leduc] 12 agents (7 stationary, exact block done); seeds 10, K=2000
+[00:42:26] [leduc] 45 simulated pairs, 900 matches
+[00:45:16] [leduc] done in 170 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step14\implementation\results\population_leduc.json
+[00:45:16] [leduc] transitive ratio 0.911; Elo order: RNR(0.5) 1892, DirBR 1848, BestEq 1779, Nash 1763, BR-Rock 1696, TypeBR 1690, DirBR-CP 1647, Rock 1480, LoosePassive 1200, Maniac 1149, CallingStation 952, Random 905
+[00:45:16] [leduc] Nash-avg support: Nash 0.11, TypeBR 0.01, BestEq 0.88
+[00:45:16] [leduc] Kendall tau: elo|population_return +0.73, elo|nash_avg +0.67, elo|alpharank_a1 +0.73, elo|alpharank_a10 +0.70, elo|alpharank_a100 +0.45, elo|vase_iml +0.85, elo|exploitability +0.36, elo|rrps_aggregate +0.91, exploitability|rrps_aggregate +0.33

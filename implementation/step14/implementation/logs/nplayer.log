@@ -1,0 +1,40 @@
+
+===== nplayer started 2026-09-25T00:31:33 =====
+[00:31:34] P1 CFR       NashConv 4.35e-05 values [-0.0287, -0.0208, 0.0495] coalition [-0.125, -0.0964, -0.0938]
+[00:31:34] P1 CFR+      NashConv 1.45e-07 values [-0.0269, -0.0208, 0.0477] coalition [-0.125, -0.1062, -0.125]
+[00:31:34] P1 MCCFR-s0  NashConv 3.38e-03 values [-0.0278, -0.0204, 0.0482] coalition [-0.1213, -0.0824, -0.1178]
+[00:31:35] P1 MCCFR-s1  NashConv 1.35e-02 values [-0.0285, -0.0194, 0.048] coalition [-0.106, -0.0858, -0.1007]
+[00:31:35] P1 MCCFR-s2  NashConv 4.53e-03 values [-0.0267, -0.0202, 0.0468] coalition [-0.1257, -0.0828, -0.1043]
+[00:31:35] P1 cross-play of 5 equilibria: NashConv max 1.25e-01; value ranges [[-0.0295, -0.0201], [-0.0227, -0.019], [0.041, 0.05]]
+[00:31:35] P2 tensor: 9^3 triples, 1158 simulated matches
+[00:32:02] P2 population return: DirBR3P +0.346, Blend3P +0.232, Nash-CFR +0.093, AlwaysBet +0.091, Nash +0.087, LooseAggr +0.020, TightPassive +0.000, Random -0.205, AlwaysPass -0.665
+[00:32:02] P2 VasE IML ranks: Nash 3, Nash-CFR 2, AlwaysPass 8, AlwaysBet 5, TightPassive 4, LooseAggr 6, Random 7, DirBR3P 1, Blend3P 0
+[00:32:02] P2 alpha-Rank multipop alpha=0.1: top profile ['DirBR3P', 'DirBR3P', 'DirBR3P'] mass 0.01
+[00:32:02] P2 alpha-Rank multipop alpha=1.0: top profile ['Nash-CFR', 'DirBR3P', 'Blend3P'] mass 0.06
+[00:32:02] P2 alpha-Rank multipop alpha=10.0: top profile ['Nash-CFR', 'Nash-CFR', 'Nash-CFR'] mass 0.22
+[00:32:02] P2 alpha-Rank multipop alpha=100.0: top profile ['Nash', 'Nash-CFR', 'Nash-CFR'] mass 0.51
+[00:32:02] P3 protocol: 360 matches
+[00:32:51] P3 Nash     gain +0.000±0.000 capture 0.00 h50 med None | switch r50 None cost -0.000 | colluders -0.119 (last500 -0.119) | teach before +0.014 after -0.119 | coalition value of final policy -0.119
+[00:32:51] P3 DirBR3P  gain +0.372±0.038 capture 0.99 h50 med 50.0 | switch r50 200.0 cost -0.091 | colluders +0.354 (last500 +0.375) | teach before +0.268 after -0.466 | coalition value of final policy -0.386
+[00:32:51] P3 Blend3P  gain +0.213±0.026 capture 0.55 h50 med 100.0 | switch r50 550.0 cost -0.042 | colluders +0.116 (last500 +0.127) | teach before +0.141 after -0.242 | coalition value of final policy -0.219
+[00:32:51] done in 78 s
+
+===== nplayer started 2026-09-25T00:45:17 =====
+[00:45:19] P1 CFR       NashConv 4.35e-05 values [-0.0287, -0.0208, 0.0495] coalition [-0.125, -0.0964, -0.0938]
+[00:45:19] P1 CFR+      NashConv 1.45e-07 values [-0.0269, -0.0208, 0.0477] coalition [-0.125, -0.1062, -0.125]
+[00:45:19] P1 MCCFR-s0  NashConv 3.38e-03 values [-0.0278, -0.0204, 0.0482] coalition [-0.1213, -0.0824, -0.1178]
+[00:45:20] P1 MCCFR-s1  NashConv 1.35e-02 values [-0.0285, -0.0194, 0.048] coalition [-0.106, -0.0858, -0.1007]
+[00:45:20] P1 MCCFR-s2  NashConv 4.53e-03 values [-0.0267, -0.0202, 0.0468] coalition [-0.1257, -0.0828, -0.1043]
+[00:45:20] P1 cross-play of 5 equilibria: NashConv max 1.25e-01; value ranges [[-0.0295, -0.0201], [-0.0227, -0.019], [0.041, 0.05]]
+[00:45:20] P2 tensor: 9^3 triples, 1158 simulated matches
+[00:45:52] P2 population return: DirBR3P +0.346, Blend3P +0.232, Nash-CFR +0.093, AlwaysBet +0.091, Nash +0.087, LooseAggr +0.020, TightPassive +0.000, Random -0.205, AlwaysPass -0.665
+[00:45:52] P2 VasE IML ranks: Nash 3, Nash-CFR 2, AlwaysPass 8, AlwaysBet 5, TightPassive 4, LooseAggr 6, Random 7, DirBR3P 1, Blend3P 0
+[00:45:52] P2 alpha-Rank multipop alpha=0.1: top profile ['DirBR3P', 'DirBR3P', 'DirBR3P'] mass 0.01
+[00:45:52] P2 alpha-Rank multipop alpha=1.0: top profile ['Nash-CFR', 'DirBR3P', 'Blend3P'] mass 0.06
+[00:45:52] P2 alpha-Rank multipop alpha=10.0: top profile ['Nash-CFR', 'Nash-CFR', 'Nash-CFR'] mass 0.22
+[00:45:52] P2 alpha-Rank multipop alpha=100.0: top profile ['Nash', 'Nash-CFR', 'Nash-CFR'] mass 0.51
+[00:45:52] P3 protocol: 360 matches
+[00:46:41] P3 Nash     gain +0.000±0.000 capture 0.00 h50 med None | switch r50 None cost -0.000 | colluders -0.119 (last500 -0.119) | teach before +0.014 after -0.119 | coalition value of final policy -0.119
+[00:46:41] P3 DirBR3P  gain +0.372±0.038 capture 0.99 h50 med 50.0 | switch r50 200.0 cost -0.091 | colluders +0.354 (last500 +0.375) | teach before +0.268 after -0.466 | coalition value of final policy -0.386
+[00:46:41] P3 Blend3P  gain +0.213±0.026 capture 0.55 h50 med 100.0 | switch r50 550.0 cost -0.042 | colluders +0.116 (last500 +0.127) | teach before +0.141 after -0.242 | coalition value of final policy -0.219
+[00:46:41] done in 84 s
