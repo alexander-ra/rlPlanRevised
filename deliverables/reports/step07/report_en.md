@@ -261,7 +261,7 @@ The result is **scenario-dependent**, which is itself the finding. Mean profit/h
 ![Non-stationarity (Leduc): here the static model wins — the Maniac is so exploitable that continuous adaptation captures it, and the detector's false-positive resets cost more than they save.](figures/impl_nonstationarity_leduc.png)
 
 - **Kuhn — change-point wins.** The stale anti-rock strategy (bluff-heavy) *actively loses* to the new maniac (who calls everything), so the static model goes negative on every seed (−0.077 to −0.122); detecting the switch and re-learning recovers to +0.21 (all seeds +0.18 to +0.24). The two bands do not overlap.
-- **Leduc — change-point loses.** The maniac leaks 2+/hand, so the continuously-adapting static model exploits it well without any reset (+1.83); meanwhile the detector fires many **false positives** during the stable phase (58–59 resets per seed against a single true switch), each dropping to safe play and discarding data, and lands three-and-a-half times lower (+0.55). Again the seed bands are cleanly separated.
+- **Leduc — change-point loses.** The maniac leaks 2+/hand, so the continuously-adapting static model exploits it well without any reset (+1.83); meanwhile the detector fires many **false positives** during the stable phase (54–63 resets per seed against a single true switch), each dropping to safe play and discarding data, and lands three-and-a-half times lower (+0.55). Again the seed bands are cleanly separated.
 
 **Conclusion.** Change-point forgetting rescues you exactly when a stale model is *harmful*, but its naive form — a low-signal detector that false-triggers, plus a full reset-to-safe on every detection — can underperform simple continuous adaptation when the new opponent is exploitable enough that staleness costs little. The *reaction* to a detected change matters as much as the detection: cheaper responses (partial forgetting instead of a hard reset; a less trigger-happy detector) are the clear next chapter.
 
@@ -275,10 +275,10 @@ Because every experiment logs its per-seed values, adequacy can be quantified ra
 
 | Game | typical SE (per-hand) | type-based gap to ceiling | continuous shortfall vs type-based |
 |---|---|---|---|
-| Kuhn | 0.000–0.005 | within ≈ 1 SE everywhere | ≤ 1 SE (they coincide) |
-| Leduc | 0.007–0.040 | within ≈ 1 SE everywhere | **5–20 SE** (e.g. Level1 3.061 vs 2.672, Δ = 0.389 at SE ≈ 0.02–0.04) |
+| Kuhn | 0.000–0.005 | within ≈ 1 SE on 9 of 10 types; AlwaysPass 0.966 vs 0.975 (≈ −17 SE, under 1%) | ≤ 1 SE (they coincide) |
+| Leduc | 0.007–0.040 | within 2 SE on 7 of 9 types; Rock (≈ −3 SE) and Level2 (≈ −2 SE), both under 3% | **5–20 SE** (e.g. Level1 3.061 vs 2.672, Δ = 0.389 at SE ≈ 0.02–0.04) |
 
-So (1) the type-based model is **statistically indistinguishable from the exact ceiling** on every type in both games — "modeling reaches the ceiling" is not seed luck; and (2) the continuous model's Leduc shortfall (§9) is a **real ~5–20 σ effect**, as is its Nash self-leak (−0.175 vs −0.083, a 0.092 gap at SE ≈ 0.015 ≈ 6 σ). The sample resolves every difference the report leans on.
+So (1) the type-based model stays **within 3% of the exact ceiling** on every type in both games, and within two standard errors on nearly all (16 of 19) — "modeling reaches the ceiling" is not seed luck; and (2) the continuous model's Leduc shortfall (§9) is a **real ~5–20 σ effect**, as is its Nash self-leak (−0.175 vs −0.083, a 0.092 gap at SE ≈ 0.015 ≈ 6 σ). The sample resolves every difference the report leans on.
 
 **Detection — adequate for the claims made.** Type-based posteriors are saturated and the continuous/consistent TV distances are stable and ordered as predicted. We report point TVs rather than error bars; a fuller version would repeat detection across seeds and publish TV confidence bands.
 

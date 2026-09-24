@@ -22,6 +22,21 @@ matplotlib.use("Agg")  # file output only; no interactive backend needed
 import matplotlib.pyplot as plt  # noqa: E402
 
 
+# Display names for the figures: the results JSON keys are code identifiers.
+DISPLAY_NAMES = {
+    "type_based": "type-based", "continuous": "continuous", "consistent": "consistent",
+    "CallingStation": "Calling station", "Maniac": "Maniac", "Rock": "Rock",
+    "LoosePassive": "Loose-passive", "Nash": "Nash (equilibrium)", "Random": "Random",
+    "Level1": "Level-1", "Level2": "Level-2", "Level3": "Level-3",
+    "AlwaysPass": "Always pass", "AlwaysBet": "Always bet", "TightPassive": "Tight-passive",
+    "LooseAggressive": "Loose-aggressive", "Thresholdish": "Threshold",
+}
+
+
+def _display(name: str) -> str:
+    return DISPLAY_NAMES.get(name, name)
+
+
 def plot_exploitation(result: dict, out_path: str):
     exploitation = result.get("exploitation", {})
     if not exploitation:
@@ -31,10 +46,11 @@ def plot_exploitation(result: dict, out_path: str):
     x = range(len(types))
     width = 0.8 / max(1, len(model_names))
 
-    fig, ax = plt.subplots(figsize=(max(8, 1.1 * len(types)), 5))
+    # 8 in wide at 300 dpi: printed at 17.6 cm the scale is ~0.87, so fs 10 prints ~8.7 pt
+    fig, ax = plt.subplots(figsize=(8, 4.4))
     for j, m in enumerate(model_names):
         vals = [exploitation[t]["models"][m]["mean_per_hand"] for t in types]
-        ax.bar([i + j * width for i in x], vals, width=width, label=m)
+        ax.bar([i + j * width for i in x], vals, width=width, label=_display(m))
     ceiling = [exploitation[t]["references"]["ceiling"] for t in types]
     nash_ev = [exploitation[t]["references"]["nash_ev"] for t in types]
     center = [i + (len(model_names) - 1) * width / 2 for i in x]
@@ -42,12 +58,15 @@ def plot_exploitation(result: dict, out_path: str):
     ax.plot(center, nash_ev, "r_", markersize=18, markeredgewidth=2, label="Nash EV (exact)")
     ax.axhline(0.0, color="grey", lw=0.8)
     ax.set_xticks(center)
-    ax.set_xticklabels(types, rotation=30, ha="right")
-    ax.set_ylabel("hero mean profit / hand")
-    ax.set_title(f"Exploitation vs opponent type ({result.get('game')}, {result.get('config')})")
-    ax.legend(fontsize=8)
+    ax.set_xticklabels([_display(t) for t in types], rotation=30, ha="right")
+    ax.tick_params(labelsize=10)
+    ax.set_ylabel("hero mean profit / hand", fontsize=11)
+    # no title: the figure caption carries it (the old one leaked the run config).
+    # Legend above the axes: inside, it covered the tallest bars and their ceilings.
+    ax.legend(fontsize=10, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.0),
+              frameon=False)
     fig.tight_layout()
-    fig.savefig(out_path, dpi=120)
+    fig.savefig(out_path, dpi=300)
     plt.close(fig)
 
 
@@ -124,3 +143,18 @@ def plot_all(all_results: dict, out_dir: str):
         plot_exploitation(result, os.path.join(out_dir, f"exploitation_{game_name}.png"))
         plot_cumulative(result, os.path.join(out_dir, f"cumulative_{game_name}.png"))
         plot_nonstationarity(result, os.path.join(out_dir, f"nonstationarity_{game_name}.png"))
+
+
+if __name__ == "__main__":
+    # Plot-only entry point: redraws the report figure from the saved results, no
+    # experiment is run. The BG renderer (scripts/figures/render_bg_figures.py) runs
+    # this too and writes the _bg twin beside the output.
+    import json
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, "results", "leduc_scale.json"), encoding="utf-8") as f:
+        leduc = json.load(f)
+    out = os.path.normpath(os.path.join(here, "..", "..", "..", "deliverables", "reports",
+                                        "step07", "figures", "impl_exploitation_leduc.png"))
+    plot_exploitation(leduc, out)
+    print("saved", out)

@@ -48,8 +48,7 @@ much, value-betting thinner against someone who calls too much.
 
 The cleanest way to see the value is a *rock-paper-scissors* picture. Your opponent secretly
 throws rock 70% of the time. The safe strategy is to randomize evenly and break even forever.
-But if you *notice* the bias, you throw paper more and start winning. Two things make this the
-whole step in miniature: you must **infer** the bias from a noisy stream of throws (a few
+But if you *notice* the bias, you throw paper more and start winning. Two things make this the whole chapter in miniature: you must **infer** the bias from a noisy stream of throws (a few
 aren't enough), and if you **over-commit** to paper you become predictable and they crush you
 with scissors. Inferring the bias is opponent modeling; knowing how far to lean is the
 exploitation-versus-safety tradeoff that runs through everything below.
@@ -77,11 +76,11 @@ computed three exact quantities:
 
 : Exploitation headroom in Kuhn: Nash EV, best-response EV, and the gap between them, per opponent type.
 
-Against the three exploitable styles the gap is enormous — **0.11 to 0.28 per hand**, on a game
+Against the three exploitable styles the gap is enormous — **about 0.21–0.23 per hand** (0.11–0.28 across both seats), on a game
 whose entire equilibrium value is about one twentieth of a chip. Against a Nash opponent the gap
 is essentially **zero**, exactly as theory demands: you cannot exploit an equilibrium, because
 best response cannot beat the game value. (The small negative Nash EVs are Kuhn's known
-first-player disadvantage of $-1/18 \approx -0.056$ — that is the game, not an error.)
+first-player disadvantage of $-1/18 \approx -0.056$ — that is the game, not an error; the equilibrium here is a 20,000-iteration CFR approximation, so against a single opponent its value can dip a few thousandths below $-1/18$.)
 
 Two lessons are already visible. First, **modeling is worth doing**: the value is large and
 real. Second, **exploitation is directional** — the exact best response to a rock *bluffs more*
@@ -189,9 +188,7 @@ falls into one of two evidential categories:
 
 ![Partial observability: a showdown reveals the opponent's private card, pinning the action to one situation; a fold hides it, forcing the model to spread the evidence across every hand the opponent might have held.](partial_observability.png)
 
-The consequence is a genuine theoretical limit, not an implementation nuisance: **without ever
-observing the opponent's private information, you cannot learn beyond your prior.** If folds are
-all you ever see, more hands do not help — the evidence is fundamentally ambiguous. Showdowns
+The consequence is a genuine theoretical limit, not an implementation nuisance: **without ever observing the opponent's private information, you can learn how often they take each action but not which hands produce it**: many strategies yield the same action frequencies, and more hands cannot tell them apart. Showdowns
 are precisely the information that breaks the ambiguity.
 
 How does a model cope with a fold? By reasoning over **all the hands the opponent might have
@@ -252,7 +249,7 @@ chapter builds and measures the endpoints so that the hybrid has firm ground to 
 This section is the theoretical frontier of the chapter and the piece the thesis most directly
 extends. It answers a question the earlier models quietly beg: *if a model fits the observed
 behavior well, have we actually recovered the opponent's true strategy?* The surprising answer
-is **not necessarily — even with infinite data** — and there is a principled fix.
+is **not necessarily — even with infinite data** — and there is a principled fix.[^ganzfried2025]
 
 ### The flaw: fitting the mean is not the same as finding the truth
 
@@ -269,7 +266,7 @@ how much data arrives. That much is intuitive. The deeper result is that the met
 **even when the truth lies inside** the achievable region: with the true strategy sitting at the
 center of three samples that average to it, the posterior weight on the single best-fitting
 sample grows without bound relative to the others, so asymptotically the belief **collapses onto
-one sample** rather than settling on the true mixture. Fitting the data ever more tightly, the
+one sample** rather than settling on the true mixture.[^ganzfried2025] Fitting the data ever more tightly, the
 model converges to the *wrong* strategy.
 
 ![Why fitting the mean can miss the truth: the modeler can only ever produce points in the shaded hull of its samples. A true strategy outside the hull is unreachable; even one inside is abandoned as the posterior collapses onto a single vertex.](consistency_convex_hull.png)
@@ -314,11 +311,9 @@ repeat until converged:
 ```
 
 This method returns the **mode** of the posterior (its single most probable point), not the
-mean. That is the crucial trade: the mode is *consistent* — under mild conditions (the truth has
-positive prior density, distinct strategies produce distinguishable observations, and every
-opponent situation is visited infinitely often) the estimate provably converges to $\sigma^*$ —
+mean. That is the crucial trade: the mode is *consistent* — under standard conditions (the true strategy lies in the interior of the set of valid strategies and has positive prior density, distinct strategies produce distinguishable observations, and every opponent situation is visited infinitely often) the estimate provably converges to $\sigma^*$[^ganzfried2025] —
 whereas the payoff-optimal mean is generally intractable to compute exactly. So the design axis
-underneath the whole step is **mean versus mode**: payoff-optimal-but-intractable versus
+underneath the whole chapter is **mean versus mode**: payoff-optimal-but-intractable versus
 tractable-and-consistent.
 
 ### What we found, honestly
@@ -328,12 +323,11 @@ performs as advertised: its recovered strategy sits very close to the truth (tot
 distance roughly **0.004 to 0.021**), matching or beating the continuous model's recovery on the
 same game. That confirms the machinery and the theory on the small testbed.
 
-We did **not** run it inside the online exploitation loop, nor on the larger game. The reason is
-the reason the literature itself flags: the estimate is the solution of an optimization that is
+We did **not** run it inside the online exploitation loop, nor on the larger game. The reason is practical: the estimate is the solution of an optimization that is
 **re-solved as observations accumulate**, and that cost grows with history — from a fraction of a
 second early on to many seconds per refit once tens of thousands of hands are in hand. For a
 real-time, hand-by-hand match that is impractical in its naive form. Rather than a gap, we treat
-this as the *empirical answer* to a question the step poses explicitly — *is a per-update convex
+this as the *empirical answer* to a question the chapter poses explicitly — *is a per-update convex
 solve fast enough for real-time play?* — namely **not without incremental methods** (warm-starting
 each solve from the last, caching the per-hand terms), which is exactly the kind of approximation
 Chapter 8 takes up. The understanding and the recovery result are what the thesis needs from this
@@ -438,6 +432,8 @@ solvable, but large enough to separate the models.
 
 : Leduc: the exploitation ceiling against what each model actually realised.
 
+("Level-1" is an opponent that best-responds to a uniformly random player, and "Level-k" best-responds to "Level-(k-1)"; on Leduc the type-based model's menu holds nine types, all shown in the next figure.)
+
 ![Exploitation against each Leduc opponent: the type-based model (which fits these opponents) hugs the exact best-response ceiling, while the continuous model tracks close but sits below for the hardest-to-fit types — and dips below the safe baseline against Nash.](../figures/impl_exploitation_leduc.png)
 
 Two results carry the message, and the second is the important one:
@@ -458,8 +454,7 @@ Chapter 8's safety mechanism (bounding the deviation from Nash by the model's ow
 to prevent.
 
 The differences here are not seed luck. Across five seeds the standard error of per-hand profit
-is tiny relative to the effects: the type-based model is statistically indistinguishable from the
-ceiling on every type in both games, and the continuous model's Leduc shortfall and its Nash
+is tiny relative to the effects: the type-based model stays within 3% of the ceiling on every type in both games (and within two standard errors on nearly all), and the continuous model's Leduc shortfall and its Nash
 self-leak are many standard errors wide.[^ganzfried2015]
 
 ---
@@ -469,12 +464,12 @@ self-leak are many standard errors wide.[^ganzfried2015]
 Everything so far assumed a fixed opponent. Real opponents drift and adapt, and a model that
 learned patiently for ten thousand hands is worse than useless the moment its subject changes
 style — it is now *confidently* describing a person who no longer exists. This is the open
-frontier the thesis is positioned to attack, and the step includes a first controlled probe.
+frontier the thesis is positioned to attack, and the chapter includes a first controlled probe.
 
 The full adaptive agent runs the loop of Section 2 end to end: **observe** hands, **update** the
 model, periodically rebuild the hero strategy as a best response to the current estimate
 (optionally blended toward Nash for safety), and **act**. To handle change, it adds a detector:
-a lightweight statistical monitor on the opponent's aggression that watches for a regime shift
+a lightweight statistical monitor on the opponent's aggression (Bayesian online change-point detection[^adams2007]) that watches for a regime shift
 and, on firing, **resets** the model and drops back to safe play while it re-learns.
 
 ![The adaptive exploitation loop: observe, update the model, best-respond (blended toward Nash for safety), and act; a change-point detector can reset the model when the opponent's style shifts.](adaptive_loop.png)
@@ -485,8 +480,8 @@ model (never forgets) against one with **change-point forgetting**. The result i
 
 | Game | Style switch (at the midpoint) | static (after switch) | change-point (after switch) |
 |---|---|--:|--:|
-| Kuhn | rock -> maniac | **-0.116** | **+0.226** |
-| Leduc | rock -> maniac | **+1.940** | **+0.525** |
+| Kuhn | rock -> maniac | **-0.106 ± 0.007** | **+0.211 ± 0.008** |
+| Leduc | rock -> maniac | **+1.834 ± 0.054** | **+0.552 ± 0.017** |
 
 : Static against change-point forgetting, after a mid-match style switch.
 
@@ -503,8 +498,7 @@ change matters as much as the detection**. A trigger-happy detector paired with 
 reset-to-safe can cost more than staleness when the new opponent is exploitable enough that
 staleness is cheap. Cheaper, gentler responses — partial forgetting instead of a hard reset, a
 less nervous detector — are the clear next chapter, and they connect directly to Chapter 8's
-confidence-scaled exploitation. (This experiment was run at a single seed, so read the *direction*
-as robust and the exact magnitudes as illustrative.)
+confidence-scaled exploitation. (Values are means over five seeds ± standard error; every seed agrees on the direction of the effect.)
 
 ---
 
@@ -539,12 +533,14 @@ the framework extends.[^shoham2008]
 
 [^southey2005]: Southey, F. et al. (2005). "Bayes' Bluff: Opponent Modelling in Poker." *UAI*.
 
-[^ganzfried2016]: Ganzfried, S. & Sun, Q. (2016/2018). "Bayesian Opponent Exploitation in Imperfect-Information Games." *IEEE CIG*. (Theorem 2.1: respond to the posterior mean.)
+[^ganzfried2016]: Ganzfried, S. & Sun, Q. (2018). "Bayesian Opponent Exploitation in Imperfect-Information Games." *IEEE Conference on Computational Intelligence and Games (CIG)*, DOI 10.1109/CIG.2018.8490452; preprint arXiv:1603.03491 (2016). (Theorem 2.1: respond to the posterior mean.)
 
-[^bard2013]: Bard, N. (2013). "Online Implicit Agent Modelling." *AAMAS* — the explicit-vs-implicit axis that frames this taxonomy.
+[^bard2013]: Bard, N., Johanson, M., Burch, N. & Bowling, M. (2013). "Online Implicit Agent Modelling." *AAMAS*, 255–262 — the explicit-vs-implicit axis that frames this taxonomy.
 
 [^ganzfried2025]: Ganzfried, S. (2025). "Consistent Opponent Modeling in Imperfect-Information Games." *arXiv:2508.17671*.
 
-[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Transactions on Economics and Computation* — the paper that first made "exploit but never lose to the baseline" a theorem; the safety half of the dial and the anchor for Chapter 8.
+[^ganzfried2015]: Ganzfried, S. & Sandholm, T. (2015). "Safe Opponent Exploitation." *ACM Transactions on Economics and Computation* 3(2), DOI 10.1145/2716322 — the paper that characterizes when "exploit but never lose to the baseline" is possible; the safety half of the dial and the anchor for Chapter 8.
 
-[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Ch. 3–4 (normal- and extensive-form games); Ch. 5 (extensive-form games); §3.4 (computing equilibria) and §4.6 (computing best responses), the sequence-form machinery underneath every LP in Chapter 8; Ch. 7 "Learning and Teaching", the learning-in-repeated-games framing, including the tension that your actions both *exploit* and *teach* the opponent. Free: <http://www.masfoundations.org/download.html>
+[^adams2007]: Adams, R. P. & MacKay, D. J. C. (2007). "Bayesian Online Changepoint Detection." *arXiv:0710.3742*.
+
+[^shoham2008]: Shoham, Y. & Leyton-Brown, K. (2008). *Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations*. Ch. 3 (normal-form games); Ch. 4 (computing solution concepts of normal-form games, §4.1 — linear programming for zero-sum games); Ch. 5 (extensive-form games; §5.2 — imperfect-information games and the sequence form, the machinery underneath every LP in Chapter 8); Ch. 7 "Learning and Teaching", the learning-in-repeated-games framing, including the tension that your actions both *exploit* and *teach* the opponent. Free: <http://www.masfoundations.org/download.html>
