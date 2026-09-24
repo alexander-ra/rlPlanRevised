@@ -61,12 +61,26 @@ def load_mapping(overlays: list[Path] | None = None) -> dict[str, str]:
 
 
 # Bulgarian runs ~15 % longer than English, so a label that fitted its box in
-# English often spills over. box() re-wraps it to the box width, and shrinks the
-# type only down to this floor - below it the figure is illegible in print, so a
+# English often spills over. box() labels are re-wrapped to the box width, and
+# the type is shrunk only down to this floor: the diagrams print at ~0.85-0.88 of
+# their matplotlib size, so fs 9.5 is ~8.2 pt on paper, the legibility floor. A
 # label that still does not fit is reported and the box has to be enlarged.
+#
+# The fitting runs at savefig time, not when box() is called: tight_layout()
+# usually runs in between and enlarges the axes, so a box measured at call time
+# looks ~25 % smaller than it prints and text would be shrunk for nothing.
 FIT_MARGIN = 0.90
-MIN_FONT = 9.0
+MIN_FONT = 9.5
 overflow_warnings: list[str] = []
+pending_fits: dict[int, list[tuple]] = {}     # id(figure) -> labels to fit
+
+
+def apply_pending_fits(fig) -> None:
+    """Fit every box label registered on `fig`, against its final geometry."""
+    for txt, ax, label, w, h, fs, weight in pending_fits.get(id(fig), ()):
+        new, size = fit_label(ax, label, w, h, fs, weight)
+        txt.set_text(new)
+        txt.set_fontsize(size)
 
 
 def fit_label(ax, text: str, w: float, h: float, fs: float,
@@ -216,6 +230,7 @@ def install(mapping: dict[str, str], written: list[Path],
     orig_save = Figure.savefig
 
     def savefig(self, fname, *a, **kw):
+        apply_pending_fits(self)
         if isinstance(fname, (str, os.PathLike)):
             out = bg_path(fname)
             out.parent.mkdir(parents=True, exist_ok=True)
@@ -283,18 +298,16 @@ def patch_diagram_utils(script: Path, mapping: dict[str, str],
             ax, w, h = args[0], args[3], args[4]
             label = args[5] if len(args) > 5 else kwargs.get("label")
             fs = kwargs.get("fs", args[7] if len(args) > 7 else default_fs)
-            if isinstance(label, str) and label.strip() and "$" not in label:
-                new, size = fit_label(ax, label, w, h, fs,
-                                      kwargs.get("fontweight"))
-                if len(args) > 5:
-                    args[5] = new
-                else:
-                    kwargs["label"] = new
-                if len(args) > 7:
-                    args[7] = size
-                else:
-                    kwargs["fs"] = size
-            return orig_box(*args, **kwargs)
+            n_texts = len(ax.texts)
+            result = orig_box(*args, **kwargs)
+            # register the label box() just drew; it is fitted at savefig time
+            new_texts = ax.texts[n_texts:]
+            if (isinstance(label, str) and label.strip() and "$" not in label
+                    and new_texts):
+                pending_fits.setdefault(id(ax.figure), []).append(
+                    (new_texts[-1], ax, label, w, h, fs,
+                     kwargs.get("fontweight")))
+            return result
 
         box._bg_wrapped = True
         mod.box = box
@@ -384,6 +397,7 @@ def main() -> None:
             os.chdir(cwd)
             import matplotlib.pyplot as plt
             plt.close("all")
+            pending_fits.clear()
             # Drop only modules loaded from inside this repo, so the next
             # script picks up its own _diagram_utils. Purging everything new
             # also evicts numpy's C extensions, which cannot be re-imported
