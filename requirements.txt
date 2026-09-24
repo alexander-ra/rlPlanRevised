@@ -8,3 +8,10 @@ matplotlib>=3.8
 Pillow>=12.0
 python-pptx>=1.0
 playwright>=1.58
+
+# Chapters 13-14 (behavioural analysis on hand histories; evaluation framework)
+scikit-learn>=1.9
+pokerkit>=0.7
+umap-learn>=0.5
+cvxpy>=1.9
+ecos>=2.0
