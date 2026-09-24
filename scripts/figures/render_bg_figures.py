@@ -144,10 +144,13 @@ def install(mapping: dict[str, str], written: list[Path],
         if orig is None or getattr(orig, "_bg_wrapped", False):
             return
 
+        indices = arg_index if isinstance(arg_index, tuple) else (arg_index,)
+
         def patched(*args, **kwargs):
             args = list(args)
-            if len(args) > arg_index:
-                args[arg_index] = tr(args[arg_index])
+            for i in indices:
+                if len(args) > i:
+                    args[i] = tr(args[i])
             for k in (kw or ()):
                 if k in kwargs:
                     kwargs[k] = tr(kwargs[k])
@@ -161,10 +164,13 @@ def install(mapping: dict[str, str], written: list[Path],
                  "set_yticklabels", "annotate"):
         wrap(Axes, meth, 1, ("label", "title"))
     wrap(Axes, "text", 3)                    # ax.text(self, x, y, s)
-    wrap(Axes, "legend", 1, ("title",))
+    # legend(labels) or legend(handles, labels): the labels are the first or
+    # the second positional argument. tr() leaves non-strings (handles) alone,
+    # so translating both positions covers either form.
+    wrap(Axes, "legend", (1, 2), ("title", "labels"))
     wrap(Figure, "suptitle", 1)
     wrap(Figure, "text", 3)
-    wrap(Figure, "legend", 1, ("title",))
+    wrap(Figure, "legend", (1, 2), ("title", "labels"))
     for fn in ("xlabel", "ylabel", "title", "suptitle"):
         wrap(plt, fn, 0)
     wrap(plt, "text", 2)
