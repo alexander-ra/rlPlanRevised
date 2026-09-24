@@ -1,0 +1,77 @@
+# Step 08 — Chapter I extract
+**Feeds:** § 1.5 (primary), § 1.6
+
+## Digest
+
+In a two-player zero-sum game a Nash equilibrium strategy guarantees the game value against any opponent, but it does not punish weak play. A best response to an opponent model extracts the most value, but it is itself highly exploitable, and badly so if the model is wrong or the opponent is deceptive. Safe exploitation occupies the space between the two. Most methods can be written as one optimisation: maximise expected value against the model subject to a floor on the worst-case value. In sequence form [1] the objective is linear in the realisation plan, and the worst case is a minimum over the opponent's best responses. The problem is therefore a linear program, which can be solved by constraint generation with a best-response oracle, in the manner of double-oracle methods [2]. The methods differ mainly in where the floor is placed.
+
+The restricted Nash response [3] computes an equilibrium against an opponent that must follow the model with probability p. Every such response is an ε-safe best response [3], a notion introduced in [4], so sweeping p traces the exploitation–exploitability frontier. In a large abstracted hold'em game this frontier is strongly concave: large reductions in exploitability cost little exploitation [3]. Data-biased responses make the restriction depend on how much data supports each information set [5]. Ganzfried and Sandholm [6] define safety over the repeated game: at least the game value per hand in expectation. They show that deviating from equilibrium can be safe only when the opponent has played "gift" strategies. Their algorithms risk only the gifts already won, and they significantly outperform playing the best equilibrium against the model.
+
+Two relaxations make safety usable with the approximate equilibria that real systems compute. Prime-safe exploitation takes the floor from the baseline's own worst case [7]. Adaptation safety requires the exploiting strategy to be no more exploitable than its blueprint [8]. When the baseline and the blueprint are the same strategy, the two floors coincide. For real-time play, safety is localised to subgames. Safe Exploitation Search bounds the extra exploitability that a re-solved subgame can add [9]. OX-Search guarantees adaptation safety for nested subgame re-solving [8]. Depth-limited search can use opponent-model information beyond its horizon [10], and confidence sequences yield per-deployment safety certificates [11]. All of these results are for two-player zero-sum games.
+
+For evaluation (§ 1.6), realised profit is a poor proxy for safety. In a teaching attack, an opponent baits with a weak style and then switches. If it switches to a stationary equilibrium, an unconstrained best response can still end well ahead: only an opponent that best-responds to the exploiter realises its worst case. The risk is therefore visible only in the exact worst-case value. The "being taught and exploited" problem motivates adaptation safety [8], yet deceptive and non-stationary opponents are rarely part of evaluation protocols.
+
+Every guarantee above rests on the two-player minimax value. With three or more players, equilibria are neither unique nor non-exploitable [12]. The N-player safety notions that exist are either very conservative or provably unattainable. The conservative one is the maxmin value of a team against a coordinated coalition [13, 14]. The unattainable one is equal share, the fair fraction of the total payoff: it cannot be secured against opponents who play different fixed strategies [12, Prop. 4.1], so it is a target, not a guaranteed minimum. KL-regularised play has been deployed in seven-player Diplomacy, but it anchors to an imitation-learned human policy for compatibility and gives no loss bound [15, 16]. Opponent modelling in three-player Kuhn poker outperforms equilibrium strategies, again without a loss bound [17]. No method was found that exploits sub-optimal opponents in an N-player imperfect-information game while bounding its loss relative to a baseline, or that tests such a bound against colluding opponents.
+
+## Key sources
+1. B. von Stengel, "Efficient Computation of Behavior Strategies," *Games Econ. Behav.*, vol. 14, no. 2, pp. 220–246, 1996. DOI 10.1006/game.1996.0050. [verified: Crossref, in the step-07 extract]
+2. H. B. McMahan, G. J. Gordon, A. Blum, "Planning in the Presence of Cost Functions Controlled by an Adversary," in *Proc. ICML*, 2003. [verified: search listings (ResearchGate, Semantic Scholar); pages 536–543 unverified]
+3. M. Johanson, M. Zinkevich, M. Bowling, "Computing Robust Counter-Strategies," in *Proc. NIPS*, 2007, pp. 721–728. [verified: full text (Theorem 1, Eq. 3 mixing, Fig. 1, "highly concave" quote); pages from the ACM DL listing]
+4. P. McCracken, M. Bowling, "Safe Strategies for Agent Modelling in Games," in *AAAI Fall Symp. Artificial Multi-Agent Learning*, 2004. [verified: existence only (step-07 extract); cited as [MB04] for ε-safe best responses in [3] full text; not read]
+5. M. Johanson, M. Bowling, "Data Biased Robust Counter Strategies," in *Proc. AISTATS*, PMLR vol. 5, pp. 264–271, 2009. [verified: PMLR listing via search; not read]
+6. S. Ganzfried, T. Sandholm, "Safe Opponent Exploitation," *ACM Trans. Econ. Comput.*, vol. 3, no. 2, Art. 8, 2015. DOI 10.1145/2716322. [verified: Crossref + full text (Def. 4.1, Def. 5.2 gifts, §6 RWYW/RWYWE/BEFFE, §6.3 best equilibrium, abstract)]
+7. L. Jeary, P. Turrini, "Safe Opponent Exploitation For Epsilon Equilibrium Strategies," arXiv:2307.12338, 2023. [verified: arXiv abstract; no peer-reviewed venue found]
+8. Z. Ge, Z. Xu, T. Ding, L. Meng, B. An, W. Li, Y. Gao, "Safe and Robust Subgame Exploitation in Imperfect Information Games," in *Proc. ICML*, PMLR vol. 235, pp. 15255–15270, 2024. [verified: PMLR page + full text (Def. 4.1, Theorem 4.3, nested use, Leduc and Flop Hold'em, two-player zero-sum scope)]
+9. M. Liu, C. Wu, Q. Liu, Y. Jing, J. Yang, P. Tang, C. Zhang, "Safe Opponent-Exploitation Subgame Refinement," in *Proc. NeurIPS*, 2022. [verified: NeurIPS abstract page + full text (Theorem 4.1 additive bound)]
+10. D. Milec, V. Kovařík, V. Lisý, "Adapting Beyond the Depth Limit: Counter Strategies in Large Imperfect Information Games," in *Proc. AAMAS* (extended abstract), 2025, pp. 2675–2677; arXiv:2501.10464. [verified in lit_gaps.md (Crossref + IFAAMAS); not rechecked]
+11. B. Li, L. Huang, "Agents that certify their own exploits: Confidence-scheduled restricted responses for safe opponent exploitation," arXiv:2607.28520, 2026. [verified in lit_gaps.md (arXiv abstract); not rechecked]
+12. J. Ge, Y. Wang, W. Li, C. Jin, "Securing Equal Share: A Principled Approach for Learning Multiplayer Symmetric Games," in *Proc. ICML*, 2025; arXiv:2406.04201. [verified: arXiv abstract + HTML v2 (Props. 4.1–4.2); ICML venue per lit_gaps.md]
+13. A. Celli, N. Gatti, "Computational Results for Extensive-Form Adversarial Team Games," in *Proc. AAAI*, vol. 32, no. 1, 2018. DOI 10.1609/aaai.v32i1.11462. [verified: Crossref]
+14. Y. Zhang, B. An, J. Černý, "Computing Ex Ante Coordinated Team-Maxmin Equilibria in Zero-Sum Multiplayer Extensive-Form Games," in *Proc. AAAI*, vol. 35, no. 6, pp. 5813–5821, 2021. DOI 10.1609/aaai.v35i6.16728. [verified: Crossref]
+15. A. P. Jacob, D. J. Wu, G. Farina, A. Lerer, H. Hu, A. Bakhtin, J. Andreas, N. Brown, "Modeling Strong and Human-Like Gameplay with KL-Regularized Search," in *Proc. ICML*, 2022; arXiv:2112.07544. [verified in lit_gaps.md; not rechecked]
+16. A. Bakhtin, D. J. Wu, A. Lerer, J. Gray, A. P. Jacob, G. Farina, A. H. Miller, N. Brown, "Mastering the Game of No-Press Diplomacy via Human-Regularized Reinforcement Learning and Planning," in *Proc. ICLR*, 2023; arXiv:2210.05492. [verified in lit_gaps.md; not rechecked]
+17. S. Ganzfried, K. A. Wang, M. Chiswick, "Opponent Modeling in Multiplayer Imperfect-Information Games," in *Proc. DAI '24*, 2024, pp. 39–45. DOI 10.1145/3719545.3721108; arXiv:2212.06027. [verified in lit_gaps.md; not rechecked]
+18. A. Müller, J. Schneider, S. Skoulakis, L. Viano, V. Cevher, "Best of Both Worlds: Regret Minimization versus Minimax Play," in *Proc. ICML*, 2025; arXiv:2502.11673. [verified in lit_gaps.md; not rechecked; used in Gaps only]
+
+## Gaps
+- **G-a (C2): no safe exploitation in N-player imperfect-information games.**
+  - Every safe-exploitation result found is two-player zero-sum [3, 6, 7, 8, 9, 11]: the gift characterisation [6], adaptation safety [8] and the SES bound [9] all rely on the two-player minimax value. Every N-player exploitation result [17] has no loss bound.
+  - N-player safety notions do exist, so the gap is not "no notion exists". Team-maxmin values against a coordinated coalition [13, 14] are very conservative. Equal share [12] is a *target* C/n, not a guaranteed minimum: it is provably not securable when opponents play different fixed strategies (Prop. 4.1) or adapt arbitrarily fast (Prop. 4.2). It can be claimed only under Ge et al.'s conditions (identical, slowly adapting opponents), or used as an empirical reference line.
+  - Baseline-relative regret [18] gives a candidate safety criterion that does not need the minimax theorem, but it is not a worst-case guarantee.
+  - Open, consistent with lit_gaps C2: a method that exploits in small N-player games with a stated baseline-relative loss bound, checked empirically.
+- **G-b (C2): no loss bound has been tested against colluding opponents.** Coalition dynamics are studied (team games [13, 14]; lit_gaps also lists coalition and collusion detection work), but no safe-exploitation method is evaluated against a colluding pair, which is exactly the heterogeneous case where equal share fails [12].
+- **G-c (C2): KL anchoring to an equilibrium blueprint is a proposal, not an established safety technique.** piKL and DiL-piKL [15, 16] regularise towards an *imitation-learned human policy* for human compatibility, with no exploitability or loss bound. Anchoring an exploiting policy to a blueprint is the thesis's own proposal. Its two-player relatives are the RNR mixture [3], magnetic mirror descent and StratFormer's schedule (lit_gaps), and it should be presented that way.
+- **G-d (C2): repeated-game "gift" safety has no multi-agent counterpart.** In two-player games, safely deviating *beyond* equilibrium needs accumulated gifts [6]; a per-hand floor only chooses among equilibria. Gifts are defined relative to equilibrium strategies (Def. 5.2), which lose their guarantee with N > 2 [12]. No N-player analogue was found. [Analysis from [6, 12]; not a claim either source makes.]
+- **G-e (C3): exploiters are rarely evaluated against deceptive or switching opponents with worst-case numbers alongside profit.** This is consistent with `lit_evaluation.md` failure modes 1 and 7. The motivation exists in the literature [8], and chapter 8's teaching attack shows why realised profit alone misleads (see Own evidence).
+
+## Own evidence
+- **A per-hand floor at the game value exploits little.**
+  - Kuhn, against perfect models of six opponent types: the best equilibrium against each model keeps its worst case within 5·10⁻⁴ of $v^* = -0.0556$, and gains 0.002–0.076 per hand over the Nash strategy (1–9 % of the full best response's gain). The full best response's worst case is −0.5.
+  - Source: `implementation/step08/implementation/results/kuhn_scale.json`.
+  - Caveat: exact values; toy game; static opponents; perfect models. Labelled "Ganzfried" in the chapter, but it is Ganzfried–Sandholm's best-equilibrium baseline, not RWYWE (F08-C01).
+- **Relaxing the floor by the measured ε buys more.** With ε = 0.0074 (the worst case of an early-stopped CFR baseline), prime-safe/adaptation earn +0.266 against AlwaysPass, against +0.222 for the best equilibrium and +0.146 for Nash. Source: `kuhn_scale.json`, `results/pareto_kuhn.json`. Caveat: one baseline; Kuhn only.
+- **A RNR sweep in a small game switches between two vertices.**
+  - Against TightPassive, $p \le 0.6$ returns EV −0.044 at exploitability ≈ 0 and $p \ge 0.7$ returns EV +0.167 at 0.444; the switch between these two vertices is at $p \approx 0.68$. Mixing the two vertices gives a line that lies only ≈ 0.002 above the naive Nash/BR blend.
+  - Source: `results/pareto_kuhn.json`.
+  - Caveat: 11-point grid; one opponent; supports "the frontier is nearly linear in Kuhn", not "bang-bang frontier" (F08-C05).
+- **Global vs subgame safety on Leduc under capped budgets.**
+  - The global constraint-generation solves, capped at 40 iterations (≈ 2.5 s per cell), leave worst cases of −0.64 to −1.33 (v* = −0.086). The subgame method, with a cap of 400, converged on 3 of 4 types in 194–350 iterations (30–79 s) at a worst case of ≈ −0.13, gaining +0.05 to +0.24 per hand over Nash.
+  - Source: `results/leduc_bounded_scale.json`.
+  - Caveat: unequal budgets; one run per cell; perfect models. It shows slowness within a budget, not non-convergence (F08-C02).
+- **Realised profit hides unsafety.**
+  - Teaching attack on Kuhn (TightPassive bait → Nash reveal at hand 10 000; 5 seeds × 20 000 hands; model refit every 500 hands). The unconstrained best response still averages +0.051 per hand while violating the Nash floor at 40 of 40 refits in every seed; the best equilibrium averages −0.048 with 0 violations. After the switch, both the best response and Nash itself average −0.061.
+  - Source: `kuhn_scale.json` (teaching_attack).
+  - Caveat: the reveal is a stationary equilibrium, not an adaptive counter-exploiter. This evidence supports the § 1.6 claim, not a claim about safe methods out-earning.
+
+## Figure candidate
+None from this chapter. A table serves § 1.5 better: adapt the chapter's three-notion table (Ganzfried–Sandholm / prime-safe / adaptation: floor, requirement, weakness) and add two N-player rows, team-maxmin [13, 14] and equal share [12]. The contrast then shows directly where the two-player anchor ends. The diagram figures (38, 39, 43) are implementation-specific and currently fail at print size (F08-G02, G03, G07).
+
+## To verify
+- [2] ICML 2003 pages (536–543 came from a search summary). [3] pages 721–728 came from the ACM DL listing, not the PDF.
+- [5], [4]: not read. Check that data-biased responses make the restriction per information set before stating it in that form, and that [4] defines ε-safe strategies as Chapter I says.
+- [8] Theorem 4.3 assumes a specific gadget construction. State "guarantees adaptation safety" only with "for its subgame re-solving procedure". "Being taught and exploited" is attributed by [8] to Sandholm (2007); that source was not read.
+- [9] The SES bound depends on the exploitation level α and the reach-estimation error τ, and holds only for 1 − (2τ+1)α > 0. Do not call SES "safe relative to the blueprint".
+- [6] The gift characterisation covers repeated two-player zero-sum games. Check the exact statement of Proposition 5.3 before paraphrasing "only when gifts exist".
+- [10], [11], [15]–[18]: verification relies on `lit_gaps.md`. Confirm the [12] ICML 2025 venue and page range.
+- Own evidence: the SES blueprint's worst case (−0.1197) appears only in `EXECUTION_NOTES.md`, not in the JSON. Re-derive it before using the "SES held its own floor" reading.
+- "Two orders of magnitude more situations" (Leduc vs Kuhn): the hero has 468 infosets in Leduc (`subgame_peek`, EXECUTION_NOTES) against 6 in Kuhn, a factor of ≈ 78. Quote the counts, not the phrase.

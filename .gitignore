@@ -39,3 +39,6 @@ implementation/nlhe/tools/
 
 # Bundle build cache: TOC-less renders, regenerated on demand
 deliverables/bundles/.parts/
+
+# Final review: printed-figure renders (regenerable: scripts/figures/render_printed.py)
+deliverables/finalReview/renders/

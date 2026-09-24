@@ -1,0 +1,149 @@
+# Glossary decisions — for the candidate
+
+Merged from 146 glossary-level findings (F01-T … F12-T) of the September 2026 final review.
+Each row is one decision that applies to **every** chapter, the one-pagers, the reports and
+the figure labels, and to both glossaries (`deliverables/terminology_EN_BG.md` and the
+settled `llmPipeline/glossary_settled.md`, via the picker).
+
+**How to answer:** everything marked ✅ is applied as recommended unless you change it.
+Rows marked ❓ are genuine choices — pick one or write your own. Edit the "Decision" column
+in place, or just reply with the row numbers you want different.
+
+Convention kept from the brief: algorithm and system names stay in Latin script (CFR, PPO,
+Libratus, Decision Transformer …); people's names are transliterated (Наш, Кун, Шапли).
+On first use in each chapter, a Bulgarian term is followed by the English in parentheses.
+
+## 0. Pipeline rules (not single terms)
+
+| # | Problem | Decision |
+|---|---|---|
+| 0.1 | Verbs stored in 1st-person dictionary form ("рандомизирам", "оптимално отговарям") are pasted into prose | ✅ store verbs as nouns/neutral phrases ("най-добър отговор", "избира на случаен принцип"); never insert a 1st-person form |
+| 0.2 | ~25 entries whose "Bulgarian" side is English (TD error, Kuhn's Theorem, Machine Zero, Full-Traversal CFR, EGTA Meta-Game, Coalition-Aware MAPPO, No-Limit Texas Холдем …) | ✅ translate all; only acronyms/system names stay Latin |
+| 0.3 | Entries with a Latin letter inside Cyrillic ("n-играчeн", "типoв") | ✅ fix; they break search and hyphenation |
+| 0.4 | The non-word "сходява/сходяват" (≈15× in 9 chapters) | ✅ "клони към" / "се сближава с" / "достига", by context |
+| 0.5 | Pipeline bolded glossary terms the EN does not bold | ✅ remove extra bold (applied mechanically) |
+| 0.6 | Title-case values ("Сходява", "Усреднено време") print capitalised mid-sentence | ✅ lower-case all values |
+
+## 1. Core game theory and the thesis's own vocabulary
+
+| # | English | Now | Recommended | Decision |
+|---|---|---|---|---|
+| 1.1 | two-player | двуигрови (= "two-game"; ≈30× in 6 chapters) | за двама играчи ("игра за двама с нулева сума") | ✅ |
+| 1.2 | N-player / n-player | N-игрова среда, N-играторска, n-играчeн | с N играчи | ✅ |
+| 1.3 | multiplayer | многопотребителски (= multi-user), мултиплейър | с много играчи | ✅ |
+| 1.4 | safety–exploitation spectrum | безопасност–изследване (= exploration) | безопасност–експлоатация | ✅ |
+| 1.5 | safe exploitation | also "безопасно използване" | безопасна експлоатация (only) | ✅ |
+| 1.6 | exploiter | експлоатьор, експлоатер, експлойтър | експлоататор | ✅ |
+| 1.7 | Nash (opponent type) vs Nash (concept) | "наш противник" (= "our opponent"), Нашево, Нашов | type in quotes: „Наш“; concept: равновесие на Наш; Nash EV → очаквана стойност при равновесие на Наш | ✅ |
+| 1.8 | Restricted Nash Response | curated "Ограничен Наш отговор" (= "our response") | ограничен отговор по Наш (RNR) | ✅ |
+| 1.9 | SES (curated expansion) | Safe Exploitation *Subgame* | Safe Exploitation *Search* — търсене на безопасна експлоатация (Liu et al. 2022) | ✅ |
+| 1.10 | blueprint | curated "Схема"; corpus "план" (≈130×); settled "план-стратегия" | ❓ **(a)** базова стратегия (blueprint) — no clash with "план за реализация" (realization plan, ch. 8) · **(b)** keep план (blueprint) — fewer edits | |
+| 1.11 | counterfactual | curated "контрафактуален"; corpus "контрафактичен" (≈45× vs 2) | контрафактичен — change the curated file, not the text | ✅ |
+| 1.12 | consistent / consistency (statistical, Ganzfried 2025) | съгласуван | състоятелен / състоятелност (as in "състоятелна оценка"); keep "съгласуван" only for "consistent with the observations" | ✅ |
+| 1.13 | intractable / tractable | неразрешим (= undecidable) | изчислително непосилен / ефективно изчислим | ✅ |
+| 1.14 | worst-case value | най-лошият стойностен случай | стойност в най-лошия случай | ✅ |
+| 1.15 | in expectation | в очакване (= "while waiting") | средно (по математическо очакване) | ✅ |
+| 1.16 | sound / soundness | звуково, правилно, надежден, коректен | коректен / коректност | ✅ |
+| 1.17 | opponent-blind(ness) | невидимост за противника (inverted) | „сляп“ за противника / „слепота“ за противника | ✅ |
+| 1.18 | oracle (best-response oracle, double oracle) | предсказвач (also in curated file) | оракул; оракул за най-добър отговор; метод на двойния оракул | ✅ |
+| 1.19 | bang-bang | изненадващ обрат (= "a surprising twist") | скокообразно превключване; threshold → праг на превключване | ✅ |
+| 1.20 | gadget (subgame solving) | джаджа | приспособление (gadget) | ✅ |
+| 1.21 | cutting-plane / cut | равнина на отсичане; cut → сечение/срез/разрез | отсичаща равнина; метод на отсичащите равнини; cut → отсичащо ограничение | ✅ |
+| 1.22 | continuation strategy / continual re-solving | продължителна (= long-lasting) | стратегия за продължение; непрекъснато пререшаване | ✅ |
+| 1.23 | leaf (of the tree) | възел | листо; leaf evaluator → оценител на листата | ✅ |
+| 1.24 | public belief state | общодостъпно състояние на вярванията | публично състояние на убежденията (PBS) | ✅ |
+| 1.25 | rest point (dynamics) | равновесна точка (clashes with Nash) | точка на покой | ✅ |
+| 1.26 | wheel of counters / counters | колело от броячи, коалиционни жетони | кръг от контрастратегии; counters → контрастратегии | ✅ |
+| 1.27 | reconciliation (prediction vs result boxes) | съгласуване | съпоставка (прогноза → резултат) | ✅ |
+| 1.28 | Shapley value / credit | Шейпли, Shapley, "коалиционен кредит" | стойност на Шапли; credit → принос (по Шапли) | ✅ |
+| 1.29 | Matching Pennies | „хвърляне на монета“ (a chance event) | „съвпадение на монети“ (Matching Pennies) | ✅ |
+| 1.30 | defect / cooperate (PD) | дефект (= a flaw) | предателство (verb предава); сътрудничество | ✅ |
+| 1.31 | spinning top (curated note) | attributed to Balduzzi 2019 | decomposition: Balduzzi et al. 2018/2019; "spinning top": Czarnecki et al. 2020 | ✅ |
+
+## 2. Reinforcement learning and statistics
+
+| # | English | Now | Recommended | Decision |
+|---|---|---|---|---|
+| 2.1 | policy | mixed "политика"/"стратегия" (curated says стратегия) | стратегия everywhere (policy iteration → итерация по стратегии) | ✅ |
+| 2.2 | on-policy / off-policy | политика на работа; извънполитикова | по текущата стратегия (on-policy); извън текущата стратегия (off-policy) | ✅ |
+| 2.3 | self-play (freq 43, 7 chapters) | самообучение (= self-study; "обучение чрез самообучение") | ❓ **(a)** самоигра — short, already used 7× in ch. 6 and in "фиктивна самоигра" · **(b)** игра срещу себе си — plainer, longer | |
+| 2.4 | independent learning | самостоятелно обучение (= self-study) | независимо обучение | ✅ |
+| 2.5 | bootstrapping | самоподкрепяне, буутстрапинг, „bootstrap“ | ❓ **(a)** бутстрапинг (common in BG ML writing) · **(b)** самоподкрепяне (with "(bootstrapping)" on first use) | |
+| 2.6 | converge / convergent | Сходява (non-word) | клони към / се сближава с; сходящ; convergence → сходимост | ✅ |
+| 2.7 | prior / posterior / likelihood | предварително убеждение / задно (= "rear") / вероятност | априорно разпределение / апостериорно разпределение / правдоподобие; conjugate prior → спрегнато априорно разпределение | ✅ |
+| 2.8 | variance / unbiased | also вариация / непредубеден | дисперсия / неизместен | ✅ |
+| 2.9 | bias (statistical) / bias vector | пристрастие (= prejudice) | отместване; вектор на отместванията (keep "индуктивно пристрастие" for inductive bias) | ✅ |
+| 2.10 | divergence (of an iteration/trajectory) | разминаване (= a mismatch) | разходимост / отдалечаване (от равновесието); KL stays "дивергенция" | ✅ |
+| 2.11 | KL divergence / KL-regularized | разминаване на Кълбек-Лайблер; КЛ | дивергенция на Кулбак–Лайблер (KL); с KL-регуларизация | ✅ |
+| 2.12 | mode | мода (fashion) for everything | мода (of a distribution only); режим / вид (operating mode, credit mode) | ✅ |
+| 2.13 | time-average | Усреднено време (= "averaged time") | средно по времето | ✅ |
+| 2.14 | sample efficiency / sample-efficient | ефективност на извадката; ефективен по отношение на пробите | ефективност по отношение на данните (sample efficiency) | ✅ |
+| 2.15 | wall-clock time / budget | реално време (clashes with C1's "real-time") | време за изпълнение; бюджет от време за изпълнение | ✅ |
+| 2.16 | compute (cost) | изчислителна мощност (= hardware) | изчислителни разходи; test-time compute → изчисления по време на изпълнение | ✅ |
+| 2.17 | inference (running a model), test-time | извод; време на тестване; тест-тайм | по време на изпълнение / по време на игра | ✅ |
+| 2.18 | offline | извън линия (calque) | офлайн / предварително | ✅ |
+| 2.19 | sparse reward | оскъдна награда (= meagre) | рядка награда; sparse agents → агенти с рядка награда | ✅ |
+| 2.20 | critic (actor-critic) | "критична стойност" (= statistical critical value) | критик; critic-value proxy → заместител от оценките на критика | ✅ |
+| 2.21 | return conditioning | условно връщане (= conditional refund) | обуславяне по възвръщаемостта | ✅ |
+| 2.22 | return-to-go | очаквана възвръщаемост до края (wrong: it is realised) | остатъчна възвръщаемост | ✅ |
+| 2.23 | sequence models | последователни модели (= consistent/successive) | модели на последователности | ✅ |
+| 2.24 | Decision Transformer / ARDT | трансформатор (electrical) / трансформър … | keep Latin names; first-use gloss "трансформър за вземане на решения" | ✅ |
+| 2.25 | overfitting / underfitting | пренастройване / недообучен | преобучение / недообучение | ✅ |
+| 2.26 | convolution | сгъвка (= a fold) | конволюция; конволюционен | ✅ |
+| 2.27 | permutation-equivariant / -invariant | инвариантен (wrong for equivariant) | еквивариантен / инвариантен спрямо пермутации | ✅ |
+| 2.28 | grid / gridworld (no entry) | мрежа (clashes with neural network) | решетка; решетъчна среда | ✅ |
+| 2.29 | proximal policy optimization (gloss) | оптимизация на проксималната стратегия | оптимизация на стратегията с ограничение на близостта (PPO) | ✅ |
+| 2.30 | generalized advantage estimation | обобщено изчисляване на предимството | обобщена оценка на предимството (GAE) | ✅ |
+| 2.31 | custom (own implementation) | персонализиран | собствена реализация / собствен | ✅ |
+| 2.32 | Markov property | марковска свойственост | марковско свойство | ✅ |
+| 2.33 | regret flooring | подово ограничаване на съжалението | нулиране на отрицателните съжаления | ✅ |
+| 2.34 | linear averaging / running average | усредняване на линейни стратегии; плъзгаща средна | линейно претеглено усредняване; текуща средна | ✅ |
+| 2.35 | smoke / scale runs | smoke/scale, "дим", пробно изпълнение | бърза проверка / пълен мащаб | ✅ |
+| 2.36 | sweep / paired sweep | обхождане (= traversal); петкратно кръстосано | серия експерименти; сдвоени сравнения с 5 начални числа | ✅ |
+| 2.37 | undersampling | подбиране на ограничена извадка | недостиг на наблюдения | ✅ |
+| 2.38 | seed | семена (in places) | начално число | ✅ |
+| 2.39 | projected gradient / convex program | проектиран (= designed); програмираща задача | градиентен метод с проекция; задача на изпъкналата оптимизация | ✅ |
+| 2.40 | lossy / recall (abstraction) | загубен (= lost); извличане | със загуби; памет (perfect/imperfect recall → пълна/непълна памет) | ✅ |
+| 2.41 | exploitability gap | експлоатируема разлика / пропуск в експлоатируемостта | разлика в експлоатируемостта | ✅ |
+| 2.42 | action translation / pseudo-harmonic mapping | превод; отображение | транслация на действия; псевдохармонично преобразуване | ✅ |
+| 2.43 | churn | загуба на памет | непрекъсната смяна (на стратегиите) | ✅ |
+| 2.44 | gap closed (metric) | разликата е намалена | затворена част от разликата | ✅ |
+| 2.45 | tie-break / deadlock | развръзка (= plot dénouement); задънена улица | правило при равенство; пат | ✅ |
+| 2.46 | planted coalition | засадена (like a tree) | предварително зададена коалиция | ✅ |
+| 2.47 | random floor | случаен минимум | нивото на случайната игра | ✅ |
+| 2.48 | toy games / toy scale | игри-играчки; игрови мащаб | опростени (учебни) игри; мащаб на опростен модел | ✅ |
+
+## 3. Poker vocabulary
+
+| # | English | Now | Recommended | Decision |
+|---|---|---|---|---|
+| 3.1 | bet / call / raise / fold / check | залог / **залог** / вдига / **пас** / проверка | залог / плащане (плаща) / вдигане / отказ (се отказва) / чек | ✅ |
+| 3.2 | pass (Kuhn's action p) | пас | пас (kept — this is why fold must not be "пас") | ✅ |
+| 3.3 | suit / suit isomorphism | curated "цвят", corpus "боя" | боя; изоморфизъм на боите (change the curated file) | ✅ |
+| 3.4 | turn / river / street | ход / река / улица | търн / ривър / рунд на залагане | ✅ |
+| 3.5 | board / board texture / high board | дъска, маса, текстура на дъската | общи карти; състав на общите карти; висока обща карта | ✅ |
+| 3.6 | hand (cards held) vs hand (one deal played) | mixed | ръка (cards held); раздаване (a deal played, "на раздаване") | ✅ |
+| 3.7 | hero | герой | собственият агент | ✅ |
+| 3.8 | leak (in one's play) | изтичане | уязвимост / слабост | ✅ |
+| 3.9 | win rate (poker, chips per hand) | процент победи | темп на печалба (keep "процент победи" for a share of games won) | ✅ |
+| 3.10 | mbb/g | мили-големи блайнда на игра | хилядни от големия блайнд на раздаване (mbb/g) | ✅ |
+| 3.11 | HUNL / HULHE / no-limit | 5+ variants incl. "но-лимит", "по̀кер" | безлимитен тексаски холдем за двама играчи (HUNL); лимитен … (HULHE); no-limit → безлимитен | ✅ |
+| 3.12 | chips | фиш / жетони | жетони | ✅ |
+| 3.13 | read (on an opponent) | прочитане, прочит, прочетеното | преценка за противника | ✅ |
+| 3.14 | Kuhn / Leduc | mixed | Кун покер / Ледюк Холдем (as the brief) | ✅ |
+
+## 4. Names kept in Latin script (identity entries)
+
+Student of Games, Player of Games, Liar's Dice, Reconnaissance Blind Chess, Decision
+Transformer, ARDT, Libratus, DeepStack (not "deepStack"), Pluribus, ReBeL, AlphaStar,
+OpenSpiel — the glossary and the figure mapping must stop translating them
+("Студент по Игри", "Лъжливи зарове", "слепец шах с разузнаване").
+
+## 5. Typography and bundle policy
+
+| # | Item | Decision |
+|---|---|---|
+| 5.1 | Hyphen used as a dash (" - "), ~1,500× across the BG corpus | ✅ en dash " – " with a non-breaking space before it, applied in the build (outside math, code and negative numbers) |
+| 5.2 | Decimal point, "20,000", "x" in BG text | ✅ decimal comma (0,571; `0{,}571` in math), "20 000", "×" — matches the BG figures |
+| 5.3 | Works cited in several chapters share one footnote number in the single-document bundle (note prints only in the first chapter) | ✅ repeat the note in each chapter that cites the work |
+| 5.4 | Cross-references "Раздел 5" inside chapter 7 | ✅ "раздел 7.5" |

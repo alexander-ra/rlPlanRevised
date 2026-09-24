@@ -1,0 +1,956 @@
+[
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 2,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "maybe its time to change all emntion of steps into chapters",
+  "marked_text": "Стъпка 1 -",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 2,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "2 layers is enough for the bundle so this is not needed",
+  "marked_text": "DQN върху cartPole-v1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 PPO върху lunarLander-v3. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .23 Извод . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 3,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "нека да сменим на Видове оси на абстракцията, вместо изрично изброяване 2",
+  "marked_text": "Две о",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 3,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "нека да стане решения по време на компилация",
+  "marked_text": "Конвейерът п",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 4,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "няма нужда от \"имплицитен маршрут\"",
+  "marked_text": "Имплицитен маршрут: Е",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 4,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "тези част 1 част 2 няма нужда от тях",
+  "marked_text": "Част 1 - О",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 5,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "нека да запазим оригиналното име на Libratus",
+  "marked_text": "Либратус (",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 6,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "от стъпка 7 елементите имат допълнителна номерация която е ненужна, също така трябва да премахнем \"печалбата която наш равновсеисе пропуска\" от този конкретен ред а да стане по кратко\r\rдопълнителна номерация има и глави 8, 9, 10",
+  "marked_text": "1. Защо е необходимо моделиране на противника - печалбата, която наш равновесие пропуска",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 7,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "няма нужда от думата двигателят в това  заглавие",
+  "marked_text": ". Двигателят - л",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 7,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "ненужни .\"",
+  "marked_text": "“.” .",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 7,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "решаване на под игри",
+  "marked_text": "- под-игра джаджи (",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 8,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Формиране и засичане на коалиции",
+  "marked_text": "11 Стъпка 11 - Динамично формиране на коалиции в състезателни игри всеки срещу всеки. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .210",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 8,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Липсва главна буква",
+  "marked_text": "аб",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 9,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "непълна. тази секция не е преведена по стандартизирания метод и изпозлването на речника.",
+  "marked_text": "а несъвършена и",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 10,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "няма нужда от етап а, етап б.. само имената на \"етапите\"",
+  "marked_text": "Етап A — О",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 10,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "няма нужда от дати",
+  "marked_text": "ние и теорията на игрите, необходими за цялата последваща работа. (средата на фев- руари – средата на март 2026 г.)",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 10,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "да се премахне",
+  "marked_text": "Посочените дати са ориентировъчни. Към общия план е предвиден допълнителен буферен месец, за да се поемат непредвидени корекции във времето.",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 11,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "няма нужда от този срок",
+  "marked_text": "то и формулиране на актуалността, целите, задачите и тезисите, — чийто краен срок е през ноември 2026 г. По този начин обзорът на литературата и полагането на основите се натруп-",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 11,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "да се премахне",
+  "marked_text": "т (deliverable) н",
+  "chapter": 0
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "тази част трябва да се премахне за всяка глава(стъпка) може да остане в индивидуалните пдф-и но в тоззи файл са ненужни, тъй като имаме заглавна страница на документа",
+  "marked_text": "Стъпка 1 Обобщение - Основи на обучението с подкрепление Изследване върху възможностите за прилагане на изкуствен интелект в компютърните игри Alexander Andreev April 2026",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "тези описания нямат нужда в групирания файл - може да ги премахнем и от индивидуалните мисля тъй като се повтарят и нямат стойност",
+  "marked_text": "Това е съкратен обзор на основните материали по обучение с подкрепление, разгледани в Стъпка 1. Той е предназначен за две цели: да служи като бърза справка при преминаване към следващите стъпки и като основен източник за синтеза на публичния доклад от Стъпка 15.",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "без болд",
+  "marked_text": "т животинската психология в",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "без болд",
+  "marked_text": "дето Белман разработва динамично програмиране за решаване на последователни проблеми на вземане на решение. Той въвежда функцията на стойността и принципа на оптимал-",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "без болд",
+  "marked_text": "в ядрото н",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "Най-ранната нишка идва от животинската психология в началото на XX век - „Законът за ефек- та“ на Торндайк (1911) предполага, че действията, последвани от удовлетворяващи резултати, ста-",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "дето Белман разработва динамично програмиране за решаване на последователни проблеми на вземане на решение. Той въвежда функцията на стойността и принципа на оптимал-",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник (незадължително)",
+  "marked_text": "обучението чрез проба и грешка в ранните изследвания в областта на изкуствения интелект - програмата за дама на Самюел (1959) се учи, като играе срещу себе си, коригирайки своята оце-",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "(1988)",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "(1989), п",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 13,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "з 2018 г",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 14,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "о DQN на DeepMind се научава да играе Atari Games,",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 14,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": ". PPO",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 14,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "без ударение",
+  "marked_text": "Важното е",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 14,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "в покерА",
+  "marked_text": "В покер б",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 14,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "чести",
+  "marked_text": "и гъсти (",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 15,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "пълното име Markov decision process само този път тъй като се споменава за пръв път",
+  "marked_text": "(MDP) п",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 15,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "раздел 4? не става ясно къде точно",
+  "marked_text": "в Раздел 4.",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 16,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Temporal Difference Learning",
+  "marked_text": "плюс дисконтираната стойност на следващото състояние. Цялото динамично програмиране, tD learning и дълбокото обучение с подкрепление се основават на вариации на това уравнение.",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 16,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "не бива да ревеждаме глави на източници които не са на български",
+  "marked_text": "Прочетете повече: Сътон и Барто (2018). Обучение с подкрепление: Въведение, глава 3 - Крайни марковски процеси на вземане на решения.",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 16,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "вале",
+  "marked_text": "а цар“.",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 16,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "игровият изкуствен интелект",
+  "marked_text": "а изкуственият интелект за игра на игри д",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 17,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Усвояването",
+  "marked_text": "Разбирането н",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 17,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "е от значение",
+  "marked_text": "а вече е от значение,",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 17,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "за играта Го",
+  "marked_text": ". За Го с",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 18,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "прави",
+  "marked_text": "направи",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 18,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "е (Watkins, 1989):",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 18,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "следва експериментална такава.",
+  "marked_text": "бъде извънполитиково - то се учи относно оптималната стратегия дори докато следва изследо- вателска. Това го прави толкова практично.",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 18,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "много",
+  "marked_text": "и толкова п",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 18,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "предприема",
+  "marked_text": "предприе",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 19,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "DQN (Mnih и др., 2015) е",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 19,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "само апроксиматори",
+  "marked_text": "апроксиматори на функция",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 20,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "PPO (Schulman и др., 2017) п",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 20,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "n (TRPO, Schulman и др., 2015) с",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 21,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Mlps?",
+  "marked_text": "и MLPs, ч",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 21,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "смени с (използвайки налични настройки за тях)",
+  "marked_text": "д „ако работи“ к",
+  "chapter": 1
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 25,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "от първият",
+  "marked_text": "т вашите.",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 25,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "и стига до",
+  "marked_text": "и се разширява д",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 26,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "непълна",
+  "marked_text": "и несъвършена и",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 26,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "пълна",
+  "marked_text": "у съвършена и",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 26,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "Теоремата за минимакс,",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 27,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": ": Наш (1950) д",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 27,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "игри а двама",
+  "marked_text": "а 2-играчни игри с",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 27,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "мисля че трябва да е Вале",
+  "marked_text": "с поп т",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 28,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източници",
+  "marked_text": ": Блекуел (1956) и Харт & Мас-Колел (2000) д",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 28,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "CFR (Zinkevich и др., 2007) р",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 30,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "изпитателно",
+  "marked_text": "о изпитвателно п",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 30,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "това",
+  "marked_text": "и нашето р",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 31,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "приблизителна стойност",
+  "marked_text": "а „предсказвач“ стойност,",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 32,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "трябва да се преместят описанията да са под всяко изображение на правилното място и да реферират с \"фиггура 1,2,3 и тн.\"",
+  "marked_text": "2.10 Емпирични визуализации За да се потвърдят теоретичните гаранции на CFR и приложението му към Кун покер, в хода на обучението бяха наблюдавани няколко показателя. Сходимост на стойността на играта Графиката показва как емпиричната средна стойност на играта се доближава до теоретичното очакване от −1/18 при нарастване броя на итерациите на CFR, което потвърждава стабилизира- нето на стратегията. Сходимост на експлоатируемостта Проследяването на експлоатируемостта във времето показва скорост на сходимост 𝑂(1/ √ 𝑇). Двулогаритмичната диаграма демонстрира линеен спад, което потвърждава, че средната страте- гия формира приблизително равновесие на Наш. Анализ на стратегията Тази визуализация представя конкретните вероятности за действие в различни информационни",
+  "chapter": 2
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 35,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "трябва да е \"Това създава грешно впечатление\"",
+  "marked_text": ". Този опит е подвеждащ.",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 35,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Глава 3 показва механизмите за преодоляване на проблема",
+  "marked_text": "Стъпка 3 п",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 35,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "CFR+ (Tammelin, 2014) -",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 35,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "източник",
+  "marked_text": "Монте Карло CFR (Lanctot и др., 2009) - в",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 35,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "в пъти по-евтина",
+  "marked_text": "с порядъци по-евтина,",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 38,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "този отдел ми се струва че или трябва да е по рано (още  вописанието на кун покер,или изцяло премахнат тъй като всички елементи от покера като блафиране скрита информация и стойност на играта са обяснени и на други места",
+  "marked_text": "3.4 Математиката на покера Покерът е каноничният тестов полигон з",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 39,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Многорундов сроеж",
+  "marked_text": "Многорунтов строеж -",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 40,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Обща карта",
+  "marked_text": "Чифтове раздавания -",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 42,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "една траектория до край",
+  "marked_text": "е една корен–краен траектория.",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 43,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "един ---- микс вместо една ---- смес",
+  "marked_text": ". Една ε-on-policy смес",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 48,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "изтриваме теи въпроси",
+  "marked_text": "Отворени въпроси: • Защо CFR+ емпирично постига 𝑂(1/𝑇), когато няма доказателство за такава скорост на схо- димост? Най-добрата текуща хипотеза е, че подовото ограничаване на съжалението пре- оформя траекторията на динамиката на минимизиране на съжалението по начин, който кла- сическите граници на сходимост не улавят. • При какъв размер на дървото намаляването на дисперсията (среднопретеглена извадка, MCCFR с намаляване на дисперсията) става необходимо, а не просто опция? Формулата за пресичане ни показва къде печели MCCFR - но не и къде спира да бъде конкурентен без",
+  "chapter": 3
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 49,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "игри",
+  "marked_text": "„игри-играчки,",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 50,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "покер - без ударение",
+  "marked_text": "т покера е",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 50,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "с 10^80 пъти повече",
+  "marked_text": "с коефициент ∼1080.",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 50,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "тази таблица по добре да е в дъбото на 4.2",
+  "marked_text": "същото концептуално място). Аспект",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 51,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "а тази интуиция е най-добре изразена чрез целевата функция на информационното стеснение\r\rи други термини Bottlenec трябва да станат от тясно място в стеснение",
+  "marked_text": "з лагранжиана на информационното тясно място,",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 51,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "настройка",
+  "marked_text": "„врътка“:",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 51,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "фактор за настройка",
+  "marked_text": "„Врътката“",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 52,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "трябва да се смени отношениет /род\rОграничава се множество от действия, които алгоритъма разглежда, изпълнява се CFR върху ограниченото полсе и след това се обработва... и тн",
+  "marked_text": "Ограничете множеството от действия, които решавачът разглежда, изпълнете CFR върху ограни- ченото игрално поле и след това обработете действията на реалния противник, които попадат извън това ограничение. Разграничават се два режима:",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 52,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "незначителни",
+  "marked_text": "и незаинтересовани д",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 52,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "в стъпка 1 няма такъв указател, нека да се провери да няма загуба в превод",
+  "marked_text": "м временната абстракция в стъпки 1 и 11)",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 53,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "значителен",
+  "marked_text": "е остър п",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 53,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "Псевдохармонично преобразуване – интерполация в пространството на фракциите от пота, вместо в линейното пространство на абсолютните суми. Този подход отразява много по-точно стратегическата еквивалентност между два различни залога и представлява водещия стандарт (state-of-the-art) за транслация на залозите в покера.",
+  "marked_text": "Псевдохармонично отображение - интерполация в пространството пот-фракционни кое- фициенти вместо линейно пространство на сумата на залога, което съответства на това колко стратегически еквивалентни са двата залога. Най-съвременно ниво при превод на залози в покер.",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 53,
+  "type": "Text",
+  "author": "alexa",
+  "comment": "като цяло превод в контекста на абстракцията трябва да стане англицизъмът транслация - изключение",
+  "marked_text": "",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 53,
+  "type": "Text",
+  "author": "alexa",
+  "comment": "state of the art трябва също да бъде генерално заместен от \"водещ стандарт\"",
+  "marked_text": "",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 53,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "трябва генерално да видим в документа къде има 1ви и 2ри род и да го сменим с\rпреизчислява се и тн",
+  "marked_text": "по време на изпълнение (по-долу): преизчислявам реалната под-игра с реалния залог, вместо да разчитам на преводача.",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 54,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "наш в този контекст трябва да е с главна буква (генерален коментар)",
+  "marked_text": "о наш р",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 54,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "парето с главна буква навсякъде генерално",
+  "marked_text": "а парето г",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 54,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "да се премахне",
+  "marked_text": "а (обхваната в бюджета на грешки по-долу) -",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 55,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "това трябва да е Васерщайн навскяъде",
+  "marked_text": "а Земьов-Мъри с",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 55,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "успех или провал",
+  "marked_text": "„бум или провал“",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 55,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "стабилна средна ръка",
+  "marked_text": "„стабилен среден ръка“",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 55,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "бимодална",
+  "marked_text": "о бимодален „",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 55,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "биново генерално трябва да е булево",
+  "marked_text": "(биново в",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 55,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "това да се премахне",
+  "marked_text": "Запомнете: разстоянието на Земьов-Мъри сравнява формата на разпределението, а не само средната стойност - затова две раздавания с еднакви вероятности за победа все още могат да бъдат стратегически различни.",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 56,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "трябва да стане Пример:",
+  "marked_text": "Интуиция: Ч",
+  "chapter": 4
+ },
+ {
+  "file": "latestsumaries2608011054.pdf",
+  "page": 58,
+  "type": "Highlight",
+  "author": "alexa",
+  "comment": "васерщайн",
+  "marked_text": "Земьов-Музер",
+  "chapter": 4
+ }
+]
