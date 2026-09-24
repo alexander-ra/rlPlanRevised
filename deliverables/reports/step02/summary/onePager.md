@@ -21,33 +21,35 @@ because everything after it is either an approximation of CFR (Chapters 3-5), a 
 departure from the equilibrium CFR produces (Chapters 7-8), or an attempt to say what equilibrium
 even means once `N > 2` (Chapter 9, 11).
 
-**Approach.** Vanilla CFR written from scratch on **Kuhn Poker** — 3 cards, 2 players, 12
+**Approach.** Chance-sampled CFR written from scratch on **Kuhn Poker** — 3 cards, 2 players, 12
 information sets: small enough to have a closed-form equilibrium *family* (parameterised by
 `alpha` in `[0, 1/3]`), rich enough to contain bluffing, mixed strategies and indifference.
 Hand-coded components: the game engine, recursive counterfactual traversal with regret matching
 and chance sampling, and an exact exploitability evaluator that enumerates all `2^6 = 64` pure
 strategies — because a per-state "oracle" best response is *not* a best response; the
-best-responder must commit to one action per information set. Trained for 100,000 iterations,
+best-responder must commit to one action per information set. Trained for 100,000 iterations (seed 0),
 with an OpenSpiel cross-verification script alongside. **All numbers below are measured**
 (`implementation/step02/models/cfr_results.json`).
 
 **Key results (measured).**
 
-- *CFR lands inside the analytical equilibrium family, not merely near it.* The recovered bluff
-  parameter is `alpha = 0.1941`, and the family's own internal constraint `P(bet | K) = 3*alpha`
-  holds to **2.6e-4** (measured **0.58247** against the **0.58221** its own alpha implies).
+- *CFR lands close to the analytical equilibrium family.* The recovered bluff parameter is
+  `alpha = 0.1792`, and the family's own internal constraint `P(bet | K) = 3*alpha` holds to
+  within **0.038** (measured **0.5758** against the **0.5377** its own alpha implies); even so,
+  the exploitability of the whole profile is only **0.006**.
 - *Pure decisions converge hard; mixed frequencies carry the O(1/sqrt(T)) tail.* King bets and
-  calls at **>= 0.9999**, Jack folds to a bet at **0.99998**, Queen passes at the root at
-  **0.99993** — while the mixing sits **0.002-0.011** off the closed form (Jack bluff after a
-  pass **0.3403** vs `1/3`; Queen call **0.5387** vs `1/3 + alpha = 0.5274`). The frequencies
+  calls at **>= 0.9999**, Jack folds to a bet at **0.99996**, Queen passes at the root at
+  **0.9995** — while the mixing sits **0.005-0.038** off the closed form (Jack bluff after a
+  pass **0.3387** vs `1/3`; Queen call **0.5307** vs `1/3 + alpha = 0.5126`). The frequencies
   are the slow part, which is precisely where the residual regret lives.
-- *Game value* **-0.0602** measured against the exact **-1/18 = -0.0556** at 100k iterations,
-  reproducing Player 0's structural first-mover disadvantage.
-- *The convergence rate is the theoretical one.* Log-log exploitability slope **-0.489** against
-  a predicted **-0.5**.
+- *Game value* of the average strategy **-0.0555** against the exact **-1/18 = -0.0556** (the
+  running mean of sampled payoffs over all 100k iterations is **-0.0613**), reproducing
+  Player 0's structural first-mover disadvantage.
+- *The convergence rate is consistent with the theoretical bound.* Log-log exploitability slope
+  **-0.52 ± 0.02** (5 seeds, 100-100k iterations) against the **-0.5** of the O(1/sqrt(T)) bound.
 - *Game value alone is not a validity check.* A strategy that always bluffs the Jack can still
   average near `-1/18` while being trivially exploitable; only exploitability catches it. That
-  is why exploitability — not reward — is the metric carried forward into Chapters 7-8 and 14.
+  is why exploitability — not reward — is the metric carried forward into Chapters 7-8 and into the evaluation methodology (Contribution #3).
 
 **Thesis connection.** Nash is the baseline this thesis exists to leave: Contribution #1 reads a
 specific opponent in order to justify departing from it, and Contribution #2 bounds how far the
@@ -59,5 +61,5 @@ every later claim can be bracketed by an exact answer.
 the intuition (averaging damps the overshoot, as Polyak averaging does) is not a proof.
 Everything here rests on the two-player zero-sum minimax theorem, and neither CFR's guarantee
 nor exploitability's meaning survives into N-player or general-sum settings (Chapter 9, 11). And
-full-tree traversal touches every information set on every iteration, so this exact algorithm is
-already out of budget one game up — the motivation for Chapter 3's Monte Carlo sampling and Chapter 4's abstraction.
+even with one sampled deal per iteration, CFR traverses every action sequence of that deal, so
+this exact algorithm is already out of budget one game up — the motivation for Chapter 3's Monte Carlo sampling and Chapter 4's abstraction.

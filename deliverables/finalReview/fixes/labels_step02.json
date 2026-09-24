@@ -1,0 +1,23 @@
+{
+  "Running mean of sampled payoffs": "Текуща средна на изтеглените печалби",
+  "Payoff to Player 0 (running mean)": "Печалба на Играч 0 (текуща средна)",
+  "Theoretical value (-1/18 ≈ -0.0556)": "Теоретична стойност (−1/18 ≈ −0,0556)",
+  "Training Iterations": "Итерации на обучението",
+  "$O(1/\\sqrt{T})$ reference": "еталонен наклон $O(1/\\sqrt{T})$",
+  "CFR Iterations": "Итерации на CFR",
+  "Exploitability": "Експлоатируемост",
+  "Mean exploitability over seeds": "Средна експлоатируемост по началните числа",
+  "Range over seeds (min–max)": "Обхват по началните числа (мин.–макс.)",
+  "Measured exploitability": "Измерена експлоатируемост",
+  "Probability": "Вероятност",
+  "Player 0: opening action": "Играч 0: първо действие",
+  "Player 1: response to a pass": "Играч 1: отговор на пас",
+  "Player 1: response to a bet": "Играч 1: отговор на залог",
+  "Player 0: facing a bet after passing": "Играч 0: срещу залог след пас",
+  "Player 0 card": "Карта на Играч 0",
+  "Player 1 card": "Карта на Играч 1",
+  "Pass": "Пас",
+  "Bet": "Залог",
+  "Fold (pass)": "Отказ (пас)",
+  "Call (bet)": "Плащане (залог)"
+}
