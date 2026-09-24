@@ -62,13 +62,15 @@ def arrow(ax, p, q, color=EC, lw=1.4, z=1, style="-|>", dashed=False,
                  connectionstyle=connectionstyle))
 
 
-def panel_bg(ax, x, y, w, h, fc, label=None, label_fs=10.5, label_ha="center"):
+def panel_bg(ax, x, y, w, h, fc, label=None, label_fs=10.5, label_ha="center", label_dy=0.32):
     """label_ha="left" puts the title at the panel's left edge, which keeps the
-    right-hand side of the title band free for arrows entering the panel."""
+    right-hand side of the title band free for arrows entering the panel.
+    label_dy is the distance from the panel top to the title's centre line;
+    a two-line title needs about twice the default."""
     ax.add_patch(Rectangle((x, y), w, h, facecolor=fc, edgecolor="none", zorder=0))
     if label:
         lx = x + 0.25 if label_ha == "left" else x + w / 2
-        ax.text(lx, y + h - 0.32, label, ha=label_ha, va="center",
+        ax.text(lx, y + h - label_dy, label, ha=label_ha, va="center",
                  fontsize=label_fs, fontweight="bold", color="#2c3e50", zorder=1, clip_on=False)
 
 

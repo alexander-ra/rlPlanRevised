@@ -793,24 +793,24 @@ not "Hu" as the planning files state (verified against arXiv / NeurIPS proceedin
 Pluribus broke the player-count barrier, but it did so while remaining exactly what Libratus was — a giant,
 hand-abstracted lookup table with nothing learned that transfers from one situation to the next — and it bought
 its six-handed win by giving up safety altogether, leaning on *unsafe* search with no exploitability guarantee of
-any kind. ReBeL (Brown, Bakhtin, Lerer & Gong, 2020; Facebook AI Research) steps back from six players to two and
+any kind. ReBeL (Brown, Bakhtin, Lerer & Gong, 2020; Facebook AI Research)[^brown2020rebel] steps back from six players to two and
 asks the opposite question: **what if, instead of hand-crafting an abstraction and precomputing a blueprint, we
 ran AlphaZero — self-play reinforcement learning plus search, at both training and test time — in a game of
 hidden information, recovering the very guarantees Pluribus discarded while throwing the abstraction out
-entirely?** Its answer, *Recursive Belief-based Learning*, is the first algorithm to make reinforcement learning
+entirely?** Its answer, *Recursive Belief-based Learning*, is, by its authors' account, the first algorithm to make reinforcement learning
 *and* search provably sound in imperfect-information games. The trick is to recast the game as a
 "perfect-information" game over **public belief states** — probability distributions over what each player might
 be holding, given common knowledge — on which value and policy functions are well-defined; an AlphaZero-style
 loop then trains a neural value (and policy) network on those states, with counterfactual regret minimization
 (CFR) solving depth-limited subgames at the leaves. ReBeL provably converges to a Nash equilibrium in any
-two-player zero-sum game, beat the top human heads-up specialist Dong Kim by 165 mbb/g (milli-big-blinds per
+two-player zero-sum game, beat Dong Kim — a heads-up professional who had done best of the four humans against Libratus — by 165 mbb/g (milli-big-blinds per
 game, the win-rate unit from the previous sections) over 7,500 hands while using *far less* domain knowledge than
 any prior poker AI — and, unlike the closed Libratus and Pluribus, its implementation (for Liar's Dice) was
 **open-sourced**.
 
 | At a glance | ReBeL (2020) |
-|---|---|
-| Players | 2 (heads-up) — *guarantees* are two-player zero-sum; the algorithm generalizes to more players but **without** the guarantees |
+|--|------|
+| Players | 2 (heads-up) — *guarantees* are two-player zero-sum; the formalism is N-player, but guarantees and experiments are two-player only |
 | Game type | General 2p0s imperfect-information; evaluated on HUNL poker + Liar's Dice (and turn endgame hold'em). Reduces to an AlphaZero-like algorithm in perfect-information games |
 | Blueprint (offline)? | No stored blueprint — the offline product is a *learned PBS value (+ policy) network* from self-play, not a strategy table |
 | Neural component | PBS value network + (optional) PBS policy network; MLP (GeLU/LayerNorm), 6×1536 hidden for poker, input = belief over each player's 1,326 hands + board + pot + bet flag |
@@ -818,7 +818,7 @@ any prior poker AI — and, unlike the closed Libratus and Pluribus, its impleme
 | Abstraction? | None — no card/information abstraction (lossy or lossless); the value net replaces it. Keeps only a small (≤9) hand-chosen bet-size menu, with off-tree bets added live |
 | Perfect-info too? | No (presented/evaluated as imperfect-information), with the nuance that it *degenerates* to AlphaZero-style search if private information is removed — full unification is Student of Games' claim |
 | Compute | GPU-trained: full HUNL used ~90 DGX-1 nodes × 8 V100 GPUs for self-play data generation (a contrast with Pluribus's CPU-only ~$150); CFR on a single CPU thread; play < 2 s/hand, ≤ 5 s/decision |
-| Key innovation | Public belief states + an AlphaZero-style self-play loop training a PBS value/policy net with CFR run in belief space: the first *sound* RL+Search for imperfect-information games, recovering a provable 2p0s Nash guarantee with no abstraction or blueprint |
+| Key innovation | Public belief states + an AlphaZero-style self-play loop training a PBS value/policy net with CFR run in belief space: by its authors' account the first *sound* RL+Search for imperfect-information games, recovering a provable 2p0s Nash guarantee with no abstraction or blueprint |
 
 : ReBeL (2020) at a glance.
 
@@ -831,8 +831,7 @@ solved. DeepStack alone had a neural component, yet even it leaned on hand-craft
 clustering at the network's input, and an abstraction on the river. Meanwhile the most successful paradigm in all
 of game AI — AlphaZero's marriage of self-play reinforcement learning with search, which learns its own
 evaluation from scratch and reuses it both to train and to play — had been *unavailable* for imperfect
-information. The open question ReBeL answers is the one Noam Brown calls the field's "holy grail": **can the
-AlphaZero recipe be made to work, soundly, in games of hidden information?**[^lbr]
+information. The open question ReBeL answers is: **can the AlphaZero recipe be made to work, soundly, in games of hidden information?** Prior RL+Search algorithms were "not theoretically sound in imperfect-information games and have not been shown to be successful in such settings".[^brown2020rebel]
 
 The reason it could not, before, is subtle and is the conceptual crux of the whole chapter. AlphaZero assumes
 each state has a single well-defined value: a chess position is worth what it is worth, regardless of how often
@@ -843,8 +842,7 @@ one-ply lookahead search that works in chess — substituting the equilibrium va
 looks equally good, so the searcher might settle on "always rock", whereupon the opponent switches to "always
 paper" and rock's true value collapses from 0 to −1. **In an imperfect-information game the value of an action
 depends on the probability with which it is played**, so a state defined by the sequence of actions alone has no
-unique value — and AlphaZero-style search is simply unsound. Pluribus had patched the symptom with selectable
-continuation strategies at the leaves; ReBeL cures the disease by changing what a "state" *is*. It redefines the
+unique value — and AlphaZero-style search is simply unsound. Pluribus had patched the symptom with selectable continuation strategies at the leaves[^brown2018dls]; ReBeL cures the disease by changing what a "state" *is*. It redefines the
 state to include the probability distribution over the hidden information — a *public belief state* — on which,
 as the next sections show, values become well-defined again and the entire AlphaZero machinery can be ported
 across. In doing so it also dissolves the two crutches DeepStack and the abstraction systems still leaned on:
@@ -856,7 +854,7 @@ purely from self-play.
 ReBeL is best read as **AlphaZero for imperfect information**: a self-play loop that trains neural value and
 policy networks, where the "search" used during both training and play is CFR solving a depth-limited subgame —
 but everything operates on *public belief states* rather than raw game states, and the leaf evaluator is a
-learned value network rather than a rollout (Figure 6.4).
+learned value network rather than a rollout (see the figure below).[^brown2020rebel][^bakhtin2020]
 
 ![ReBeL's AlphaZero-style loop: self-play training (left) and test-time play (right) share one PBS value/policy network, both solving depth-limited subgames rooted at the public belief state (shared definition box, bottom).](rebel_arch.png){width=96% fig-pos="H"}
 
@@ -887,16 +885,15 @@ the representation that makes the fusion possible.
 ReBeL's contribution is one conceptual move with three technical consequences. The move is to stop searching over
 *states* and start searching over *beliefs about states*.
 
-The **public belief state (PBS)** is the heart of it. The Meta AI blog gives the cleanest intuition. Take a card
+The **public belief state (PBS)** is the heart of it. The Meta AI blog gives the cleanest intuition.[^bakhtin2020] Take a card
 game and modify it so the players cannot see their own cards — only an impartial referee can; on each turn a
 player announces, for every card they *might* hold, the probability with which they would take each action, and
 the referee samples the move for the player's true card. Because all players' strategies are assumed common
 knowledge, everyone can track, via Bayes' rule, the probability that each player holds each possible hand. This
 modified game is **strategically identical** to the original, yet it contains *no private information*: its state
 — the vector of those probabilities — is fully observed by everyone. ReBeL calls that state a public belief
-state: formally, a joint probability distribution over the players' possible infostates, given the common
-public observations. Crucially, viewing imperfect-information games as continuous-state perfect-information games
-this way is an old idea (it goes back to work on cooperative POMDPs); ReBeL's achievement is being the first to
+state: formally, a joint probability distribution over the players' possible infostates, given the common public observations.[^brown2020rebel] Crucially, viewing imperfect-information games as continuous-state perfect-information games
+this way is an old idea (it goes back to work on decentralized multi-agent POMDPs); ReBeL's achievement is being the first to
 combine it with self-play reinforcement learning in an *adversarial* setting.
 
 The first consequence is that **values become well-defined again**. An imperfect-information subgame rooted at a
@@ -950,7 +947,7 @@ poker AI, DeepStack included, used **information abstraction** to bucket strateg
 *none*, lossy or lossless, computing a unique policy per infostate from the raw belief distribution. DeepStack
 trained its value net on *randomly generated* PBSs drawn from a hand-tuned sampler; ReBeL generates its training
 PBSs purely from self-play, arguing that random sampling "would be like learning a value function for Go by
-randomly placing stones on the board" — and indeed it shows (Figure 2) that a value net trained on random
+randomly placing stones on the board" — and indeed it shows (Figure 2 of the paper) that a value net trained on random
 beliefs "fails to learn anything valuable." Prior agents precomputed exact all-in equity tables and solved
 *to the end of the game* on the third betting round (using river abstraction to make that tractable); ReBeL does
 neither, always solving only to the end of the *current* round and learning even the all-in values itself. The
@@ -964,8 +961,7 @@ Several other asterisks matter. The clean theorems rest on **idealizations**: Th
 perfect function approximator, and the guarantees assume players' policies are common knowledge (the §6 result
 removes the *test-time* version of that assumption, but the training analysis still idealizes the network). The
 variant the agent actually runs for efficiency, a modified **CFR-AVG**, is by the authors' own admission *not
-known to be theoretically sound* — "whether or not this modified form of CFR-AVG is theoretically sound remains
-an open question" — even though it performs well in poker, a familiar gap between the proven algorithm and the
+known to be theoretically sound* — "whether or not this modified form of CFR-AVG is theoretically sound remains an open question"[^brown2020rebel] — even though it performs well in poker, a familiar gap between the proven algorithm and the
 shipped one. The safe-search guarantee also depends on picking a *random* CFR iteration, which could land on a
 terrible early one; this is mitigated only by using Linear CFR, which down-weights early iterations. And as with
 its predecessors, essentially all of the architecture, hyperparameters, and the all-important compute figures
@@ -986,8 +982,7 @@ seconds per decision, with preflop subgames cached to go faster still.
 
 The accessibility story splits in two, and it is the cleanest contrast with the earlier poker systems. On the
 one hand ReBeL's *method* is the most general and least hand-tuned of the four, and — decisively — its
-**implementation was open-sourced** (for Liar's Dice), where the code for both Libratus and Pluribus was kept
-closed. That open release is a genuine step toward reproducibility that the CMU systems never offered. On the
+**implementation was open-sourced** (for Liar's Dice), where the code for both Libratus and Pluribus was kept closed (both papers publish only pseudocode).[^brown2020rebel][^libratus][^pluribus] That open release is a genuine step toward reproducibility that the CMU systems never offered. On the
 other hand, the headline *poker* result was *not* released — the authors withheld it on the explicit grounds
 that ReBeL "can compute a policy for arbitrary stack sizes and arbitrary bet sizes in seconds", making it a
 ready-made cheating tool — and reproducing that result at full strength required a large V100 fleet most groups
@@ -996,11 +991,9 @@ not the superhuman poker bot.
 
 ### Strengths and limitations
 
-ReBeL's signal strength is **generality with a guarantee**. It is the first algorithm to make the AlphaZero
-RL+Search paradigm *sound* in imperfect-information games, it provably converges to a Nash equilibrium in any
+ReBeL's signal strength is **generality with a guarantee**. It is, by its authors' account, the first algorithm to make the AlphaZero RL+Search paradigm *sound* in imperfect-information games[^bakhtin2020]; it provably converges to a Nash equilibrium in any
 two-player zero-sum game, and it backs the theory with results: it beat the prior champions Slumbot (+45 mbb/g)
-and BabyTartanian8 (+9 mbb/g), drove the local-best-response probe to a large loss, and beat the top human
-specialist Dong Kim by 165 mbb/g over 7,500 hands — all while using *far less domain knowledge than any prior
+and BabyTartanian8 (+9 mbb/g), drove the local-best-response (LBR) probe[^lbr] to a large loss, and beat the heads-up professional Dong Kim by 165 mbb/g over 7,500 hands — all while using *far less domain knowledge than any prior
 poker AI*, with no card abstraction and the most general representation of the four. The same algorithm, unchanged,
 converges to approximate Nash in Liar's Dice, demonstrating that this is a *framework* and not a poker program;
 in perfect-information games it gracefully reduces to an AlphaZero-like method. And it recovers, for the neural
@@ -1008,9 +1001,7 @@ era, the safety that Pluribus had to abandon — search that is provably safe at
 constraints.
 
 The limitations are precise and they set up the final system. ReBeL's guarantees are **two-player zero-sum
-only**: the unique PBS value, the convexity that licenses CFR-as-search, and the soundness proofs all lean on
-that structure, and although the algorithm has been run with more players, the theory does not follow it there —
-the scorecard's "2 players" is a statement about the *guarantee*, not the code. Its most concrete scaling wall is
+only**: the unique PBS value, the convexity that licenses CFR-as-search, and the soundness proofs all lean on that structure. The paper's notation is written for N agents, but every experiment and guarantee is two-player — the scorecard's "2 players" is a statement about the *guarantee*, not the formalism. Its most concrete scaling wall is
 that the **PBS grows with the amount of hidden information**: the network's input scales with the number of
 infostates in a public state, so games with great strategic depth but little common knowledge — the paper names
 Recon Blind Chess — blow the representation up, and adding players only makes the belief space larger. It assumes
@@ -1022,15 +1013,11 @@ multi-pro field.
 ### Legacy and modern relevance
 
 Strip away the poker and ReBeL's enduring idea is a representational one: **convert hidden information into a
-belief state and the full power of self-play reinforcement learning plus search transfers across.** Public belief
-states are now the standard substrate for sound search in imperfect-information games, and ReBeL is the cleanest
-statement of "AlphaZero for imperfect information" — search woven into *both* training and play. Its direct
-descendant is **Student of Games** (2023), which carries the belief-state-plus-sound-search idea further into a
-single algorithm spanning perfect *and* imperfect information; the same RL-plus-search-with-learned-models
-lineage also runs into **CICERO** (2022), Meta's human-level Diplomacy agent, which plans with learned models in
+belief state and the full power of self-play reinforcement learning plus search transfers across.** Public belief states have since underpinned later sound-search methods such as Student of Games[^sog], and ReBeL is the cleanest
+statement of "AlphaZero for imperfect information" — search woven into *both* training and play. Its closest descendant is **Student of Games** (2023), which carries the belief-state-plus-sound-search idea further into a single algorithm spanning perfect *and* imperfect information (its authors call ReBeL "the most closely related algorithm"[^sog]); the same RL-plus-search-with-learned-models
+lineage also runs into **CICERO** (2022)[^cicero2022], Meta's human-level Diplomacy agent, which plans with learned models in
 a seven-player, mixed-motive, natural-language game far outside ReBeL's two-player guarantees. More broadly,
-ReBeL belongs to the line of work — DeepStack, Libratus, Pluribus, and now ReBeL — that Noam Brown points to as
-an early, concrete instance of **test-time compute**: spending computation on search at decision time, guided by
+ReBeL belongs to the line of work — DeepStack, Libratus, Pluribus, and now ReBeL — that is now often presented as an early instance of **test-time compute**: spending computation on search at decision time, guided by
 learned intuition, rather than baking everything into one precomputed policy, the same thesis now central to
 reasoning models.
 
@@ -1079,8 +1066,7 @@ collaborators at the University of Alberta and EquiLibre Technologies in Prague)
 chapter by asking the most ambitious question of all: **what if a single algorithm, learning from self-play
 with no human data, could play chess, Go, heads-up poker, *and* Scotland Yard — growing its own search tree
 as needed and remaining provably sound for perfect- and imperfect-information games alike?** Its answer
-fuses the chapter's two great lineages — it is, in first author Martin Schmid's words, "AlphaZero and
-DeepStack in a single big unified algorithm." The engine is **Growing-Tree counterfactual regret
+fuses the chapter's two great lineages — it is, in first author Martin Schmid's words, "AlphaZero and DeepStack in a single big unified algorithm."[^kilcher2022] The engine is **Growing-Tree counterfactual regret
 minimization (GT-CFR)**: an anytime search that builds the game tree incrementally, guided by a policy
 network, with a learned value network evaluating the leaves it has not yet expanded. On perfect-information
 subtrees GT-CFR behaves like AlphaZero's MCTS; on imperfect-information ones it behaves like CFR; and a
@@ -1093,8 +1079,8 @@ provenance — and it first appeared in 2021 under the name *Player of Games* be
 2023 *Science Advances* publication.
 
 | At a glance | Student of Games (2023) |
-|---|---|
-| Players | 2 (two-player zero-sum) — guarantees *and* evaluation are 2p0s (Scotland Yard's detectives count as one team); the underlying formalism is more general, but Nash is "less meaningful" beyond 2p0s |
+|--|------|
+| Players | 2 (two-player zero-sum) — guarantees *and* evaluation are 2p0s (Scotland Yard's detectives count as one team); the underlying formalism is more general, but beyond 2p0s the Nash guarantee is "less meaningful" |
 | Game type | **Both perfect- and imperfect-information** — the only unified system: chess + Go (perfect) and HUNL poker + Scotland Yard (imperfect) |
 | Blueprint (offline)? | No — the offline product is a learned value+policy network, not a stored strategy table (as in ReBeL) |
 | Neural component | A single **counterfactual value-and-policy network (CVPN)**: one net outputs per-infostate counterfactual *values* and a prior *policy*, for all game stages |
@@ -1108,7 +1094,7 @@ provenance — and it first appeared in 2021 under the name *Player of Games* be
 
 ### The gap it closed
 
-For seventy years, the two great traditions of game AI ran on separate tracks. One — minimax, alpha–beta,
+Since Samuel's checkers program of the 1950s, game-AI milestones have come one game at a time, and the two great traditions ran on separate tracks.[^sog] One — minimax, alpha–beta,
 Monte-Carlo tree search, and ultimately AlphaZero — conquered *perfect-information* games by combining
 search with a learned value function, and its single most general expression, AlphaZero, mastered chess,
 shogi, and Go with one algorithm. The other — counterfactual regret minimization and the four poker systems
@@ -1137,14 +1123,11 @@ unified.
 
 Student of Games is, structurally, **AlphaZero's self-play loop with Monte-Carlo tree search replaced by
 GT-CFR and with the value/policy network defined over public belief states** — an offline phase that learns
-a network by self-play and an online phase that searches with it, but where the same search now runs in both
-phases (Figure 6.5).
+a network by self-play and an online phase that searches with it, but where the same search now runs in both phases (see the figure below).
 
 ![Student of Games: the GT-CFR search loop (left) and the sound self-play training loop that feeds it (right) share one CVPN; the footer strip names the unification across perfect- and imperfect-information games.](sog_arch.png){width=96% fig-pos="H"}
 
-The representation is inherited from the ReBeL lineage: a **public belief state** $\beta = (s_{\text{pub}},
-r)$ pairs the public state (in poker, the betting history and board) with a **range** $r$ — a pair of
-distributions over the information states each player could privately occupy. Perfect-information games are
+The representation is inherited from the ReBeL lineage: a **public belief state** $\beta = (s_{\text{pub}}, r)$ pairs the public state (in poker, the betting history and board) with a **range** $r$ — a pair of distributions over the information states each player could privately occupy.[^sog] Perfect-information games are
 simply the degenerate case in which every public state has exactly *one* information state and the belief is
 a point mass, which is precisely why one representation can serve both classes. On this representation sit
 the two components. The **counterfactual value-and-policy network (CVPN)** is a *single* network that, given
@@ -1158,7 +1141,7 @@ and periodically push it back. Online, the agent runs the very same GT-CFR searc
 to choose each move. The classic building blocks are all visible — CFR⁺ (Chapter 3) is the search's inner
 loop, value-and-policy approximation (Chapter 5) is the CVPN, and public belief states and decomposition (the
 DeepStack/ReBeL lineage) are the representation — but the binding novelty is GT-CFR, the search that *grows*
-its tree, and the sound self-play that keeps every search consistent with every other.[^deepstack]
+its tree, and the sound self-play that keeps every search consistent with every other.[^sog]
 
 ### Key innovation: Growing-Tree CFR and sound self-play
 
@@ -1209,33 +1192,32 @@ value network's $\epsilon$-error over the tree's *frontier* (the leaves the CVPN
 CFR regret term over the tree's *interior* (the nodes where CFR runs); dividing by $T$, the average policy's
 exploitability is bounded by
 
-$$ \text{exploitability}\big(\bar{\pi}^{T}\big) \;\lesssim\; \underbrace{|\mathcal{F}|\,\epsilon}_{\text{value-net error (frontier)}} \;+\; \underbrace{\frac{|\mathcal{N}|\,U\!A}{\sqrt{T}}}_{\text{CFR convergence (interior)}}, $$
+$$ \text{exploitability}\big(\bar{\pi}^{T}\big) \;\lesssim\; \underbrace{|\mathcal{F}|\,\epsilon}_{\text{value-net error (frontier)}} \;+\; \underbrace{\frac{|\mathcal{N}|\,U\sqrt{A}}{\sqrt{T}}}_{\text{CFR convergence (interior)}}, $$
 
-with $|\mathcal{F}|$ and $|\mathcal{N}|$ the frontier and interior sizes, $U$ the largest value gap, and $A$
+with $|\mathcal{F}|$ the frontier size and $|\mathcal{N}|$ the number of information states in the interior, $U$ the largest value gap, and $A$
 the maximum number of actions. The shape is by now familiar — a value-error term plus a $1/\sqrt{T}$
 CFR-convergence term, the direct structural heir of DeepStack's $k_1\epsilon + k_2/\sqrt{T}$ and ReBeL's
 $\delta C_1 + \delta C_2/\sqrt{T}$ — but two things are distinctive. First, the coefficients are the *sizes
 of the growing tree's frontier and interior*, so the bound is literally a statement about incremental tree
 growth: adding nodes over time costs nothing in convergence order. Second, and decisively, **this same
 statement holds whether the tree is a perfect-information game tree or an imperfect-information public
-tree** — it is the one soundness guarantee that spans both classes. A companion result, Theorem 2, then
+tree** — one guarantee covers both classes. A companion result, Theorem 2, then
 shows that invoking GT-CFR recursively through continual re-solving over a whole episode keeps the agent
 sound, with exploitability growing only *linearly* in the game length (a factor of roughly $5D+2$ for $D$
 re-solving steps) — the property that lets Student of Games survive Scotland Yard's twenty-four-round
-horizon. Together the theorems say what AlphaZero could only assume: as the network improves ($\epsilon \to
-0$) and search deepens ($T \to \infty$), play converges to a Nash equilibrium — now for poker and chess
+horizon. Together the theorems say what AlphaZero could only assume: as the network improves ($\epsilon \to 0$) and search deepens ($T \to \infty$), play converges to a Nash equilibrium — now for poker and chess
 alike.
 
 ### Caveats, dead-ends, and what the paper under-describes
 
 True to the chapter's pattern, the *Science Advances* main text is the clean, high-level story and the
-engineering honesty lives in the supplement, the theorems being stated there "only informally" with the
+engineering honesty lives in the supplement, the theorems being stated in the main text "only informally" with the
 architectures, hyperparameters, full pseudocode, compute, and proofs all relegated to the Supplementary
 Text.
 
 The headline caveat is openly owned: **Student of Games is weaker than AlphaZero in chess and Go given the
 same resources**, and the gap is not small in Go — its strongest configuration won just *2 of 400* games
-against a mid-training AlphaZero, i.e. it lost 99.5%, even while crushing the classical program Pachi by
+against a fully trained AlphaZero searching 8,000 simulations per move, i.e. it lost 99.5%, even while crushing the classical program Pachi by
 over 1,100 Elo. The authors call this "the price of SoG's generality" and hypothesize the cause precisely:
 CFR is simply less efficient than Monte-Carlo tree search on perfect-information games, so the unified
 search pays for its breadth with peak strength. Schmid is candid that this is by design — the goal is one
@@ -1245,7 +1227,7 @@ proof of *soundness and competence* across classes, not of dominance in either.
 Two scaling walls are acknowledged as the real limits. The first is the **belief-space blow-up**, which
 Schmid names as the main limitation: the CVPN must *enumerate the information states per public state*, so
 its cost scales with the number of private states a player could occupy — manageable for poker's 1,326
-hands, but "prohibitively expensive in some games", where the representation "falls apart". This is exactly
+hands, but "prohibitively expensive in some games"[^sog], where the representation "falls apart". This is exactly
 ReBeL's PBS-input limitation inherited intact; the paper floats approximating it with a generative model
 that *samples* world states rather than enumerating them, but does not build one. The second is the
 **known-model requirement**: like AlphaZero and ReBeL, Student of Games needs a perfect simulator of the
@@ -1257,7 +1239,7 @@ in poker (about twenty thousand actions reduced to four or five), the one piece 
 not shed, flagged as removable future work. Its search is **quadratic in the number of iterations** ($O(kT^2)$
 network calls, since the tree grows each step), an inefficiency the authors note could be parallelized away
 but was not. The hyperparameter $c$ — how many regret updates to run per expansion — is admittedly
-**under-explored** ("$c=1$ is not always best in practice … we hope to explore this more thoroughly"). And
+**under-explored** ("$c = 1$ is not always the best choice in practice", and the authors "hope to explore this more thoroughly in the future"). And
 the clean training-convergence argument is **idealized**, holding only "asymptotically, as $T \to \infty$
 and with very large (exponential) memory", so practice rests on the network's finite capacity. None of these
 dents the result, but together they mark Student of Games as a first, deliberately general proof of concept
@@ -1268,16 +1250,14 @@ rather than a tuned, scalable product.
 Student of Games' cost is concentrated **offline, in TPU-scale self-play training**, and the paper reports
 it *relative to AlphaZero rather than in absolute terms* — a deliberate choice to enable a fair comparison
 without claiming a hardware record. The AlphaZero baseline used 3,500 concurrent actors each on a single
-Google TPUv4 over 800,000 training steps, and Student of Games "was trained using a similar amount of TPU
-resources", with per-domain training running from roughly a million steps (Go) to seventeen million
+Google TPUv4 over 800,000 training steps, and Student of Games "was trained using a similar amount of TPU resources"[^sog], with per-domain training running from roughly a million steps (Go) to seventeen million
 (Scotland Yard). Schmid's own gloss is that chess and poker are trainable "on a few GPUs", while Go "by far
 the hardest" consumed a large TPU pool — chiefly because the hardware was available, not because the method
-demanded it. There is, pointedly, **no single dollar figure** of the kind Pluribus made famous: because the
+demanded it. There is, pointedly, **no single dollar figure** of the kind Pluribus made famous[^pluribus]: because the
 comparison is pinned to *network-call budget* rather than wall-clock, the honest summary is "comparable to
 AlphaZero, and substantial" — indeed the authors list reducing this compute among their open problems. At
 play time the search is anytime and tunable, but its $O(kT^2)$ growth (reducing to $O(T)$ for
-perfect-information games, where a node need only be evaluated once) means strong configurations are not
-cheap either.[^pluribus]
+perfect-information games, where a node need only be evaluated once) means strong configurations are not cheap either.
 
 On accessibility the verdict is mixed and worth stating precisely. The **full Student of Games agent and its
 trained networks were not released** — there is no code-availability statement beyond data in the paper and
@@ -1292,12 +1272,10 @@ beyond a typical group's reach.
 ### Strengths and limitations
 
 Student of Games' signal strength is **generality with soundness** — a combination no prior system in the
-chapter offered. It is the first algorithm to be *provably sound across both perfect- and
-imperfect-information games* (Theorems 1–2), and it backs the theory with breadth no competitor matched: in
+chapter offered. It is *provably sound for both perfect- and imperfect-information games* (Theorems 1–2) and is evaluated on both classes, backing the theory with breadth no competitor matched: in
 a single design it reaches expert-to-professional level in **chess and Go**, **beats Slumbot**, the strongest
 openly available heads-up no-limit bot (by about +7 mbb/g — the win-rate unit from the previous sections,
-which this paper writes as mbb/hand — and crucially it is *not* exploited by the local-best-response probe
-that catches weaker bots, which it beats by +434 mbb/g), and **defeats PimBot**, the state-of-the-art Scotland Yard agent
+which this paper writes as mbb/hand — and crucially the local-best-response probe that catches weaker bots fails to exploit it — SoG beats LBR by +434 mbb/g), and **defeats PimBot**, the state-of-the-art Scotland Yard agent
 built on Monte-Carlo tree search with hand-tuned heuristics, even when PimBot is given ten million search
 simulations to Student of Games' few hundred. It uses **no human data, no precomputed blueprint, and no card
 abstraction**, learning everything from self-play; it **scales** with compute (more search and more training
@@ -1306,7 +1284,7 @@ time through search*, "unlike any pure reinforcement-learning algorithm" — the
 chapter of search-as-inference.
 
 The limitations are the precise shape of its ambition. It is **weaker than the specialists** in their home
-domains — markedly so in Go — the acknowledged price of one algorithm for everything. Its guarantees, like
+domains — markedly so in Go — the acknowledged price of one algorithm for everything.[^sog] Its guarantees, like
 ReBeL's, hold only for **two-player zero-sum** play (Scotland Yard's detectives are pooled into a single
 team to fit), so the *multiplayer* safety gap Pluribus exposed remains untouched even here. Its **belief
 representation does not scale** to games with vast private-state spaces, and it **requires a known model** of
@@ -1327,7 +1305,7 @@ that AlphaZero's recipe (self-play, a learned value-and-policy network, and a tr
 was never specific to perfect information; it only needed a *sound* search over *beliefs* rather than states.
 Swap Monte-Carlo tree search for GT-CFR and run it over public belief states, and the same recipe spans
 chess and poker with a single convergence guarantee. That is the chapter's central thesis made literal: one
-algorithm, one network, one search, four very different games.[^brown2017]
+algorithm, one network, one search, four very different games.[^sog]
 
 Its relationships to the surrounding frontier are clarifying. Student of Games is the *general* framework
 ReBeL pointed toward — it grows its tree instead of fixing a depth-limited subgame, decouples test-time
@@ -1378,11 +1356,9 @@ dimension-by-dimension detail, so what follows aggregates rather than re-derives
 ### The arc in one read
 
 The progression is best read not as a climb but as a walk across the three axes of the introduction, in
-which every step forward on one axis was paid for somewhere else. DeepStack and Libratus opened the decade
+which every step forward on one axis was paid for somewhere else. DeepStack and Libratus opened the period
 by attacking the same weakness — the lossy abstraction-and-blueprint paradigm — from opposite directions:
-DeepStack threw the paradigm out and replaced it with learned values and continual re-solving, while
-Libratus kept it and added a provably safe real-time repair. Both stayed two-player and neither reported the
-other's headline result, so even at the start "better" was already multi-dimensional. Pluribus then advanced
+DeepStack threw the paradigm out and replaced it with learned values and continual re-solving, while Libratus kept it and added a provably safe real-time repair.[^deepstack][^libratus] Both stayed two-player and neither reported a result on the other's headline metric (DeepStack played no head-to-head matches against other bots, and no LBR result was reported for Libratus)[^brown2020rebel], so even at the start "better" was already multi-dimensional. Pluribus then advanced
 the *player-count* axis to six, the first superhuman result in any benchmark game beyond two players or
 teams, but did so by giving up safety entirely and remaining tabular — a sideways move on the
 representational axis and a backward one on guarantees. ReBeL reversed both of those concessions, returning
@@ -1399,7 +1375,7 @@ blueprint, neural component, search, abstraction, perfect-information, compute, 
 section's scorecard and are not repeated here.
 
 | System (year) | What it added | What it gave up / what it cost |
-|---|---|---|
+|--|-----|-----|
 | **DeepStack** (2017) | First *sound* depth-limited search under hidden information; learned counterfactual values in place of a stored strategy; discards the full-game abstraction-and-blueprint paradigm | Still keeps a sparse betting abstraction inside its look-ahead; never tested head-to-head against prior bots; ~175 CPU-core-years of offline value labelling |
 | **Libratus** (2017/18) | First head-to-head *and* human win, via real-time **nested safe subgame solving** with a provable bound; an overnight self-improver that patches its own holes | Keeps and depends on abstraction + a petabyte blueprint; no neural generalization; supercomputer-scale (~25M core-hours) |
 | **Pluribus** (2019) | First superhuman **multiplayer** (six-player) play; famously cheap (~$150 on a single server) | Drops *all* safety guarantees (no N-player bound); relies on *unsafe* search; remains fully tabular and abstracted |
@@ -1424,15 +1400,13 @@ state**, and **Growing-Tree CFR**. Read down the list of *first appearances* and
 restates itself in components: the blocks accumulate, the abstraction-era ones fade, and the learned ones
 take over.
 
-![Component-reuse map: Chapters 3–5 building blocks and chapter-native primitives (rows) against the five systems in chronological order (columns); stars mark the system that introduced each native primitive, connected by a staircase of first appearances.](component_reuse.png){width=90% fig-pos="H"}
+![Component-reuse map: Chapters 3–5 building blocks and chapter-native primitives (rows) against the five systems in chronological order (columns); stars mark the system that introduced each native primitive, connected by a staircase of first appearances.](component_reuse.png){width=98% fig-pos="H"}
 
 ### Why this matters for our research
 
 This chapter is the state of the art the dissertation builds on and departs from, and its single most
 important contribution to that work is a framing one. Every system surveyed here is **opponent-blind by
-design**: each computes a worst-case-robust strategy and plays it unconditionally, and the two multiplayer-
-and human-tested systems make the stance explicit — they refuse to model or adapt to opponents so as never
-to be counter-exploited, and Pluribus does not even know who it is playing. Read as a survey, then, the
+design**: each computes a worst-case-robust (approximately equilibrium) strategy and does not adapt it to the particular opponent. The Pluribus paper says so explicitly: Pluribus "plays a fixed strategy that does not adapt to the observed tendencies of the opponents", does not know who its opponents are, and exploitative deviation is rejected because it "opens oneself up to exploitation".[^pluribus] Read as a survey, then, the
 chapter is a catalogue of five world-class systems that share exactly one omission: none adapts to the
 specific, fallible opponent in front of it. That shared omission is the opening this entire dissertation
 occupies, and the rest of this subsection reads the chapter's assets against the three planned
@@ -1455,9 +1429,7 @@ the system skeleton it slots into.
 **For Contribution 2 (Multi-Agent Safe Exploitation).** The keystone is Pluribus: superhuman six-player
 poker reached with *no* safety guarantee of any kind, which is exactly the gap a theory of multi-agent safe
 exploitation must close — a point the chapter states outright. A subtler reading turns the systems' own
-caveat into the contribution's justification. Pluribus and Student of Games both restrict their guarantees
-to two-player zero-sum play and concede that beyond it a Nash equilibrium is neither unique, nor efficiently
-computable, nor even a guarantee against losing. If equilibrium buys no safety in the multiplayer setting to
+caveat into the contribution's justification. Pluribus's paper argues that beyond two-player zero-sum a Nash equilibrium is neither unique nor efficiently computable, and that independently chosen equilibrium strategies need not form an equilibrium, so equilibrium play guarantees nothing;[^pluribus] Student of Games restricts its guarantees to two-player zero-sum play because beyond it the guarantee is "less meaningful".[^sog] If equilibrium buys no safety in the multiplayer setting to
 begin with, then declining to exploit a visibly weak opponent forfeits a guarantee one never possessed —
 which reframes deliberate exploitation from a reckless departure from safety into the *rational objective*
 once safety is unattainable by equilibrium alone. That is the cleanest motivation the literature offers for
@@ -1473,61 +1445,50 @@ teaching-attack-style evaluation Chapter 8 calls for. And **AIVAT**, the learned
 DeepStack's and Pluribus's reported results, is the instrument that makes a small but *growing* adaptation
 edge statistically visible against the brutal variance of card games, where raw winnings would mislead.
 
-*Further leverage points (candidate — to keep or trim against final length).* The following are compact
-extrapolations rather than claims already made by the systems; each is a one-line seed for later chapters.
+*Further leverage points.* The following are compact extrapolations rather than claims made by the systems; each is a one-line idea for later chapters.
 
-- **A reusable proof shape (C2).** Every guarantee in the chapter has the same form — a value-approximation
-  term plus a $1/\sqrt{T}$ convergence term (DeepStack's $k_1\epsilon + k_2/\sqrt{T}$, Libratus's $2\Delta$,
-  ReBeL's $\delta C_1 + \delta C_2/\sqrt{T}$, SoG's $|\mathcal{F}|\epsilon + |\mathcal{N}|UA/\sqrt{T}$) —
+- **A reusable proof shape (C2).** The guarantees in the chapter share a similar form — a value-approximation term and (except for Libratus) a $1/\sqrt{T}$ convergence term (DeepStack: $k_1\epsilon + k_2/\sqrt{T}$; Libratus: $2\Delta$; ReBeL: $\delta C_1 + \delta C_2/\sqrt{T}$; SoG: $|\mathcal{F}|\epsilon + |\mathcal{N}|U\sqrt{A}/\sqrt{T}$) —
   giving Contribution 2 a ready template for bounding the exploitability *incurred* by a deliberate
   deviation.
-- **Depth-limited exploitation (C1/C2).** Pluribus's multi-valued leaves ($k$ selectable continuation
-  strategies) are structurally a menu of opponent behaviours at the horizon; reinterpreting that menu as
-  opponent *types* yields tractable exploitation past the search depth — the exact problem Chapter 8's
-  "adapting beyond the depth limit" takes up.
+- **Depth-limited exploitation (C1/C2).** Pluribus's multi-valued leaves ($k$ selectable continuation strategies)[^brown2018dls] are structurally a menu of opponent behaviours at the horizon; reinterpreting that menu as
+  opponent *types* yields tractable exploitation past the search depth — the problem Milec et al. (2025), cited in Chapter 8, take up.
 - **A build-vs-cite map (methodology).** The "Compute & accessibility" subsections sort the field into what
   is reproducible at PhD scale (Pluribus's single-server CFR, ReBeL's single-thread CPU solver, the open
   OpenSpiel substrate, small games) versus what is cite-only (Libratus's supercomputer, SoG's TPU pool) —
-  the implicit rationale for building on the cheap, open lineage (the ReBeL-Lite-on-Leduc task) rather than
-  reproducing a flagship.
+  the implicit rationale for building on the cheap, open lineage rather than reproducing a flagship.
 - **A redirected mechanism (framing).** Libratus's overnight self-improvement is in-match strategy revision
   aimed at its *own* weaknesses; the dissertation runs the same observe-then-revise loop aimed at the
   *opponent's*, so the contribution is redirecting a proven superhuman mechanism, not inventing one.
-- **A frontier-narrative hook (framing).** All five systems are now cited as early instances of "test-time
-  compute" — spending search at decision time rather than baking everything into a precomputed policy — so
+- **A frontier-narrative hook (framing).** All five systems can be read as early instances of "test-time compute" — spending search at decision time rather than baking everything into a precomputed policy — so
   framing real-time adaptation as test-time *adaptation* compute connects this work to the contemporary
   reasoning-model story.
-- **Consistency-as-safety (C2).** Student of Games' "sound self-play" requires every local search to stay
-  *consistent with* a safe reference, conceptually the same constraint as the KL-regularized (PiKL)
-  exploitation Contribution 2 will use — an analogy worth borrowing.
+- **Consistency-as-safety (C2).** Student of Games' "sound self-play" requires every local search to be consistent with the value network and with the previous searches along the same trajectory.[^sog] This resembles Contribution 2's proposal to anchor the exploiting policy to the safe blueprint by KL regularization. That anchoring is the dissertation's own proposal: in piKL the anchor is a human-imitation policy, and the regularization gives no worst-case guarantee.
 - **Abstraction transferred to type-space (C3).** Chapter 4's lesson that lossy abstraction creates exploitable
   seams carries from state-space to opponent-*type* space: a too-coarse type model is exploitable the way a
   too-coarse card abstraction is, predicting a failure mode for Contribution 3 to catch.
 
-### Open problems and the hand-off to Chapters 7–15
+### Open problems and the hand-off to Chapters 7–12
 
 Four open problems fall directly out of the synthesis, and each is the seed of a later chapter. The first is
 **opponent-blindness** itself: the entire frontier computes a fixed, worst-case-optimal strategy and plays
 it unconditionally, leaving the gap between static equilibrium and dynamic, opponent-aware play wide open —
 the subject of Chapter 7 (inferring opponent behaviour from action traces) and the inference half of
-Contribution 1. The second is **multiplayer safety**: Pluribus proved that Nash-and-search methods *win* in
-N-player imperfect-information games while offering no safety guarantee at all, and Student of Games
+Contribution 1. The second is **multiplayer safety**: Pluribus showed that self-play-plus-search methods *win* in N-player imperfect-information games although they have no known theoretical guarantees outside two-player zero-sum games[^pluribus], and Student of Games
 confirmed that even the most general sound-search framework still restricts its guarantees to two players —
 so a tractable theory of *safe exploitation beyond two-player zero-sum* (Chapter 8, Contribution 2) remains
 genuinely open. The third is **adaptation beyond the depth limit**: the chapter's real-time solvers all look
 only a little way ahead, and carrying an opponent model soundly past that horizon — rather than discarding
-it at the leaf — is an unsolved problem Chapter 8 takes up directly. The fourth is **real-time compute
-budgets**: the systems' costs range over six orders of magnitude, and an adaptive agent that must re-solve
+it at the leaf — is an unsolved problem; Chapter 8 only points to it (Milec et al., 2025). The fourth is **real-time compute
+budgets**: the systems' costs differ by several orders of magnitude, and an adaptive agent that must re-solve
 *and* re-estimate an opponent online inherits the tightest version of that constraint.
 
-These problems define Phase D (Chapters 7–8), the thesis-critical core, and they ramify through the phases that
-follow — multi-agent dynamics and coalition formation (Phase E), the data-driven behavioural pipelines that
-ground the models in real traces (Phase F), and the cross-domain evaluation framework that closes the plan
-(Phase G). The five systems of this chapter are, collectively, the platform this dissertation stands on and
+These problems underlie Chapters 7 and 8, the thesis-critical core, and carry into the chapters that follow — multi-agent learning, populations and coalition formation (Chapters 9–11) and sequence models and LLM agents (Chapter 12); the cross-domain evaluation framework remains future work. The five systems of this chapter are, collectively, the platform this dissertation stands on and
 the foil it defines itself against: it inherits their belief-state representations, their real-time search,
 and their exploitability discipline, and it sets out to add the one capability they all, by design, leave
 out — the ability to notice that an opponent is not playing optimally, and to do something about it without
 becoming exploitable in turn.
+
+[^bakhtin2020]: Bakhtin, A. (2020, 3 Dec.). "ReBeL: A general game-playing AI bot that excels at poker and more." *Meta AI blog*.
 
 [^brown2017]: Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS* 30, 689–699; arXiv:1705.02955.
 
@@ -1543,6 +1504,8 @@ becoming exploitable in turn.
 
 [^ganzfried2016reflections]: Ganzfried, S. (2016). "Reflections on the First Man vs. Machine No-Limit Texas Hold 'em Competition." *ACM SIGecom Exchanges*, 14(2), 2–15; arXiv:1510.08578.
 
+[^kilcher2022]: Kilcher, Y. (2022). "Player of Games: All the games, one algorithm! (w/ author Martin Schmid)." Video interview, YouTube. https://www.youtube.com/watch?v=U0mxx7AoNz0
+
 [^lbr]: Lisý, V. & Bowling, M. (2017). "Equilibrium Approximation Quality of Current No-Limit Poker Bots." *AAAI Workshop on Computer Poker* — local best response (LBR); arXiv:1612.07547.
 
 [^libratus]: Brown, N. & Sandholm, T. (2018). "Superhuman AI for heads-up no-limit poker: Libratus beats top professionals." *Science*, 359(6374), 418–424.
@@ -1557,4 +1520,4 @@ becoming exploitable in turn.
 
 [^sandholm2021]: Sandholm, T. (2021). "State-of-the-art for two-player no-limit Texas hold'em: Libratus." Lecture 13 slides, *15-888 Computational Game Solving* (Fall 2021), Carnegie Mellon University.
 
-[^sog]: Schmid, M. et al. (2023). "Student of Games: A unified learning algorithm for both perfect and imperfect information games." *Science Advances*, 9(46).
+[^sog]: Schmid, M. et al. (2023). "Student of Games: A unified learning algorithm for both perfect and imperfect information games." *Science Advances*, 9(46), eadg3256. doi:10.1126/sciadv.adg3256 (arXiv:2112.03178, first posted in 2021 as "Player of Games").
