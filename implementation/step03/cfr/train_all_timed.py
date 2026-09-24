@@ -8,6 +8,12 @@ Usage:
     python cfr/train_all_timed.py                       # 180s per algo
     python cfr/train_all_timed.py --seconds 60          # shorter test run
     python cfr/train_all_timed.py --algos vanilla cfrplus
+    python cfr/train_all_timed.py --plot-only           # re-plot saved results
+    PLOT_ONLY=1 python cfr/train_all_timed.py           # same; used by the BG
+                                                        # figure renderer (no args)
+
+Plot-only mode reads models/timed_all_snapshots.json and redraws the two
+charts; it trains nothing and writes no results file.
 """
 
 import argparse
@@ -179,8 +185,13 @@ def train_timed(algo: str, budget_sec: float, snapshot_growth: float = 1.25,
 
 
 def plot_iterations_chart(results: dict, out_path: str, budget: float):
-    """Exploitability vs iterations — log-log, with per-algo cutoff lines."""
-    fig, ax = plt.subplots(figsize=(11, 6))
+    """Exploitability vs iterations — log-log, with per-algo cutoff lines.
+
+    Printed at 17.6 cm, so type is sized for that (fs 10-11 -> >= 8.7 pt);
+    the caption carries the title and the budget, the text and Table 4 the
+    final values, so the legend holds only the algorithm names.
+    """
+    fig, ax = plt.subplots(figsize=(8, 5))
 
     for algo in ALGO_ORDER:
         if algo not in results:
@@ -190,7 +201,7 @@ def plot_iterations_chart(results: dict, out_path: str, budget: float):
         ys = [s["exploit"] for s in data]
         color = COLORS[algo]
         ax.plot(xs, ys, "-", color=color, linewidth=2,
-                label=f"{DISPLAY_NAMES[algo]} — final {xs[-1]:,} iters")
+                label=DISPLAY_NAMES[algo])
         ax.axvline(x=xs[-1], color=color, linestyle=":", alpha=0.55,
                    linewidth=1.2)
         ax.scatter([xs[-1]], [ys[-1]], color=color, s=50, zorder=5,
@@ -198,22 +209,20 @@ def plot_iterations_chart(results: dict, out_path: str, budget: float):
 
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.set_xlabel("Training Iterations (log scale)")
-    ax.set_ylabel("Exploitability (log scale)")
-    ax.set_title(
-        f"Leduc Poker — Exploitability vs Iterations "
-        f"({budget:.0f}s budget per algorithm)"
-    )
+    ax.set_xlabel("Training Iterations (log scale)", fontsize=11)
+    ax.set_ylabel("Exploitability (log scale)", fontsize=11)
+    ax.tick_params(labelsize=10)
     ax.grid(True, alpha=0.3, which="both")
-    ax.legend(loc="lower left", framealpha=0.9)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    # Below the axes: inside, the longer Bulgarian names ran over a curve.
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=2,
+              frameon=False, fontsize=10)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
 def plot_wallclock_chart(results: dict, out_path: str, budget: float):
-    """Exploitability vs wall-clock seconds."""
-    fig, ax = plt.subplots(figsize=(11, 6))
+    """Exploitability vs wall-clock seconds (sized for print as above)."""
+    fig, ax = plt.subplots(figsize=(8, 5))
 
     for algo in ALGO_ORDER:
         if algo not in results:
@@ -223,21 +232,19 @@ def plot_wallclock_chart(results: dict, out_path: str, budget: float):
         ys = [s["exploit"] for s in data]
         color = COLORS[algo]
         ax.plot(xs, ys, "-", color=color, linewidth=2,
-                label=f"{DISPLAY_NAMES[algo]} — final exploit {ys[-1]:.4f}")
+                label=DISPLAY_NAMES[algo])
         ax.scatter([xs[-1]], [ys[-1]], color=color, s=50, zorder=5,
                    edgecolor="white", linewidth=1.2)
 
     ax.set_yscale("log")
-    ax.set_xlabel("Wall-Clock Training Time (seconds)")
-    ax.set_ylabel("Exploitability (log scale)")
-    ax.set_title(
-        f"Leduc Poker — Exploitability vs Wall-Clock "
-        f"({budget:.0f}s budget per algorithm)"
-    )
+    ax.set_xlabel("Wall-Clock Training Time (seconds)", fontsize=11)
+    ax.set_ylabel("Exploitability (log scale)", fontsize=11)
+    ax.tick_params(labelsize=10)
     ax.grid(True, alpha=0.3, which="both")
-    ax.legend(loc="upper right", framealpha=0.9)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    # Below the axes: inside, the longer Bulgarian names ran over a curve.
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=2,
+              frameon=False, fontsize=10)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -292,6 +299,22 @@ def write_markdown_report(results: dict, report_path: str, budget: float,
         f.write("\n".join(lines))
 
 
+def plot_saved_results():
+    """Redraw both charts from the saved snapshots; trains and writes nothing
+    except the two PNGs."""
+    combined_path = os.path.join(step03_dir, "models", "timed_all_snapshots.json")
+    with open(combined_path) as f:
+        saved = json.load(f)
+    figures_dir = os.path.join(step03_dir, "figures")
+    iter_chart = os.path.join(figures_dir, "exploitability_vs_iterations.png")
+    wall_chart = os.path.join(figures_dir, "exploitability_vs_wallclock.png")
+    plot_iterations_chart(saved["results"], iter_chart, saved["budget_sec"])
+    plot_wallclock_chart(saved["results"], wall_chart, saved["budget_sec"])
+    print(f"  Plot-only from {combined_path}")
+    print(f"  Iter chart:   {iter_chart}")
+    print(f"  Wall chart:   {wall_chart}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Timed comparison of Leduc Poker CFR variants"
@@ -306,7 +329,14 @@ def main():
                         help="Geometric growth factor between snapshots")
     parser.add_argument("--progress-every", type=float, default=5.0,
                         help="Print a progress line every N training seconds")
+    parser.add_argument("--plot-only", action="store_true",
+                        help="Plot from models/timed_all_snapshots.json; no "
+                             "training (also PLOT_ONLY=1)")
     args = parser.parse_args()
+
+    if args.plot_only or os.environ.get("PLOT_ONLY") == "1":
+        plot_saved_results()
+        return
 
     random.seed(args.seed)
     algos = args.algos or ALGO_ORDER

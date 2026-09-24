@@ -33,7 +33,7 @@ implementation/step03/
 │   └── train_all_timed.py         # 180 s wall-clock benchmark harness
 ├── evaluate/
 │   ├── best_response.py           # Info-set-constrained best response
-│   ├── exploitability.py          # BR₀ + BR₁ exact exploitability
+│   ├── exploitability.py          # (BR₀ + BR₁)/2 exact exploitability
 │   └── convergence.py             # Geometric-spaced snapshot logger
 ├── exploration/
 │   ├── implDayOne1.py             # OpenSpiel five-algorithm comparison on Kuhn
@@ -69,7 +69,7 @@ for info_set, deltas in regret_buffer.items():
         node.regret_sum[a] = max(node.regret_sum[a] + deltas[a], 0.0)
 ```
 
-Linear strategy averaging weights iteration `t` by `t` itself in the running average; alternating updates advance only one player's regrets per pass (player 0 on odd iterations, player 1 on even).
+Linear strategy averaging weights iteration `t` by `t` itself in the running average; alternating updates update the two players in turn within each iteration, so the second player's pass already sees the first player's new regrets. The vanilla trainer here alternates as well, so only flooring and linear averaging separate the two.
 
 ### 3.3 MCCFR External Sampling
 
@@ -105,7 +105,7 @@ Samples a single root-to-terminal trajectory. At the traverser's nodes, actions 
 
 ### 3.5 Exploitability evaluator
 
-Iterative information-set-constrained best response: for each player, computes the optimal counter-strategy subject to the constraint that the responder must play the same action across all states within an information set. Returns `BR₀(σ₁) + BR₁(σ₀)` as exact exploitability.
+Iterative information-set-constrained best response: for each player, computes the optimal counter-strategy subject to the constraint that the responder must play the same action across all states within an information set. Returns `(BR₀(σ₁) + BR₁(σ₀)) / 2` as exact exploitability (OpenSpiel's convention: NashConv / 2).
 
 ---
 
@@ -113,36 +113,36 @@ Iterative information-set-constrained best response: for each player, computes t
 
 ### 4.1 Kuhn Poker — 5,000 iterations
 
-All four OpenSpiel algorithms plus the Chapter 02 custom CFR, run for sanity checking at small scale.
+All four OpenSpiel algorithms plus the chance-sampled custom CFR from Chapter 2 (one random deal per iteration), run for sanity checking at small scale. Seed 42 for every solver; exploitability is NashConv / 2, as everywhere in this chapter; times are training time only (evaluation excluded).
 
-| Algorithm | Exploitability | Time |
-|-----------|---------------|------|
-| Custom CFR (Chapter 02) | ~3.5×10⁻⁴ | < 1 s |
-| OpenSpiel CFR | ~1.5×10⁻³ | ~2 s |
-| CFR+ | ~3.0×10⁻⁴ | ~2 s |
-| External Sampling MCCFR | ~4×10⁻³ | ~1 s |
-| Outcome Sampling MCCFR | ~2.5×10⁻² | ~1 s |
+| Algorithm | Exploitability @5k | Training time |
+|----------------------------------------|---------------------:|------------------:|
+| Custom CFR (Chapter 2, chance-sampled) | 6.0×10⁻³ | 0.03 s |
+| OpenSpiel CFR | 1.8×10⁻⁴ | 2.1 s |
+| OpenSpiel CFR+ | 2.8×10⁻⁵ | 2.2 s |
+| External Sampling MCCFR | 1.3×10⁻² | 0.4 s |
+| Outcome Sampling MCCFR | 4.1×10⁻² | 0.4 s |
 
 ![Kuhn — Exploitability vs Iterations](figures/kuhn_exploitability_iterations.png)
 
-![Kuhn — Exploitability vs Wall-Clock Time](figures/kuhn_exploitability_time.png)
+![Kuhn — Exploitability vs Training Time](figures/kuhn_exploitability_time.png)
 
-All algorithms reach near-Nash within seconds; the distinction is academic at this scale.
+Every algorithm runs in seconds, and the ordering is already the one Leduc shows: CFR+, then CFR, then the two sampling variants.
 
 ### 4.2 Leduc Poker — 5,000 iterations
 
-| Algorithm | Exploitability @5k | Time |
-|-----------|--------------------:|-----:|
-| CFR+ | ~5.4×10⁻⁵ | ~859 s |
-| Vanilla CFR | ~7.6×10⁻³ | ~747 s |
-| External Sampling MCCFR | ~1.17 | ~7 s |
-| Outcome Sampling MCCFR | ~3.08 | ~5 s |
+| Algorithm | Exploitability @5k | Training time |
+|----------------------------------------|---------------------:|------------------:|
+| CFR+ | 1.8×10⁻⁵ | 368 s |
+| Vanilla CFR | 3.6×10⁻³ | 327 s |
+| External Sampling MCCFR | 0.44 | 1.3 s |
+| Outcome Sampling MCCFR | 1.65 | 0.7 s |
 
 ![Leduc — Exploitability vs Iterations](figures/leduc_exploitability_iterations.png)
 
-![Leduc — Exploitability vs Wall-Clock Time](figures/leduc_exploitability_time.png)
+![Leduc — Exploitability vs Training Time](figures/leduc_exploitability_time.png)
 
-Per-iteration, full-traversal methods dominate by 4–5 orders of magnitude; per wall-clock, the gap narrows but does not close on Leduc-sized trees.
+Per iteration, full-traversal methods lead by two to three orders of magnitude (vanilla CFR) and four to five (CFR+). The 5,000 sampled iterations take about a second, so the time axis compares very different budgets; the equal-time comparison is the benchmark in section 5.
 
 ---
 
@@ -161,7 +161,7 @@ Per-iteration, full-traversal methods dominate by 4–5 orders of magnitude; per
 
 ![Exploitability vs Wall-Clock Time (log-y)](figures/exploitability_vs_wallclock.png)
 
-CFR+ reaches near-exact Nash (2.6×10⁻⁵) in 3 minutes — over 150× better than vanilla CFR despite running only marginally fewer iterations. Both MCCFR variants, despite millions of iterations, remain 3–4 orders of magnitude worse on this game size, as predicted by the variance-speed analysis in the summary.
+CFR+ reaches near-exact Nash (2.6×10⁻⁵) in 3 minutes — over 150× better than vanilla CFR despite running only marginally fewer iterations. Both MCCFR variants, despite millions of iterations, remain 3–4 orders of magnitude worse than CFR+ (12–23× worse than vanilla CFR) on this game size, as predicted by the variance-speed analysis in the summary.
 
 ---
 
@@ -186,11 +186,11 @@ Small differences arise from deal ordering and random seeds; both converge to th
 # Train a single algorithm (configurable in train.py):
 python implementation/step03/cfr/train.py
 
-# Run the 180 s timed benchmark for all four algorithms:
+# Run the 180 s timed benchmark for all four algorithms (--plot-only redraws the saved results):
 python implementation/step03/cfr/train_all_timed.py
 
-# Exploration — OpenSpiel reference comparisons:
-python implementation/step03/exploration/implDayOne1.py      # Kuhn
+# Exploration — OpenSpiel reference comparisons (seed 42; --plot-only re-plots the saved cache):
+python implementation/step03/exploration/implDayOne1_test.py # Kuhn (section 4.1)
 python implementation/step03/exploration/leduc_comparison.py # Leduc, iteration budget
 python implementation/step03/exploration/leduc_race.py       # Leduc, 5-min wall-clock
 

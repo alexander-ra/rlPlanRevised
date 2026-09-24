@@ -2,175 +2,207 @@
 Leduc Poker comparison: MCCFR variants and OpenSpiel's CFR/CFR+ implementations.
 Similar to Kuhn poker test but for the larger Leduc poker game.
 No custom CFR implementation (would be too complex for Leduc).
+
+Usage (any working directory):
+    python exploration/leduc_comparison.py              # seeded run: train, save cache, plot
+    python exploration/leduc_comparison.py --plot-only  # plot from the saved cache, no training
+    PLOT_ONLY=1 python exploration/leduc_comparison.py  # same; the BG figure renderer uses this,
+                                                        # because it runs the script without args
+
+Measurement conventions (September 2026 rerun):
+  - Metric: exploitability = NashConv / 2 (OpenSpiel's `exploitability` for a
+    two-player zero-sum game) - the same quantity as the custom evaluator
+    (evaluate/exploitability.py) and the timed benchmark (cfr/train_all_timed.py).
+    NashConv itself is stored in the cache next to it.
+  - Snapshots at 100 * 1.5^k iterations plus the final iteration, so the curve
+    ends at MAX_STEPS.
+  - `time_elapsed` is training time only: the clock is paused while a snapshot's
+    exploitability is computed (as in cfr/train_all_timed.py).
+  - Every solver starts from the same seed (numpy + random), so a rerun
+    reproduces the sampled MCCFR curves.
 """
-import pyspiel
-from open_spiel.python.algorithms import external_sampling_mccfr
-from open_spiel.python.algorithms import outcome_sampling_mccfr
-from open_spiel.python.algorithms import cfr as cfr_module
-from open_spiel.python.algorithms import exploitability as expl
+import datetime
+import json
+import os
+import random
+import sys
+import time
+
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
-import json
-import time
+import numpy as np
 
-game = pyspiel.load_game("leduc_poker")
-relativePath = "exploration/figures/"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+relativePath = os.path.join(SCRIPT_DIR, "figures") + os.sep
+CACHE_PATH = relativePath + 'leduc_results_cache.json'
 
-# Cache for results with timing
-cache_data = {'iterations': [], 'es_results': [], 'os_results': [], 'osCFR_results': [], 'osCFRPlus_results': []}
-maxSteps = 5000  # Reduced for faster testing
+SEED = 42
+MAX_STEPS = 5000
 
-# Print steps: 100, iterations *1.5 until maxSteps
-printSteps = [100]
-while printSteps[-1] < maxSteps:
-    printSteps.append(int(printSteps[-1] * 1.5))
-printSteps = [s for s in printSteps if s <= maxSteps]
+# (cache key, legend label, marker, colour) - colours as in the original figures
+SERIES = [
+    ('es_results', 'External Sampling MCCFR', 'o', '#1f77b4'),
+    ('os_results', 'Outcome Sampling MCCFR', 's', '#ff7f0e'),
+    ('osCFR_results', 'OpenSpiel CFR', 'D', 'green'),
+    ('osCFRPlus_results', 'OpenSpiel CFR+', 'v', 'purple'),
+]
 
-print("=" * 60)
-print("LEDUC POKER COMPARISON - 5k iterations max")
-print("=" * 60)
-print(f"Print steps: {printSteps}\n")
 
-# External sampling MCCFR
-print("Running External Sampling MCCFR (5k iterations)...")
-es_solver = external_sampling_mccfr.ExternalSamplingSolver(game)
-es_start_time = time.time()
-for i in range(maxSteps):
-    es_solver.iteration()
-    if i + 1 in printSteps:
-        es_policy = es_solver.average_policy()
-        es_exploit = expl.nash_conv(game, es_policy)
-        elapsed = time.time() - es_start_time
-        cache_data['iterations'].append(i + 1)
-        cache_data['es_results'].append({'exploitability': es_exploit, 'time_elapsed': elapsed})
-        print(f"  ES - Iteration {i+1:>5}: Exploit = {es_exploit:.6f} (Time: {elapsed:6.2f}s)")
+def snapshot_steps(max_steps: int) -> list[int]:
+    """100, 150, 225, ... (x1.5) up to max_steps, always ending at max_steps."""
+    steps = [100]
+    while steps[-1] < max_steps:
+        steps.append(int(steps[-1] * 1.5))
+    steps = [s for s in steps if s <= max_steps]
+    if steps[-1] != max_steps:
+        steps.append(max_steps)
+    return steps
 
-# Outcome sampling MCCFR
-print("\nRunning Outcome Sampling MCCFR (5k iterations)...")
-os_solver = outcome_sampling_mccfr.OutcomeSamplingSolver(game)
-os_start_time = time.time()
-for i in range(maxSteps):
-    os_solver.iteration()
-    if i + 1 in printSteps:
-        os_policy = os_solver.average_policy()
-        os_exploit = expl.nash_conv(game, os_policy)
-        elapsed = time.time() - os_start_time
-        cache_data['os_results'].append({'exploitability': os_exploit, 'time_elapsed': elapsed})
-        print(f"  OS - Iteration {i+1:>5}: Exploit = {os_exploit:.6f} (Time: {elapsed:6.2f}s)")
 
-# OpenSpiel CFR
-print("\nTraining OpenSpiel CFR (5k iterations)...")
-os_cfr_solver = cfr_module.CFRSolver(game)
-os_cfr_start_time = time.time()
-for i in range(maxSteps):
-    os_cfr_solver.evaluate_and_update_policy()
-    if i + 1 in printSteps:
-        os_cfr_policy = os_cfr_solver.average_policy()
-        os_cfr_exploit = expl.nash_conv(game, os_cfr_policy)
-        elapsed = time.time() - os_cfr_start_time
-        cache_data['osCFR_results'].append({'exploitability': os_cfr_exploit, 'time_elapsed': elapsed})
-        print(f"  OS-CFR - Iteration {i+1:>5}: Exploit = {os_cfr_exploit:.6f} (Time: {elapsed:6.2f}s)")
+def run_solver(name, game, solver, step_fn, steps, expl):
+    """Train one solver with a fixed seed; snapshot exploitability at `steps`."""
+    random.seed(SEED)
+    np.random.seed(SEED)
+    wanted = set(steps)
+    results = []
+    train_time = 0.0
+    for i in range(1, steps[-1] + 1):
+        t0 = time.perf_counter()
+        step_fn()
+        train_time += time.perf_counter() - t0
+        if i in wanted:
+            nash_conv = expl.nash_conv(game, solver.average_policy())
+            exploit = nash_conv / game.num_players()
+            results.append({'iteration': i, 'exploitability': exploit,
+                            'nash_conv': nash_conv, 'time_elapsed': train_time})
+            print(f"  {name:<8} - Iteration {i:>5}: exploitability = {exploit:.6f} "
+                  f"(NashConv {nash_conv:.6f}, train {train_time:7.2f}s)", flush=True)
+    return results
 
-# OpenSpiel CFR+
-print("\nTraining OpenSpiel CFR+ (5k iterations)...")
-os_cfrplus_solver = cfr_module.CFRPlusSolver(game)
-os_cfrplus_start_time = time.time()
-for i in range(maxSteps):
-    os_cfrplus_solver.evaluate_and_update_policy()
-    if i + 1 in printSteps:
-        os_cfrplus_policy = os_cfrplus_solver.average_policy()
-        os_cfrplus_exploit = expl.nash_conv(game, os_cfrplus_policy)
-        elapsed = time.time() - os_cfrplus_start_time
-        cache_data['osCFRPlus_results'].append({'exploitability': os_cfrplus_exploit, 'time_elapsed': elapsed})
-        print(f"  OS-CFR+ - Iteration {i+1:>5}: Exploit = {os_cfrplus_exploit:.6f} (Time: {elapsed:6.2f}s)")
 
-# Save cache
-cache_path = relativePath + 'leduc_results_cache.json'
-with open(cache_path, 'w') as f:
-    json.dump(cache_data, f, indent=2)
-print(f"\nResults cached to '{cache_path}'")
+def train():
+    import pyspiel
+    import open_spiel
+    from open_spiel.python.algorithms import cfr as cfr_module
+    from open_spiel.python.algorithms import exploitability as expl
+    from open_spiel.python.algorithms import external_sampling_mccfr
+    from open_spiel.python.algorithms import outcome_sampling_mccfr
 
-# Extract exploitabilities
-es_exploits = [r['exploitability'] for r in cache_data['es_results']]
-os_exploits = [r['exploitability'] for r in cache_data['os_results']]
-oscfr_exploits = [r['exploitability'] for r in cache_data.get('osCFR_results', [])]
-oscfrplus_exploits = [r['exploitability'] for r in cache_data.get('osCFRPlus_results', [])]
-iterations = cache_data['iterations']
+    game = pyspiel.load_game("leduc_poker")
+    steps = snapshot_steps(MAX_STEPS)
+    print("=" * 60)
+    print(f"LEDUC POKER COMPARISON - {MAX_STEPS} iterations, seed {SEED}")
+    print("=" * 60)
+    print(f"Snapshot steps: {steps}\n")
 
-print(f"\nData lengths: iterations={len(iterations)}, ES={len(es_exploits)}, OS={len(os_exploits)}, OS-CFR={len(oscfr_exploits)}, OS-CFR+={len(oscfrplus_exploits)}")
+    cache = {
+        'meta': {
+            'game': 'leduc_poker',
+            'seed': SEED,
+            'max_steps': MAX_STEPS,
+            'metric': 'exploitability = NashConv / 2 (OpenSpiel exploitability); '
+                      'nash_conv stored alongside',
+            'time_elapsed': 'training time only; exploitability evaluation excluded',
+            'openspiel_version': getattr(open_spiel, '__version__', 'unknown'),
+            'generated': datetime.datetime.now().isoformat(timespec='seconds'),
+        },
+        'iterations': steps,
+    }
 
-# Plot 1: Iterations
-print("\nCreating iteration plot...")
-plt.figure(figsize=(14, 7))
-plt.plot(iterations, es_exploits, label='External Sampling MCCFR', marker='o', linewidth=2)
-plt.plot(iterations, os_exploits, label='Outcome Sampling MCCFR', marker='s', linewidth=2)
-if oscfr_exploits:
-    plt.plot(iterations, oscfr_exploits, label='OpenSpiel CFR', marker='D', linewidth=2, color='green')
-if oscfrplus_exploits:
-    plt.plot(iterations, oscfrplus_exploits, label='OpenSpiel CFR+', marker='v', linewidth=2, color='purple')
-plt.xscale('log')
-plt.yscale('log')
-all_iters = iterations
-all_exploits_iter = es_exploits + os_exploits + oscfr_exploits + oscfrplus_exploits
-if all_iters and all_exploits_iter:
-    min_iter = min([i for i in all_iters if i > 0] or [1])
-    max_iter = max(all_iters)
-    min_expl_iter = min([e for e in all_exploits_iter if e > 0] or [1e-6])
-    max_expl_iter = max(all_exploits_iter)
-    plt.xlim([min_iter * 0.8, max_iter * 1.2])
-    plt.ylim([min_expl_iter * 0.8, max_expl_iter * 1.2])
+    print("Running External Sampling MCCFR...")
+    es = external_sampling_mccfr.ExternalSamplingSolver(game)
+    cache['es_results'] = run_solver('ES', game, es, es.iteration, steps, expl)
 
-plt.xlabel('Iterations (log scale)')
-plt.ylabel('Exploitability (log scale)')
-plt.title('Exploitability vs Iterations: Leduc Poker - All Algorithms')
-plt.legend(fontsize=10)
-plt.grid(True, which="both", ls="--")
-plt.tight_layout()
-plot1_path = relativePath + 'leduc_exploitability_iterations.png'
-plt.savefig(plot1_path, dpi=150)
-print(f"✓ Plot saved: {plot1_path}")
-plt.close()
+    print("\nRunning Outcome Sampling MCCFR...")
+    osmc = outcome_sampling_mccfr.OutcomeSamplingSolver(game)
+    cache['os_results'] = run_solver('OS', game, osmc, osmc.iteration, steps, expl)
 
-# Plot 2: Wall clock time
-print("Creating wall clock time plot...")
-es_times = [r['time_elapsed'] for r in cache_data['es_results']]
-os_times = [r['time_elapsed'] for r in cache_data['os_results']]
-oscfr_times = [r['time_elapsed'] for r in cache_data.get('osCFR_results', [])]
-oscfrplus_times = [r['time_elapsed'] for r in cache_data.get('osCFRPlus_results', [])]
+    print("\nTraining OpenSpiel CFR...")
+    cfr_solver = cfr_module.CFRSolver(game)
+    cache['osCFR_results'] = run_solver(
+        'OS-CFR', game, cfr_solver, cfr_solver.evaluate_and_update_policy, steps, expl)
 
-plt.figure(figsize=(14, 7))
-plt.plot(es_times, es_exploits, label='External Sampling MCCFR', marker='o', linewidth=2)
-plt.plot(os_times, os_exploits, label='Outcome Sampling MCCFR', marker='s', linewidth=2)
-if oscfr_exploits:
-    plt.plot(oscfr_times, oscfr_exploits, label='OpenSpiel CFR', marker='D', linewidth=2, color='green')
-if oscfrplus_exploits:
-    plt.plot(oscfrplus_times, oscfrplus_exploits, label='OpenSpiel CFR+', marker='v', linewidth=2, color='purple')
-plt.xscale('log')
-plt.yscale('log')
+    print("\nTraining OpenSpiel CFR+...")
+    cfrplus_solver = cfr_module.CFRPlusSolver(game)
+    cache['osCFRPlus_results'] = run_solver(
+        'OS-CFR+', game, cfrplus_solver, cfrplus_solver.evaluate_and_update_policy,
+        steps, expl)
 
-# Dynamic axis limits for all methods (wall clock time plot)
-all_times = es_times + os_times + oscfr_times + oscfrplus_times
-all_exploits = es_exploits + os_exploits + oscfr_exploits + oscfrplus_exploits
-if all_times and all_exploits:
-    min_time = min([t for t in all_times if t > 0] or [1e-3])
-    max_time = max(all_times)
-    min_expl = min([e for e in all_exploits if e > 0] or [1e-6])
-    max_expl = max(all_exploits)
-    plt.xlim([min_time * 0.8, max_time * 1.2])
-    plt.ylim([min_expl * 0.8, max_expl * 1.2])
+    with open(CACHE_PATH, 'w') as f:
+        json.dump(cache, f, indent=2)
+    print(f"\nResults cached to '{CACHE_PATH}'")
+    return cache
 
-plt.xlabel('Wall Clock Time (seconds, log scale)')
-plt.ylabel('Exploitability (log scale)')
-plt.title('Exploitability vs Wall Clock Time: Leduc Poker - All Algorithms')
-plt.legend(fontsize=10)
-plt.grid(True, which="both", ls="--")
-plt.tight_layout()
-plot2_path = relativePath + 'leduc_exploitability_time.png'
-plt.savefig(plot2_path, dpi=150)
-print(f"✓ Plot saved: {plot2_path}")
-plt.close()
 
-print("\n" + "=" * 60)
-print("LEDUC POKER RUN (5k iterations) COMPLETE - All systems OK!")
-print("=" * 60)
+def _limits(values, lo_pad=0.8, hi_pad=1.5, floor=1e-6):
+    positive = [v for v in values if v > 0] or [floor]
+    return min(positive) * lo_pad, max(values) * hi_pad
+
+
+def _legend_below():
+    # Below the axes: inside, it hid a curve whatever corner it was put in.
+    plt.legend(fontsize=10, loc='upper center', bbox_to_anchor=(0.5, -0.17),
+               ncol=2, frameon=False)
+
+
+def plot(cache):
+    iterations = cache['iterations']
+    curves = [(label, marker, color,
+               [r['exploitability'] for r in cache.get(key, [])],
+               [r['time_elapsed'] for r in cache.get(key, [])])
+              for key, label, marker, color in SERIES]
+    curves = [c for c in curves if c[3]]
+    all_exploits = [e for c in curves for e in c[3]]
+
+    # Plot 1: exploitability vs iterations
+    plt.figure(figsize=(8, 5))
+    for label, marker, color, ys, _ in curves:
+        plt.plot(iterations, ys, label=label, marker=marker, linewidth=2, color=color)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlim([min(iterations) * 0.8, max(iterations) * 1.2])
+    plt.ylim(_limits(all_exploits))
+    plt.xlabel('Iterations (log scale)', fontsize=11)
+    plt.ylabel('Exploitability (log scale)', fontsize=11)
+    plt.tick_params(labelsize=10)
+    _legend_below()
+    plt.grid(True, which="both", ls="--")
+    plot1_path = relativePath + 'leduc_exploitability_iterations.png'
+    plt.savefig(plot1_path, dpi=300, bbox_inches='tight')
+    print(f"Plot saved: {plot1_path}")
+    plt.close()
+
+    # Plot 2: exploitability vs training time
+    plt.figure(figsize=(8, 5))
+    for label, marker, color, ys, xs in curves:
+        plt.plot(xs, ys, label=label, marker=marker, linewidth=2, color=color)
+    plt.xscale('log')
+    plt.yscale('log')
+    all_times = [t for c in curves for t in c[4]]
+    plt.xlim(_limits(all_times, floor=1e-3))
+    plt.ylim(_limits(all_exploits))
+    plt.xlabel('Training time (seconds, log scale)', fontsize=11)
+    plt.ylabel('Exploitability (log scale)', fontsize=11)
+    plt.tick_params(labelsize=10)
+    _legend_below()
+    plt.grid(True, which="both", ls="--")
+    plot2_path = relativePath + 'leduc_exploitability_time.png'
+    plt.savefig(plot2_path, dpi=300, bbox_inches='tight')
+    print(f"Plot saved: {plot2_path}")
+    plt.close()
+
+
+def main():
+    plot_only = os.environ.get("PLOT_ONLY") == "1" or "--plot-only" in sys.argv
+    if plot_only:
+        with open(CACHE_PATH) as f:
+            cache = json.load(f)
+        print(f"Plot-only: loaded '{CACHE_PATH}'")
+    else:
+        cache = train()
+    plot(cache)
+
+
+if __name__ == "__main__":
+    main()

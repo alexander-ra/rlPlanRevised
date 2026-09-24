@@ -1,4 +1,14 @@
 {
+  "meta": {
+    "game": "kuhn_poker",
+    "seed": 42,
+    "max_steps": 5000,
+    "metric": "exploitability = NashConv / 2 (OpenSpiel exploitability); nash_conv stored alongside",
+    "time_elapsed": "training time only; exploitability evaluation excluded",
+    "custom_cfr": "chapter 2 KuhnTrainer (one random deal per iteration), average strategy evaluated as a TabularPolicy",
+    "openspiel_version": "unknown",
+    "generated": "2026-09-24T18:01:20"
+  },
   "iterations": [
     100,
     150,
@@ -9,216 +19,347 @@
     1135,
     1702,
     2553,
-    3829
+    3829,
+    5000
   ],
   "es_results": [
     {
-      "exploitability": 0.1847691029711982,
-      "time_elapsed": 0.031774044036865234
+      "iteration": 100,
+      "exploitability": 0.09539761818423706,
+      "nash_conv": 0.19079523636847412,
+      "time_elapsed": 0.007508399976359215
     },
     {
-      "exploitability": 0.15847483558975856,
-      "time_elapsed": 0.04879641532897949
+      "iteration": 150,
+      "exploitability": 0.09304276690521116,
+      "nash_conv": 0.1860855338104223,
+      "time_elapsed": 0.011052799985918682
     },
     {
-      "exploitability": 0.10054935139332932,
-      "time_elapsed": 0.07272148132324219
+      "iteration": 225,
+      "exploitability": 0.050029225668546645,
+      "nash_conv": 0.10005845133709329,
+      "time_elapsed": 0.01641569997809711
     },
     {
-      "exploitability": 0.10604247036463998,
-      "time_elapsed": 0.10798978805541992
+      "iteration": 337,
+      "exploitability": 0.024681265838777916,
+      "nash_conv": 0.04936253167755583,
+      "time_elapsed": 0.024837599998136284
     },
     {
-      "exploitability": 0.046651840388087173,
-      "time_elapsed": 0.15955257415771484
+      "iteration": 505,
+      "exploitability": 0.03634878845690115,
+      "nash_conv": 0.0726975769138023,
+      "time_elapsed": 0.036454200046136975
     },
     {
-      "exploitability": 0.055198789805584736,
-      "time_elapsed": 0.23227787017822266
+      "iteration": 757,
+      "exploitability": 0.02978946610816341,
+      "nash_conv": 0.05957893221632682,
+      "time_elapsed": 0.05486350005958229
     },
     {
-      "exploitability": 0.043545420065701834,
-      "time_elapsed": 0.34008145332336426
+      "iteration": 1135,
+      "exploitability": 0.01309688828607114,
+      "nash_conv": 0.02619377657214228,
+      "time_elapsed": 0.08272320009200484
     },
     {
-      "exploitability": 0.04960665416116067,
-      "time_elapsed": 0.4996299743652344
+      "iteration": 1702,
+      "exploitability": 0.018148616592004063,
+      "nash_conv": 0.036297233184008126,
+      "time_elapsed": 0.12556200006656582
     },
     {
-      "exploitability": 0.032634949286041104,
-      "time_elapsed": 0.7269253730773926
+      "iteration": 2553,
+      "exploitability": 0.00775887640405809,
+      "nash_conv": 0.01551775280811618,
+      "time_elapsed": 0.18942220011376776
     },
     {
-      "exploitability": 0.017379108580159175,
-      "time_elapsed": 1.063065767288208
+      "iteration": 3829,
+      "exploitability": 0.013311051043650823,
+      "nash_conv": 0.026622102087301647,
+      "time_elapsed": 0.28543890020955587
+    },
+    {
+      "iteration": 5000,
+      "exploitability": 0.013202530593560552,
+      "nash_conv": 0.026405061187121104,
+      "time_elapsed": 0.3707367001879902
     }
   ],
   "os_results": [
     {
-      "exploitability": 0.4844680492659376,
-      "time_elapsed": 0.030048131942749023
+      "iteration": 100,
+      "exploitability": 0.2804903138925764,
+      "nash_conv": 0.5609806277851528,
+      "time_elapsed": 0.007678200025111437
     },
     {
-      "exploitability": 0.4805908277195896,
-      "time_elapsed": 0.04854702949523926
+      "iteration": 150,
+      "exploitability": 0.2645242082596301,
+      "nash_conv": 0.5290484165192602,
+      "time_elapsed": 0.011591800019232323
     },
     {
-      "exploitability": 0.507270081267554,
-      "time_elapsed": 0.0745704174041748
+      "iteration": 225,
+      "exploitability": 0.23563813797428762,
+      "nash_conv": 0.47127627594857524,
+      "time_elapsed": 0.0171987000212539
     },
     {
-      "exploitability": 0.3508305548087897,
-      "time_elapsed": 0.11197161674499512
+      "iteration": 337,
+      "exploitability": 0.21047202785852612,
+      "nash_conv": 0.42094405571705223,
+      "time_elapsed": 0.025526200002786936
     },
     {
-      "exploitability": 0.27631620660627154,
-      "time_elapsed": 0.1712484359741211
+      "iteration": 505,
+      "exploitability": 0.1559491271217395,
+      "nash_conv": 0.311898254243479,
+      "time_elapsed": 0.038091399997938424
     },
     {
-      "exploitability": 0.2311314251012006,
-      "time_elapsed": 0.24614429473876953
+      "iteration": 757,
+      "exploitability": 0.12445105853578922,
+      "nash_conv": 0.24890211707157844,
+      "time_elapsed": 0.05628009996871697
     },
     {
-      "exploitability": 0.23570945105536617,
-      "time_elapsed": 0.36008691787719727
+      "iteration": 1135,
+      "exploitability": 0.06601212533632644,
+      "nash_conv": 0.1320242506726529,
+      "time_elapsed": 0.08392289998664637
     },
     {
-      "exploitability": 0.26294244616294726,
-      "time_elapsed": 0.5255382061004639
+      "iteration": 1702,
+      "exploitability": 0.0668149907337093,
+      "nash_conv": 0.1336299814674186,
+      "time_elapsed": 0.1262867999757873
     },
     {
-      "exploitability": 0.10726092890329259,
-      "time_elapsed": 0.7630147933959961
+      "iteration": 2553,
+      "exploitability": 0.07013131508376563,
+      "nash_conv": 0.14026263016753127,
+      "time_elapsed": 0.1899509999420843
     },
     {
-      "exploitability": 0.16219420642849652,
-      "time_elapsed": 1.1129491329193115
+      "iteration": 3829,
+      "exploitability": 0.06057615115969667,
+      "nash_conv": 0.12115230231939333,
+      "time_elapsed": 0.28482400003122166
+    },
+    {
+      "iteration": 5000,
+      "exploitability": 0.041197040725098694,
+      "nash_conv": 0.08239408145019739,
+      "time_elapsed": 0.3731884000953869
     }
   ],
-  "customCRF_results": [
+  "customCFR_results": [
     {
-      "exploitability": 0.04008928179721434,
-      "time_elapsed": 0.0010464191436767578
+      "iteration": 100,
+      "exploitability": 0.0708589826537214,
+      "nash_conv": 0.1417179653074428,
+      "time_elapsed": 0.0005456999861053191
     },
     {
-      "exploitability": 0.07466156672237731,
-      "time_elapsed": 0.0015337467193603516
+      "iteration": 150,
+      "exploitability": 0.06372404025880132,
+      "nash_conv": 0.12744808051760265,
+      "time_elapsed": 0.0008168999702320434
     },
     {
-      "exploitability": 0.07666726058499695,
-      "time_elapsed": 0.0022797584533691406
+      "iteration": 225,
+      "exploitability": 0.05825450375838476,
+      "nash_conv": 0.11650900751676951,
+      "time_elapsed": 0.0012173999748483766
     },
     {
-      "exploitability": 0.002887297448184993,
-      "time_elapsed": 0.0033698081970214844
+      "iteration": 337,
+      "exploitability": 0.056328018936926405,
+      "nash_conv": 0.11265603787385281,
+      "time_elapsed": 0.0018081999623973388
     },
     {
-      "exploitability": 0.036887151178643204,
-      "time_elapsed": 0.00491786003112793
+      "iteration": 505,
+      "exploitability": 0.03235245647774909,
+      "nash_conv": 0.06470491295549818,
+      "time_elapsed": 0.002686999963771086
     },
     {
-      "exploitability": 0.010191830679896145,
-      "time_elapsed": 0.007297515869140625
+      "iteration": 757,
+      "exploitability": 0.03336056576129759,
+      "nash_conv": 0.06672113152259518,
+      "time_elapsed": 0.004005199938546866
     },
     {
-      "exploitability": 0.024776091670429868,
-      "time_elapsed": 0.010903120040893555
+      "iteration": 1135,
+      "exploitability": 0.020970579229922265,
+      "nash_conv": 0.04194115845984453,
+      "time_elapsed": 0.005985799936752301
     },
     {
-      "exploitability": 0.03859300879259227,
-      "time_elapsed": 0.017346620559692383
+      "iteration": 1702,
+      "exploitability": 0.02114341640217396,
+      "nash_conv": 0.04228683280434792,
+      "time_elapsed": 0.009750399931363063
     },
     {
-      "exploitability": 0.02187565416089695,
-      "time_elapsed": 0.026117563247680664
+      "iteration": 2553,
+      "exploitability": 0.01569524584471499,
+      "nash_conv": 0.03139049168942998,
+      "time_elapsed": 0.014161099945340538
     },
     {
-      "exploitability": 0.000522763458889422,
-      "time_elapsed": 0.039144277572631836
+      "iteration": 3829,
+      "exploitability": 0.004202160897785134,
+      "nash_conv": 0.008404321795570269,
+      "time_elapsed": 0.02078160001838114
+    },
+    {
+      "iteration": 5000,
+      "exploitability": 0.0059637719934711175,
+      "nash_conv": 0.011927543986942235,
+      "time_elapsed": 0.02694380002139951
     }
   ],
   "osCFR_results": [
     {
-      "exploitability": 0.016451954631830412,
-      "time_elapsed": 0.12209010124206543
+      "iteration": 100,
+      "exploitability": 0.008225977315915206,
+      "nash_conv": 0.016451954631830412,
+      "time_elapsed": 0.042582599991874304
     },
     {
-      "exploitability": 0.012895764160561263,
-      "time_elapsed": 0.18196702003479004
+      "iteration": 150,
+      "exploitability": 0.006447882080280631,
+      "nash_conv": 0.012895764160561263,
+      "time_elapsed": 0.06543040001270128
     },
     {
-      "exploitability": 0.007711959837709004,
-      "time_elapsed": 0.27064013481140137
+      "iteration": 225,
+      "exploitability": 0.003855979918854502,
+      "nash_conv": 0.007711959837709004,
+      "time_elapsed": 0.09751430002506822
     },
     {
-      "exploitability": 0.005919415670636419,
-      "time_elapsed": 0.3953702449798584
+      "iteration": 337,
+      "exploitability": 0.0029597078353182094,
+      "nash_conv": 0.005919415670636419,
+      "time_elapsed": 0.14549400002215407
     },
     {
-      "exploitability": 0.0030022964484127668,
-      "time_elapsed": 0.5831892490386963
+      "iteration": 505,
+      "exploitability": 0.0015011482242063834,
+      "nash_conv": 0.0030022964484127668,
+      "time_elapsed": 0.21697910002694698
     },
     {
-      "exploitability": 0.0021651827950847635,
-      "time_elapsed": 0.863807201385498
+      "iteration": 757,
+      "exploitability": 0.0010825913975423818,
+      "nash_conv": 0.0021651827950847635,
+      "time_elapsed": 0.32451350006158464
     },
     {
-      "exploitability": 0.0013217355841387834,
-      "time_elapsed": 1.2727742195129395
+      "iteration": 1135,
+      "exploitability": 0.0006608677920693917,
+      "nash_conv": 0.0013217355841387834,
+      "time_elapsed": 0.498434700017242
     },
     {
-      "exploitability": 0.0008859583732632181,
-      "time_elapsed": 1.9076573848724365
+      "iteration": 1702,
+      "exploitability": 0.00044297918663160907,
+      "nash_conv": 0.0008859583732632181,
+      "time_elapsed": 0.739556100081245
     },
     {
-      "exploitability": 0.0009921770511237549,
-      "time_elapsed": 2.877962589263916
+      "iteration": 2553,
+      "exploitability": 0.0004960885255618774,
+      "nash_conv": 0.0009921770511237549,
+      "time_elapsed": 1.103971100081253
     },
     {
-      "exploitability": 0.0004174058379794454,
-      "time_elapsed": 4.311967134475708
+      "iteration": 3829,
+      "exploitability": 0.0002087029189897227,
+      "nash_conv": 0.0004174058379794454,
+      "time_elapsed": 1.6474707001143543
+    },
+    {
+      "iteration": 5000,
+      "exploitability": 0.00017978487542580357,
+      "nash_conv": 0.00035956975085160714,
+      "time_elapsed": 2.147757100105082
     }
   ],
   "osCFRPlus_results": [
     {
-      "exploitability": 0.002388808202223369,
-      "time_elapsed": 0.12354826927185059
+      "iteration": 100,
+      "exploitability": 0.0011944041011116846,
+      "nash_conv": 0.002388808202223369,
+      "time_elapsed": 0.04333869998663431
     },
     {
-      "exploitability": 0.0017260926330583404,
-      "time_elapsed": 0.18706393241882324
+      "iteration": 150,
+      "exploitability": 0.0008630463165291702,
+      "nash_conv": 0.0017260926330583404,
+      "time_elapsed": 0.06500769998092437
     },
     {
-      "exploitability": 0.0008338840084729515,
-      "time_elapsed": 0.2785336971282959
+      "iteration": 225,
+      "exploitability": 0.00041694200423647576,
+      "nash_conv": 0.0008338840084729515,
+      "time_elapsed": 0.09747039997455431
     },
     {
-      "exploitability": 0.0006549958319532201,
-      "time_elapsed": 0.41201210021972656
+      "iteration": 337,
+      "exploitability": 0.00032749791597661004,
+      "nash_conv": 0.0006549958319532201,
+      "time_elapsed": 0.14589239999622805
     },
     {
-      "exploitability": 6.511633602279687e-05,
-      "time_elapsed": 0.606043815612793
+      "iteration": 505,
+      "exploitability": 3.2558168011398436e-05,
+      "nash_conv": 6.511633602279687e-05,
+      "time_elapsed": 0.21848529999624589
     },
     {
-      "exploitability": 0.0003142044446980963,
-      "time_elapsed": 0.8787193298339844
+      "iteration": 757,
+      "exploitability": 0.00015710222234904814,
+      "nash_conv": 0.0003142044446980963,
+      "time_elapsed": 0.32738209996387013
     },
     {
-      "exploitability": 0.0001951098573858001,
-      "time_elapsed": 1.2948858737945557
+      "iteration": 1135,
+      "exploitability": 9.755492869290006e-05,
+      "nash_conv": 0.0001951098573858001,
+      "time_elapsed": 0.49043779996281955
     },
     {
-      "exploitability": 0.00010239072766543567,
-      "time_elapsed": 1.9229216575622559
+      "iteration": 1702,
+      "exploitability": 5.119536383271783e-05,
+      "nash_conv": 0.00010239072766543567,
+      "time_elapsed": 0.7371603999526997
     },
     {
-      "exploitability": 8.359049483680492e-05,
-      "time_elapsed": 2.9133622646331787
+      "iteration": 2553,
+      "exploitability": 4.179524741840246e-05,
+      "nash_conv": 8.359049483680492e-05,
+      "time_elapsed": 1.1069878999624052
     },
     {
-      "exploitability": 6.0945287843561236e-05,
-      "time_elapsed": 4.367071151733398
+      "iteration": 3829,
+      "exploitability": 3.0472643921780618e-05,
+      "nash_conv": 6.0945287843561236e-05,
+      "time_elapsed": 1.6636791999990237
+    },
+    {
+      "iteration": 5000,
+      "exploitability": 2.768785956808184e-05,
+      "nash_conv": 5.537571913616368e-05,
+      "time_elapsed": 2.170280099951924
     }
   ]
 }

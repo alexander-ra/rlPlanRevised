@@ -1,0 +1,21 @@
+{
+  "Iterations (log scale)": "Итерации (логаритмичен мащаб)",
+  "Exploitability (log scale)": "Експлоатируемост (логаритмичен мащаб)",
+  "Training time (seconds, log scale)": "Време за обучение (секунди, логаритмичен мащаб)",
+  "External Sampling MCCFR": "MCCFR с външно вземане на проби",
+  "Outcome Sampling MCCFR": "MCCFR с извадка по резултати",
+  "Custom CFR (chance-sampled, Chapter 2)": "Собствен CFR (извадка от раздаването, глава 2)",
+  "OpenSpiel CFR": "OpenSpiel CFR",
+  "OpenSpiel CFR+": "OpenSpiel CFR+",
+  "Training Iterations (log scale)": "Итерации на обучение (логаритмичен мащаб)",
+  "Wall-Clock Training Time (seconds)": "Време за обучение (секунди)",
+  "Vanilla CFR": "Обикновен CFR",
+  "CFR+": "CFR+",
+  "MCCFR External": "MCCFR, външно вземане на проби",
+  "MCCFR Outcome": "MCCFR, извадка по резултати",
+  "Wall Clock Time (seconds, log scale)": "Време за изпълнение (секунди, логаритмичен мащаб)",
+  "Wall-clock time (seconds)": "Време за изпълнение (секунди)",
+  "Exploitability (Nash Conv)": "NashConv",
+  "Exploitability vs Iterations: MCCFR Variants vs Custom CFR": "Експлоатируемост спрямо итерациите: варианти на MCCFR срещу собствения CFR",
+  "Custom CFR (Hand-coded)": "Собствен CFR (ръчно кодиран)"
+}
