@@ -43,9 +43,71 @@ from extract_labels import plotting_scripts  # noqa: E402
 BG_LOCALES = ["bg_BG.UTF-8", "bg_BG.utf8", "bg_BG", "Bulgarian_Bulgaria.1251"]
 
 
-def load_mapping() -> dict[str, str]:
+def load_mapping(overlays: list[Path] | None = None) -> dict[str, str]:
+    """The approved mapping, with any overlay files applied on top.
+
+    An overlay is a JSON object {english: bulgarian} or a list of {"en", "bg"}
+    entries. It lets one chapter's fixes be tried without editing the shared
+    figure_labels.json, which every chapter's figures read.
+    """
     entries = json.loads(LABELS.read_text(encoding="utf-8"))
-    return {e["en"]: e["bg"] for e in entries if e.get("bg")}
+    mapping = {e["en"]: e["bg"] for e in entries if e.get("bg")}
+    for path in overlays or ():
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            data = {e["en"]: e["bg"] for e in data if e.get("bg")}
+        mapping.update(data)
+    return mapping
+
+
+# Bulgarian runs ~15 % longer than English, so a label that fitted its box in
+# English often spills over. box() re-wraps it to the box width, and shrinks the
+# type only down to this floor - below it the figure is illegible in print, so a
+# label that still does not fit is reported and the box has to be enlarged.
+FIT_MARGIN = 0.90
+MIN_FONT = 9.0
+overflow_warnings: list[str] = []
+
+
+def fit_label(ax, text: str, w: float, h: float, fs: float,
+              fontweight=None) -> tuple[str, float]:
+    """Wrap `text` (and if needed shrink it, not below MIN_FONT) to fit a w×h box."""
+    import textwrap
+
+    fig = ax.figure
+    renderer = fig.canvas.get_renderer()
+    (x0, y0), (x1, y1) = ax.transData.transform([(0, 0), (w, h)])
+    box_w, box_h = abs(x1 - x0) * FIT_MARGIN, abs(y1 - y0) * FIT_MARGIN
+
+    def extent(s: str, size: float) -> tuple[float, float]:
+        t = ax.text(0, 0, s, fontsize=size, fontweight=fontweight)
+        bb = t.get_window_extent(renderer=renderer)
+        t.remove()
+        return bb.width, bb.height
+
+    def fits(s: str, size: float) -> bool:
+        ew, eh = extent(s, size)
+        return ew <= box_w and eh <= box_h
+
+    if fits(text, fs):
+        return text, fs
+    size = fs
+    words = text.replace("\n", " ").split()
+    candidate = text
+    while True:
+        # greedy re-wrap: the widest line count that still fits the width
+        for width in range(max(len(text), 1), 3, -1):
+            candidate = "\n".join(textwrap.wrap(" ".join(words), width,
+                                                break_long_words=False))
+            if extent(candidate, size)[0] <= box_w:
+                break
+        if fits(candidate, size):
+            return candidate, size
+        if size - 0.5 < min(MIN_FONT, fs):
+            overflow_warnings.append(
+                f"{text!r} (fs {fs}) does not fit its {w:g}×{h:g} box")
+            return candidate, size
+        size -= 0.5
 
 
 def install(mapping: dict[str, str], written: list[Path],
@@ -199,7 +261,37 @@ def patch_diagram_utils(script: Path, mapping: dict[str, str],
         patched._bg_wrapped = True
         setattr(mod, name, patched)
 
-    wrap("box", 5, ("label",))
+    # box(ax, x, y, w, h, label, fc=..., fs=..., ...): translate, then fit
+    orig_box = getattr(mod, "box", None)
+    if orig_box is not None and not getattr(orig_box, "_bg_wrapped", False):
+        import inspect
+        default_fs = inspect.signature(orig_box).parameters.get("fs")
+        default_fs = default_fs.default if default_fs is not None else 9.0
+
+        def box(*args, **kwargs):
+            args = list(args)
+            if len(args) > 5:
+                args[5] = tr(args[5])
+            elif "label" in kwargs:
+                kwargs["label"] = tr(kwargs["label"])
+            ax, w, h = args[0], args[3], args[4]
+            label = args[5] if len(args) > 5 else kwargs.get("label")
+            fs = kwargs.get("fs", args[7] if len(args) > 7 else default_fs)
+            if isinstance(label, str) and label.strip() and "$" not in label:
+                new, size = fit_label(ax, label, w, h, fs,
+                                      kwargs.get("fontweight"))
+                if len(args) > 5:
+                    args[5] = new
+                else:
+                    kwargs["label"] = new
+                if len(args) > 7:
+                    args[7] = size
+                else:
+                    kwargs["fs"] = size
+            return orig_box(*args, **kwargs)
+
+        box._bg_wrapped = True
+        mod.box = box
     wrap("panel_bg", 6, ("label",))
     wrap("note", 3, ("text",))
 
@@ -211,6 +303,10 @@ def main() -> None:
     ap.add_argument("--collect", metavar="FILE",
                     help="record every string that reaches a labelling call "
                          "and write it here, instead of only translating")
+    ap.add_argument("--labels-overlay", metavar="FILE", action="append",
+                    type=Path, default=[],
+                    help="JSON {en: bg} applied on top of figure_labels.json "
+                         "(repeatable); for trying one chapter's label fixes")
     args = ap.parse_args()
 
     scripts = plotting_scripts()
@@ -223,8 +319,10 @@ def main() -> None:
         print(f"{len(scripts)} scripts")
         return
 
-    mapping = load_mapping()
-    print(f"{len(mapping)} approved label translations")
+    mapping = load_mapping(args.labels_overlay)
+    print(f"{len(mapping)} approved label translations"
+          + (f" (with {len(args.labels_overlay)} overlay(s))"
+             if args.labels_overlay else ""))
 
     seen: set[str] | None = set() if args.collect else None
     if seen is not None:
@@ -257,7 +355,14 @@ def main() -> None:
                     sys.path.insert(0, str(anc))
                     added_paths.append(str(anc))
             os.chdir(script.parent)
-            runpy.run_path(str(script), run_name="__main__")
+            # The script must see its own argv, not ours: a plotting script
+            # with argparse would otherwise reject "--only stepNN" and exit
+            # before drawing anything.
+            saved_argv, sys.argv = sys.argv, [str(script)]
+            try:
+                runpy.run_path(str(script), run_name="__main__")
+            finally:
+                sys.argv = saved_argv
             ok += 1
             all_written += written
             print(f"  ok    {rel}  ({len(written)} figure(s))", flush=True)
@@ -307,6 +412,11 @@ def main() -> None:
 
     print(f"\nscripts ok {ok}, failed {failed}")
     print(f"BG figures written: {len(all_written)}")
+    if overflow_warnings:
+        print(f"\nlabels that still overflow their box at fs {MIN_FONT} "
+              "(enlarge the box in the script):")
+        for w in overflow_warnings:
+            print(f"   {w[:140]}")
     if failures:
         print("\nfailures (their English figures stay in place):")
         for rel, why in failures:
