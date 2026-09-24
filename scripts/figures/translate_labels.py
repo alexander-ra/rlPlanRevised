@@ -44,14 +44,15 @@ BATCH = 12
 # CLAUDE.md and terminology_EN_BG.md.
 KEEP_LATIN = re.compile(
     r"\b(CFR\+?|MCCFR|DQN|PPO|SB3|PSRO|MAPPO|MADDPG|QMIX|CTDE|EGTA|NFSP|ARDT|"
-    r"LLM|RNR|SES|SLS|AIVAT|piKL|Shapley|OpenSpiel|Goofspiel|"
+    r"LLM|RNR|SES|SLS|AIVAT|piKL|OpenSpiel|Goofspiel|"
     r"AlphaStar|AlphaZero|DeepStack|Libratus|Pluribus|ReBeL|CartPole|"
     r"LunarLander|Adam|alpha|beta|tau|epsilon)\b")
 
 # Names this corpus transliterates rather than keeping in Latin - Кун appears
 # 142 times against 43 for Kuhn, Ледюк 253 against 86. Requiring the Latin form
 # here rejected correct Bulgarian; requiring the Cyrillic one is the real check.
-TRANSLITERATED = {"Kuhn": "Кун", "Leduc": "Ледюк", "Nash": "Наш"}
+TRANSLITERATED = {"Kuhn": "Кун", "Leduc": "Ледюк", "Nash": "Наш",
+                  "Shapley": "Шапли"}   # glossary decision 1.28 (2026-09)
 
 # A label made only of identifiers, numbers and punctuation has nothing to
 # translate. "SB3 DQN" and "CFR+" must come through untouched, so absence of
