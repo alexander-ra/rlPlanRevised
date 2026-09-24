@@ -1,4 +1,4 @@
-"""Shared matplotlib primitives for the Step 9 summary figures.
+"""Shared matplotlib primitives for the Chapter 9 summary figures.
 
 One place for the box/arrow/panel drawing code the conceptual diagrams share; style
 mirrors deliverables/reports/step08/summary/_diagram_utils.py (FancyBboxPatch rounded
@@ -70,8 +70,9 @@ def panel_bg(ax, x, y, w, h, fc, label=None, label_fs=10.5):
                 fontsize=label_fs, fontweight="bold", color="#2c3e50", zorder=1, clip_on=False)
 
 
-def note(ax, x, y, text, fs=7.6, color="#5b6b7b", ha="center", va="center", style="italic"):
-    ax.text(x, y, text, ha=ha, va=va, fontsize=fs, color=color, style=style, zorder=4)
+def note(ax, x, y, text, fs=10.5, color="#5b6b7b", ha="center", va="center", style="italic",
+         **kw):
+    ax.text(x, y, text, ha=ha, va=va, fontsize=fs, color=color, style=style, zorder=4, **kw)
 
 
 def new_fig(w=13.5, h=9.0, xlim=(0, 14), ylim=(0, 10), shrink=1.8):

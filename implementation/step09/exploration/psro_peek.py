@@ -44,7 +44,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from _marl_tools import fictitious_play_matrix, save_json, get_plt, figures_dir
+from _marl_tools import fictitious_play_matrix, save_json
 
 # Rock-Paper-Scissors, row-player payoff (zero-sum). Actions: 0=Rock, 1=Paper, 2=Scissors.
 RPS = np.array([[0.0, -1.0, 1.0],
@@ -126,21 +126,10 @@ def main():
 
 
 def _plot(curve):
-    plt = get_plt()
-    if plt is None:
-        print("[plot] matplotlib not installed -> skipping PNG.")
-        return
-    import os
-    fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(curve["round"], curve["exploitability"], "-o")
-    ax.set_xlabel("PSRO round (best responses added)")
-    ax.set_ylabel("meta-Nash exploitability (NashConv)")
-    ax.set_title("PSRO on RPS: exploitability falls as the population completes the cycle")
-    ax.grid(True, alpha=0.3)
-    out = os.path.join(figures_dir(), "psro_peek.png")
-    fig.tight_layout()
-    fig.savefig(out, dpi=120)
-    print(f"[plot] wrote {out}")
+    # Drawn by plot_results.py (print-size fonts, 300 dpi), which can also redraw it from
+    # figures/psro_peek.json without a rerun.
+    from plot_results import plot_psro_peek
+    plot_psro_peek(curve)
 
 
 if __name__ == "__main__":

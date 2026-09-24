@@ -13,7 +13,7 @@ lang: en
 
 # Chapter 9 One-Pager — Multi-Agent Reinforcement Learning
 
-**Problem.** Chapters 2–8 lived inside two-player zero-sum games, where a Nash strategy secures a
+**Problem.** Chapters 2–8 worked almost entirely inside two-player zero-sum games, where a Nash strategy secures a
 value `v*` against anyone and CFR provably converges to it. Chapter 9 is the pivot into the
 multi-agent world, where the defining difficulty is **non-stationarity**: every agent is
 learning at once, so from any one agent's seat the environment (which contains the others) never
@@ -21,12 +21,12 @@ holds still. This is the launch point for the thesis's multi-agent contributions
 opponent modeling (#1), safe exploitation without a minimax anchor (#2), and population-level
 evaluation (#3).
 
-**Approach.** Build and compare the field's four structural answers to non-stationarity on
+**Approach.** Build and compare a control and the field's four structural answers to non-stationarity on
 small, *exactly-solvable* testbeds, so every learner is graded against ground truth.
 **Independent learning** (the control that fails) on four canonical matrix games; **CTDE** —
 centralize the critic at training, decentralize the actor at execution — via MADDPG and MAPPO on
 cooperative tasks; **PSRO** — a game played over a *population* of policies (meta-Nash +
-best-response oracle), reusing Chapter 07's exact best response as both oracle and exploitability
+best-response oracle), reusing Chapter 7's exact best response as both oracle and exploitability
 metric — on Kuhn, Leduc, a matrix game, and a native Goofspiel; **learned communication**
 (CommNet); and **LOLA** (differentiate through the opponent's learning step) on the Iterated
 Prisoner's Dilemma. **All numbers below are measured.**
@@ -42,19 +42,19 @@ Prisoner's Dilemma. **All numbers below are measured.**
   Rock–Paper–Scissors. Self-play confirms the mechanism: on Kuhn the **average**-iterate NashConv
   falls $0.24\to0.031$ while the **last** iterate keeps oscillating — why a population/averaging
   is needed.
-- *A centralized critic is a near-zero-variance teacher.* On CoopSignal the centralized critic's
-  residual is `3.2e-11` vs the independent critic's `0.077` — the CTDE variance-reduction claim,
-  confirmed.
+- *A centralized critic fits its value target almost exactly.* On CoopSignal the centralized
+  critic's residual is `3.2e-11` vs the independent critic's `0.077` — a far better fit of the
+  value target (not the same as lower policy-gradient variance).
 - *Communication clears the guessing ceiling.* CommNet with the channel ON scores `0.795` vs
   `0.204` OFF (ceiling 1/K = 0.2) — a learned, not designed, protocol.
 - *LOLA turns defectors into cooperators.* IPD per-step return rises from `1.04` (naive
   defection) to `2.82` (LOLA cooperation); zeroing the look-ahead recovers the naive gradient
   exactly (the mechanism check).
-- *Honest negatives (kept predictions, §9).* PSRO on **Leduc** declines but hits a scaling wall
+- *Honest negatives (kept predictions, §9 of the report).* PSRO on **Leduc** declines but hits a scaling wall
   (`4.75→2.16` after 20 rounds, not `<0.5`); **Goofspiel K=4** oscillates rather than converging
   (a flagged code anomaly, documented not fixed); and on the **climbing game** no method reaches
-  the optimum 11 (IL/MAPPO 7, MADDPG 5) — a centralized critic lowers variance but does not by
-  itself solve hard-exploration coordination.
+  the optimum 11 (IL/MAPPO 7; MADDPG, as a COMA-style variant, 5) — a centralized critic fits its
+  target better but does not by itself solve hard-exploration coordination.
 
 **Thesis connection.** PSRO is Chapter 2's iterated best response lifted to a population and the
 empirical backbone here; LOLA is *dynamic* opponent modeling, the moving-target complement to

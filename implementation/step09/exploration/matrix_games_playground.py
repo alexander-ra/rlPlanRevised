@@ -39,7 +39,7 @@ from __future__ import annotations
 import numpy as np
 
 from _marl_tools import GAMES, expected_payoffs, game_matrices, run_independent_learners, \
-    save_json, get_plt
+    save_json
 
 CONFIG = {
     "steps": 4000,
@@ -89,29 +89,10 @@ def _cfg_json(cfg):
 
 
 def _plot(cfg):
-    plt = get_plt()
-    if plt is None:
-        print("[plot] matplotlib not installed -> skipping PNG (JSON still written).")
-        return
-    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
-    for ax, (name, meta) in zip(axes.flat, GAMES.items()):
-        ps, qs = run_independent_learners(name, cfg["steps"], cfg["lr"], cfg["init"], cfg["seed"])
-        ax.plot(ps, qs, lw=0.8)
-        ax.plot(ps[0], qs[0], "go", label="start")
-        ax.plot(ps[-1], qs[-1], "rs", label="end")
-        ax.set_title(name)
-        ax.set_xlabel(f"P(row={meta['actions'][0]})")
-        ax.set_ylabel(f"P(col={meta['actions'][0]})")
-        ax.set_xlim(-0.02, 1.02)
-        ax.set_ylim(-0.02, 1.02)
-        ax.legend(fontsize=7)
-    fig.suptitle("Independent learners in 2x2 games (strategy-space trajectories)")
-    fig.tight_layout()
-    from _marl_tools import figures_dir
-    import os
-    out = os.path.join(figures_dir(), "matrix_games_playground.png")
-    fig.savefig(out, dpi=120)
-    print(f"[plot] wrote {out}")
+    # The figure is drawn by plot_results.py (print-size fonts, 300 dpi), which can also
+    # redraw it from the saved JSON without rerunning this script.
+    from plot_results import plot_matrix_games
+    plot_matrix_games(_cfg_json(cfg))
 
 
 if __name__ == "__main__":

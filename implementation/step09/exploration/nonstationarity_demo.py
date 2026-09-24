@@ -38,7 +38,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from _marl_tools import run_independent_learners, save_json, get_plt, figures_dir
+from _marl_tools import run_independent_learners, save_json
 
 CONFIG = {
     "steps": 6000,
@@ -84,30 +84,14 @@ def main():
     print(f"\nsaved {path}")
 
     if cfg["save_plot"]:
-        _plot(ps_mp, qs_mp)
+        _plot(cfg)
 
 
-def _plot(ps_mp, qs_mp):
-    plt = get_plt()
-    if plt is None:
-        print("[plot] matplotlib not installed -> skipping PNG.")
-        return
-    import os
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.plot(ps_mp, qs_mp, lw=0.6, alpha=0.8)
-    ax.plot(0.5, 0.5, "k*", ms=14, label="mixed Nash (0.5,0.5)")
-    ax.plot(ps_mp[0], qs_mp[0], "go", label="start")
-    ax.plot(ps_mp[-1], qs_mp[-1], "rs", label="end")
-    ax.set_title("Matching Pennies: independent learners orbit, never converge")
-    ax.set_xlabel("P(row = Heads)")
-    ax.set_ylabel("P(col = Heads)")
-    ax.set_xlim(-0.02, 1.02)
-    ax.set_ylim(-0.02, 1.02)
-    ax.legend()
-    out = os.path.join(figures_dir(), "nonstationarity_demo.png")
-    fig.tight_layout()
-    fig.savefig(out, dpi=120)
-    print(f"[plot] wrote {out}")
+def _plot(cfg):
+    # Drawn by plot_results.py (print-size fonts, 300 dpi), which recomputes the same
+    # deterministic trajectory from the saved config and can redraw it without a rerun.
+    from plot_results import plot_nonstationarity
+    plot_nonstationarity({**cfg, "init": list(cfg["init"])})
 
 
 if __name__ == "__main__":

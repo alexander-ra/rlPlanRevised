@@ -46,7 +46,7 @@ from engines import make_game
 from best_response import best_response_policy, nash_gap
 from policies import tabular_policy, uniform_policy, materialize
 
-from _marl_tools import save_json, get_plt, figures_dir
+from _marl_tools import save_json
 
 CONFIG = {
     "iters": 200,
@@ -109,24 +109,10 @@ def main():
 
 
 def _plot(curve):
-    plt = get_plt()
-    if plt is None:
-        print("[plot] matplotlib not installed -> skipping PNG.")
-        return
-    import os
-    fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(curve["iter"], curve["avg_nashconv"], "-o", ms=3, label="average iterate")
-    ax.plot(curve["iter"], curve["last_nashconv"], "-s", ms=3, label="last iterate (pure BR)")
-    ax.set_yscale("log")
-    ax.set_xlabel("fictitious-play iteration")
-    ax.set_ylabel("NashConv (exploitability)")
-    ax.set_title("Kuhn self-play: the AVERAGE converges to Nash, the last iterate does not")
-    ax.legend()
-    ax.grid(True, which="both", alpha=0.3)
-    out = os.path.join(figures_dir(), "selfplay_vs_nash.png")
-    fig.tight_layout()
-    fig.savefig(out, dpi=120)
-    print(f"[plot] wrote {out}")
+    # Drawn by plot_results.py (print-size fonts, 300 dpi), which can also redraw it from
+    # figures/selfplay_vs_nash.json without rerunning fictitious play.
+    from plot_results import plot_selfplay
+    plot_selfplay(curve)
 
 
 if __name__ == "__main__":

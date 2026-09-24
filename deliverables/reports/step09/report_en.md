@@ -6,11 +6,11 @@ BG: Изследване на възможностите за приложени
 
 # Chapter 9 — Multi-Agent Reinforcement Learning: Experiment Report
 
-**Testbeds:** four canonical $2\times2$ matrix games (Prisoner's Dilemma, Matching Pennies, Stag Hunt, Battle of the Sexes); Kuhn Poker and Leduc Hold'em (via the Chapter 07 exact stack); a native Goofspiel engine ($K=3,4$); two small cooperative environments (a one-step referential "CoopSignal" game and the Claus–Boutilier climbing game); and the memory-1 Iterated Prisoner's Dilemma. The poker games reuse the Chapter 02 Kuhn engine, the Chapter 03 Leduc engine, and Chapter 07's exact best-response / NashConv code wholesale.
+**Testbeds:** four canonical $2\times2$ matrix games (Prisoner's Dilemma, Matching Pennies, Stag Hunt, Battle of the Sexes); Kuhn Poker and Leduc Hold'em (via the Chapter 7 exact stack); a native Goofspiel engine ($K=3,4$); two small cooperative environments (a one-step referential "CoopSignal" game and the Claus–Boutilier climbing game); and the memory-1 Iterated Prisoner's Dilemma. The poker games reuse the Chapter 2 Kuhn engine, the Chapter 3 Leduc engine, and Chapter 7's exact best-response / NashConv code wholesale.
 
 **PhD connection:** the pivot from two-player zero-sum (Chapters 2–8) into multi-agent RL. Three hooks: **LOLA** as *dynamic* opponent modeling (Contribution #1); **PSRO** as a population-level evaluation methodology (Contribution #3); and the **missing $N>2$ minimax anchor** where two-player safety guarantees vanish (Contribution #2).
 
-**Scope of results:** every number in this report is **measured from a real run** and read from the run artifacts under `implementation/step09/implementation/results/{smoke,scale}_results.json` and `implementation/step09/exploration/figures/*.json`. Wherever possible a simulated number is bracketed by an *exact* analytical reference (analytic Nash for the matrix games; Chapter 07's exact best response / NashConv for Kuhn, Leduc, and Goofspiel). Four Phase-4 predictions were **contradicted** by the runs; per the project workflow (§0.1) they are kept as stated and reconciled with what actually happened (§9).
+**Scope of results:** every number in this report is **measured from a real run** and read from the run artifacts under `implementation/step09/implementation/results/{smoke,scale}_results.json` and `implementation/step09/exploration/figures/*.json`. Wherever possible a simulated number is bracketed by an *exact* analytical reference (analytic Nash for the matrix games; Chapter 7's exact best response / NashConv for Kuhn, Leduc, and Goofspiel). Four Phase-4 predictions were **contradicted** by the runs; per the project workflow (§0.1) they are kept as stated and reconciled with what actually happened (§9).
 
 > **How to read this report.** Both parts follow the same arc: **what we test → how → results → conclusion.** **Part I (§1–§4)** shows *why* multi-agent learning is hard, on matrix games and Kuhn self-play. **Part II (§5–§8)** evaluates the structural fixes — PSRO, CTDE, communication, LOLA — against exact yardsticks. §9 reconciles the four contradicted predictions; §10–§12 cover trust, limitations, and directions; §13 lists reproduction commands.
 
@@ -62,7 +62,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **Results.** Prisoner's Dilemma's radius collapses to zero (convergence). Matching Pennies' radius **grows**, from $0.30$ to $0.48$ — the trajectory spirals *outward* toward the boundary rather than settling or holding a constant orbit.
 
-**Conclusion.** Non-stationarity is structural: more compute traces a larger divergence, not convergence. (This contradicts the Phase-4 "constant-radius orbit" prediction; see §9.)
+**Conclusion.** The last iterate does not converge. In continuous time (infinitesimal step) the trajectory would circle the equilibrium on a closed curve (Singh et al., 2000); with the fixed step $0.1$ each update lands slightly outside that curve, so the trajectory spirals slowly outward, and at this step size more compute traces a larger divergence, not convergence. (This contradicts the Phase-4 "constant-radius orbit" prediction; see §9.)
 
 ---
 
@@ -70,7 +70,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **What we test.** In fictitious-play self-play on a real imperfect-information game, does the *average* strategy converge to Nash even when the *last* iterate does not?
 
-**How.** Fictitious play on Kuhn (each player best-responds to the opponent's running average via Chapter 07's exact best response), $200$ iterations, measured every 5. Track the average-iterate NashConv and the last-iterate NashConv. Data: `exploration/figures/selfplay_vs_nash.json`.
+**How.** Fictitious play on Kuhn (each player best-responds to the opponent's running average via Chapter 7's exact best response), $200$ iterations, measured every 5. Track the average-iterate NashConv and the last-iterate NashConv. Data: `exploration/figures/selfplay_vs_nash.json`.
 
 | Iteration | average-iterate NashConv | last-iterate NashConv |
 |---:|---:|---:|
@@ -94,7 +94,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 **What we test.** Does PSRO (population + meta-Nash + best-response oracle) drive the meta-Nash mixture's exploitability down toward zero, and does that hold across game sizes?
 
-**How.** PSRO with Chapter 07's **exact** best-response oracle. The opponent's meta-Nash mixture over behavioral policies is collapsed to a single realization-equivalent behavioral policy (Kuhn's theorem, perfect recall) so the exact BR engine applies. Exploitability = NashConv of the meta-mixture in the full game. Data: `results/scale_results.json` (`psro` block); RPS from `exploration/figures/psro_peek.json`.
+**How.** PSRO with Chapter 7's **exact** best-response oracle. The opponent's meta-Nash mixture over behavioral policies is collapsed to a single realization-equivalent behavioral policy (Kuhn's theorem, perfect recall) so the exact BR engine applies. Exploitability = NashConv of the meta-mixture in the full game. Data: `results/scale_results.json` (`psro` block); RPS from `exploration/figures/psro_peek.json`; Goofspiel $K=3$ from `results/smoke_results.json` (the scale config ran $K=4$ only).
 
 | Game | round 0 | final (round) | verdict |
 |---|---:|---:|---|
@@ -102,22 +102,22 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 | matrix (Matching Pennies) | $2.0$ | $0.0$ (2) | converges |
 | Rock–Paper–Scissors | $2.0$ | $0.017$ (4) | converges; mixture $\to(0.335,0.336,0.329)$ |
 | Leduc Hold'em | $4.75$ | $2.16$ (19) | decreases, **» 0.5 target** |
-| Goofspiel ($K=3$) | $1.33$ | $0.0$ (1) | converges |
-| Goofspiel ($K=4$) | $1.50$ | $1.71$; oscillates $1.4$–$2.0$ | **does not settle** |
+| Goofspiel ($K=3$, smoke config) | $1.33$ | $0.0$ (1) | converges |
+| Goofspiel ($K=4$) | $1.50$ | $1.71$ (7); oscillates $1.24$–$2.0$ | **does not settle** |
 
-**Results.** On the small games (Kuhn, matrix, RPS, Goofspiel $K=3$) exploitability collapses to (near) zero within a handful of rounds — textbook double-oracle behavior. Leduc declines steadily ($4.75\to2.16$) but stays far above the $0.5$ target after 20 rounds. Goofspiel $K=4$ oscillates between $\sim\!1.4$ and $\sim\!2.0$ without settling.
+**Results.** On the small games (Kuhn, matrix, RPS, Goofspiel $K=3$) exploitability collapses to (near) zero within a handful of rounds — textbook double-oracle behavior. Leduc oscillates over the first eight rounds (between $3.73$ and $6.83$; round 1 is the maximum), then declines to $2.16$, still far above the $0.5$ target after 20 rounds. Goofspiel $K=4$ oscillates between $\sim\!1.2$ and $2.0$ over its 8 rounds without settling.
 
 **Conclusion.** PSRO is validated as the game-theory↔MARL bridge on the small games, using the same exact exploitability metric as Chapters 2–8. Two results — Leduc's slow convergence and Goofspiel $K=4$'s oscillation — did not match predictions and are reconciled in §9.
 
 ---
 
-## 6. Experiment 5 — CTDE: critic variance and the climbing game
+## 6. Experiment 5 — CTDE: critic residual and the climbing game
 
 **What we test.** (a) Does a *centralized* critic have lower value-target variance than *independent* critics? (b) Does a centralized critic let cooperative learners escape a miscoordination trap and beat independent learners?
 
 **How.** (a) MADDPG on the one-step CoopSignal task, training a centralized $Q(s,\text{joint }a)$ and per-agent $Q_i(o_i)$ on the same data; compare final residual loss. (b) Independent learners, MADDPG, and MAPPO on the Claus–Boutilier climbing game (optimum $11$ flanked by $-30$ penalties; safe attractor $5$); compare greedy team reward. Data: `results/scale_results.json` (`coop` block).
 
-*(a) Critic variance (CoopSignal):*
+*(a) Critic residual (CoopSignal):*
 
 | Critic | final residual (value loss) |
 |---|---:|
@@ -132,9 +132,9 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 | MADDPG | $5.0$ | — |
 | MAPPO | $7.0$ | — |
 
-**Results.** (a) The centralized critic's residual is essentially zero (it conditions on the target and the joint action, so the reward is deterministic in its inputs), orders of magnitude below the independent critic's $0.077$ — the CTDE variance-reduction claim, confirmed. (b) **No method reaches the optimum**; independent learners and MAPPO reach $7$, and **MADDPG trails at $5$** (the safe attractor).
+**Results.** (a) The centralized critic's residual is essentially zero (it conditions on the target and the joint action, so the reward is deterministic in its inputs), orders of magnitude below the independent critic's $0.077$: the centralized critic fits its value target far more precisely. That alone does not mean lower policy-gradient variance; with converged critics a centralized critic can even increase it (Lyu et al., 2021). (b) **No method reaches the optimum**; independent learners and MAPPO reach $7$, and **MADDPG trails at $5$** (the safe attractor). The MADDPG here is a discrete-action variant whose actor update uses a COMA-style counterfactual baseline (Foerster et al., 2018) instead of the deterministic policy gradient, so this result speaks for that variant, not for MADDPG as published.
 
-**Conclusion.** A centralized critic is a lower-variance teacher (confirmed), but that alone does **not** solve hard-exploration coordination — the $-30$ penalties deter the agents from ever trying the joint action that reaches $11$. MADDPG underperforming IL specifically flags its discrete counterfactual-baseline actor for scrutiny (§9, §11).
+**Conclusion.** A centralized critic fits its value target far better (confirmed), but that alone does **not** solve hard-exploration coordination — the $-30$ penalties deter the agents from ever trying the joint action that reaches $11$. MADDPG underperforming IL specifically flags its discrete counterfactual-baseline actor for scrutiny (§9, §11).
 
 ---
 
@@ -166,7 +166,7 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 | naive vs naive | $1.04$ |
 | LOLA vs LOLA | $2.82$ |
 
-(The exploration run, with a larger look-ahead rate, reached LOLA returns of $\sim\!2.67$–$2.93$ vs naive $\sim\!1.06$.)
+(The exploration run, with a larger look-ahead rate, reached LOLA returns of $2.67$ and $2.93$ for the two agents (mean $2.80$) vs naive $\sim\!1.06$.)
 
 **Results.** Naive learning converges to mutual defection ($1.04$); LOLA reaches near-cooperation ($2.82$). A built-in check confirms the mechanism: with the look-ahead rate set to zero, LOLA's gradient equals the naive gradient exactly, so the cooperation comes from the second-order term.
 
@@ -178,48 +178,48 @@ Single-agent RL assumes a **stationary** environment; multi-agent RL does not, b
 
 Per WORKFLOW §0.1, contradicted Phase-4 predictions are kept and reconciled, not silently edited. Four gaps:
 
-1. **Matching Pennies orbit (§3).** *Predicted:* a clean orbit at roughly constant radius around $(\tfrac12,\tfrac12)$. *Measured:* the radius grew $0.30\to0.48$ (outward spiral); the implementation's softmax learner instead drifted to the corners (NashConv $\sim\!1.8$). *Reconciliation:* the non-convergence lesson is intact and sharper; the "energy-preserving orbit" mental model was the error, and the actual boundary-drift is a stronger argument for averaging/population methods. Not a bug — two different, valid gradient dynamics.
+1. **Matching Pennies orbit (§3).** *Predicted:* a clean orbit at roughly constant radius around $(\tfrac12,\tfrac12)$. *Measured:* the radius grew $0.30\to0.48$ (outward spiral); the implementation's softmax learner instead drifted to the corners (NashConv $\sim\!1.8$). *Reconciliation:* the non-convergence lesson is intact. The "energy-preserving orbit" is the right picture for the continuous-time dynamics (infinitesimal step), where the trajectory circles the equilibrium on a closed curve (Singh et al., 2000); with the fixed step $0.1$ each update lands slightly outside that curve, so the trajectory spirals slowly out to the boundary. Either way the last iterate does not converge, which is the case for averaging/population methods. Not a bug — two different, valid gradient dynamics.
 
-2. **PSRO on Leduc (§5).** *Predicted:* exploitability $<0.5$ within 20 iterations. *Measured:* $4.75\to2.16$ over 20 rounds — declining but far above $0.5$. *Reconciliation:* genuine slow convergence, not a bug — Kuhn hit machine zero in 6 rounds, but Leduc's tree is far larger and a 20-member *pure-strategy* population cannot closely approximate its mixed Nash. The target was optimistic; the downward trend is the correct behavior. Verified by the clean Kuhn/matrix/RPS convergence on the same code path.
+2. **PSRO on Leduc (§5).** *Predicted:* exploitability $<0.5$ within 20 iterations. *Measured:* $4.75\to2.16$ over 20 rounds — oscillating over the first eight rounds (up to $6.83$), then declining, but far above $0.5$. *Reconciliation:* genuine slow convergence, not a bug — Kuhn hit machine zero in 6 rounds, but Leduc's tree is far larger and a 20-member *pure-strategy* population cannot closely approximate its mixed Nash. The target was optimistic; the downward trend is the correct behavior. Verified by the clean Kuhn/matrix/RPS convergence on the same code path.
 
-3. **Goofspiel $K=4$ (§5).** *Predicted:* non-increasing exploitability. *Measured:* $K=3$ converged to $0$; $K=4$ oscillates $1.4$–$2.0$. *Reconciliation:* the one unresolved anomaly. Documented, not fixed (per the chosen path). Prime suspects for a follow-up: the Goofspiel PSRO driver never de-duplicates best-response policies, and a pure-strategy population is likely too weak for the larger game's mixed meta-Nash. Flagged as an open code item — **not** presented as a validated PSRO result.
+3. **Goofspiel $K=4$ (§5).** *Predicted:* non-increasing exploitability. *Measured:* $K=3$ (smoke config) converged to $0$; $K=4$ oscillates $1.24$–$2.0$. *Reconciliation:* the one unresolved anomaly. Documented, not fixed (per the chosen path). Prime suspects for a follow-up: the Goofspiel PSRO driver never de-duplicates best-response policies, and a pure-strategy population is likely too weak for the larger game's mixed meta-Nash. Flagged as an open code item — **not** presented as a validated PSRO result.
 
-4. **Climbing game (§6).** *Predicted:* the centralized critic reaches the optimum 11 and beats independent learners. *Measured:* nobody reached 11; IL and MAPPO reached 7, MADDPG trailed at 5. *Reconciliation:* the separate critic-variance claim held (central residual $\sim\!3\times10^{-11}$ vs $0.077$), so the honest split is "CTDE lowers critic variance ≠ CTDE solves hard-exploration coordination." MADDPG below IL additionally flags its counterfactual-baseline actor. The takeaway survives in chastened form.
+4. **Climbing game (§6).** *Predicted:* the centralized critic reaches the optimum 11 and beats independent learners. *Measured:* nobody reached 11; IL and MAPPO reached 7, MADDPG trailed at 5. *Reconciliation:* the separate critic-fit result held (central residual $\sim\!3\times10^{-11}$ vs $0.077$), so the honest split is "CTDE gives a better-fitted critic ≠ CTDE solves hard-exploration coordination." MADDPG below IL additionally flags its COMA-style counterfactual-baseline actor. The takeaway survives in chastened form.
 
-A cross-cutting methodological note: the two neural effects (critic variance §6a; communication §7) were **invisible at the fast smoke config** — comm ON = OFF = $0.24$, critic losses near-equal ($0.0897$ vs $0.0927$) — and appeared only at the scale config. The scale numbers are the ones the neural claims rest on.
+A cross-cutting methodological note: the two neural effects (critic residual §6a; communication §7) were **invisible at the fast smoke config** — comm ON = OFF = $0.24$, critic losses near-equal ($0.0897$ vs $0.0927$) — and appeared only at the scale config. The scale numbers are the ones the neural claims rest on.
 
 ---
 
 ## 10. Trustworthiness and sample adequacy
 
-- **Game-theoretic results are bounded by exact references.** Matrix outcomes are checked against analytic Nash; Kuhn/Leduc/Goofspiel exploitability is Chapter 07's *exact* NashConv (not a simulation). PSRO's Kuhn result reaching $\sim\!2\times10^{-16}$ is machine-precision zero, the strongest possible confirmation.
+- **Game-theoretic results are bounded by exact references.** Matrix outcomes are checked against analytic Nash; Kuhn/Leduc/Goofspiel exploitability is Chapter 7's *exact* NashConv (not a simulation). PSRO's Kuhn result reaching $\sim\!2\times10^{-16}$ is machine-precision zero, the strongest possible confirmation.
 - **Matrix and PSRO learners are deterministic** (exact gradients / exact BR + fixed seeds), so those numbers are exactly reproducible.
 - **Neural results are seeds-limited.** The coop/comm/LOLA results are reported at one primary seed (scale allows 3); they are *qualitative inequalities* (central $<$ independent; comm ON $>$ OFF; LOLA $>$ naive), robust in direction but seed- and library-version-sensitive in magnitude. They should not be read as precise point estimates.
-- **Not captured on this run:** the `validate.py` PASS/FAIL log and the experiment PNGs (only the JSON artifacts were saved). Listed as "to close" in `../figures/README.md`.
+- **Not captured on this run:** the `validate.py` PASS/FAIL log (only the JSON artifacts were saved). The figures are drawn from those JSON results (see `../figures/README.md`).
 
 ---
 
 ## 11. Limitations (ranked by how much they affect the conclusions)
 
 1. **Goofspiel $K=4$ oscillation (§5, §9.3)** — an unexplained PSRO anomaly; the Goofspiel PSRO driver's lack of BR de-duplication and its pure-strategy population are the suspects. Until resolved, only the $K=3$ Goofspiel result should be relied on.
-2. **MADDPG underperforms IL on the climbing game (§6, §9.4)** — points at the discrete counterfactual-baseline actor update; the MADDPG *reward* results are therefore not trustworthy, though its *critic-variance* result (a separate, clean measurement) is.
+2. **MADDPG underperforms IL on the climbing game (§6, §9.4)** — points at the discrete counterfactual-baseline actor update; the MADDPG *reward* results are therefore not trustworthy, though its *critic-fit* result (a separate, clean measurement) is.
 3. **Leduc PSRO does not reach the target (§5, §9.2)** — genuine but means the "PSRO scales" claim is demonstrated only qualitatively (a downward trend), not to a low exploitability, on the larger game.
 4. **Single-seed neural results (§10)** — direction-robust, magnitude-uncertain.
 5. **Toy scale throughout** — matrix games, one-step coop tasks, tiny poker; nothing here should be extrapolated to deep-RL MARL at scale. (The compute policy correctly kept these small; a GPU was irrelevant.)
-6. **Missing run artifacts** — no `validate.py` log or PNGs captured; figures are generated post-hoc from JSON.
+6. **Missing run artifact** — no `validate.py` log captured; the figures are generated post-hoc from the JSON results.
 
 ---
 
 ## 12. Conclusions and research directions
 
-**Conclusions.** The step delivers its arc end-to-end: independent learning fails exactly where theory says it must (Matching Pennies), and the structural fixes repair specific pieces — PSRO drives exploitability to (near) zero on small games with the same exact metric as the game-theory steps; self-play works in the average, not the last iterate; a centralized critic is a near-zero-variance teacher; learned communication clears the guessing ceiling; and LOLA turns IPD defectors into cooperators. The honest negatives are as valuable: PSRO hits a scaling wall on Leduc, a centralized critic does not by itself solve hard-exploration coordination, and one PSRO variant (Goofspiel $K=4$) misbehaves.
+**Conclusions.** The chapter delivers its arc end-to-end: independent learning fails exactly where theory says it must (Matching Pennies), and the structural fixes repair specific pieces — PSRO drives exploitability to (near) zero on small games with the same exact metric as the game-theory chapters; self-play works in the average, not the last iterate; a centralized critic fits its value target almost exactly; learned communication clears the guessing ceiling; and LOLA turns IPD defectors into cooperators. The honest negatives are as valuable: PSRO hits a scaling wall on Leduc, a centralized critic does not by itself solve hard-exploration coordination, and one PSRO variant (Goofspiel $K=4$) misbehaves.
 
 **Research directions** (each tied to a measured effect):
 
 - *Approximate oracles for PSRO scaling* — Leduc's $2.16$-after-20-rounds (§5) motivates an RL/approximate best-response oracle and measuring the guarantee it costs.
 - *Fix and re-validate the two flagged pieces* — Goofspiel $K=4$ de-duplication + mixed-strategy population (§9.3); MADDPG's counterfactual baseline (§9.4).
 - *Dynamic + static opponent modeling* — combine LOLA's look-ahead (§8) with Chapter 7's static read (Contribution #1).
-- *Safety without a minimax anchor* — the $N>2$ gap named in the summary (§2 there): can PSRO's meta-game supply a usable safety substitute where no single game value exists (Contribution #2)?
+- *Safety without a minimax anchor* — the $N>2$ gap named in the summary (Section 9.2 there): can PSRO's meta-game supply a usable safety substitute where no single game value exists (Contribution #2)?
 
 ---
 
@@ -235,7 +235,7 @@ python validate.py
 python tournament.py --config smoke
 python tournament.py --config scale
 
-# plots from a results JSON -> plots/*.png  (needs matplotlib)
+# plots from a results JSON -> plots/*.png  (needs matplotlib; reads only, default --config scale)
 python plotting.py --config scale
 ```
 
@@ -247,6 +247,9 @@ python nonstationarity_demo.py
 python selfplay_vs_nash.py
 python psro_peek.py
 python lola_ipd_playground.py
+
+# redraw all Part I figures from the saved JSON, without rerunning anything
+python plot_results.py
 ```
 
 Seeds are fixed in `config.py` (implementation) and each exploration script's `CONFIG`. The matrix and PSRO results are exactly reproducible; the neural results are direction-stable across seeds. All results in this report were read from `results/{smoke,scale}_results.json` and `exploration/figures/*.json`.

@@ -44,7 +44,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from _marl_tools import save_json, get_plt, figures_dir
+from _marl_tools import save_json
 
 # outcome states, indexed 0=CC, 1=CD, 2=DC, 3=DD  (action 0 = Cooperate).
 _SWAP = [0, 2, 1, 3]           # (a1,a2) -> (a2,a1): the opponent's view of the same outcome
@@ -172,25 +172,10 @@ def main():
 
 
 def _plot(naive_hist, lola_hist):
-    plt = get_plt()
-    if plt is None:
-        print("[plot] matplotlib not installed -> skipping PNG.")
-        return
-    import os
-    fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(naive_hist["step"], naive_hist["v1"], "-o", ms=3, label="naive (agent 1)")
-    ax.plot(lola_hist["step"], lola_hist["v1"], "-s", ms=3, label="LOLA (agent 1)")
-    ax.axhline(3.0, ls="--", c="g", alpha=0.5, label="mutual cooperation (3)")
-    ax.axhline(1.0, ls="--", c="r", alpha=0.5, label="mutual defection (1)")
-    ax.set_xlabel("training step")
-    ax.set_ylabel("per-step discounted return")
-    ax.set_title("IPD: LOLA reaches cooperation where naive learners defect")
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3)
-    out = os.path.join(figures_dir(), "lola_ipd_playground.png")
-    fig.tight_layout()
-    fig.savefig(out, dpi=120)
-    print(f"[plot] wrote {out}")
+    # Drawn by plot_results.py (mean of both agents, print-size fonts, 300 dpi), which can
+    # also redraw it from figures/lola_ipd_playground.json without a rerun.
+    from plot_results import plot_lola
+    plot_lola({"naive": {"history": naive_hist}, "lola": {"history": lola_hist}})
 
 
 if __name__ == "__main__":
