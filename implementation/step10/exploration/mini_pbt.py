@@ -26,6 +26,12 @@ import numpy as np
 
 from _evo_tools import GAMES, save_json, get_plt
 
+# Display names for the legend (the figure is printed in the thesis).
+DISPLAY = {
+    "prisoners_dilemma": "Prisoner's Dilemma (transitive)",
+    "rock_paper_scissors": "Rock-Paper-Scissors (cyclic)",
+}
+
 CONFIG = {
     "games": ["prisoners_dilemma", "rock_paper_scissors"],
     "pop_size": 10,
@@ -85,7 +91,7 @@ def main():
     plt = get_plt()
     fig = None
     if plt is not None:
-        fig, ax = plt.subplots(figsize=(7.5, 4.5))
+        fig, ax = plt.subplots(figsize=(7.0, 3.8))   # printed width: fonts print as set
     results = {}
     for name in CONFIG["games"]:
         A = GAMES[name]["A"]
@@ -98,20 +104,20 @@ def main():
         print(f"   {pred}")
         results[name] = {"diversity_curve": div, "final_mean_strategy": mean_strat[-1]}
         if plt is not None:
-            ax.plot(div, label=name, lw=1.5)
+            ax.plot(div, label=DISPLAY.get(name, name), lw=1.5)
     save_json("mini_pbt", results)
     if plt is not None:
-        ax.set_xlabel("generation")
-        ax.set_ylabel("population diversity (mean pairwise L1 distance)")
-        ax.set_title("Naive PBT: diversity collapses on transitive games, churns on cyclic ones")
+        ax.set_xlabel("generation", fontsize=10)
+        ax.set_ylabel("diversity (mean pairwise L1 distance)", fontsize=10)
+        ax.tick_params(labelsize=10)
         ax.grid(alpha=0.3)
-        ax.legend()
+        ax.legend(fontsize=9.5)
         import os
         from _evo_tools import FIGURES_DIR
         os.makedirs(FIGURES_DIR, exist_ok=True)
         path = os.path.join(FIGURES_DIR, "mini_pbt.png")
         fig.tight_layout()
-        fig.savefig(path, dpi=120)
+        fig.savefig(path, dpi=300)
         plt.close(fig)
         print(f"wrote {path}")
 

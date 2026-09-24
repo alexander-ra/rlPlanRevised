@@ -25,7 +25,7 @@ as a diagnostic:** replicator dynamics on four solvable matrix games (checked ag
 ESS/Nash) and the transitive/cyclic **spinning-top** decomposition. **Part II — an AlphaStar-style
 PBT league** of neural PPO agents on Leduc Hold'em (three agent types: main / main-exploiter /
 league-exploiter, plus freezing and PFSP), evaluated with **EGTA/meta-Nash**, Elo, and diversity
-metrics — every neural policy extracted to a *tabular* policy so Chapter 07's **exact** best response
+metrics — every neural policy extracted to a *tabular* policy so Chapter 7's **exact** best response
 measures its exploitability. **All numbers below are measured.**
 
 **Key results (measured).**
@@ -37,17 +37,18 @@ measures its exploitability. **All numbers below are measured.**
   decomposition gives RPS transitive $0.0$ / cyclic $1.0$ and a skill ladder $1.0$ / $0.0$ (the SVD
   rank-1 method wrongly gives RPS $0.707$). The **PSRO best-response** meta-game on Leduc is mostly
   **cyclic** ($\approx0.45$ transitive, 27 three-cycles); the **league snapshot** meta-game is mostly
-  **transitive** ($\approx0.94$-$0.98$) — a contradicted prediction, §4/§7 of the report.
-- *The league produces strong individuals.* Its best frozen snapshot reaches exploitability **$1.305$**
-  (scale), beating exact PSRO ($2.163$) and self-play ($3.683$); CFR-Nash floor is $0.0099$.
+  **transitive** ($\approx0.94$-$0.98$) — a contradicted prediction, §3 and §8.2 of the report.
+- *The league produces strong individuals.* Its best frozen snapshot reaches exploitability (NashConv)
+  **$1.305$** (scale), beating exact PSRO ($2.163$) and matching self-play's best iterate ($1.396$;
+  its final agent is $3.683$) — one run each; the CFR-Nash floor is $0.0099$.
 - *Honest negatives (kept predictions).* League exploitability is **non-monotone at scale**
   ($4.73 \to$ min $\approx1.21 \to 2.05$ over 120 epochs) — the live agents regress late; the best
-  agents are frozen snapshots. And the **meta-Nash mixture is *more* exploitable than its best member**
-  at scale ($3.418 > 1.305$) — meta-Nash minimizes meta-game regret, not full-game exploitability, so
-  mixing behavioral policies can hurt. Diversity is thin (participation ratio $1.9$, a single
+  agents are frozen snapshots. And the **meta-Nash mixture is *more* exploitable than the population's best member**
+  at scale ($3.418 > 1.305$) — meta-Nash minimizes meta-game regret, not full-game exploitability, and
+  the meta-Nash gave zero weight to the least exploitable agent. Diversity is thin (participation ratio $1.9$, a single
   behavioral cluster).
 
-**Thesis connection.** The league is Chapter 9's PSRO made asynchronous with neural oracles, reusing Chapter 07's exact best response as the yardstick; main exploiters are automated opponent modelers
+**Thesis connection.** The league is Chapter 9's PSRO made asynchronous with neural oracles, reusing Chapter 7's exact best response as the yardstick; main exploiters are automated opponent modelers
 (Contribution #1); EGTA/meta-Nash is the population evaluation methodology (Contribution #3). The
 league's missing guarantee — it can regress, and its mixture can be exploitable — is the population
 form of the **missing $N>2$ safety anchor** (Contribution #2). The transitive/cyclic diagnostic

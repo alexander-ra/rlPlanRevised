@@ -4,6 +4,10 @@ One place for the box/arrow/panel drawing code the conceptual diagrams share; st
 mirrors deliverables/reports/step09/summary/_diagram_utils.py (FancyBboxPatch rounded
 boxes, FancyArrowPatch arrows, muted flat palette). Run each make_*_figure.py from the
 repo root with the project .venv active; outputs land next to this file.
+
+Print size: each diagram is drawn on a canvas about 7 in wide (the 17.6 cm text width), so
+a font size here is roughly the size it prints at. Text defaults to 10 pt; the BG renderer
+re-wraps box labels and never shrinks them below fs 9.5.
 """
 import matplotlib
 matplotlib.use("Agg")
@@ -20,7 +24,7 @@ C_PANEL_BG_A = "#f5f8fd"
 C_PANEL_BG_B = "#f3fbf6"
 
 
-def box(ax, x, y, w, h, label, fc=C_ANNOT, fs=9.0, ec=EC, lw=1.2, z=3, fontweight=None):
+def box(ax, x, y, w, h, label, fc=C_ANNOT, fs=10.0, ec=EC, lw=1.2, z=3, fontweight=None):
     ax.add_patch(FancyBboxPatch((x, y), w, h,
                  boxstyle="round,pad=0.02,rounding_size=0.10",
                  facecolor=fc, edgecolor=ec, lw=lw, zorder=z))
@@ -70,7 +74,7 @@ def panel_bg(ax, x, y, w, h, fc, label=None, label_fs=10.5):
                 fontsize=label_fs, fontweight="bold", color="#2c3e50", zorder=1, clip_on=False)
 
 
-def note(ax, x, y, text, fs=7.6, color="#5b6b7b", ha="center", va="center", style="italic"):
+def note(ax, x, y, text, fs=10.0, color="#5b6b7b", ha="center", va="center", style="italic"):
     ax.text(x, y, text, ha=ha, va=va, fontsize=fs, color=color, style=style, zorder=4)
 
 

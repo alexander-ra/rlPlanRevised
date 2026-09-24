@@ -25,6 +25,14 @@ import numpy as np
 
 from _evo_tools import GAMES, simulate, converged, orbit_radius, save_json, get_plt
 
+# Display titles (the figure is printed in the thesis; code names like "stag_hunt" are not).
+TITLES = {
+    "prisoners_dilemma": "Prisoner's Dilemma\nshare of Cooperate",
+    "hawk_dove": "Hawk-Dove\nshare of Hawk",
+    "rock_paper_scissors": "Rock-Paper-Scissors\nshare of Rock",
+    "stag_hunt": "Stag Hunt\nshare of Stag",
+}
+
 CONFIG = {
     "T": 6000,
     "dt": 0.01,
@@ -45,7 +53,9 @@ def main():
     results = {}
     fig = None
     if plt is not None:
-        fig, axes = plt.subplots(1, len(GAMES), figsize=(4.2 * len(GAMES), 4))
+        # 2x2 at the printed width (17.6 cm), so font sizes print as set (>= 9.5 pt).
+        fig, axes = plt.subplots(2, 2, figsize=(7.0, 5.6), sharex=True)
+        axes = axes.flatten()
     for idx, (name, spec) in enumerate(GAMES.items()):
         A = spec["A"]
         starts = CONFIG["starts"].get(name) or [rng.random(A.shape[0])]
@@ -63,14 +73,17 @@ def main():
             tag = "converged" if conv else "ORBIT (never converges)"
             print(f"   x0={np.round(x0,2).tolist()} -> final={np.round(xs[-1],3).tolist()} [{tag}]")
             if plt is not None:
-                axes[idx].plot(xs[:, 0], lw=1.2, label=f"x0[0]={round(x0[0],2)}")
+                x0_txt = f"{x0[0]:.2f}".rstrip("0").rstrip(".")
+                axes[idx].plot(xs[:, 0], lw=1.4, label=f"$x_0 = {x0_txt}$")
         results[name] = {"predict": spec["predict"], "runs": runs}
         if plt is not None:
-            axes[idx].set_title(f"{name}\nP[{spec['actions'][0]}]")
+            axes[idx].set_title(TITLES.get(name, name), fontsize=10)
             axes[idx].set_ylim(-0.02, 1.02)
-            axes[idx].set_xlabel("replicator step")
+            if idx >= 2:
+                axes[idx].set_xlabel("replicator step", fontsize=10)
+            axes[idx].tick_params(labelsize=10)
             axes[idx].grid(alpha=0.3)
-            axes[idx].legend(fontsize=7)
+            axes[idx].legend(fontsize=9.5)
     save_json("replicator_playground", results)
     if plt is not None:
         import os
@@ -78,7 +91,7 @@ def main():
         os.makedirs(FIGURES_DIR, exist_ok=True)
         path = os.path.join(FIGURES_DIR, "replicator_playground.png")
         fig.tight_layout()
-        fig.savefig(path, dpi=120)
+        fig.savefig(path, dpi=300)
         plt.close(fig)
         print(f"wrote {path}")
 
