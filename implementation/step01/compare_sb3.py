@@ -5,15 +5,31 @@ equivalent SB3 agents, and generates side-by-side learning-curve plots saved
 to deliverables/reports/step01/figures/.
 
 Usage (from repo root):
-    python implementation/step01/compare_sb3.py
+    python implementation/step01/compare_sb3.py              # plot from saved results
+    python implementation/step01/compare_sb3.py --train-sb3  # (re)train SB3 if no cache
 
 Outputs:
     deliverables/reports/step01/figures/dqn_comparison.png
     deliverables/reports/step01/figures/ppo_comparison.png
-    deliverables/reports/step01/figures/dqn_smoothed.png
-    deliverables/reports/step01/figures/ppo_smoothed.png
+    deliverables/reports/step01/figures/final_metrics.png
+
+Plotting-only by default (September 2026 final review, F01-G02/G03):
+  * SB3 is trained only with --train-sb3 and only when sb3_results_cache.json is
+    missing, so a plotting run can never silently retrain or rewrite results.
+  * Our own curves are read from custom_results_cache.json when it exists,
+    otherwise from the TensorBoard logs of the run named in DQN_RUN / PPO_RUN
+    (or the only event file present). The old "file with the most entries"
+    heuristic picked the 300K-step [64,64] PPO run instead of the final one.
+    The first successful read writes custom_results_cache.json (commit it, like
+    the SB3 cache) so later renders do not depend on the gitignored logs.
+  * The logs of the April 2026 runs were never committed and are gone. Without
+    them the two learning-curve figures are NOT redrawn (the saved renders are
+    left untouched), and final_metrics.png uses the best rolling-100 values
+    recorded from those runs (RECORDED_CUSTOM_BEST). Re-training dqn/train.py
+    and ppo/train.py (ideally with a fixed seed) restores the full pipeline.
 """
 
+import argparse
 import os
 import sys
 import json
@@ -32,6 +48,17 @@ FIGURES_DIR = REPO_ROOT / "deliverables" / "reports" / "step01" / "figures"
 CACHE_FILE  = SCRIPT_DIR / "sb3_results_cache.json"
 DQN_LOG_DIR = SCRIPT_DIR / "logs" / "dqn"
 PPO_LOG_DIR = SCRIPT_DIR / "logs" / "ppo"
+CUSTOM_CACHE = SCRIPT_DIR / "custom_results_cache.json"
+
+# Event file of the final run of each algorithm, e.g. "events.out.tfevents.<...>".
+# None: use the only event file in the directory, and refuse to guess among several.
+DQN_RUN: str | None = None
+PPO_RUN: str | None = None
+
+# Best rolling-100 average of our final runs, as read from their TensorBoard logs
+# by this script on 3 Apr 2026 (render in commit 049b4c4; report tables). Used for
+# final_metrics.png only while the per-episode curves are unavailable.
+RECORDED_CUSTOM_BEST = {"dqn": 477.5, "ppo": 203.6}
 
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -47,40 +74,64 @@ C_SHADE = 0.25        # alpha for shaded confidence bands
 # 1. TensorBoard log reading
 # ===========================================================================
 
-def read_last_tb_run(log_dir: Path, tag: str) -> tuple[list[int], list[float]]:
-    """Return (steps, values) from the TBEvent file with the most data in log_dir.
+def read_tb_run(log_dir: Path, tag: str,
+                run_file: str | None) -> tuple[list[int], list[float]]:
+    """Return (steps, values) of `tag` from one explicitly chosen run.
 
-    Picks the event file with the most scalar entries for the given tag.
-    This avoids accidentally reading a tiny debug run that was started after
-    the full training completed.
+    `run_file` names the event file of the final run. When it is None, the
+    directory must hold exactly one event file. The earlier heuristics ("most
+    recent file", then "file with the most entries") each picked the wrong run
+    at some point, so with several files we refuse to guess.
     """
-    from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
-
     event_files = sorted(glob.glob(str(log_dir / "events.out.tfevents.*")))
     if not event_files:
-        print(f"  WARNING: No event files in {log_dir}")
+        print(f"  No event files in {log_dir}")
         return [], []
+    if run_file is None:
+        if len(event_files) > 1:
+            print(f"  {len(event_files)} event files in {log_dir}; set the run "
+                  "constant (DQN_RUN / PPO_RUN) to the final run:")
+            for ef in event_files:
+                print(f"     {Path(ef).name}")
+            return [], []
+        path = Path(event_files[0])
+    else:
+        path = log_dir / run_file
+        if not path.exists():
+            print(f"  {path} not found")
+            return [], []
 
-    best_steps, best_values = [], []
-    best_file = None
-    for ef in event_files:
-        ea = EventAccumulator(ef)
-        ea.Reload()
-        available = ea.Tags().get("scalars", [])
-        if tag not in available:
-            continue
-        events = ea.Scalars(tag)
-        if len(events) > len(best_values):
-            best_steps  = [e.step  for e in events]
-            best_values = [e.value for e in events]
-            best_file   = ef
-
-    if not best_values:
-        print(f"  WARNING: tag '{tag}' not found in any event file in {log_dir}")
+    from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+    ea = EventAccumulator(str(path))
+    ea.Reload()
+    if tag not in ea.Tags().get("scalars", []):
+        print(f"  tag '{tag}' not in {path.name}")
         return [], []
+    events = ea.Scalars(tag)
+    print(f"  Using: {path.name} ({len(events)} entries)")
+    return [e.step for e in events], [e.value for e in events]
 
-    print(f"  Using: {Path(best_file).name} ({len(best_values)} entries)")
-    return best_steps, best_values
+
+def load_custom_results() -> dict | None:
+    """Our per-episode rewards: from the committed cache, else from the logs.
+
+    Returns {"dqn": {"rewards": [...]}, "ppo": {"rewards": [...], "steps": [...]}}
+    or None when neither source is available.
+    """
+    if CUSTOM_CACHE.exists():
+        with open(CUSTOM_CACHE) as f:
+            return json.load(f)
+    _, dqn_r = read_tb_run(DQN_LOG_DIR, "reward/episode", DQN_RUN)
+    ppo_s, ppo_r = read_tb_run(PPO_LOG_DIR, "reward/episode", PPO_RUN)
+    if not dqn_r or not ppo_r:
+        return None
+    data = {"dqn": {"rewards": [float(r) for r in dqn_r]},
+            "ppo": {"rewards": [float(r) for r in ppo_r],
+                    "steps": [int(s) for s in ppo_s]}}
+    with open(CUSTOM_CACHE, "w") as f:           # new file only; never overwritten
+        json.dump(data, f)
+    print(f"  Custom results cached to {CUSTOM_CACHE}")
+    return data
 
 
 # ===========================================================================
@@ -215,10 +266,11 @@ def x_axis_for_rolling(values: list, window: int) -> np.ndarray:
 def figure_style():
     """Apply a clean, publication-ready matplotlib style."""
     plt.rcParams.update({
+        # sizes for figures ~7 in wide, printed at ~17.6 cm: >= 10 pt on paper
         "font.family":        "sans-serif",
-        "font.size":          11,
-        "axes.titlesize":     13,
-        "axes.labelsize":     11,
+        "font.size":          10.5,
+        "axes.titlesize":     11,
+        "axes.labelsize":     10.5,
         "axes.spines.top":    False,
         "axes.spines.right":  False,
         "axes.grid":          True,
@@ -229,171 +281,66 @@ def figure_style():
     })
 
 
-def plot_dqn_comparison(
-    our_episodes:  list[float],
-    sb3_episodes:  list[float],
+def plot_rolling_comparison(
+    our_rewards:  list[float],
+    sb3_rewards:  list[float],
     target: float,
+    algo: str,
+    out_name: str,
     window: int = 100,
 ):
-    """Two-panel figure: raw episode rewards + 100-episode rolling average.
+    """One panel: 100-episode rolling average, ours vs SB3, on the episode index.
 
-    Both curves are plotted on a shared episode-index x-axis, capped at our
-    implementation's stopping episode so both are visible at the same scale.
-    SB3 trained for many more episodes (CartPole episodes are short when the
-    agent fails), so we clip its display range and annotate the total count.
+    The raw-reward panel of the earlier two-panel version was dropped (the text
+    never refers to it), so the figure is ~7 in wide and prints near full size.
+    No suptitle and no footnote: the caption carries the title, and the episode
+    and step counts are in the text. Both curves share the episode index; SB3 is
+    clipped to our stopping point plus a small margin, because its episodes are
+    far more numerous when it fails early (short CartPole episodes).
     """
     figure_style()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
-    fig.suptitle("DQN on CartPole-v1 — Custom vs SB3", fontsize=14, y=1.01)
-
-    our_n   = len(our_episodes)
-    sb3_n   = len(sb3_episodes)
-    x_limit = our_n + max(window // 2, 30)   # small right-side buffer
-
-    # Clip SB3 to the visible window so both curves share the same x-range
-    sb3_clipped = sb3_episodes[:x_limit]
-
-    # ---- Raw rewards ----
-    ax1.set_title("Raw Episode Rewards")
-    ax1.plot(range(our_n), our_episodes,
-             color=C_OUR, alpha=0.4, linewidth=0.8, label="Custom DQN")
-    ax1.plot(range(len(sb3_clipped)), sb3_clipped,
-             color=C_SB3, alpha=0.4, linewidth=0.8, label="SB3 DQN")
-    ax1.axhline(target, color="k", linewidth=1.2, linestyle=":",
-                label=f"Target ({target:.0f})")
-    ax1.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
-    ax1.text(our_n - 2, target * 0.08,
-             f"Custom\nstopped\n(ep {our_n})",
-             color=C_OUR, fontsize=8, ha="right", va="bottom")
-    ax1.set_xlabel("Episode")
-    ax1.set_ylabel("Reward")
-    ax1.set_xlim(0, x_limit)
-    ax1.legend()
-
-    # ---- Rolling average ----
-    ax2.set_title(f"Rolling Average (window = {window} ep)")
-    w = window
-
-    if len(our_episodes) >= w:
-        our_avg = rolling_avg(our_episodes, w)
-        our_std = rolling_std(our_episodes, w)
-        our_x   = x_axis_for_rolling(our_episodes, w)
-        ax2.plot(our_x, our_avg, color=C_OUR, label="Custom DQN")
-        ax2.fill_between(our_x, our_avg - our_std, our_avg + our_std,
-                         color=C_OUR, alpha=C_SHADE)
-
-    if len(sb3_clipped) >= w:
-        sb3_avg = rolling_avg(sb3_clipped, w)
-        sb3_std = rolling_std(sb3_clipped, w)
-        sb3_x   = x_axis_for_rolling(sb3_clipped, w)
-        ax2.plot(sb3_x, sb3_avg, color=C_SB3, label="SB3 DQN")
-        ax2.fill_between(sb3_x, sb3_avg - sb3_std, sb3_avg + sb3_std,
-                         color=C_SB3, alpha=C_SHADE)
-
-    ax2.axhline(target, color="k", linewidth=1.2, linestyle=":",
-                label=f"Target ({target:.0f})")
-    ax2.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
-    ax2.set_xlabel("Episode")
-    ax2.set_ylabel(f"Rolling Avg Reward ({w} ep)")
-    ax2.set_xlim(0, x_limit)
-    ax2.legend()
-
-    if sb3_n > our_n:
-        fig.text(0.5, -0.03,
-                 f"SB3 DQN trained for {sb3_n:,} episodes total "
-                 f"(750 K env steps); plot shows first {x_limit:,} episodes.",
-                 ha="center", fontsize=8, style="italic", color="#666666")
-
-    plt.tight_layout()
-    out = FIGURES_DIR / "dqn_comparison.png"
-    plt.savefig(out, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"  Saved: {out}")
-
-
-def plot_ppo_comparison(
-    our_rewards:  list[float],
-    our_steps:    list[int],
-    sb3_rewards:  list[float],
-    sb3_steps:    list[int],
-    target: float,
-    window: int = 50,
-):
-    """Two-panel figure: raw episode rewards + rolling average.
-
-    Both panels use episode index as the x-axis.
-    Rationale: our_steps are TB event steps = episode counts (0..N_ep), while
-    sb3_steps are actual environment timesteps (0..500K) — mixing them on the
-    same axis collapses our curve to a single pixel at x≈0.  Using episode
-    index for both gives a fair, readable comparison.
-    """
-    figure_style()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
-    fig.suptitle("PPO on LunarLander-v3 — Custom vs SB3", fontsize=14, y=1.01)
+    fig, ax = plt.subplots(figsize=(7.0, 3.4))
 
     our_n   = len(our_rewards)
-    sb3_n   = len(sb3_rewards)
     x_limit = our_n + max(window // 2, 30)
-
-    # Clip SB3 to the same episode window as our impl
     sb3_clipped = sb3_rewards[:x_limit]
 
-    # ---- Raw rewards (both episode-indexed) ----
-    ax1.set_title("Raw Episode Rewards")
-    ax1.plot(range(our_n), our_rewards,
-             color=C_OUR, alpha=0.35, linewidth=0.8, label="Custom PPO")
-    ax1.plot(range(len(sb3_clipped)), sb3_clipped,
-             color=C_SB3, alpha=0.35, linewidth=0.8, label="SB3 PPO")
-    ax1.axhline(target, color="k", linewidth=1.2, linestyle=":",
-                label=f"Target ({target:.0f})")
-    ax1.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
-    ax1.text(our_n - 2, target * -1.5,
-             f"Custom\nstopped\n(ep {our_n})",
-             color=C_OUR, fontsize=8, ha="right", va="top")
-    ax1.set_xlabel("Episode")
-    ax1.set_ylabel("Reward")
-    ax1.set_xlim(0, x_limit)
-    ax1.legend()
+    for rewards, colour, label in ((our_rewards, C_OUR, f"Custom {algo}"),
+                                   (sb3_clipped, C_SB3, f"SB3 {algo}")):
+        if len(rewards) >= window:
+            avg = rolling_avg(rewards, window)
+            std = rolling_std(rewards, window)
+            x   = x_axis_for_rolling(rewards, window)
+            ax.plot(x, avg, color=colour, label=label)
+            ax.fill_between(x, avg - std, avg + std, color=colour, alpha=C_SHADE)
 
-    # ---- Rolling average (both episode-indexed) ----
-    ax2.set_title(f"Rolling Average (window = {window} ep)")
-    w = window
-
-    if len(our_rewards) >= w:
-        our_avg = rolling_avg(our_rewards, w)
-        our_std = rolling_std(our_rewards, w)
-        our_x   = x_axis_for_rolling(our_rewards, w)
-        ax2.plot(our_x, our_avg, color=C_OUR, label="Custom PPO")
-        ax2.fill_between(our_x, our_avg - our_std, our_avg + our_std,
-                         color=C_OUR, alpha=C_SHADE)
-
-    if len(sb3_clipped) >= w:
-        sb3_avg = rolling_avg(sb3_clipped, w)
-        sb3_std = rolling_std(sb3_clipped, w)
-        sb3_x   = x_axis_for_rolling(sb3_clipped, w)
-        ax2.plot(sb3_x, sb3_avg, color=C_SB3, label="SB3 PPO")
-        ax2.fill_between(sb3_x, sb3_avg - sb3_std, sb3_avg + sb3_std,
-                         color=C_SB3, alpha=C_SHADE)
-
-    ax2.axhline(target, color="k", linewidth=1.2, linestyle=":",
-                label=f"Target ({target:.0f})")
-    ax2.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7)
-    ax2.set_xlabel("Episode")
-    ax2.set_ylabel(f"Rolling Avg Reward ({w} ep)")
-    ax2.set_xlim(0, x_limit)
-    ax2.legend()
-
-    if sb3_n > our_n:
-        fig.text(0.5, -0.03,
-                 f"SB3 PPO trained for {sb3_n:,} episodes total "
-                 f"(500 K env steps); plot shows first {x_limit:,} episodes.",
-                 ha="center", fontsize=8, style="italic", color="#666666")
+    ax.axhline(target, color="k", linewidth=1.2, linestyle=":",
+               label=f"Target ({target:.0f})")
+    ax.axvline(our_n - 1, color=C_OUR, linewidth=1.5, linestyle="--", alpha=0.7,
+               label="Custom stopped")
+    ax.set_xlabel("Episode")
+    ax.set_ylabel(f"Rolling Avg Reward ({window} ep)")
+    ax.set_xlim(0, x_limit)
+    ax.legend(loc="best")
 
     plt.tight_layout()
-    out = FIGURES_DIR / "ppo_comparison.png"
-    plt.savefig(out, dpi=150, bbox_inches="tight")
+    out = FIGURES_DIR / out_name
+    plt.savefig(out, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved: {out}")
+
+
+def plot_dqn_comparison(our_episodes: list[float], sb3_episodes: list[float],
+                        target: float, window: int = 100):
+    plot_rolling_comparison(our_episodes, sb3_episodes, target, "DQN",
+                            "dqn_comparison.png", window)
+
+
+def plot_ppo_comparison(our_rewards: list[float], sb3_rewards: list[float],
+                        target: float, window: int = 100):
+    # was window=50, while the text reasons in rolling-100 terms (F01-G03)
+    plot_rolling_comparison(our_rewards, sb3_rewards, target, "PPO",
+                            "ppo_comparison.png", window)
 
 
 def plot_dqn_iterations(iteration_data: list[dict]):
@@ -434,50 +381,37 @@ def _best_rolling(rewards: list[float], window: int = 100) -> float:
     return float(np.max(avgs))
 
 
-def plot_final_metrics(results: dict):
-    """Bar chart comparing best rolling-100 performance (fair with early stopping)."""
+def plot_final_metrics(best: dict):
+    """Bar chart of best rolling-100 averages (fair with early stopping).
+
+    `best` = {"dqn": (ours, sb3), "ppo": (ours, sb3)}. No suptitle: the caption
+    carries it. Bar values are drawn as text, so the BG render maps "477.5" to
+    "477,5" through the label mapping.
+    """
     figure_style()
-    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-    fig.suptitle("Peak Performance — Custom vs SB3  (best rolling-100 avg)",
-                 fontsize=14, y=1.01)
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.4))
 
-    # DQN
-    ax = axes[0]
-    dqn_data = results["dqn"]
-    w = 100
-    our_fin = _best_rolling(dqn_data["our"], w)
-    sb3_fin = _best_rolling(dqn_data["sb3"], w)
-    bars = ax.bar(["Custom DQN", "SB3 DQN"], [our_fin, sb3_fin],
-                  color=[C_OUR, C_SB3], width=0.5, edgecolor="white")
-    ax.axhline(DQN_CONFIG["reward_target"], color="k", linewidth=1.2, linestyle=":",
-               label=f"Target ({DQN_CONFIG['reward_target']:.0f})")
-    ax.set_title("CartPole-v1 — Best Avg Reward (rolling 100 ep)")
-    ax.set_ylabel("Mean Reward")
-    ax.set_ylim(0, 520)
-    for bar, val in zip(bars, [our_fin, sb3_fin]):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 8,
-                f"{val:.1f}", ha="center", fontsize=10, fontweight="bold")
-    ax.legend()
-
-    # PPO
-    ax = axes[1]
-    ppo_data = results["ppo"]
-    our_fin = _best_rolling(ppo_data["our_r"], w)
-    sb3_fin = _best_rolling(ppo_data["sb3_r"], w)
-    bars = ax.bar(["Custom PPO", "SB3 PPO"], [our_fin, sb3_fin],
-                  color=[C_OUR, C_SB3], width=0.5, edgecolor="white")
-    ax.axhline(PPO_CONFIG["reward_target"], color="k", linewidth=1.2, linestyle=":",
-               label=f"Target ({PPO_CONFIG['reward_target']:.0f})")
-    ax.set_title("LunarLander-v3 — Best Avg Reward (rolling 100 ep)")
-    ax.set_ylabel("Mean Reward")
-    for bar, val in zip(bars, [our_fin, sb3_fin]):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 5,
-                f"{val:.1f}", ha="center", fontsize=10, fontweight="bold")
-    ax.legend()
+    panels = (("dqn", "CartPole-v1", "DQN", DQN_CONFIG["reward_target"], 570),
+              ("ppo", "LunarLander-v3", "PPO", PPO_CONFIG["reward_target"], 265))
+    for ax, (key, env, algo, target, ymax) in zip(axes, panels):
+        ours, sb3 = best[key]
+        bars = ax.bar([0, 1], [ours, sb3], color=[C_OUR, C_SB3], width=0.5,
+                      edgecolor="white")
+        ax.set_xticks([0, 1])
+        ax.set_xticklabels([f"Custom {algo}", f"SB3 {algo}"])
+        ax.axhline(target, color="k", linewidth=1.2, linestyle=":",
+                   label=f"Target ({target:.0f})")
+        ax.set_title(env)
+        ax.set_ylim(0, ymax)
+        for bar, val in zip(bars, [ours, sb3]):
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + ymax * 0.015,
+                    f"{val:.1f}", ha="center", va="bottom", fontweight="bold")
+        ax.legend(loc="upper right")      # above the target line
+    axes[0].set_ylabel("Best rolling-100 avg reward")
 
     plt.tight_layout()
     out = FIGURES_DIR / "final_metrics.png"
-    plt.savefig(out, dpi=150, bbox_inches="tight")
+    plt.savefig(out, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved: {out}")
 
@@ -503,71 +437,64 @@ def save_cache(data: dict):
 # 6. Main
 # ===========================================================================
 
-def main():
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Plot custom DQN/PPO vs SB3.")
+    ap.add_argument("--train-sb3", action="store_true",
+                    help="train SB3 when sb3_results_cache.json is missing "
+                         "(never overwrites an existing cache)")
+    args = ap.parse_args()
+
     print("=" * 60)
     print("Step 01 — Comparison: Custom implementations vs SB3")
     print("=" * 60)
 
-    # ---- Load or build SB3 results ----
+    # ---- SB3 results: the committed cache (training only on request) ----
     cache = load_cache()
     if cache:
-        print("\n[Using cached SB3 results — delete sb3_results_cache.json to retrain]")
+        print("\n[Using cached SB3 results — sb3_results_cache.json]")
         sb3_dqn = cache["sb3_dqn"]
         sb3_ppo = cache["sb3_ppo"]
-    else:
+    elif args.train_sb3:
         print("\n[Training SB3 DQN on CartPole-v1 ...]")
-        sb3_dqn = train_sb3_dqn()   # uses function default (750K steps)
+        sb3_dqn = train_sb3_dqn()   # function default: 100K steps, RL Zoo settings
         print(f"  Episodes captured: {len(sb3_dqn['rewards'])}")
 
         print("\n[Training SB3 PPO on LunarLander-v3 ...]")
-        sb3_ppo = train_sb3_ppo()   # uses function default (500K steps)
+        sb3_ppo = train_sb3_ppo()   # function default: 500K steps
         print(f"  Episodes captured: {len(sb3_ppo['rewards'])}")
 
         save_cache({"sb3_dqn": sb3_dqn, "sb3_ppo": sb3_ppo})
+    else:
+        print("\nNo sb3_results_cache.json. Plotting only; pass --train-sb3 to train.")
+        return 1
 
-    # ---- Read our custom training logs ----
-    print("\n[Reading custom DQN logs ...]")
-    _, our_dqn_rewards = read_last_tb_run(DQN_LOG_DIR, "reward/episode")
-    print(f"  Episodes: {len(our_dqn_rewards)}")
+    # ---- Our per-episode curves ----
+    print("\n[Reading custom results ...]")
+    custom = load_custom_results()
 
-    print("\n[Reading custom PPO logs ...]")
-    our_ppo_steps, our_ppo_rewards = read_last_tb_run(PPO_LOG_DIR, "reward/episode")
-    print(f"  Episodes: {len(our_ppo_rewards)}")
-
-    # ---- Generate plots ----
     print("\n[Generating figures ...]")
-
-    plot_dqn_comparison(
-        our_episodes = our_dqn_rewards,
-        sb3_episodes = sb3_dqn["rewards"],
-        target       = DQN_CONFIG["reward_target"],
-    )
-    print("  dqn_comparison.png done")
-
-    plot_ppo_comparison(
-        our_rewards = [float(r) for r in our_ppo_rewards],
-        our_steps   = [int(s)   for s in our_ppo_steps],
-        sb3_rewards = sb3_ppo["rewards"],
-        sb3_steps   = sb3_ppo["steps"],
-        target      = PPO_CONFIG["reward_target"],
-    )
-    print("  ppo_comparison.png done")
+    if custom:
+        plot_dqn_comparison(custom["dqn"]["rewards"], sb3_dqn["rewards"],
+                            DQN_CONFIG["reward_target"])
+        plot_ppo_comparison(custom["ppo"]["rewards"], sb3_ppo["rewards"],
+                            PPO_CONFIG["reward_target"])
+        ours = {"dqn": _best_rolling(custom["dqn"]["rewards"]),
+                "ppo": _best_rolling(custom["ppo"]["rewards"])}
+    else:
+        print("  Custom learning curves unavailable (logs not kept):")
+        print("  dqn_comparison.png / ppo_comparison.png left as saved.")
+        print(f"  final_metrics.png uses the recorded values {RECORDED_CUSTOM_BEST}.")
+        ours = RECORDED_CUSTOM_BEST
 
     plot_final_metrics({
-        "dqn": {
-            "our": our_dqn_rewards,
-            "sb3": sb3_dqn["rewards"],
-        },
-        "ppo": {
-            "our_r": [float(r) for r in our_ppo_rewards],
-            "sb3_r": sb3_ppo["rewards"],
-        },
+        "dqn": (ours["dqn"], _best_rolling(sb3_dqn["rewards"])),
+        "ppo": (ours["ppo"], _best_rolling(sb3_ppo["rewards"])),
     })
-    print("  final_metrics.png done")
 
-    print(f"\nAll figures saved to: {FIGURES_DIR}")
+    print(f"\nFigures in: {FIGURES_DIR}")
     print("=" * 60)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

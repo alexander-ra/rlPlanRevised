@@ -1,0 +1,20 @@
+{
+  "Custom DQN": "Собствен DQN",
+  "Custom PPO": "Собствен PPO",
+  "Target (475)": "Цел (475)",
+  "Target (200)": "Цел (200)",
+  "Episode": "Епизод",
+  "Reward": "Награда",
+  "Rolling Average (window = 100 ep)": "Плъзгаща се средна (прозорец 100 епизода)",
+  "Rolling Avg Reward (100 ep)": "Плъзгаща се средна награда (100 епизода)",
+  "Rolling Avg Reward (50 ep)": "Плъзгаща се средна награда (50 епизода)",
+  "Raw Episode Rewards": "Награда във всеки епизод",
+  "DQN on CartPole-v1 — Custom vs SB3": "DQN върху CartPole-v1 – собствена реализация срещу SB3",
+  "PPO on LunarLander-v3 — Custom vs SB3": "PPO върху LunarLander-v3 – собствена реализация срещу SB3",
+  "Custom stopped": "Край на обучението",
+  "Best rolling-100 avg reward": "Най-добра плъзгаща се\nсредна (100 епизода)",
+  "477.5": "477,5",
+  "222.4": "222,4",
+  "203.6": "203,6",
+  "131.2": "131,2"
+}
