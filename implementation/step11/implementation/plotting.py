@@ -11,7 +11,12 @@ validation still run and write JSON). Produces four PNGs into `plots/`:
   4. coalition_graph.png      -- the end-of-game coalition-score matrix as a heatmap.
 
 Usage (from implementation/step11/implementation/):
-    python plotting.py --config smoke      # reads results/<config>_results.json for the ratios
+    python plotting.py                     # chapter figures from SAVED results only (no games are
+                                           # played, nothing is written to results/): the detector
+                                           # matrix, the two-position Shapley credit and the sweep,
+                                           # into deliverables/reports/step11/summary/impl_*.png
+    python plotting.py --config smoke      # (legacy) simulates a sample game/position -> plots/
+    python plotting.py --sweep both        # (legacy) sweep plot -> plots/sweep_coalition_gap.png
 
 NOTE (per implementation/WORKFLOW.md): written but NOT executed here.
 """
@@ -70,6 +75,28 @@ def plot_shapley_attribution(plt, credit, path: str):
     plt.close(fig)
 
 
+def plot_shapley_two_positions(plt, symmetric, asymmetric, path: str):
+    """Grouped bars: per-seat Shapley credit on the symmetric and the asymmetric [8,8,1,1] position,
+    as saved in results/smoke_results.json (`shapley` block). Sized to print at ~12.7 cm."""
+    sym = np.asarray(symmetric, float)
+    asym = np.asarray(asymmetric, float)
+    x = np.arange(len(sym))
+    w = 0.38
+    fig, ax = plt.subplots(figsize=(5.0, 3.2))
+    ax.bar(x - w / 2, sym, w, color="tab:blue", label="symmetric position")
+    ax.bar(x + w / 2, asym, w, color="tab:orange", label="asymmetric [8,8,1,1]")
+    ax.axhline(0.25, ls="--", color="gray", lw=1.0, label="equal share 0.25")
+    ax.set_xticks(x)
+    ax.set_xticklabels([f"seat {i}" for i in range(len(sym))], fontsize=10)
+    ax.set_ylabel("Shapley credit\n(win-probability share)", fontsize=10)
+    ax.set_ylim(0, 0.8)
+    ax.tick_params(labelsize=10)
+    ax.legend(fontsize=9.6, loc="upper right", frameon=False)
+    fig.tight_layout()
+    fig.savefig(path, dpi=300)
+    plt.close(fig)
+
+
 def plot_spinning_top(plt, transitive_ratio: float, cyclic_ratio: float, path: str):
     fig, ax = plt.subplots(figsize=(5, 4))
     ax.bar(["transitive", "cyclic"], [transitive_ratio, cyclic_ratio],
@@ -98,12 +125,42 @@ def plot_coalition_graph(plt, matrix, path: str):
     plt.close(fig)
 
 
+def plot_detector_matrix(plt, matrix, path: str):
+    """Coalition-score matrix of the planted-alliance test, as saved in
+    results/smoke_results.json (`detector.coalition_matrix`). Sized to print at ~11 cm."""
+    M = np.asarray(matrix, float)
+    n = M.shape[0]
+    fig, ax = plt.subplots(figsize=(4.4, 3.6))
+    im = ax.imshow(M, cmap="RdBu", vmin=-10, vmax=10)
+    ax.set_xticks(range(n))
+    ax.set_yticks(range(n))
+    ax.tick_params(labelsize=10)
+    for i in range(n):
+        for j in range(n):
+            ax.text(j, i, f"{M[i, j]:.0f}", ha="center", va="center", fontsize=11,
+                    color="white" if abs(M[i, j]) > 6 else "black")
+    ax.set_xlabel("player", fontsize=10)
+    ax.set_ylabel("player", fontsize=10)
+    cb = fig.colorbar(im, ax=ax)
+    cb.set_label("mutual net support", fontsize=10)
+    cb.ax.tick_params(labelsize=10)
+    fig.tight_layout()
+    fig.savefig(path, dpi=300)
+    plt.close(fig)
+
+
 def plot_sweep(plt, reports: dict, path: str):
-    """Coalition-emergence sweep: paired gap (shapley - sparse coalition score) vs alpha, one line
-    per credit series, error bars = 1 SE, faceted by tier. `reports` = {tier: sweep_report}."""
+    """Coalition-score sweep: paired gap (shapley - sparse coalition score) vs alpha, one line
+    per credit series, error bars = 1 SE, faceted by tier. `reports` = {tier: sweep_report}.
+    Sized to print at full text width (17.6 cm) with every label >= 9.6 pt."""
     tiers = list(reports.keys())
-    fig, axes = plt.subplots(1, len(tiers), figsize=(6.2 * len(tiers), 4.4), squeeze=False)
-    for ax, tier in zip(axes[0], tiers):
+    tier_title = {"smoke": "smoke ({c} chips, {g} games)", "scale": "scale ({c} chips, {g} games)"}
+    series_label = {"counterfactual": "rollout credit",
+                    "proxy syn=0.1": "proxy, synergy 0.1",
+                    "proxy syn=0.3": "proxy, synergy 0.3"}
+    colors = {"counterfactual": "tab:blue", "proxy syn=0.1": "tab:orange", "proxy syn=0.3": "tab:green"}
+    fig, axes = plt.subplots(1, len(tiers), figsize=(7.0, 3.8), squeeze=False)
+    for k, (ax, tier) in enumerate(zip(axes[0], tiers)):
         rep = reports[tier]
         cells = rep["cells"]
         # series key: "counterfactual" or "proxy syn=X"
@@ -116,25 +173,64 @@ def plot_sweep(plt, reports: dict, path: str):
             xs = [c["alpha"] for c in cs]
             ys = [c["gap_mean"] for c in cs]
             es = [c["gap_se"] or 0.0 for c in cs]
-            ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3, label=key)
+            ax.errorbar(xs, ys, yerr=es, marker="o", ms=4, capsize=3, color=colors.get(key),
+                        label=series_label.get(key, key))
         ax.axhline(0.0, color="gray", lw=0.8, ls="--")
-        ax.set_xlabel("alpha  (sparse<->credit blend; 0 = pure coalition credit)")
-        ax.set_ylabel("coalition-score gap  (shapley - sparse)")
-        ax.set_title(f"[{tier}] chips={rep['chips_per_player']} train={rep['train_games']} "
-                     f"seeds={rep['n_seeds']}\nsparse baseline score={rep['sparse_coalition_score_mean']:.4f}")
-        ax.legend(fontsize=8)
-    fig.suptitle("When do coalitions emerge? paired gap > 0 = Shapley beats sparse", fontsize=11)
-    fig.tight_layout()
-    fig.savefig(path, dpi=120)
+        ax.set_ylabel("coalition-score gap\n(Shapley − sparse)", fontsize=10)
+        ax.set_title(tier_title.get(tier, tier).format(c=rep["chips_per_player"], g=rep["train_games"]),
+                     fontsize=10)
+        ax.tick_params(labelsize=9.6)
+        ax.set_xticks([0.0, 0.1, 0.3, 0.5, 0.7])
+    # one legend below both panels: inside a panel it covers the steep alpha 0 -> 0.1 lines
+    handles, labels = axes[0][-1].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, fontsize=9.6, frameon=False,
+               bbox_to_anchor=(0.5, 0.0), columnspacing=1.2, handlelength=1.6)
+    fig.text(0.5, 0.085, "$\\alpha$ (0 = coalition credit only, 1 = sparse only)",
+             ha="center", va="bottom", fontsize=10)
+    fig.tight_layout(rect=(0, 0.15, 1, 1))
+    fig.savefig(path, dpi=300)
     plt.close(fig)
+
+
+def plot_from_saved_results():
+    """Draw the chapter's result figures from the SAVED results only - no game is played, nothing
+    is trained, and no results file is written. Output goes straight to the chapter summary folder
+    (deliverables/reports/step11/summary/impl_*.png), where the summary links it."""
+    plt = _mpl()
+    if plt is None:
+        print("[SKIP] matplotlib not installed -> no plots.")
+        return
+    here = os.path.dirname(os.path.abspath(__file__))
+    res_dir = os.path.join(here, "results")
+    repo = os.path.abspath(os.path.join(here, "..", "..", ".."))
+    out = os.path.join(repo, "deliverables", "reports", "step11", "summary")
+    with open(os.path.join(res_dir, "smoke_results.json"), encoding="utf-8") as f:
+        smoke = json.load(f)
+    plot_detector_matrix(plt, smoke["detector"]["coalition_matrix"],
+                         os.path.join(out, "impl_coalition_graph.png"))
+    plot_shapley_two_positions(plt, smoke["shapley"]["symmetric_credit"],
+                               smoke["shapley"]["asymmetric_credit"],
+                               os.path.join(out, "impl_shapley_attribution.png"))
+    reports = {}
+    for t in ("smoke", "scale"):
+        with open(os.path.join(res_dir, f"sweep_{t}.json"), encoding="utf-8") as f:
+            reports[t] = json.load(f)
+    plot_sweep(plt, reports, os.path.join(out, "impl_sweep_coalition_gap.png"))
+    print(f"wrote 3 plots from saved results to {out}")
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--config", default="smoke", choices=["smoke", "scale"])
+    ap.add_argument("--config", default=None, choices=["smoke", "scale"],
+                    help="(legacy) simulate a sample game/position and plot into plots/")
     ap.add_argument("--sweep", default=None, choices=["smoke", "scale", "both"],
                     help="plot the coalition-emergence sweep from results/sweep_<tier>.json instead")
     args = ap.parse_args()
+
+    if args.config is None and args.sweep is None:
+        # default: the chapter figures, from saved results only (safe for the BG figure renderer)
+        plot_from_saved_results()
+        return
 
     plt = _mpl()
     if plt is None:
