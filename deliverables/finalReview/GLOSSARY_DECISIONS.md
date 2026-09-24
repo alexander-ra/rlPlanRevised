@@ -5,6 +5,9 @@ Each row is one decision that applies to **every** chapter, the one-pagers, the 
 the figure labels, and to both glossaries (`deliverables/terminology_EN_BG.md` and the
 settled `llmPipeline/glossary_settled.md`, via the picker).
 
+**⟲** marks a recommendation that changes an entry *you* chose in the curated
+`terminology_EN_BG.md` — check those first.
+
 **How to answer:** everything marked ✅ is applied as recommended unless you change it.
 Rows marked ❓ are genuine choices — pick one or write your own. Edit the "Decision" column
 in place, or just reply with the row numbers you want different.
@@ -35,17 +38,17 @@ On first use in each chapter, a Bulgarian term is followed by the English in par
 | 1.5 | safe exploitation | also "безопасно използване" | безопасна експлоатация (only) | ✅ |
 | 1.6 | exploiter | експлоатьор, експлоатер, експлойтър | експлоататор | ✅ |
 | 1.7 | Nash (opponent type) vs Nash (concept) | "наш противник" (= "our opponent"), Нашево, Нашов | type in quotes: „Наш“; concept: равновесие на Наш; Nash EV → очаквана стойност при равновесие на Наш | ✅ |
-| 1.8 | Restricted Nash Response | curated "Ограничен Наш отговор" (= "our response") | ограничен отговор по Наш (RNR) | ✅ |
-| 1.9 | SES (curated expansion) | Safe Exploitation *Subgame* | Safe Exploitation *Search* — търсене на безопасна експлоатация (Liu et al. 2022) | ✅ |
+| 1.8 | Restricted Nash Response | curated "Ограничен Наш отговор" (= "our response") | ограничен отговор по Наш (RNR) | ✅ ⟲ changes your curated entry (curated: Ограничен Наш отговор) |
+| 1.9 | SES (curated expansion) | Safe Exploitation *Subgame* | Safe Exploitation *Search* — търсене на безопасна експлоатация (Liu et al. 2022) | ✅ ⟲ changes your curated entry (curated: Safe Exploitation Subgame) |
 | 1.10 | blueprint | curated "Схема"; corpus "план" (≈130×); settled "план-стратегия" | ❓ **(a)** базова стратегия (blueprint) — no clash with "план за реализация" (realization plan, ch. 8) · **(b)** keep план (blueprint) — fewer edits | |
-| 1.11 | counterfactual | curated "контрафактуален"; corpus "контрафактичен" (≈45× vs 2) | контрафактичен — change the curated file, not the text | ✅ |
-| 1.12 | consistent / consistency (statistical, Ganzfried 2025) | съгласуван | състоятелен / състоятелност (as in "състоятелна оценка"); keep "съгласуван" only for "consistent with the observations" | ✅ |
+| 1.11 | counterfactual | curated "контрафактуален"; corpus "контрафактичен" (≈45× vs 2) | контрафактичен — change the curated file, not the text | ✅ ⟲ changes your curated entry (curated: контрафактуален) |
+| 1.12 | consistent / consistency (statistical, Ganzfried 2025) | съгласуван | състоятелен / състоятелност (as in "състоятелна оценка"); keep "съгласуван" only for "consistent with the observations" | ✅ ⟲ changes your curated entry (curated: Консистентно) |
 | 1.13 | intractable / tractable | неразрешим (= undecidable) | изчислително непосилен / ефективно изчислим | ✅ |
 | 1.14 | worst-case value | най-лошият стойностен случай | стойност в най-лошия случай | ✅ |
 | 1.15 | in expectation | в очакване (= "while waiting") | средно (по математическо очакване) | ✅ |
 | 1.16 | sound / soundness | звуково, правилно, надежден, коректен | коректен / коректност | ✅ |
 | 1.17 | opponent-blind(ness) | невидимост за противника (inverted) | „сляп“ за противника / „слепота“ за противника | ✅ |
-| 1.18 | oracle (best-response oracle, double oracle) | предсказвач (also in curated file) | оракул; оракул за най-добър отговор; метод на двойния оракул | ✅ |
+| 1.18 | oracle (best-response oracle, double oracle) | предсказвач — **your deliberate curated choice** ("not оракул — reads as the mythological sense") | ❓ **(a)** keep предсказвач (curated) · **(b)** оракул — the standard BG computer-science term ("машина с оракул"), which the reviewers proposed. *Wave 3 has already applied (b) in steps 02, 08–11; reverting is one mechanical pass.* | |
 | 1.19 | bang-bang | изненадващ обрат (= "a surprising twist") | скокообразно превключване; threshold → праг на превключване | ✅ |
 | 1.20 | gadget (subgame solving) | джаджа | приспособление (gadget) | ✅ |
 | 1.21 | cutting-plane / cut | равнина на отсичане; cut → сечение/срез/разрез | отсичаща равнина; метод на отсичащите равнини; cut → отсичащо ограничение | ✅ |
@@ -78,12 +81,12 @@ On first use in each chapter, a Bulgarian term is followed by the English in par
 | 2.12 | mode | мода (fashion) for everything | мода (of a distribution only); режим / вид (operating mode, credit mode) | ✅ |
 | 2.13 | time-average | Усреднено време (= "averaged time") | средно по времето | ✅ |
 | 2.14 | sample efficiency / sample-efficient | ефективност на извадката; ефективен по отношение на пробите | ефективност по отношение на данните (sample efficiency) | ✅ |
-| 2.15 | wall-clock time / budget | реално време (clashes with C1's "real-time") | време за изпълнение; бюджет от време за изпълнение | ✅ |
+| 2.15 | wall-clock time / budget | реално време (clashes with C1's "real-time") | време за изпълнение; бюджет от време за изпълнение | ✅ ⟲ changes your curated entry (curated: Бюджет в реално време) |
 | 2.16 | compute (cost) | изчислителна мощност (= hardware) | изчислителни разходи; test-time compute → изчисления по време на изпълнение | ✅ |
 | 2.17 | inference (running a model), test-time | извод; време на тестване; тест-тайм | по време на изпълнение / по време на игра | ✅ |
 | 2.18 | offline | извън линия (calque) | офлайн / предварително | ✅ |
 | 2.19 | sparse reward | оскъдна награда (= meagre) | рядка награда; sparse agents → агенти с рядка награда | ✅ |
-| 2.20 | critic (actor-critic) | "критична стойност" (= statistical critical value) | критик; critic-value proxy → заместител от оценките на критика | ✅ |
+| 2.20 | critic (actor-critic) | "критична стойност" (= statistical critical value) | оценител (your curated term, "актьор-оценител"); critic-value proxy → заместител от оценките на оценителя | ✅ |
 | 2.21 | return conditioning | условно връщане (= conditional refund) | обуславяне по възвръщаемостта | ✅ |
 | 2.22 | return-to-go | очаквана възвръщаемост до края (wrong: it is realised) | остатъчна възвръщаемост | ✅ |
 | 2.23 | sequence models | последователни модели (= consistent/successive) | модели на последователности | ✅ |
@@ -119,7 +122,7 @@ On first use in each chapter, a Bulgarian term is followed by the English in par
 |---|---|---|---|---|
 | 3.1 | bet / call / raise / fold / check | залог / **залог** / вдига / **пас** / проверка | залог / плащане (плаща) / вдигане / отказ (се отказва) / чек | ✅ |
 | 3.2 | pass (Kuhn's action p) | пас | пас (kept — this is why fold must not be "пас") | ✅ |
-| 3.3 | suit / suit isomorphism | curated "цвят", corpus "боя" | боя; изоморфизъм на боите (change the curated file) | ✅ |
+| 3.3 | suit / suit isomorphism | curated "цвят", corpus "боя" | боя; изоморфизъм на боите (change the curated file) | ✅ ⟲ changes your curated entry (curated: цвят) |
 | 3.4 | turn / river / street | ход / река / улица | търн / ривър / рунд на залагане | ✅ |
 | 3.5 | board / board texture / high board | дъска, маса, текстура на дъската | общи карти; състав на общите карти; висока обща карта | ✅ |
 | 3.6 | hand (cards held) vs hand (one deal played) | mixed | ръка (cards held); раздаване (a deal played, "на раздаване") | ✅ |
