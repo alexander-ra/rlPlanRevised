@@ -150,3 +150,26 @@ OpenSpiel — the glossary and the figure mapping must stop translating them
 | 5.2 | Decimal point, "20,000", "x" in BG text | ✅ decimal comma (0,571; `0{,}571` in math), "20 000", "×" — matches the BG figures |
 | 5.3 | Works cited in several chapters share one footnote number in the single-document bundle (note prints only in the first chapter) | ✅ repeat the note in each chapter that cites the work |
 | 5.4 | Cross-references "Раздел 5" inside chapter 7 | ✅ "раздел 7.5" |
+
+## 6. New terms from chapters 13–15 (chosen by the translation agents) — to confirm
+
+Applied in the Bulgarian chapters 13–15 as listed; ✅ unless you change them.
+
+| # | English | Chosen | Note |
+|---|---|---|---|
+| 6.1 | behavioural cloning | поведенческо клониране | as chapter 12 and the curated glossary |
+| 6.2 | embedding | вграждане | as chapter 5 and the glossary |
+| 6.3 | collusion / colluders | тайно съглашение / съучастници | as the curated glossary and rawStepsBg |
+| 6.4 | soft play / chip dumping | пасивна игра (срещу съучастника) / прехвърляне на жетони | |
+| 6.5 | light / strong collusion | съглашение с ниска / висока интензивност | |
+| 6.6 | bot detection | откриване на ботове | |
+| 6.7 | unsupervised / self-supervised | без учител / научено без етикети | |
+| 6.8 | false-positive rate / recall / AUC | дял на фалшиво положителните резултати (FPR) / пълнота / AUC | |
+| 6.9 | VPIP, PFR, 3-bet, c-bet, WTSD, HUD | Latin, Bulgarian description on first use | |
+| 6.10 | c-bet / limp / steal / post / donk bet | продължаващ залог / влизане с плащане / кражба на блайндовете / вноска / „донк“ залог | |
+| 6.11 | heads-up / hole cards / showdown | сблъсък един срещу друг / скрити карти / разкриване на картите | |
+| 6.12 | regulars / hand history | редовни играчи / история на раздаванията | |
+| 6.13 | TAG / LAG / nit / fish | стегнато- / разпуснато-агресивен; „нит“ / „риба“ | ❓ chapters 7–8 write "стегнат-пасивен" (no -о): pick one form for all |
+| 6.14 | re-identification / multi-accounting | повторно разпознаване / множество акаунти | |
+| 6.15 | majority baseline / split-half / minimum sample | мажоритарна базова линия / корелация между половините / минимална извадка | |
+| 6.16 | archetype / parser | архетип / парсер | |
