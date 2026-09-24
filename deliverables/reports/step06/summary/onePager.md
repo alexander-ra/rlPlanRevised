@@ -24,16 +24,13 @@ computes in real time, where learning sits, what it can prove — of **DeepStack
 **Libratus** (2017/18), **Pluribus** (2019), **ReBeL** (2020) and **Student of Games** (2023),
 each scored on the same nine dimensions and placed on three axes: abstraction to neural
 representation, offline precomputation to real-time search, imperfect-information-only to unified
-play. **This chapter produced no code; every number below is the result each paper reports, not a
-measurement of ours**, and the chapter itself is drafted but not yet signed off.
+play. **This chapter produced no code; every number below is the result each paper reports, not a measurement of ours**.
 
 **Key results (as reported by the papers).**
 
 - *The abstraction era was far more exploitable than its match results suggested.* A
-  local-best-response probe showed top competition bots losing **over 3,000 mbb/g** — several
-  times the win rate that made them look strong. Closing that gap is what the decade was for.
-- *Search at inference, not the offline strategy, carries the edge.* Libratus's raw blueprint
-  **lost** to Baby Tartanian8 by **8 mbb/g**; with nested safe subgame solving on, the same
+  local-best-response probe showed top competition bots losing **over 3,000 mbb/g** — four times what folding every hand would lose. Closing that gap is what the decade was for.
+- *Search at inference, not the offline strategy, carries the edge.* Libratus's raw blueprint **did not beat** Baby Tartanian8 (**−8 ± 15 mbb/g**); with nested safe subgame solving on, the same
   system **won by 63**, and beat four professionals by **147 mbb/g over 120,000 hands**. Solving
   off-menu bets live also beat nearest-size action translation **119 vs 1,465 mbb/g** worst-case
   — Chapter 4's translation failure repaired by refusing to translate.
@@ -44,11 +41,10 @@ measurement of ours**, and the chapter itself is drafted but not yet signed off.
   safety guarantees for unsafe search; ReBeL recovered the two-player guarantee and eliminated
   abstraction and blueprint alike (Dong Kim **+165 mbb/g**) but retreated to two players; Student
   of Games unified perfect- and imperfect-information play soundly (beating the LBR probe by
-  **+434 mbb/g**) while sitting **over 1,100 Elo** below Go specialists — its authors' "price of
+  **+434 mbb/g**) while winning only **2 of 400** Go games against AlphaZero — its authors' "price of
   generality". No system dominates every axis.
 - *The one omission all five share.* Each is **opponent-blind by design**: it computes a
-  worst-case-robust strategy and plays it unconditionally. The human-tested systems say so
-  explicitly, and Pluribus does not even know who it is playing.
+  worst-case-robust strategy and plays it unconditionally. Libratus and Pluribus say so explicitly, and Pluribus does not even know who it is playing.
 
 **Thesis connection.** That shared omission is the opening this dissertation occupies, and the
 chapter supplies the machinery to fill it. ReBeL's **public belief state** is the substrate

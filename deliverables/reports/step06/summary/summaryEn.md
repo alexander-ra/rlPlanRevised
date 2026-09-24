@@ -51,7 +51,7 @@ generalization — learning belief-state values with AlphaZero-style self-play, 
 abstraction and the blueprint, and *recovering* the safety Pluribus had surrendered. Student of Games, the
 capstone, unified perfect- and imperfect-information play in a single algorithm — and paid for that breadth
 with peak strength, losing decisively to a specialist AlphaZero at Go. Read this way, the chapter is a study
-of what each advance cost, not a ranking of winners.[^deepstack]
+of what each advance cost, not a ranking of winners.
 
 Beneath the individual trades, three axes of motion run through all five systems and give the chapter its
 spine. The first is **representational**: the move from hand-built *abstraction* — bucketing similar hands
@@ -66,23 +66,21 @@ tracks for seventy years. The first two axes describe the four poker systems; th
 fifth the chapter's capstone.
 
 One idea ties these threads together and deserves to be named before the systems themselves, precisely
-because it is *not* one of them: **depth-limited solving**. Formalized by Brown & Sandholm (2018), it is the
+because it is *not* one of them: **depth-limited solving**. Formalized by Brown, Sandholm & Amos (2018)[^brown2018dls], it is the
 principle that one may search only a little way ahead in an imperfect-information game and substitute a
 *learned or precomputed value* for the remainder — provided the substitution is done so that hidden
-information does not render it unsound. It is the theory that retroactively unifies DeepStack's continual
-re-solving with Libratus's nested subgame solving, that underwrites Pluribus's continuation strategies, and
+information does not render it unsound. It is the theory that places DeepStack's continual re-solving and Libratus's nested subgame solving in a common framework, that underwrites Pluribus's continuation strategies, and
 that, in belief-state form, becomes the inner loop of ReBeL and Student of Games. We treat it as connective
 tissue — referenced wherever a system instantiates it — rather than as a sixth entry, because depth-limited
 solving is the mechanism *through which* the offline-to-search axis actually operates.
 
 Finally, because this chapter is the hinge between the fundamentals of Chapters 1–5 and the opponent-modelling
-and exploitation work of Chapters 7–15, it is worth flagging at the outset the single thread the synthesis
+and exploitation work of Chapters 7–12, it is worth flagging at the outset the single thread the synthesis
 returns to. Every system here is, by deliberate design, **opponent-blind**: each computes a strategy that is
 hard to beat *in the worst case* and then plays it without regard to who is actually across the table —
-Pluribus does not even know its opponents' identities, and both it and Libratus refuse on principle to model
-or adapt to them, so as never to be counter-exploited in return. This robustness-first stance is the field's
+Pluribus does not even know its opponents' identities, and both it and Libratus deliberately avoid modelling or adapting to them — because an exploitative deviation can itself be counter-exploited and, in the words of Pluribus's authors, because existing opponent-exploitation techniques "require too many samples to be competitive with human ability outside of small games"; both papers name conservative (safe) exploitation as the only exception.[^pluribus][^libratus] This robustness-first stance is the field's
 great strength and, for a dissertation about *adaptive* play, its defining limitation: it is exactly the
-opponent-awareness these systems omit that Chapters 7–15 set out to add. The chapter therefore closes not with
+opponent-awareness these systems omit that Chapters 7–12 set out to add. The chapter therefore closes not with
 a winner but with a synthesis — a map of what the five systems share, what each gave up, and where the open
 problems that motivate the rest of this work actually lie.
 
@@ -95,9 +93,8 @@ opens the NEXT section, not this one. -->
 <!-- APPROVED-HIGHLIGHT START (temporary; remove before final build) -->
 <div style="background-color:#e6f9e6; padding:0.4em 0.8em; border-radius:4px">
 
-DeepStack (Moravčík et al., 2017), from the University of Alberta computer-poker group with collaborators in
-Prague, was the first program to defeat professional poker players at heads-up no-limit Texas hold'em (HUNL)
-with statistical significance, and the first to put heuristic search — the engine behind chess and Go — on a
+DeepStack (Moravčík et al., 2017)[^deepstack], from the University of Alberta computer-poker group with collaborators in
+Prague, was the first program to defeat professional poker players at heads-up no-limit Texas hold'em (HUNL) — professionals, though not HUNL specialists — with statistical significance, and the first to put heuristic search — the engine behind chess and Go — on a
 theoretically sound footing in a game of imperfect information. Over a four-week study it beat a pool of 33
 professionals by 492 milli-big-blinds per game (mbb/g, the standard poker win-rate unit; 50 mbb/g is a
 sizable professional edge) across 44,852 hands, and no known technique could find a flaw in its play. Its
@@ -106,7 +103,7 @@ plays Go — searching locally from the current situation and trusting a learned
 beyond the horizon — even though, in poker, the situation is itself partly hidden?**
 
 | At a glance | DeepStack (2017) |
-|---|---|
+|--|------|
 | Players | 2 (heads-up) |
 | Game type | HUNL — heads-up no-limit Texas hold'em (2-player zero-sum) |
 | Blueprint (offline)? | No — offline work trains value nets, not a stored strategy |
@@ -136,20 +133,19 @@ that smaller game offline with counterfactual regret minimization (CFR) to produ
 *blueprint* — store it, and at play time *translate* each real situation and opponent bet into the nearest
 abstract one. The compression is lossy, and the loss shows up as exploitability — how much a worst-case
 opponent can win, the field's quality metric, zero at a Nash equilibrium. In 2015 the abstraction-based
-program Claudico lost to professionals by 91 mbb/g, and a local-best-response probe (LBR, a tractable lower
-bound on exploitability) later showed top competition bots exploitable by more than 3,000 mbb/g — four times
-worse than folding every hand. Blueprints were also enormous (a single no-card-abstraction strategy took
+program Claudico lost to professionals by 91 mbb/g,[^deepstack] and a local-best-response probe (LBR, a tractable lower
+bound on exploitability) later showed top competition bots exploitable by more than 3,000 mbb/g — four times worse than folding every hand.[^lbr] Blueprints were also enormous (a single no-card-abstraction strategy took
 about 2 TB and 14 CPU-years to compute and was *still* exploitable through off-tree bets), and the
-translation step was itself a source of weakness. DeepStack closes this gap by discarding the whole edifice:
+translation step was itself a source of weakness.[^deepstack] DeepStack closes this gap by discarding the whole edifice:
 it never builds a full-game abstraction and never stores a blueprint, reasoning about each situation *as it
 actually arises* and replacing only the distant remainder of the game with a learned estimate.
 
 ### Architecture
 
 DeepStack splits cleanly into an **offline** phase that learns intuition and an **online** phase that
-searches with it (Figure 6.1).
+searches with it (see the figure below).[^deepstack]
 
-![DeepStack architecture: offline intuition-building (left) feeding a shared deep counterfactual-value network, reused as the leaf evaluator inside the online continual-re-solving loop (right).](deepstack_arch.png){width=92% fig-pos="H"}
+![DeepStack architecture: offline intuition-building (top) feeding a shared deep counterfactual-value network, reused as the leaf evaluator inside the online continual-re-solving loop (bottom).](deepstack_arch.png){width=95% fig-pos="H"}
 
 Offline, the system generates millions of random poker situations and solves them with a CFR solver to obtain
 target *counterfactual values* — conditional "what-if" payoffs for holding each possible hand — and these
@@ -193,11 +189,10 @@ network of seven hidden layers of 500 units, taking the pot size and the two ran
 hand clusters) as input and emitting per-hand counterfactual values as fractions of the pot. A bespoke outer
 layer enforces the zero-sum constraint: it forms the two implied game values from the ranges and raw outputs
 and subtracts half their sum, so the estimates are mutually consistent and the whole thing stays
-differentiable. With this network supplying values at the end of the current betting round, the depth-limited
-re-solve shrinks the game from $10^{160}$ decision points to about $10^{7}$ — small enough to solve in under
+differentiable. With this network supplying values at the end of the current betting round, the depth limit shrinks the re-solved game from $10^{160}$ decision points to at most $10^{17}$, and the sparse action set described below to about $10^{7}$ — small enough to solve in under
 five seconds on a single GPU.
 
-The pairing is provably sound. If the value network's error is at most $\epsilon$ and the re-solve runs $T$
+The pairing is provably sound.[^deepstack] If the value network's error is at most $\epsilon$ and the re-solve runs $T$
 CFR iterations, the resulting strategy's exploitability is bounded by
 
 $$ \text{exploitability} \;<\; k_1\,\epsilon \;+\; k_2/\sqrt{T}, $$
@@ -205,8 +200,7 @@ $$ \text{exploitability} \;<\; k_1\,\epsilon \;+\; k_2/\sqrt{T}, $$
 with game-specific constants $k_1, k_2$. The first term is the price of imperfect intuition; the second is
 ordinary CFR convergence. This bound is the theoretical heart of the paper — the guarantee that heuristic
 search can be carried into imperfect information without the strategy quietly becoming exploitable — and the
-same depth-limit-plus-learned-value template, formalized further by Brown & Sandholm's depth-limited solving
-the following year, underlies every system in this chapter.
+same depth-limit-plus-learned-value template, formalized further by the depth-limited solving of Brown, Sandholm & Amos the following year, underlies every system in this chapter.
 
 ### Caveats, dead-ends, and what the paper under-describes
 
@@ -218,7 +212,7 @@ human speed DeepStack restricts its look-ahead to a sparse betting set (fold, ca
 all-in), and the paper states plainly that this "voids the soundness property of Theorem 1." So the shipped
 guarantee is empirical — supported by the LBR results below — not proven. A second deviation compounds this:
 the soundness proof assumes *best-response* constraint values, but DeepStack actually uses *self-play* values,
-which "lack a theoretical justification" yet were less exploitable in early tests. The proven algorithm and
+which lack a theoretical justification yet were less exploitable in early tests. The proven algorithm and
 the winning algorithm are, strictly, different algorithms.
 
 Abstraction also creeps back at the margins. DeepStack advertises that it uses no card abstraction to
@@ -241,7 +235,7 @@ networks** — not in the neural training, and not in play. Generating the targe
 millions of random subgames: the turn network alone consumed about **175 CPU-core-years** on a 6,144-core
 cluster, with the flop network adding roughly half a GPU-year on 20 GPUs; by contrast, the networks
 themselves trained in about two days each on a single GPU, and at play time DeepStack runs on **one commodity
-GPU at under five seconds per decision**. The shape of that bill is the real lesson: the "intuition" is bought
+GPU at under five seconds per decision**.[^deepstack] The shape of that bill is the real lesson: the "intuition" is bought
 once, up front, by brute-force equilibrium solving, after which deployment is cheap — the mirror image of a
 system whose cost is dominated by inference. In accessibility terms this put a *from-scratch* build within
 reach only of a well-resourced lab at the time (the offline solve is cluster-scale), even though the trained
@@ -253,7 +247,7 @@ the entry barrier further.
 
 DeepStack's central strength is **soundness with low exploitability**: it is the first imperfect-information
 search method with a real guarantee, and empirically LBR — which exposes competition bots as losing thousands
-of mbb/g — cannot find any way to beat it, itself losing by over 350 mbb/g. It needs **no full-game
+of mbb/g — cannot find any way to beat it, itself losing by over 350 mbb/g.[^deepstack] It needs **no full-game
 abstraction and no action translation**, so off-tree opponent bets are handled exactly rather than rounded;
 its **play-time footprint is modest**; and it learns from **no human data and little domain knowledge**. A
 neat bonus is evaluation synergy — DeepStack's own value function is exactly what the AIVAT variance-reduction
@@ -272,15 +266,14 @@ head-to-head against the strongest abstraction bots.
 Strip away the poker specifics and DeepStack's core idea is **depth-limited search with a learned value
 function at the leaves, adapted to hidden information** — the imperfect-information counterpart of the
 value-guided search behind AlphaGo and AlphaZero. That idea did not age into obsolescence; it became the
-template. Brown & Sandholm formalized the depth-limited-solving theory the next year, and the paradigm was
-then generalized into full reinforcement-learning-plus-search frameworks: ReBeL (2020) recast the leaf-value
-learning around public belief states with AlphaZero-style self-play, and Student of Games (2023) — which
-shares several DeepStack authors — unified perfect- and imperfect-information play in a single algorithm. The
+template. Brown, Sandholm & Amos formalized the depth-limited-solving theory the next year,[^brown2018dls] and the paradigm was
+then generalized into full reinforcement-learning-plus-search frameworks: ReBeL (2020)[^brown2020rebel] recast the leaf-value
+learning around public belief states with AlphaZero-style self-play, and Student of Games (2023)[^sog] — which shares several DeepStack authors — unified perfect- and imperfect-information play in a single algorithm. The
 same "planning in the loop with a learned value model" recipe later reached beyond two-player zero-sum poker,
-for instance in CICERO's human-level Diplomacy play. More broadly still, DeepStack is an early, clean instance
+for instance in CICERO's human-level Diplomacy play.[^cicero2022] More broadly still, DeepStack is an early, clean instance
 of the principle now central to frontier AI: **spend compute at decision time via search guided by learned
 intuition, rather than baking everything into one giant precomputed policy** — the same "test-time compute"
-thesis behind today's reasoning models, with the field's own caveat (voiced by Noam Brown) that imperfect
+thesis behind today's reasoning models, with the field's own caveat that imperfect
 information needed *belief-aware* search precisely because the plain Monte-Carlo tree search that works for Go
 does not work for poker.
 
@@ -310,8 +303,7 @@ the forward hand-off opens the NEXT (Pluribus) section, not this one. -->
 
 DeepStack answered its *what-if* by throwing the abstraction-and-blueprint edifice away — yet it still kept a
 sparse betting abstraction inside its own look-ahead, and it was never tested head-to-head against the
-strongest prior bots or against HUNL specialists in a long, rigorous match. Libratus (Brown & Sandholm,
-2017; Carnegie Mellon) — Latin for *balanced*, as in approximating a Nash equilibrium, and *forceful*, for
+strongest prior bots or against HUNL specialists in a long, rigorous match. Libratus (Brown & Sandholm, 2017; Carnegie Mellon)[^libratus] — Latin for *balanced*, as in approximating a Nash equilibrium, and *forceful*, for
 its play — was built independently and announced the same year, and it made the opposite bet: keep the
 abstraction-and-blueprint paradigm and cure its one fatal disease. Its guiding question is the mirror image
 of DeepStack's: **what if we solve a coarse blueprint of the whole game offline, then *repair it in real
@@ -322,7 +314,7 @@ previous section; ~50 mbb/g is a sizable professional edge) over 120,000 hands a
 unlike DeepStack, it first dismantled the prior best poker AI head-to-head.
 
 | At a glance | Libratus (2017/2018) |
-|---|---|
+|--|------|
 | Players | 2 (heads-up) |
 | Game type | HUNL — heads-up no-limit Texas hold'em (2-player zero-sum) |
 | Blueprint (offline)? | Yes — an abstracted full-game strategy solved offline with MCCFR (detailed early, coarse late) |
@@ -345,7 +337,7 @@ though the opponent had made the rounded bet. That rounding is the single larges
 abstraction-based poker: a local-best-response probe had shown the leading competition bots losing thousands
 of mbb/g to a worst-case adversary, and in 2015 Libratus's own predecessor Claudico lost the first
 *Brains vs. AI* match to professionals by 91 mbb/g, in good part because opponents could feel out and punish
-its translation boundaries.[^libratus]
+its translation boundaries.[^ganzfried2016reflections]
 
 The conceptual question Libratus answers is therefore narrower and more surgical than DeepStack's: *can the
 decades-old abstraction paradigm be made superhuman by repairing only its real-time behaviour — responding to
@@ -362,15 +354,13 @@ reach superhuman play.
 
 Libratus is a pipeline of three modules that operate on three different timescales — **offline** (before the
 match), **online** (during each decision), and **overnight** (between days of play) — and, unlike every other
-system in this chapter, it contains **no neural network at all** (Figure 6.2).
+system in this chapter, it contains **no neural network at all** (see the figure below).[^libratus]
 
 ![Libratus's three-module pipeline: an offline blueprint (top), the online nested safe-subgame solver that plays it (middle), and the overnight self-improver that grafts solved holes back into the blueprint (bottom, feedback arrow).](libratus_arch.png){width=95% fig-pos="H"}
 
-**Module 1 — the blueprint (offline).** Libratus first compresses HUNL's roughly $10^{161}$ decision points
-to about $10^{12}$ with two kinds of abstraction: an *action abstraction* that keeps only a discrete menu of
+**Module 1 — the blueprint (offline).** Libratus first compresses HUNL's roughly $10^{161}$ decision points (DeepStack's paper rounds the same count to $10^{160}$) to about $10^{12}$ with two kinds of abstraction: an *action abstraction* that keeps only a discrete menu of
 bet sizes (mostly round fractions and multiples of the pot, drawn from the sizes top competition bots
-favour, with a few early sizes tuned by a parameter-optimization algorithm), and a *card abstraction* that
-groups strategically similar hands. Crucially it uses **no card abstraction on the first two betting rounds**
+favour, with a few early sizes tuned by a parameter-optimization algorithm), and a *card abstraction* that groups strategically similar hands.[^libratusijcai] Crucially it uses **no card abstraction on the first two betting rounds**
 — small enough to afford full resolution — and buckets only the turn and river, and even there only in the
 blueprint. It then solves this abstract game by self-play with an improved **Monte Carlo counterfactual
 regret minimization (MCCFR)** that probabilistically prunes very-negative-regret branches, a roughly
@@ -429,7 +419,7 @@ blueprint *estimates* of opponent values instead of conservative *upper bounds* 
 defend against a hand a rational opponent would never have brought to this spot), freeing capacity to defend
 against the hands they realistically have.
 
-The pairing comes with a guarantee that parallels DeepStack's. If $\sigma^{*}$ is the least-exploitable
+The pairing comes with a guarantee that parallels DeepStack's.[^brown2017] If $\sigma^{*}$ is the least-exploitable
 strategy that differs from the blueprint only inside the solved subgames, and the blueprint's estimate of
 the opponent's subgame values is off by at most $\Delta$, then the refined strategy's exploitability obeys
 
@@ -459,8 +449,7 @@ limitations — actually lives, except that here much of it is not even in the *
 companion IJCAI paper and the authors' course notes.
 
 The most revealing caveat is that **the blueprint alone is not superhuman — it does not even beat the prior
-bot**. Against Baby Tartanian8, the 2016 competition winner, Libratus's raw blueprint *lost* by 8 mbb/g; only
-when nested subgame solving was switched on did the same system win by 63 mbb/g. The offline strategy, in
+bot**. Against Baby Tartanian8, the 2016 competition winner, Libratus's raw blueprint did not beat it (−8 ± 15 mbb/g, 95% CI); only when nested subgame solving was switched on did the same system win, by 63 ± 28 mbb/g.[^libratus] The offline strategy, in
 other words, is a scaffold, and essentially all of Libratus's edge comes from real-time search — a result
 that quietly reframes the whole system and foreshadows the field's pivot toward search-at-inference.
 
@@ -485,10 +474,10 @@ Where DeepStack's bill is paid almost entirely offline and its play is cheap, Li
 both ends**. The project consumed roughly **25 million CPU core-hours** on the Bridges supercomputer at the
 Pittsburgh Supercomputing Center over a year — of which about 6 million went to building and solving the
 blueprint, about 3 million to real-time subgame solving during the match, about 3 million to the
-self-improver, and the remaining ~13 million to exploratory experiments and evaluation. Operationally the
+self-improver, and the remaining ~13 million to exploratory experiments and evaluation.[^libratusijcai] Operationally the
 blueprint runs occupied roughly 195 nodes for one to eight weeks at a time; each **real-time subgame solve
 used about 50 nodes and took on the order of tens of seconds**; the overnight self-improver ran on up to
-several hundred nodes for hours; and the strategies and snapshots consumed about 2.6 petabytes of disk.
+several hundred nodes for hours; and the strategies and snapshots consumed about 2.6 petabytes of disk.[^sandholm2021]
 There were **no GPUs and no neural training anywhere** — every core-hour is CFR or abstraction.
 
 The shape of that bill is the lesson. Libratus does not buy cheap deployment with an expensive one-time
@@ -520,8 +509,7 @@ generalization** whatsoever: nothing transfers across situations, the blueprint 
 stored strategy), and play time is **supercomputer-scale** rather than the single GPU DeepStack needed. The
 Estimated-Maxmargin trade-off accepts a small, bounded rise in exploitability for strength, one unsafe solve
 slips into the pipeline, and — because both humans and AI adapted over the match — even the headline
-significance is, strictly, an "as-if-independent" figure, though a 147 mbb/g margin over 120,000 hands leaves
-no real doubt.
+significance is, strictly, an "as-if-independent" figure, though a 147 mbb/g margin over 120,000 hands leaves no real doubt.[^libratus]
 
 ### Legacy and modern relevance
 
@@ -541,9 +529,7 @@ subsequent systems are all neural, because hand-crafted abstraction and petabyte
 across situations nor scale beyond two players. The honest verdict is that Libratus is *superseded as an
 architecture but vindicated as a thesis*: its bet that **real-time search matters more than a bigger
 precomputed strategy** was exactly right, even as its bet on tabular abstraction was overtaken. That first
-thesis has since become a central theme of frontier AI — the observation that adding search at decision time
-was worth far more than scaling the offline computation is an early, concrete instance of the "test-time
-compute" argument now made for reasoning models, and Libratus's blueprint-then-search split prefigures the
+thesis has since become a central theme of frontier AI — the observation that adding search at decision time was worth as much as scaling the offline computation 100,000-fold is an early, concrete instance of the "test-time compute" argument now made for reasoning models,[^nunez2024] and Libratus's blueprint-then-search split prefigures the
 modern pretrain-then-search recipe.
 
 Several subsystems remain directly reusable: **safe subgame / endgame solving** as a way to locally refine a
@@ -576,19 +562,18 @@ thin on architecture -> leaned on the supplementary materials + author talks + s
 Libratus settled two-player no-limit hold'em, but its safety guarantees — and indeed the very meaning of
 "solving" the game — rested on two-player zero-sum structure: there a Nash equilibrium is unbeatable, and a
 real-time solve could be made provably *safe* against it. Poker as humans actually play it, though, seats six.
-Pluribus (Brown & Sandholm, 2019; Carnegie Mellon and Facebook AI) confronted the multiplayer question
+Pluribus (Brown & Sandholm, 2019; Carnegie Mellon and Facebook AI)[^pluribus] confronted the multiplayer question
 directly: **what becomes of the blueprint-plus-real-time-search recipe when you remove the two-player crutch
 and sit at a six-handed table — a setting where a Nash equilibrium is neither unique, nor efficiently
 computable, nor even a guarantee that you will not lose?** Its answer was empirical and emphatic. Across two
 formats — five professionals seated with one copy of Pluribus, and one professional against five copies — it
-beat a rotating cast of thirteen elite pros, several of them World Series or World Poker Tour champions,
-winning by about **48 milli-big-blinds per game** against five humans at once (mbb/g, the win-rate unit from
+beat fifteen elite professionals (thirteen rotating through the five-human format, and two — the WSOP and WPT champions Chris Ferguson and Darren Elias — in the one-human format), winning by about **48 milli-big-blinds per game** against five humans at once (mbb/g, the win-rate unit from
 the previous sections — roughly five big blinds per hundred hands, a decisive six-handed margin) at 95%
 statistical significance. And it did so after training for **eight days on a single 64-core server for about
 $150 of cloud compute** — on the order of a thousandth of what the supercomputer behind Libratus consumed.
 
 | At a glance | Pluribus (2019) |
-|---|---|
+|--|------|
 | Players | 6 (six-max) — the first superhuman AI in any benchmark game with more than two players/teams |
 | Game type | 6-max NLHE — six-player no-limit Texas hold'em (imperfect-information; multiplayer, *not* 2-player zero-sum) |
 | Blueprint (offline)? | Yes — a full-game blueprint solved offline by Linear MCCFR; played *directly* only on the first betting round, a scaffold thereafter |
@@ -632,7 +617,7 @@ what naïve search cannot safely do.
 
 Like Libratus, Pluribus splits into an offline phase that builds a blueprint and an online phase that searches
 — but the balance of power between them is inverted, and, again like Libratus, there is **no neural network
-anywhere** (Figure 6.3).
+anywhere** (see the figure below).
 
 ![Pluribus's two-phase architecture: an offline Linear-MCCFR blueprint (top) reused as the source of k=4 continuation strategies inside the online depth-limited search (bottom).](pluribus_arch.png){width=95% fig-pos="H"}
 
@@ -675,8 +660,7 @@ blueprint itself, and three biased copies that multiply the probability of *fold
 the searcher most, an unbalanced strategy — the poker equivalent of always playing Rock — is no longer
 rewarded, and the searcher is driven toward balance. This idea was first proven in a two-player precursor,
 Modicum (Brown, Sandholm & Amos, 2018), which beat two former champion bots while running on a 4-core laptop
-with 16 GB of memory — a striking sign that depth-limited search with continuation strategies could stand in
-for a supercomputer.
+with 16 GB of memory — a striking sign that depth-limited search with continuation strategies could stand in for a supercomputer.[^brown2018dls]
 
 Pluribus generalizes the idea from two players to six and adds a subtle but important twist. In Modicum only
 the *opponent* chose among continuation strategies while the searcher always played the blueprint — sound in
@@ -688,8 +672,7 @@ taken. This "unsafe" search — so named because, unlike Libratus's, it carries 
 cheaper (most six-handed hands are folded immediately, so few need a strategy at all) and, because it begins
 just after a high-branching chance event, turns out to be hard to exploit in practice.
 
-What is conspicuously missing from all of this is a *guarantee*. DeepStack bounded its exploitability by
-$k_1\epsilon + k_2/\sqrt{T}$ and Libratus by $2\Delta$; Pluribus offers no such bound, and the omission is
+What is conspicuously missing from all of this is a *guarantee*. DeepStack bounded its exploitability by $k_1\epsilon + k_2/\sqrt{T}$[^deepstack] and Libratus by $2\Delta$;[^brown2017] Pluribus offers no such bound, and the omission is
 principled rather than careless. CFR's engine still does, in any finite game, drive each player's *average
 regret* to zero,
 
@@ -712,7 +695,7 @@ supplement — only more so here, because Pluribus is a six-page *Science* paper
 entirely relegated to its supplementary materials and to two companion papers. The most consequential admission
 is that Pluribus uses **unsafe** subgame solving — it assumes opponents have played the strategy it computes
 *for* them — which, the authors state plainly, "lacks theoretical guarantees on performance even in two-player
-zero-sum games and there are cases where it leads to highly exploitable strategies." Safe alternatives exist,
+zero-sum games and there are cases where it leads to highly exploitable strategies."[^pluribussm] Safe alternatives exist,
 but in head-to-head play they did worse, so Pluribus takes the empirical win and mitigates the risk only by
 always re-solving from the start of the betting round. A second seam is inherited and never fully closed: on
 the *first* betting round, opponent bets too far off the blueprint's menu are still **rounded** by action
@@ -723,11 +706,7 @@ Several other asterisks matter. Pluribus's headline innovations are **never indi
 concede that the variance of no-limit poker and the cost of human trials make it "too expensive" to measure
 each one's contribution, so the reported component speedups (roughly 3× from Linear CFR, 2× from the modified
 pruning, more than 2× in memory from lazy allocation) are estimates, and the overall winning margin is not
-decomposed. The supplement does, however, dispatch one tempting misconception: assuming a *single* blueprint
-continuation at the leaves — the obvious thing to try, and the way the underlying study notes sometimes gloss
-the method — was shown in the two-player precursor to *lose* to both champion bots (by 10 and 1 mbb/g), whereas
-the four-continuation version *won* (by 6 and 11); the continuation-strategy set is doing real work, not
-decoration. Smaller curiosities round out the picture: Pluribus plays its **final** search iterate rather than
+decomposed. The two-player precursor paper does, however, dispatch one tempting misconception: assuming a *single* blueprint continuation at the leaves — the obvious thing to try — lost to Baby Tartanian8 (−10 ± 8 mbb/g) and did not beat Slumbot (−1 ± 15), whereas the four-continuation version beat both (+6 ± 5 and +11 ± 9);[^brown2018dls] the continuation-strategy set is doing real work, not decoration. Smaller curiosities round out the picture: Pluribus plays its **final** search iterate rather than
 the usual time-average, to avoid residual bad actions; it learned to **abandon "limping"** during self-play yet
 **"donk-bets" far more than humans do**; and — like Libratus — its **code was never released**, leaving only
 pseudocode for independent verification, because poker is played commercially.
@@ -738,17 +717,14 @@ Pluribus's compute story is the one most people remember, and it genuinely inver
 blueprint was trained in **eight days on a single 64-core server** for about **12,400 core-hours** and under
 512 GB of memory — roughly **$144** at cloud spot prices — and at the table Pluribus runs on **two CPUs (28
 cores) and under 128 GB, with no GPUs at any point**, taking one to thirty-three seconds per decision and
-playing about twice as fast as a human. Set against the field the contrast is almost comic: AlphaGo used 1,920
-CPUs and 280 GPUs, Deep Blue 480 custom chips, and Libratus around fifteen million core-hours to build its
-blueprint and a roughly hundred-CPU cluster to play. Pluribus reached a *harder* milestone — more players, a
+playing about twice as fast as a human.[^pluribus] Set against the field the contrast is almost comic: AlphaGo used 1,920
+CPUs and 280 GPUs, Deep Blue 480 custom chips, and Libratus about 25 million core-hours in total (some 6 million of them for its blueprint)[^libratusijcai] and 100 CPUs to play. Pluribus reached a *harder* milestone — more players, a
 larger game — for on the order of a thousandth of Libratus's training compute. Where DeepStack concentrated its
 cost offline and Libratus paid heavily at both ends, Pluribus is **cheap at both ends**, and that, as much as
 the six-player result, is the paper's thesis.
 
 This reframes accessibility entirely. For the first time a superhuman poker system was reproducible, in
-principle, by a single well-equipped researcher rather than a supercomputing centre — the authors explicitly
-present it as a rebuttal to the worry that frontier game-AI would belong only to teams with millions of dollars
-of hardware. The collapse is not magic but algorithmic: the compounding of depth-limited search (which the
+principle, by a single well-equipped researcher rather than a supercomputing centre — the paper contrasts it with "all the other recent superhuman AI milestones for games, which used large numbers of servers and/or farms of graphics processing units".[^pluribus] The collapse is not magic but algorithmic: the compounding of depth-limited search (which the
 authors estimate saves at least five orders of magnitude over solving to the end), Linear CFR, and aggressive
 pruning and memory thrift. The one caveat is that the artefact itself stays closed — no code — so "accessible"
 describes the *method*, demonstrated at laptop scale by Modicum, more than a downloadable program.
@@ -756,24 +732,19 @@ describes the *method*, demonstrated at laptop scale by Modicum, more than a dow
 ### Strengths and limitations
 
 Pluribus's signal strength is simply that it is **first**: the first AI to reach superhuman performance in any
-widely recognized benchmark game with more than two players or two teams, and in poker's most popular form. The
+widely recognized benchmark game with more than two players or two teams, and in poker's most popular form.[^pluribus] The
 win was decisive and rigorous — **+48 mbb/g (p = 0.028)** against five elite pros at the table, and **+32 mbb/g
 (p = 0.014)** with five copies against a lone pro — measured with the **AIVAT** variance reducer (which cut
-variance about ninefold) over tens of thousands of hands, against thirteen professionals who had each won over
-a million dollars and who had days to hunt for weaknesses; the win rate barely wavered. A later rematch even
-beat **Linus Loeliger**, widely regarded as the best six-max cash player alive. And, like Libratus, Pluribus is
-**robustness-first**: it plays a fixed strategy, never models or adapts to opponents, and does not even know
-their identities, so it cannot be lured into a counter-exploitable adjustment — a discipline that, with **no
+variance about ninefold) over 20,000 hands, against fifteen professionals who had each won over a million dollars and who had days to hunt for weaknesses; the win rate barely wavered. And, like Libratus, Pluribus is
+**robustness-first**: it plays a fixed strategy and never models or adapts to opponents, so it cannot be lured into a counter-exploitable adjustment (it does not even know their identities, which also rules out deliberate collusion between its copies) — a discipline that, with **no
 human data and no domain knowledge**, keeps the result clean.
 
 The limitations are precisely what it gave up to get there. Pluribus has **no safety guarantee whatsoever** in
 the six-player setting — no Nash convergence, no exploitability bound — so its superhuman status is an
-*empirical* fact about thirteen strong humans over tens of thousands of hands, not a theorem; a sufficiently
+*empirical* fact about fifteen strong humans over 20,000 hands, not a theorem; a sufficiently
 coordinated table, or simply a different game, carries no assurance. It leans on **unsafe** search, still
 **rounds off-tree bets on the first round**, and remains **purely tabular and abstraction-based**, with nothing
-learned that generalizes across situations — the blueprint is a giant lookup table, not a model. The authors
-add that the whole approach may not survive where players can **communicate and collude**, which poker largely
-forbids. And its 48-mbb/g six-handed win rate, though decisive, is not the same currency as Libratus's 147
+learned that generalizes across situations — the blueprint is a giant lookup table, not a model. The paper claims only that "there are large-scale, complex multiplayer imperfect-information settings in which a carefully constructed self-play-with-search algorithm can produce superhuman strategies"; it makes no claim for games in which players can **communicate or collude**.[^pluribus] And its 48-mbb/g six-handed win rate, though decisive, is not the same currency as Libratus's 147
 heads-up — different game, five opponents, higher variance. Most of these gaps are picked up by later systems;
 the one this thesis singles out — that **multiplayer success came with no safety guarantee at all** — is the
 explicit target of Contribution 2.
@@ -785,9 +756,7 @@ information by giving each leaf a small menu of selectable continuation strategi
 — a clean way to look only a little way ahead in a game where, naïvely, you cannot. The second is economic, and
 the field absorbed it most deeply: Pluribus is the canonical demonstration that **a harder problem can be
 solved with a thousandfold *less* compute through better algorithms and search at decision time**, rather than
-more hardware. Noam Brown has since pointed to exactly this — that adding real-time search was worth as much as
-an enormous scaling of the precomputed strategy — as an early, concrete instance of the **"test-time compute"**
-argument now central to reasoning models such as o1. In the architectural arc of this chapter, Pluribus is the
+more hardware. Noam Brown has since pointed to exactly this — that 20 seconds of search per hand improved his poker bot as much as scaling the model up 100,000-fold — as an early, concrete instance of the **"test-time compute"** argument now central to reasoning models such as o1.[^nunez2024] In the architectural arc of this chapter, Pluribus is the
 point where the *player-count* barrier falls; the *generalization* barrier it leaves standing — everything is
 still tabular and hand-abstracted — is what **ReBeL** and **Student of Games** dismantle next, by replacing the
 blueprint with learned belief-state values.
@@ -1560,16 +1529,32 @@ and their exploitability discipline, and it sets out to add the one capability t
 out — the ability to notice that an opponent is not playing optimally, and to do something about it without
 becoming exploitable in turn.
 
-[^brown2017]: Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS*.
+[^brown2017]: Brown, N. & Sandholm, T. (2017). "Safe and Nested Subgame Solving for Imperfect-Information Games." *NeurIPS* 30, 689–699; arXiv:1705.02955.
 
-[^burch2014]: Burch, N., Johanson, M. & Bowling, M. (2014). "Solving Imperfect Information Games Using Decomposition." *AAAI* — re-solving and the augmented subgame.
+[^brown2018dls]: Brown, N., Sandholm, T. & Amos, B. (2018). "Depth-Limited Solving for Imperfect-Information Games." *NeurIPS* 31; arXiv:1805.08195.
+
+[^brown2020rebel]: Brown, N., Bakhtin, A., Lerer, A. & Gong, Q. (2020). "Combining Deep Reinforcement Learning and Search for Imperfect-Information Games." *NeurIPS* 33, 17057–17069; arXiv:2007.13544.
+
+[^burch2014]: Burch, N., Johanson, M. & Bowling, M. (2014). "Solving Imperfect Information Games Using Decomposition." *AAAI*, pp. 602–608 — re-solving and the augmented subgame.
+
+[^cicero2022]: Meta Fundamental AI Research Diplomacy Team (FAIR), Bakhtin, A., Brown, N., Dinan, E. et al. (2022). "Human-level play in the game of Diplomacy by combining language models with strategic reasoning." *Science*, 378(6624), 1067–1074. doi:10.1126/science.ade9097.
 
 [^deepstack]: Moravčík, M. et al. (2017). "DeepStack: Expert-level artificial intelligence in heads-up no-limit poker." *Science*, 356(6337), 508–513.
 
-[^lbr]: Lisý, V. & Bowling, M. (2017). "Equilibrium Approximation Quality of Current No-Limit Poker Bots." *AAAI Workshop on Computer Poker* — local best response (LBR).
+[^ganzfried2016reflections]: Ganzfried, S. (2016). "Reflections on the First Man vs. Machine No-Limit Texas Hold 'em Competition." *ACM SIGecom Exchanges*, 14(2), 2–15; arXiv:1510.08578.
+
+[^lbr]: Lisý, V. & Bowling, M. (2017). "Equilibrium Approximation Quality of Current No-Limit Poker Bots." *AAAI Workshop on Computer Poker* — local best response (LBR); arXiv:1612.07547.
 
 [^libratus]: Brown, N. & Sandholm, T. (2018). "Superhuman AI for heads-up no-limit poker: Libratus beats top professionals." *Science*, 359(6374), 418–424.
 
+[^libratusijcai]: Brown, N. & Sandholm, T. (2017). "Libratus: The Superhuman AI for No-Limit Poker (Demonstration)." *IJCAI-17*. https://www.ijcai.org/proceedings/2017/0772
+
+[^nunez2024]: Nuñez, M. (2024, 23 Oct.). "OpenAI's Noam Brown stuns TED AI Conference: '20 seconds of thinking worth 100,000x more data'." *VentureBeat*.
+
 [^pluribus]: Brown, N. & Sandholm, T. (2019). "Superhuman AI for multiplayer poker." *Science*, 365(6456), 885–890.
+
+[^pluribussm]: Brown, N. & Sandholm, T. (2019). Supplementary Materials for "Superhuman AI for multiplayer poker." *Science*, 365(6456).
+
+[^sandholm2021]: Sandholm, T. (2021). "State-of-the-art for two-player no-limit Texas hold'em: Libratus." Lecture 13 slides, *15-888 Computational Game Solving* (Fall 2021), Carnegie Mellon University.
 
 [^sog]: Schmid, M. et al. (2023). "Student of Games: A unified learning algorithm for both perfect and imperfect information games." *Science Advances*, 9(46).

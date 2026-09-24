@@ -62,14 +62,17 @@ def arrow(ax, p, q, color=EC, lw=1.4, z=1, style="-|>", dashed=False,
                  connectionstyle=connectionstyle))
 
 
-def panel_bg(ax, x, y, w, h, fc, label=None, label_fs=10.5):
+def panel_bg(ax, x, y, w, h, fc, label=None, label_fs=10.5, label_ha="center"):
+    """label_ha="left" puts the title at the panel's left edge, which keeps the
+    right-hand side of the title band free for arrows entering the panel."""
     ax.add_patch(Rectangle((x, y), w, h, facecolor=fc, edgecolor="none", zorder=0))
     if label:
-        ax.text(x + w / 2, y + h - 0.32, label, ha="center", va="center",
+        lx = x + 0.25 if label_ha == "left" else x + w / 2
+        ax.text(lx, y + h - 0.32, label, ha=label_ha, va="center",
                  fontsize=label_fs, fontweight="bold", color="#2c3e50", zorder=1, clip_on=False)
 
 
-def note(ax, x, y, text, fs=7.6, color="#5b6b7b", ha="center", va="center", style="italic"):
+def note(ax, x, y, text, fs=10, color="#5b6b7b", ha="center", va="center", style="italic"):
     ax.text(x, y, text, ha=ha, va=va, fontsize=fs, color=color, style=style, zorder=4)
 
 
