@@ -1,0 +1,27 @@
+seed 0: 40 pairs, 31334 shared hands from 1028 files (147s)
+  soft q=0.1  rewritten=  195 rej=0 AUC union=0.809 soft=0.845 dump=0.489 ch11=0.320 R@1%=0.28
+  soft q=0.25 rewritten=  423 rej=0 AUC union=0.957 soft=0.972 dump=0.489 ch11=0.215 R@1%=0.68
+  soft q=0.5  rewritten=  899 rej=0 AUC union=1.000 soft=1.000 dump=0.514 ch11=0.092 R@1%=1.00
+  soft q=1.0  rewritten= 1805 rej=0 AUC union=1.000 soft=1.000 dump=0.229 ch11=0.039 R@1%=1.00
+  dump q=0.1  rewritten=  193 rej=0 AUC union=0.674 soft=0.107 dump=0.743 ch11=0.253 R@1%=0.03
+  dump q=0.25 rewritten=  458 rej=0 AUC union=0.884 soft=0.008 dump=0.914 ch11=0.078 R@1%=0.15
+  dump q=0.5  rewritten=  877 rej=0 AUC union=0.978 soft=0.000 dump=0.989 ch11=0.003 R@1%=0.62
+  dump q=1.0  rewritten= 1805 rej=0 AUC union=0.998 soft=0.000 dump=1.000 ch11=0.000 R@1%=1.00
+seed 1: 40 pairs, 38353 shared hands from 1036 files (309s)
+  soft q=0.1  rewritten=  199 rej=0 AUC union=0.803 soft=0.838 dump=0.519 ch11=0.350 R@1%=0.33
+  soft q=0.25 rewritten=  479 rej=0 AUC union=0.944 soft=0.972 dump=0.503 ch11=0.199 R@1%=0.70
+  soft q=0.5  rewritten=  969 rej=0 AUC union=0.999 soft=1.000 dump=0.591 ch11=0.102 R@1%=1.00
+  soft q=1.0  rewritten= 1960 rej=0 AUC union=1.000 soft=1.000 dump=0.311 ch11=0.039 R@1%=1.00
+  dump q=0.1  rewritten=  182 rej=0 AUC union=0.669 soft=0.188 dump=0.731 ch11=0.309 R@1%=0.03
+  dump q=0.25 rewritten=  483 rej=0 AUC union=0.859 soft=0.009 dump=0.901 ch11=0.073 R@1%=0.25
+  dump q=0.5  rewritten=  987 rej=0 AUC union=0.980 soft=0.000 dump=0.990 ch11=0.002 R@1%=0.68
+  dump q=1.0  rewritten= 1960 rej=0 AUC union=0.997 soft=0.000 dump=0.999 ch11=0.000 R@1%=0.97
+seed 2: 40 pairs, 30830 shared hands from 970 files (516s)
+  soft q=0.1  rewritten=  170 rej=0 AUC union=0.768 soft=0.786 dump=0.600 ch11=0.306 R@1%=0.17
+  soft q=0.25 rewritten=  414 rej=0 AUC union=0.919 soft=0.955 dump=0.557 ch11=0.168 R@1%=0.57
+  soft q=0.5  rewritten=  866 rej=0 AUC union=0.999 soft=1.000 dump=0.556 ch11=0.075 R@1%=1.00
+  soft q=1.0  rewritten= 1748 rej=0 AUC union=1.000 soft=1.000 dump=0.282 ch11=0.037 R@1%=1.00
+  dump q=0.1  rewritten=  185 rej=0 AUC union=0.563 soft=0.147 dump=0.624 ch11=0.237 R@1%=0.05
+  dump q=0.25 rewritten=  425 rej=0 AUC union=0.816 soft=0.031 dump=0.864 ch11=0.085 R@1%=0.07
+  dump q=0.5  rewritten=  885 rej=0 AUC union=0.958 soft=0.000 dump=0.975 ch11=0.002 R@1%=0.57
+  dump q=1.0  rewritten= 1748 rej=0 AUC union=0.998 soft=0.000 dump=0.999 ch11=0.000 R@1%=0.93

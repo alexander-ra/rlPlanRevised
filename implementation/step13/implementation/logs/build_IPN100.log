@@ -1,0 +1,13 @@
+2081 files, 21455 players (15.6s pre-pass)
+  200/2081 files  35s
+  400/2081 files  49s
+  600/2081 files  65s
+  800/2081 files  81s
+  1000/2081 files  91s
+  1200/2081 files  98s
+  1400/2081 files  104s
+  1600/2081 files  110s
+  1800/2081 files  117s
+  2000/2081 files  124s
+{"hands_raw": 2032655, "hands_parsed": 2027882, "parse_rate": 0.9976518395891089, "players": 21453, "decisions": 15576700, "pairs": 647870, "runtime_s": 134.9}
+failures: {'hand truncated before the river with several players left': 4130, 'hand truncated: river betting not finished': 619, 'out of turn: p# acted, p# was due': 24}

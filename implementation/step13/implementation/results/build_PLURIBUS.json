@@ -1,0 +1,49 @@
+{
+ "source": "PLURIBUS",
+ "files": 10000,
+ "hands_raw": 10000,
+ "hands_parsed": 10000,
+ "parse_rate": 1.0,
+ "parse_failures": {},
+ "players": 14,
+ "seat_rows": 60000,
+ "decisions": 91356,
+ "pairs": 65,
+ "table_size": {
+  "6": 10000
+ },
+ "resolution": {
+  "uncontested": 8327,
+  "showdown_known": 1673,
+  "showdown_unknown": 0
+ },
+ "implied_allin_hands": 0,
+ "hands_with_known_cards": {
+  "6": 10000
+ },
+ "days": {
+  "0": 10000
+ },
+ "hands_per_player": {
+  "mean": 4285.714285714285,
+  "median": 3521.5,
+  "q90": 8638.300000000001,
+  "max": 10000,
+  "players_ge_100": 14,
+  "players_ge_500": 13,
+  "players_ge_1000": 12,
+  "players_ge_5000": 6,
+  "share_of_seats_ge_100": 1.0,
+  "share_of_seats_ge_500": 0.9918666666666667,
+  "share_of_seats_ge_1000": 0.9790166666666666
+ },
+ "action_classes": {
+  "0": 48271,
+  "1": 14877,
+  "2": 9736,
+  "3": 10254,
+  "4": 6125,
+  "5": 2093
+ },
+ "runtime_s": 2.6
+}

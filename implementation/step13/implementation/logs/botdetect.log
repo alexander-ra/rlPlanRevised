@@ -1,0 +1,70 @@
+C:\Users\UserNIK\projects\rlPlanRevised\implementation\step13\implementation\p2v.py:105: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, layers)
+B=250 iforest_hud    AUC=0.415±0.002 rank=[12, 12, 13]/14
+B=250 iforest_tells  AUC=0.463±0.007 rank=[10, 9, 8]/14
+B=250 iforest_p2v    AUC=0.298±0.011 rank=[14, 12, 12]/14
+B=250 mlm_loss_low   AUC=0.475±0.007 rank=[12, 10, 9]/14
+B=250 ipn_distance   AUC=0.347±0.000 rank=[14, 14, 14]/14
+B=500 iforest_hud    AUC=0.364±0.005 rank=[9, 9, 9]/13
+B=500 iforest_tells  AUC=0.440±0.002 rank=[8, 8, 7]/13
+B=500 iforest_p2v    AUC=0.281±0.012 rank=[11, 10, 10]/13
+B=500 mlm_loss_low   AUC=0.430±0.006 rank=[10, 10, 10]/13
+B=500 ipn_distance   AUC=0.283±0.000 rank=[12, 12, 12]/13
+{
+ "MrWhite": [
+  0.07694900491480389,
+  1888
+ ],
+ "Gogo": [
+  0.5004024235381879,
+  5
+ ],
+ "Budd": [
+  0.10252385802366658,
+  454
+ ],
+ "Eddie": [
+  0.08159408270559358,
+  2964
+ ],
+ "Bill": [
+  0.07987814914269958,
+  4082
+ ],
+ "Pluribus": [
+  0.14318681638464476,
+  7476
+ ],
+ "MrBrown": [
+  0.03167103946444227,
+  79
+ ],
+ "MrBlue": [
+  0.09738743204532581,
+  6513
+ ],
+ "MrPink": [
+  0.07499585895579808,
+  3508
+ ],
+ "Hattori": [
+  0.03523960729142168,
+  71
+ ],
+ "MrOrange": [
+  0.10700542584068416,
+  4895
+ ],
+ "ORen": [
+  0.0,
+  10
+ ],
+ "MrBlonde": [
+  0.05872257155332689,
+  460
+ ],
+ "Joe": [
+  0.0,
+  110
+ ]
+}

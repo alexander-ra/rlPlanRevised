@@ -1,0 +1,187 @@
+stream: 37,418,564 tokens, 21,453 players (4s)
+train windows: 110,569
+seed 0: training
+C:\Users\UserNIK\projects\rlPlanRevised\implementation\step13\implementation\p2v.py:105: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, layers)
+    epoch 0: mlm loss 3.0618
+    epoch 1: mlm loss 2.6569
+    epoch 2: mlm loss 2.6318
+    epoch 3: mlm loss 2.6233
+  N=50: players=2575 top1 emb=0.010 max=0.012 stats=0.005 both=0.012
+  N=100: players=1859 top1 emb=0.027 max=0.020 stats=0.017 both=0.034
+  N=200: players=1278 top1 emb=0.070 max=0.048 stats=0.041 both=0.074
+  N=400: players=834 top1 emb=0.102 max=0.066 stats=0.067 both=0.108
+seed 1: training
+C:\Users\UserNIK\projects\rlPlanRevised\implementation\step13\implementation\p2v.py:105: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, layers)
+    epoch 0: mlm loss 3.0869
+    epoch 1: mlm loss 2.6532
+    epoch 2: mlm loss 2.3773
+    epoch 3: mlm loss 2.0054
+  N=50: players=2575 top1 emb=0.012 max=0.007 stats=0.003 both=0.014
+  N=100: players=1859 top1 emb=0.029 max=0.015 stats=0.018 both=0.031
+  N=200: players=1278 top1 emb=0.068 max=0.023 stats=0.046 both=0.080
+  N=400: players=834 top1 emb=0.120 max=0.037 stats=0.073 both=0.107
+seed 2: training
+    epoch 0: mlm loss 3.0840
+    epoch 1: mlm loss 2.6573
+    epoch 2: mlm loss 2.6365
+    epoch 3: mlm loss 2.6262
+  N=50: players=2575 top1 emb=0.009 max=0.010 stats=0.001 both=0.007
+  N=100: players=1859 top1 emb=0.034 max=0.018 stats=0.013 both=0.024
+  N=200: players=1278 top1 emb=0.069 max=0.041 stats=0.036 both=0.054
+  N=400: players=834 top1 emb=0.129 max=0.056 stats=0.073 both=0.103
+{
+ "50": {
+  "emb_mean_cos": {
+   "top1": [
+    0.010355987055016181,
+    0.0007874126252813231
+   ],
+   "top10": [
+    0.06964401294498383,
+    0.0026179609600202837
+   ],
+   "mrr": [
+    0.03416566203863011,
+    0.0014586859348655289
+   ]
+  },
+  "emb_max_cos": {
+   "top1": [
+    0.009579288025889967,
+    0.001590706243034888
+   ],
+   "top10": [
+    0.06614886731391585,
+    0.003575722282701134
+   ],
+   "mrr": [
+    0.03159193735038146,
+    0.0019764015926865596
+   ]
+  },
+  "stats_euclid": {
+   "top1": [
+    0.0031067961165048546,
+    0.0012483690305492498
+   ],
+   "top10": [
+    0.027961165048543693,
+    0.005243916919230834
+   ],
+   "mrr": [
+    0.014558440431532616,
+    0.0025966769264831415
+   ]
+  },
+  "combined": {
+   "top1": [
+    0.010614886731391585,
+    0.0020832979856868715
+   ],
+   "top10": [
+    0.07042071197411004,
+    0.004536288794287441
+   ],
+   "mrr": [
+    0.03479351751684521,
+    0.0031643674298103717
+   ]
+  },
+  "players": 2575
+ },
+ "100": {
+  "emb_mean_cos": {
+   "top1": [
+    0.02994441455979917,
+    0.001996687955112075
+   ],
+   "top10": [
+    0.13537744306975077,
+    0.005746250801133967
+   ],
+   "mrr": [
+    0.06885760383606764,
+    0.0024648511000399807
+   ]
+  },
+  "emb_max_cos": {
+   "top1": [
+    0.017930787161556393,
+    0.0015631697843072163
+   ],
+   "top10": [
+    0.10202617894925588,
+    0.004546789432707896
+   ],
+   "mrr": [
+    0.0496141935460463,
+    0.002204980999383261
+   ]
+  },
+  "stats_euclid": {
+   "top1": [
+    0.016137708445400755,
+    0.0016433837887594904
+   ],
+   "top10": [
+    0.07441276672045903,
+    0.0030640142532965863
+   ],
+   "mrr": [
+    0.03850738047163455,
+    0.0013702075831304344
+   ]
+  },
+  "combined": {
+   "top1": [
+    0.02994441455979918,
+    0.0030164252898082695
+   ],
+   "top10": [
+    0.13842567688721533,
+    0.0017659777302844028
+   ],
+   "mrr": [
+    0.07014911573586059,
+    0.0020742876042474426
+   ]
+  },
+  "players": 1859
+ },
+ "200": {
+  "emb_mean_cos": {
+   "top1": [
+    0.06885758998435054,
+    0.00045176077401379425
+   ],
+   "top10": [
+    0.23317683881064163,
+    0.00621068382879012
+   ],
+   "mrr": [
+    0.1271380739552731,
+    0.0009535695005065043
+   ]
+  },
+  "emb_max_cos": {
+   "top1": [
+    0.03729786124152321,
+    0.0075233203452561076
+   ],
+   "top10": [
+    0.18075117370892016,
+    0.015965765198542405
+   ],
+   "mrr": [
+    0.08796027710987638,
+    0.009271244721869016
+   ]
+  },
+  "stats_euclid": {
+   "top1": [
+    0.04121022430881586,
+    0.0029393395069339198
+   ],
+   "top10"
