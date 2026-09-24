@@ -182,59 +182,11 @@ def run_tabular_mccfr(
 
 
 # ---------------------------------------------------------------------------
-# Plotting
+# Plotting - lives in plot_from_logs.py, which also redraws the chapter figures
+# from the saved logs without retraining.
 # ---------------------------------------------------------------------------
 
-def plot_deep_cfr_vs_mccfr(deep_run: DeepCFRRun, mccfr_run: MCCFRRun, out_path: str):
-    fig, ax = plt.subplots(1, 2, figsize=(11, 4.5))
-
-    # Left: vs outer-iterations (different units per algorithm — log x).
-    ax[0].plot(mccfr_run.checkpoints, mccfr_run.exploitabilities,
-               marker="o", ms=3, label="Tabular MCCFR (iterations)", color="C0")
-    ax[0].plot(deep_run.checkpoints, deep_run.exploitabilities,
-               marker="s", ms=5, label=f"Deep CFR ({deep_run.label})", color="C3")
-    ax[0].set_xscale("log")
-    ax[0].set_yscale("log")
-    ax[0].set_xlabel("Outer iterations (log)")
-    ax[0].set_ylabel("Exploitability (log)")
-    ax[0].set_title("Convergence in 'iterations' (unit differs per method)")
-    ax[0].grid(True, which="both", alpha=0.3)
-    ax[0].legend()
-
-    # Right: vs wall-clock seconds — the only honest cross-method axis.
-    ax[1].plot(mccfr_run.wall_times, mccfr_run.exploitabilities,
-               marker="o", ms=3, label="Tabular MCCFR", color="C0")
-    ax[1].plot(deep_run.wall_times, deep_run.exploitabilities,
-               marker="s", ms=5, label=f"Deep CFR ({deep_run.label})", color="C3")
-    ax[1].set_xlabel("Wall-clock seconds")
-    ax[1].set_ylabel("Exploitability (log)")
-    ax[1].set_yscale("log")
-    ax[1].set_title("Convergence in wall time")
-    ax[1].grid(True, which="both", alpha=0.3)
-    ax[1].legend()
-
-    fig.suptitle("Leduc Hold'em: Deep CFR vs tabular external-sampling MCCFR")
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=130)
-    plt.close(fig)
-    print(f"  saved {out_path}")
-
-
-def plot_network_size_sweep(runs: list[DeepCFRRun], out_path: str):
-    fig, ax = plt.subplots(figsize=(7, 4.5))
-    for i, r in enumerate(runs):
-        ax.plot(r.checkpoints, r.exploitabilities,
-                marker="o", label=f"{r.label}  layers={r.layers}", color=f"C{i}")
-    ax.set_xlabel("Deep CFR outer iterations")
-    ax.set_ylabel("Exploitability (log)")
-    ax.set_yscale("log")
-    ax.set_title("Leduc Hold'em — Deep CFR network-size sweep")
-    ax.grid(True, which="both", alpha=0.3)
-    ax.legend()
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=130)
-    plt.close(fig)
-    print(f"  saved {out_path}")
+from plot_from_logs import plot_deep_cfr_vs_mccfr, plot_network_size_sweep  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -288,7 +240,7 @@ def main():
     )
 
     plot_deep_cfr_vs_mccfr(
-        baseline_deep_cfr, mccfr_run,
+        [baseline_deep_cfr], mccfr_run,
         os.path.join(FIG_DIR, "day01_deep_cfr_vs_mccfr.png"),
     )
 

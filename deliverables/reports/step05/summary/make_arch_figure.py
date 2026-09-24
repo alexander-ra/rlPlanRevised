@@ -2,6 +2,9 @@
 
 Four panels (MLP / CNN / RNN / self-attention) showing how the families differ
 in *wiring* and *weight sharing*. Output: arch_comparison.png in this directory.
+
+Drawn at the size it prints (full text width, 17.6 cm = 6.9 in), so titles and
+notes print at 10 pt.
 """
 import math
 import matplotlib
@@ -40,16 +43,16 @@ def arrow(ax, p, q, color="#34495e", lw=1.4, z=2, shrink=NODE_R):
                                  color=color, lw=lw, zorder=z))
 
 
-fig, axes = plt.subplots(2, 2, figsize=(11, 8.2))
+fig, axes = plt.subplots(2, 2, figsize=(6.9, 5.0))
 for ax in axes.ravel():
     ax.set_xlim(0, 6)
-    ax.set_ylim(0, 4.3)
+    ax.set_ylim(0, 3.8)
     ax.set_aspect("equal")
     ax.axis("off")
 
 # ---- MLP ----
 ax = axes[0, 0]
-ax.set_title("Fully connected (MLP)\nevery unit connects to every unit", fontsize=10.5)
+ax.set_title("Fully connected (MLP)\nevery unit connects to every unit", fontsize=10)
 inp = [node(ax, 1.0, y, fc="#9bc1ff") for y in (0.8, 1.7, 2.6, 3.5)]
 hid = [node(ax, 3.0, y) for y in (1.2, 2.2, 3.2)]
 out = [node(ax, 5.0, y, fc="#7bd0a8") for y in (1.6, 2.8)]
@@ -62,7 +65,7 @@ for p in hid:
 
 # ---- CNN ----
 ax = axes[0, 1]
-ax.set_title("Convolution (CNN)\none shared filter slid over local windows", fontsize=10.5)
+ax.set_title("Convolution (CNN)\none shared filter over local windows", fontsize=10)
 xin = np.linspace(0.6, 5.4, 6)
 inp = [node(ax, x, 1.0, r=0.16, fc="#9bc1ff") for x in xin]
 outA = node(ax, 1.8, 3.3, r=0.16, fc="#7bd0a8")
@@ -71,12 +74,12 @@ for k, i in enumerate((0, 1, 2)):
     edge(ax, (xin[i], 1.0), outA, color=SHARE[k], lw=1.9, shrink=0.16)
 for k, i in enumerate((2, 3, 4)):
     edge(ax, (xin[i], 1.0), outB, color=SHARE[k], lw=1.9, shrink=0.16)
-ax.text(3.0, 0.15, "same colour = same (shared) weight", fontsize=8.5,
+ax.text(3.0, 0.15, "same colour = same (shared) weight", fontsize=10,
         ha="center", color="#555")
 
 # ---- RNN ----
 ax = axes[1, 0]
-ax.set_title("Recurrent (RNN)\nsame cell over time, hidden state = memory", fontsize=10.5)
+ax.set_title("Recurrent (RNN)\nsame cell over time, state = memory", fontsize=10)
 xs = np.linspace(0.9, 5.1, 4)
 xin = [node(ax, x, 0.8, fc="#9bc1ff") for x in xs]
 hid = [node(ax, x, 2.6) for x in xs]
@@ -85,20 +88,20 @@ for i in range(4):
 for i in range(3):
     arrow(ax, hid[i], hid[i + 1], color=SHARE[0], lw=1.7)
 for i, x in enumerate(xs):
-    ax.text(x, 0.12, f"t={i + 1}", fontsize=8.5, ha="center", color="#555")
+    ax.text(x, 0.12, f"t={i + 1}", fontsize=10, ha="center", color="#555")
 
 # ---- Attention ----
 ax = axes[1, 1]
-ax.set_title("Self-attention (Transformer)\nevery element attends to all others", fontsize=10.5)
+ax.set_title("Self-attention (Transformer)\nevery element attends to all others", fontsize=10)
 keys_x = np.linspace(0.8, 5.2, 5)
 keys = [node(ax, x, 2.9, fc="#9bc1ff") for x in keys_x]
 query = node(ax, 3.0, 0.9, fc="#F3A35F")
 for k in keys:
     arrow(ax, query, k, color="#E8684A", lw=1.3)
-ax.text(3.0, 0.18, "one (orange) query token attends to all", fontsize=8.5,
+ax.text(3.0, 0.18, "one (orange) query token attends to all", fontsize=10,
         ha="center", color="#555")
 
 plt.tight_layout()
 out_path = "deliverables/reports/step05/summary/arch_comparison.png"
-fig.savefig(out_path, dpi=130, bbox_inches="tight")
+fig.savefig(out_path, dpi=300, bbox_inches="tight")
 print("saved", out_path)

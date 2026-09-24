@@ -2,6 +2,9 @@
 
 Shows width profiles: uniform, funnel, hourglass (bottleneck), collar.
 Bar height = layer width. Output: arch_shapes.png in this directory.
+
+Drawn at the size it prints (full text width, 17.6 cm = 6.9 in), so the titles
+print at 10 pt.
 """
 import matplotlib
 matplotlib.use("Agg")
@@ -25,16 +28,16 @@ def draw_net(ax, widths, title, bidx=None):
     ax.set_xlim(-0.18, 1.18)
     ax.set_ylim(-0.62, 0.62)
     ax.axis("off")
-    ax.set_title(title, fontsize=10.5)
+    ax.set_title(title, fontsize=10)
 
 
-fig, axes = plt.subplots(1, 4, figsize=(12.5, 3.0))
+fig, axes = plt.subplots(1, 4, figsize=(6.9, 1.9))
 draw_net(axes[0], [6, 6, 6, 6], "Uniform")
 draw_net(axes[1], [8, 6, 4, 2], "Funnel (tapering)")
-draw_net(axes[2], [8, 4, 1, 4, 8], "Hourglass (bottleneck)", bidx=2)
+draw_net(axes[2], [8, 4, 1, 4, 8], "Hourglass\n(bottleneck)", bidx=2)
 draw_net(axes[3], [6, 6, 2, 6, 6], "Collar", bidx=2)
 
 plt.tight_layout()
 out = "deliverables/reports/step05/summary/arch_shapes.png"
-fig.savefig(out, dpi=130, bbox_inches="tight")
+fig.savefig(out, dpi=300, bbox_inches="tight")
 print("saved", out)
