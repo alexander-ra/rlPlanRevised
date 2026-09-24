@@ -15,7 +15,25 @@ Saves PNGs under `results/`. NOTE (per WORKFLOW.md): written but NOT executed he
 
 from __future__ import annotations
 
+import locale
 import os
+
+# Printed legibility: the chapter prints figures ~17.6 cm wide, so figure widths of 7-8 in keep
+# fontsize 10 at >= 8.7 pt on paper. Saved at 300 dpi so the print is not soft.
+DPI = 300
+
+# Display names for identifiers that come from the results JSON.
+MODEL_NAMES = {"openai/gpt-oss-20b": "gpt-oss-20b", "qwen2.5-7b-instruct": "Qwen2.5-7B-Instruct"}
+SERIES_NAMES = {"Nash-CFR": "Nash (CFR)", "LLM-plain": "Qwen2.5-7B-Instruct"}
+ILLEGAL_CATS = {"FOLD_WHEN_FREE": "fold when\ncheck is free", "RAISE_AT_CAP": "raise above\nthe cap",
+                "NON_ACTION": "non-action\nreply"}
+SITUATIONS = {"round1/nothing due": "round 1,\nnothing to call", "round1/facing bet": "round 1,\nfacing a bet",
+              "round2/nothing due": "round 2,\nnothing to call", "round2/facing bet": "round 2,\nfacing a bet"}
+
+
+def _num(v: float, fmt: str = "%.3f") -> str:
+    """Number text that follows LC_NUMERIC, so a Bulgarian render prints a decimal comma."""
+    return locale.format_string(fmt, v)
 
 
 def plots_available() -> bool:
@@ -51,7 +69,7 @@ def plot_return_conditioning(rc: dict, path: str | None = None) -> str | None:
     ax.grid(True, alpha=0.3)
     path = path or os.path.join(_results_dir(), "return_conditioning.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -80,7 +98,7 @@ def plot_bet_prob_by_card(ls: dict, path: str | None = None) -> str | None:
     ax.legend()
     path = path or os.path.join(_results_dir(), "bet_prob_by_card.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -105,7 +123,7 @@ def plot_exploitability_bars(rows: list, path: str | None = None) -> str | None:
     ax.grid(True, axis="y", alpha=0.3)
     path = path or os.path.join(_results_dir(), "exploitability_bars.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -125,12 +143,11 @@ def plot_tau_sweep(sweep: dict, path: str | None = None) -> str | None:
     err = [cells[_key(cells, t)]["exploitability"]["se"] for t in taus]
     tgt = [cells[_key(cells, t)]["robust_target"]["mean"] for t in taus]
 
-    fig, ax = plt.subplots(figsize=(7, 4))
+    fig, ax = plt.subplots(figsize=(7, 4.6))
     ax.errorbar(taus, expl, yerr=err, marker="o", capsize=4, label="ARDT exploitability")
-    ax.axhline(sweep["dt_baseline"]["mean"], ls="--", color="tab:red",
-               label=f"vanilla DT ({sweep['dt_baseline']['mean']:.3f})")
-    ax.axhline(sweep["nash_reference"]["mean"], ls=":", color="tab:green",
-               label=f"Nash ({sweep['nash_reference']['mean']:.3f})")
+    # values go in the caption; f-string labels cannot be translated by the BG renderer
+    ax.axhline(sweep["dt_baseline"]["mean"], ls="--", color="tab:red", label="vanilla DT")
+    ax.axhline(sweep["nash_reference"]["mean"], ls=":", color="tab:green", label="Nash")
     ax.set_xscale("log")
     ax.set_xlabel("expectile tau  (low = pessimistic / minimax side, per ARDT Eq. 7)")
     ax.set_ylabel("exploitability (chips)")
@@ -142,10 +159,12 @@ def plot_tau_sweep(sweep: dict, path: str | None = None) -> str | None:
     ax2.set_ylabel("mean relabel target (chips)", color="tab:purple")
     lines, labels = ax.get_legend_handles_labels()
     l2, lb2 = ax2.get_legend_handles_labels()
-    ax.legend(lines + l2, labels + lb2, fontsize=8, loc="best")
+    # below the axes: inside, at fs 10, it covers the leftmost relabel-target point
+    ax.legend(lines + l2, labels + lb2, fontsize=10, loc="upper center",
+              bbox_to_anchor=(0.5, -0.2), ncol=2, frameon=False)
     path = path or os.path.join(_results_dir(), "tau_sweep.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -171,22 +190,22 @@ def plot_leak_decomposition(dec: dict, path: str | None = None) -> str | None:
     dev = [rows[i]["deviation"] for i in order]
     y = range(len(order))
 
-    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11, 5), sharey=True)
+    # model name and total exploitability are in the caption (no suptitle / f-string title)
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(8, 4.4), sharey=True)
     ax.barh(list(y), share, color="tab:red", alpha=0.85)
     ax.set_yticks(list(y))
     ax.set_yticklabels(order, fontfamily="monospace")
     ax.invert_yaxis()
     ax.set_xlabel("share of total exploitability (%)")
-    ax.set_title(f"Where the loss is  (total {base:.3f} chips)")
+    ax.set_title("Where the loss is")
     ax.grid(True, axis="x", alpha=0.3)
     ax2.barh(list(y), dev, color="tab:blue", alpha=0.85)
     ax2.set_xlabel("|P(bet) - Nash|")
     ax2.set_title("How far from Nash")
     ax2.grid(True, axis="x", alpha=0.3)
-    fig.suptitle(f"{dec.get('model', '?')} — deviation size does not predict cost", fontsize=11)
     path = path or os.path.join(_results_dir(), "leak_decomposition.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -206,7 +225,7 @@ def plot_stated_vs_executed(freqs: list, path: str | None = None) -> str | None:
 
     # Two rows rather than one wide strip: at page width a 3-panel row shrinks to ~2 inches tall
     # and the axis labels become unreadable in the built PDF.
-    fig = plt.figure(figsize=(11, 8))
+    fig = plt.figure(figsize=(8, 6.2))
     gs = fig.add_gridspec(2, len(freqs), height_ratios=[1.15, 1.0], hspace=0.45, wspace=0.25)
     axes = [fig.add_subplot(gs[0, i]) for i in range(len(freqs))]
     axes.append(fig.add_subplot(gs[1, :]))
@@ -219,18 +238,21 @@ def plot_stated_vs_executed(freqs: list, path: str | None = None) -> str | None:
         ax.plot(list(x), [(d["stated"][i] if d["stated"][i] is not None else float("nan"))
                           for i in isets], "-^", ms=4, color="tab:orange", label="stated (asked)")
         ax.set_xticks(list(x))
-        ax.set_xticklabels(isets, rotation=60, ha="right", fontfamily="monospace", fontsize=8)
+        ax.set_xticklabels(isets, rotation=60, ha="right", fontfamily="monospace", fontsize=10)
         ax.set_ylabel("P(bet)")
         ax.set_ylim(-0.05, 1.05)
-        ax.set_title(f"{d['model']}\nMAE stated {d['mae_stated_vs_nash']:.2f} vs "
-                     f"executed {d['mae_executed_vs_nash']:.2f}", fontsize=9)
+        # MAE values are in the caption; the title carries the display name only
+        ax.set_title(MODEL_NAMES.get(d["model"], d["model"]), fontsize=10.5)
         ax.grid(True, alpha=0.3)
-        ax.legend(fontsize=8)
+    # one legend for both upper panels, above them: inside a panel it covers the lines
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", bbox_to_anchor=(0.5, 0.94), ncol=3, fontsize=10,
+               frameon=False)
 
     ax = axes[-1]
     labels, played, stated = [], [], []
     for d in freqs:
-        labels.append(d["model"].split("/")[-1][:14])
+        labels.append(MODEL_NAMES.get(d["model"], d["model"].split("/")[-1]))
         played.append(d["exploitability_chips"]["executed"])
         stated.append(d["exploitability_chips"]["stated_if_played"])
     xs = range(len(labels))
@@ -240,15 +262,16 @@ def plot_stated_vs_executed(freqs: list, path: str | None = None) -> str | None:
     ax.set_xticks(list(xs))
     ax.set_xticklabels(labels, fontsize=10)
     ax.set_ylabel("exploitability (chips)")
-    ax.set_title("Playing what they SAY would be far worse than what they DO", fontsize=10)
+    ax.set_title("Playing what they SAY would be far worse than what they DO", fontsize=11)
     ax.grid(True, axis="y", alpha=0.3)
-    ax.legend(fontsize=9)
+    ax.set_ylim(0, max(stated + played) * 1.15)   # headroom: the tallest value label clears the title
+    ax.legend(fontsize=10)
     for i, (pv, sv) in enumerate(zip(played, stated)):
-        ax.text(i - 0.2, pv, f" {pv:.3f}", ha="center", va="bottom", fontsize=8)
-        ax.text(i + 0.2, sv, f" {sv:.3f}", ha="center", va="bottom", fontsize=8)
+        ax.text(i - 0.2, pv, _num(pv), ha="center", va="bottom", fontsize=10)
+        ax.text(i + 0.2, sv, _num(sv), ha="center", va="bottom", fontsize=10)
 
     path = path or os.path.join(_results_dir(), "stated_vs_executed.png")
-    fig.savefig(path, dpi=130, bbox_inches="tight")
+    fig.savefig(path, dpi=DPI, bbox_inches="tight")
     plt.close(fig)
     return path
 
@@ -265,35 +288,26 @@ def plot_exploitation_frontier(expl: dict, path: str | None = None) -> str | Non
     rows = expl["rows"]
     names = list(rows)
     opps = list(rows[names[0]]["vs"])
-    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12, 4.6))
-
-    for n in names:
-        ax.scatter(rows[n]["exploitability_chips"], rows[n]["mean_chips_per_hand_vs_zoo"],
-                   s=90, label=n)
-        ax.annotate(n, (rows[n]["exploitability_chips"],
-                        rows[n]["mean_chips_per_hand_vs_zoo"]),
-                    textcoords="offset points", xytext=(8, 4), fontsize=8)
-    ax.set_xlabel("exploitability (chips) — lower is safer")
-    ax.set_ylabel("mean chips/hand vs the zoo — higher exploits more")
-    ax.set_title("Exploitation vs exploitability")
-    ax.grid(True, alpha=0.3)
+    # One panel: the two (exploitability, mean winnings) points fit in the caption, and the old
+    # title "the gain is only vs passive/random" was contradicted by its own bars.
+    fig, ax2 = plt.subplots(figsize=(8, 4.2))
 
     w = 0.38
     xs = range(len(opps))
     for k, n in enumerate(names):
         vals = [rows[n]["vs"][o]["mean_chips_per_hand"] for o in opps]
-        ax2.bar([i + (k - 0.5) * w for i in xs], vals, width=w, label=n)
+        ax2.bar([i + (k - 0.5) * w for i in xs], vals, width=w, label=SERIES_NAMES.get(n, n))
     ax2.axhline(0, color="k", lw=0.8)
     ax2.set_xticks(list(xs))
-    ax2.set_xticklabels(opps, rotation=25, ha="right", fontsize=8)
+    ax2.set_xticklabels(opps, rotation=25, ha="right", fontsize=10)
     ax2.set_ylabel("chips/hand won")
-    ax2.set_title("Per-opponent: the gain is only vs passive/random")
+    ax2.set_title("Winnings per opponent")
     ax2.grid(True, axis="y", alpha=0.3)
-    ax2.legend(fontsize=8)
+    ax2.legend(fontsize=10)
 
     path = path or os.path.join(_results_dir(), "exploitation_frontier.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -310,27 +324,36 @@ def plot_leduc_illegal_taxonomy(tax: dict, path: str | None = None) -> str | Non
     cats = tax["categories"]
     cnames = list(cats)
     sits = sorted(tax["by_situation"], key=lambda s: tax["by_situation"][s]["mean_illegal_mass"])
-    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11.5, 4.4))
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(8, 4.2))
 
-    ax.bar(cnames, [cats[c]["mean_mass_all"] for c in cnames],
+    # Category / situation names go through set_*ticklabels (translatable), not as bar data;
+    # the totals are in the caption.
+    ax.bar(range(len(cnames)), [cats[c]["mean_mass_all"] for c in cnames],
            color=["tab:red", "tab:blue", "tab:grey"])
+    ax.set_xticks(range(len(cnames)))
+    ax.set_xticklabels([ILLEGAL_CATS.get(c, c) for c in cnames], fontsize=10)
     ax.set_ylabel("mean probability mass")
-    ax.set_title(f"Illegal-action intent by category\n(total {tax['mean_illegal_mass']:.3f} over "
-                 f"{tax['info_sets']} info sets)", fontsize=9)
-    ax.tick_params(axis="x", labelsize=8)
+    ax.set_title("Illegal-action intent by category", fontsize=10.5)
+    ax.tick_params(labelsize=10)
     ax.grid(True, axis="y", alpha=0.3)
 
-    ax2.barh(sits, [tax["by_situation"][s]["mean_illegal_mass"] for s in sits], color="tab:red")
+    ax2.barh(range(len(sits)), [tax["by_situation"][s]["mean_illegal_mass"] for s in sits],
+             color="tab:red")
+    ax2.set_yticks(range(len(sits)))
+    ax2.set_yticklabels([SITUATIONS.get(s, s) for s in sits], fontsize=10)
     ax2.set_xlabel("mean illegal mass")
-    ax2.set_title("Localised: only round 2 with nothing due", fontsize=9)
+    ax2.set_title("Localised: only round 2 with nothing due", fontsize=10.5)
+    ax2.tick_params(labelsize=10)
     ax2.grid(True, axis="x", alpha=0.3)
+    xmax = max(tax["by_situation"][s]["mean_illegal_mass"] for s in sits)
+    ax2.set_xlim(0, xmax * 1.35)          # room for the n= labels
     for i, s in enumerate(sits):
         ax2.text(tax["by_situation"][s]["mean_illegal_mass"], i,
-                 f"  n={tax['by_situation'][s]['n']}", va="center", fontsize=8)
+                 f"  n={tax['by_situation'][s]['n']}", va="center", fontsize=10)
 
     path = path or os.path.join(_results_dir(), "leduc_illegal_taxonomy.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 
@@ -351,23 +374,23 @@ def plot_leduc_return_conditioning(st0: dict, path: str | None = None) -> str | 
     shares = [tg[_tkey(tg, x)]["data_share"] for x in xs]
     modal = float(st0["modal_return"])
 
-    fig, ax = plt.subplots(figsize=(8, 4.6))
+    # modal value, its share, the impossible target and Pearson r are in the caption: the old
+    # f-string title and legend entries could not be translated
+    fig, ax = plt.subplots(figsize=(8, 3.85))
     ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3, lw=1.4, color="tab:blue",
                 label="DT vs near-Nash")
-    ax.axvline(modal, ls="--", color="tab:red", alpha=0.7,
-               label=f"modal return ({modal:+.0f}, {max(shares):.0%} of steps)")
+    ax.axvline(modal, ls="--", color="tab:red", alpha=0.7, label="modal return")
     ood = [x for x in xs if tg[_tkey(tg, x)]["data_share"] == 0.0]
-    for o in ood:
-        ax.axvline(o, ls=":", color="tab:grey", label=f"impossible ({o:+.0f})")
+    for k, o in enumerate(ood):
+        ax.axvline(o, ls=":", color="tab:grey", label="impossible target" if k == 0 else None)
     ax.set_xlabel("target return-to-go (chips)")
     ax.set_ylabel("chips/hand vs near-Nash")
-    ax.set_title(f"Leduc: no steering (Pearson r = {st0['trend_pearson']:+.3f}), "
-                 f"no notch at the modal return")
     ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=8)
+    # below the axes: there is no empty corner, and the Bulgarian labels are long
+    ax.legend(fontsize=10, loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=2, frameon=False)
     path = path or os.path.join(_results_dir(), "leduc_return_conditioning.png")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     return path
 

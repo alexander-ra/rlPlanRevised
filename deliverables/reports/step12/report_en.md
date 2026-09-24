@@ -13,8 +13,9 @@ Decision Transformer (ARDT) · four LLM backends (offline stub, gpt-oss-20b, Qwe
 OpenThinker3-7B).
 **PhD connection:** Contribution #1 (behavioural adaptation), Contribution #2 (safe exploitation),
 Contribution #3 (evaluation methodology).
-**Scope of results:** all numbers are measured on real runs (RTX 5090, local models via LM Studio
-0.4.20). Every figure is rendered from a committed results JSON.
+**Scope of results:** all numbers are the author's own measurements on real runs (RTX 5090, local
+open-weight models via LM Studio 0.4.20, temperature 0.7; the quantisation of the model weights was
+not recorded). Every figure is rendered from a committed results JSON.
 
 > **Artifact caveat (read once).** Two results were **retracted mid-session** and appear here only
 > as retractions: an in-context-learning result of `+1.59` gap closed (impossible — see §Prediction
@@ -24,7 +25,7 @@ Contribution #3 (evaluation methodology).
 > comparable to its CoT row (34% of its probability mass goes to non-action tokens under a plain
 > prompt).
 >
-> **How to read this report.** The core build answers the raw step's five validation targets. The
+> **How to read this report.** The core build answers the five validation targets of the chapter's original plan. The
 > follow-on experiments were added because those five targets rank the methods without explaining
 > them. Every claim is tied to a named artifact under `implementation/step12/implementation/`.
 
@@ -55,9 +56,10 @@ Exploitability in chips (lower is closer to Nash); SMOKE profile, offline stub f
 | Decision Transformer | 0.7992 | 799.2 | 1.00 | 0.64 |
 | LLM (stub) × 3 prompt styles | 0.8333 | 833.3 | 1.00 | 1.00 |
 
-![Exploitability by method on the exact Kuhn metric — plain behavioural cloning, included only as a contrast baseline, beats both of the methods this chapter is named after.](figures/impl_exploitability_bars_stub.png)
+![Exploitability by method on the exact Kuhn metric — plain behavioural cloning, included only as a contrast baseline, beats both of the methods this chapter is named after. The LLM row is the scripted offline stub, not a language model.](figures/impl_exploitability_bars_stub.png)
 
-**The two methods the step is about finish last.** Plain behavioural cloning — the simplest possible
+**Plain cloning beats both methods this chapter is about** (so do the real language models below,
+at 0.25–0.33; the 0.833 LLM row is the scripted offline stub, not a language model). Plain behavioural cloning — the simplest possible
 baseline — lands within 0.04 chips of Nash and beats the return-conditioned Decision Transformer by
 roughly 14×. On near-Nash self-play data BC simply copies a near-Nash policy, whereas the DT must
 route that same policy through a return-conditioning channel that (as shown below) carries mostly
@@ -78,9 +80,12 @@ Measured at temperature 0.7 with 24 samples per information set — a protocol p
 | Qwen2.5-7B | game-theory | 0.3032 | 0.50 | 1.00 | 0% | +0.21 |
 | OpenThinker3-7B | CoT (n=12) | 0.2882 | 0.33 | 1.00 | **16%** | +0.92 |
 
-A **7B model matches a 20B model**: Kuhn rewards mixing at the right frequency, not knowledge or
-scale. Two failures are universal — every backend value-bets the King at 1.00 where Nash mixes at
-0.68, and none bluffs the Jack under a plain prompt. LLMs get hand *ranking* right and *frequencies*
+A **7B model matches gpt-oss-20b**, a mixture-of-experts model with 21B total but only 3.6B active
+parameters per token, so three models on one toy game say nothing general about scale. Two failures
+are shared — every real model tested value-bets the King at 1.00 where the CFR equilibrium mixes at
+0.68, and none bluffs the Jack under a plain prompt (24 samples per information set). Kuhn's
+first-player equilibria form a one-parameter family (bluff the Jack with α ∈ [0, 1/3], bet the King
+with 3α; Kuhn, 1950), so each behaviour alone is an equilibrium action; only the combination is not. LLMs get hand *ranking* right and *frequencies*
 wrong.
 
 **Reasoning tuning, isolated.** OpenThinker3-7B is a reasoning-SFT of the *same* Qwen2.5-7B base, so
@@ -103,17 +108,17 @@ was skipped).
 
 Both failures are genuine findings rather than tuning problems, and both are reconciled below.
 
-![DT exploitability against the conditioned target return, including an impossible +3. The curve is flat across the real range with a sharp collapse at R = −1, the modal payoff and the payoff of folding.](figures/impl_return_conditioning.png)
+![DT exploitability against the conditioned target return, including an impossible +3. The curve is flat across the real range except for a sharp spike at R = −1, the modal payoff and the payoff of folding.](figures/impl_return_conditioning.png)
 
 Target #1 fails because the DT's response to the conditioned return is **not ordered by how good
 that return is**. It does respond — a fine sweep of root `P(bet)` with the King runs
-`0.747 → 0.020 → 0.781` — but with a sharp collapse at exactly `R = −1`, where it passes at **11 of
-12** information sets and scores 1.98 chips. `R = −1` is the modal return in the data (41.7% of
+`0.747 → 0.020 → 0.781` — but with a sharp spike in exploitability at exactly `R = −1`, where its play collapses: it
+passes at **11 of 12** information sets and scores 1.98 chips. `R = −1` is the modal return in the data (41.7% of
 steps) and the payoff of *folding*.
 
 ## MATH FLAG B — the ARDT expectile direction
 
-The raw step writes `τ = 0.9` and calls it "pessimistic". The implementation flagged this as
+The chapter's original plan writes `τ = 0.9` and calls it "pessimistic". The implementation flagged this as
 inverted and defaulted to `0.1`. **The paper confirms the flag**: ARDT's Eq. (6) defines the
 expectile loss and Eq. (7) states `lim_{α→0} g_α = min`, `lim_{α→1} g_α = max`, and Algorithm 1
 line 1 runs `α = 0.01`. This was independently corroborated by the module's own self-test, which
@@ -121,14 +126,15 @@ recovers the *analytic* expectiles of a skewed sample (τ=0.1 → −1.951, τ=0
 
 ![ARDT exploitability against the expectile tau, with the mean relabel target on the right axis. The relabel target moves monotonically as theory requires, but exploitability is lowest on the optimistic side.](figures/impl_tau_sweep.png)
 
-**The empirical sweep contradicts the theory**, and the reason is instructive. The relabel target
+**The empirical sweep contradicts the theory**, and the most likely reason is instructive. The relabel target
 moves monotonically with τ (`−0.626 → +0.854`), confirming the mechanism is wired correctly — yet
-exploitability is **lowest at τ = 0.9**, the optimistic side. Algorithm 1 line 7 explains it: ARDT
+exploitability is **lowest at τ = 0.9**, the optimistic side. The likely explanation is in Algorithm 1: ARDT
 relabels with `R̃_t = Q̃_ν(s_t, a_t)`, a state-**action** value from two coupled networks
 (Eqs. 8–11), whereas this implementation relabels with a state-only `V(s)`. A state-only target
 cannot distinguish "this state is bad" from "*this action* is bad" — exactly the discrimination ARDT
 depends on — so pushing τ→0 hands the DT a uniformly negative number, which selects the *folding*
-line rather than the *robust* one. `EXPECTILE_TAU` is deliberately left at 0.1, the theoretically
+line rather than the *robust* one. A $\tilde{Q}(s,a)$ variant has not been run, so this is a
+hypothesis, not a result. `EXPECTILE_TAU` is deliberately left at 0.1, the theoretically
 correct side; changing it to 0.9 to obtain a better number would be rigging the result.
 
 ## Follow-on experiments: what the scalar score hides
@@ -190,16 +196,20 @@ nor opponent randomness enters the comparison.
 | AlwaysBet | +0.319 | +0.530 | +0.383 ± 0.169 | +0.31 ± 0.80 | −0.52 |
 | TightPassive | +0.088 | +0.316 | +0.092 ± 0.122 | +0.02 ± 0.53 | −0.15 |
 
-Mean learning **−0.22**. Against the one well-powered cell the agent captures 83% of the available
-exploitation **from the first half onward and never improves** — a fixed loose-aggressive prior, not
-opponent modelling.
+Mean learning is **−0.22**, but that mean is dominated by the two underpowered cells. Against the one
+well-powered cell the agent (Qwen2.5-7B-Instruct, last 20 hands in context) captures 83% of the
+available exploitation **from the first half onward and does not improve** (0.824 vs 0.827) — a fixed
+loose-aggressive prior, not opponent modelling from history. Told the opponent's type in the prompt,
+however, the models shift their bluffing by up to 0.92 (the *adapt* column above): what is missing
+is inference from history, not responsiveness to a description.
 
-![Exploitation against exploitability, and the per-opponent breakdown showing the gain is confined to passive and random opponents.](figures/impl_exploitation_frontier.png)
+![Winnings against each opponent in the zoo: Qwen2.5-7B-Instruct wins 0.177 chips per hand on average (equilibrium: 0.110) at an exploitability of 0.357 chips (equilibrium: 0.006); most of the advantage comes from the passive and random opponents.](figures/impl_exploitation_frontier.png)
 
-The exploitation/exploitability frontier corroborates it: the LLM **exploits 61% harder than Nash
-while being 59× more exploitable** (0.177 vs 0.110 chips/hand), but the entire gain is against
-*passive or random* opponents (AlwaysPass 0.374 vs 0.168). Against the two most competent archetypes
-it is **worse** than Nash. This is the safe-exploitation trade-off of Contribution #2, measured.
+The exploitation/exploitability frontier corroborates it: the LLM (Qwen2.5-7B-Instruct) **wins 0.177
+chips/hand against 0.110 for Nash (61% more), while its exploitability is 0.357 chips against
+0.006**, and nearly 90% of the advantage comes from the *passive and random* opponents (AlwaysPass
+0.374 vs 0.168, Random 0.267 vs 0.119). Against the two most competent archetypes it is **worse**
+than Nash. This is the safe-exploitation trade-off of Contribution #2, measured.
 
 ### Head-to-head
 
@@ -213,7 +223,7 @@ nobody, which validates the tournament.
 | gpt-oss-20b | −0.1061 | 0.0000 | +0.1535 | −0.1618 | −0.038 | 0.3917 |
 | OpenThinker3-7B | −0.1245 | −0.1535 | 0.0000 | −0.1817 | −0.153 | 0.8940 |
 
-The **7B beats the 20B**, and the ordering is strictly transitive and matches the exploitability
+**Qwen2.5-7B beats gpt-oss-20b** (3.6B active parameters), and the ordering is strictly transitive and matches the exploitability
 ordering exactly — in this population, exploitability predicts head-to-head results.
 
 ## Leduc Hold'em — a complexity check
@@ -222,17 +232,20 @@ A narrow port (encoder, dataset, DT training, and a return-conditioning sweep sc
 against a near-Nash opponent) plus an LLM scouting pass. Leduc has **936** information sets versus
 Kuhn's 12, **15** distinct payoff values versus 4, two betting streets and a board card.
 
-![DT performance against the conditioned target return on Leduc, with standard errors. There is no collapse at the modal return and no monotone trend.](figures/impl_leduc_return_conditioning.png)
+![DT performance against the conditioned target return on Leduc, with standard errors. There is no notch at the modal return and no monotone trend, but two unexplained dips remain, at 0 and −5.](figures/impl_leduc_return_conditioning.png)
 
 **The Kuhn notch does not reproduce** — at the modal return the DT is 0.2 SE from the mean of the
 other targets. **But conditioning still does not steer**: Pearson `r = +0.062`, Spearman
 `ρ = −0.054`. It is not inert (the spread across targets is 0.60 chips/hand, many times the
 per-point SE), it is simply not ordered by target quality. The impossible target saturates, the one
-Kuhn prediction that reproduces cleanly.
+Kuhn prediction that reproduces cleanly. Two dips remain unexplained: at 0 (`−0.80 ± 0.07`; the
+second most common return, 17.4% of steps) and at −5 (`−0.88 ± 0.06`), both deeper than the modal
+point (`−0.45 ± 0.02`).
 
 **LLM competence degrades sharply.** On Leduc the LLM scores `−0.463 ± 0.132` chips/hand against
 near-Nash, statistically indistinguishable from the DT's `−0.454`; against the exploitable zoo it
-manages `−0.071` where Nash makes `+0.582`, losing even to **Random**. Only **31–54%** of the 936
+manages `−0.071` where Nash makes `+0.582`, winning only against the two passive types
+(CallingStation, LoosePassive) and losing even to **Random**. Only **31–54%** of the 936
 information sets were ever reached, so reach probability makes full enumeration unnecessary.
 
 ![Illegal-action intent by category and by situation. A single category accounts for all of it, concentrated in one situation.](figures/impl_leduc_illegal_taxonomy.png)
@@ -256,7 +269,7 @@ the notch exactly as predicted **but steering did not appear in its place**. The
 the *notch*, not the *failure*, which survives 15 payoff values, two streets and a board card.
 
 **R2 — MATH FLAG B was correct about τ and understated the structural gap.** Confirmed against
-Eqs. 6–7; the real gap is `V(s)` versus the paper's `Q(s,a)` (Algorithm 1 line 7). Target #4 stays
+Eqs. 6–7; the most likely real gap is `V(s)` versus the paper's `Q(s,a)` (Algorithm 1), not yet tested. Target #4 stays
 red.
 
 **R3 — Behavioural cloning wins, and the King "failure" was nearly free.** See *The headline
@@ -290,7 +303,7 @@ caught by a cheap consistency check against something exactly computable — an 
 exact best-response ceiling, a standard error, or a probability-mass conservation diagnostic.
 
 Separately, `plotting.py` originally contained **only** a self-test that plotted hard-coded numbers
-into the results directory, and it was the sole figure-producing path in the step; following the
+into the results directory, and it was the sole figure-producing path in the chapter; following the
 runbook literally would have committed a fabricated figure. It was replaced with a renderer that
 reads exclusively from committed JSON, which is how every figure in this report was produced.
 
@@ -327,18 +340,22 @@ committed artifact `results/comparison_SMOKE_stub.json`; the qualitative orderin
 games, and the reason is not the size of the payoff alphabet: in a zero-sum imperfect-information
 game the realised return is dominated by factors the agent does not control. Plain behavioural
 cloning beats both of the methods this chapter is named after. LLMs get hand ranking right and mixing
-frequencies wrong, cannot verbalise the strategy they actually play, do not learn opponents from
-observed play, and lose their apparent competence when the game grows by one street.
+frequencies wrong, cannot verbalise the strategy they actually play, do not infer opponents from
+in-context history (though they respond when told the opponent's type), and lose their apparent
+competence when the game grows by one betting round.
 
 **Research directions** (each tied to a measured effect):
 
 - *Replace ARDT's state-only relabeling with the paper's coupled state-action estimators* (Eqs. 8–11
-  plus the Algorithm-1 warm-up). This is the named, evidence-backed reason the proxy underperforms
-  and the change to make before Chapter 13's fixed logs.
+  plus the Algorithm-1 warm-up). This is the most likely reason the proxy underperforms (not yet
+  tested). With chance events such as the deal, ARDT's minimax target is exact only for deterministic
+  transitions (Tang, Cheng & Kumar, 2025, arXiv:2510.11877, proposing CART), so recorded poker logs
+  need that handled too.
 - *Treat return-conditioned DT as the wrong instrument for offline poker* — the value of ARDT's
-  relabeling is precisely that it swaps an uncontrollable conditioning target for a controllable one.
-- *Report per-decision decompositions rather than a scalar* in the Chapter 14 evaluation framework;
-  deviation magnitude is not a proxy for cost.
+  relabeling is that it swaps a conditioning target the agent does not control for one that depends
+  mainly on its own actions.
+- *Report per-decision decompositions rather than a scalar* when evaluating agents; deviation
+  magnitude is not a proxy for cost.
 - *Probe behaviour rather than asking* in any LLM-based opponent-modelling component.
 - *Test the one-line Leduc prompt fix* ("you may check for free") before drawing any conclusion about
   LLM capability at multi-street poker.
