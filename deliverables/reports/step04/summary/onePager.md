@@ -39,17 +39,19 @@ a 4-rank Extended Leduc. **All numbers below are measured.**
 - *Lossy card buckets install a floor that compute cannot lift.* `k2` **0.571**, `k3` **0.382**,
   `k5` **0.382** — all at 11,000+ iterations, i.e. 4x more solving than the full game and four
   orders of magnitude worse. The error is in the abstraction, not the budget.
-- *Action abstraction is the dangerous axis.* Mini-NL: the full 4,704-info-set game reaches
+- *Action abstraction, as deployed here, is the dangerous axis.* Mini-NL: the full 4,704-info-set game reaches
   **0.00692**, while the 936-info-set action abstraction reaches **0.673** despite 5x the
   iterations — roughly **100x worse** for a 5x smaller tree. Extended Leduc is starker still:
   suit+action **4.696** and suit+action+buckets **4.734**, both far worse than simply solving
-  the unabstracted game. Translation error dominates the total.
+  the unabstracted game. Under the current deployment rule the mapping error dominates the total
+  (see limitations).
 - *A measured artifact, not a law.* `k5` matches `k3` exactly because Leduc's post-flop
   hand-strength distributions collapse into three effective shapes; the bucket-count ordering
   seen here is a property of this tiny game.
 - *Stated limitations.* CFR+ is deterministic, so the three seeds are not independent stochastic
-  runs; the action-abstraction numbers depend on the current translator and deployment
-  semantics and should be read as a diagnostic failure mode; and the OpenSpiel comparison aligns
+  runs; the action-abstraction numbers measure the current deployment rule (abstract small bets
+  are played as the large bet; the three translators never engage and return identical values),
+  not translation quality, and should be read as a diagnostic failure mode; and the OpenSpiel comparison aligns
   all 936 information sets as a sanity check, not as proof of identical solver dynamics.
 
 **Thesis connection.** The reporting format is the transferable part: strategy quality is
@@ -61,7 +63,8 @@ costume.
 
 **Open questions.** Static translation is brittle by construction, which points at subgame and
 nested solving (Chapter 6) as the production-grade answer to off-tree actions. Whether the ordering
-measured here — card abstraction survivable, action abstraction ruinous — holds in a game with
-enough hand-strength diversity that `k5` genuinely differs from `k3`. And whether an abstraction
+measured here — card abstraction survivable, action abstraction ruinous — survives a corrected
+action mapping and holds in a game with enough hand-strength diversity that `k5` genuinely differs
+from `k3`. And whether an abstraction
 can be adapted to the opponent rather than fixed in advance, which is where this chapter touches
 the adaptive framework directly.

@@ -78,7 +78,7 @@ Implemented translators:
 |---|---|
 | Nearest-action | Map an off-grid bet to the closest abstract bet |
 | Probability-split | Split mass between neighboring abstract bets |
-| Pseudo-harmonic | Poker-specific odds-space interpolation; implemented for comparison and future extension |
+| Pseudo-harmonic | Randomized mapping derived from the equilibrium of a simplified poker game (Ganzfried & Sandholm 2013); implemented for comparison and future extension |
 
 ### 2.4 Extended and combined abstraction
 
@@ -99,7 +99,7 @@ The final benchmark uses CFR+ with regret flooring and linear strategy averaging
 
 ### 3.1 Fixed-limit Leduc
 
-![Fixed-limit Leduc CFR+ abstraction results](figures/day07_cfrplus_fixed_leduc.png)
+![Fixed-limit Leduc: final exploitability after 180 s of CFR+ for each abstraction configuration (three runs, log scale); the number above each group is its information-set count.](figures/day07_cfrplus_fixed_leduc.png)
 
 | Configuration | Info sets | Mean exploitability | Mean iterations |
 |---|---:|---:|---:|
@@ -115,18 +115,18 @@ Lossy coarse buckets remain highly exploitable. Additional CFR+ iterations do no
 
 ### 3.2 Mini-NL Leduc
 
-![Mini-NL Leduc CFR+ abstraction results](figures/day07_cfrplus_mini_nl_leduc.png)
+![Mini-NL Leduc: final exploitability after 180 s of CFR+, full game against action abstraction; the number above each group is its information-set count. Hollow markers show the action abstraction, whose value reflects the current deployment rule (see text).](figures/day07_cfrplus_mini_nl_leduc.png)
 
 | Configuration | Info sets | Mean exploitability | Mean iterations |
 |---|---:|---:|---:|
 | Full mini-NL | 4,704 | 0.00692 | 439 |
 | Action abstraction | 936 | 0.673 | 2,338 |
 
-The action-abstracted game trains many more iterations because the tree is smaller, but the final exploitability remains high. This is the strongest evidence in the step that action abstraction and deployment translation can dominate the total error.
+The action-abstracted game trains many more iterations because the tree is smaller, but the final exploitability remains high. These numbers, however, measure the current deployment rule — every abstract small bet is played as the large bet, and opponent large bets are read as small — rather than the three translators, which never engage in this harness and return identical values. They show how much a naive mapping between the abstract and the real action set can cost; they are not a measurement of translation error and should not be cited as one until the harness is corrected and rerun.
 
 ### 3.3 Extended Leduc
 
-![Extended Leduc CFR+ abstraction results](figures/day07_cfrplus_extended_leduc.png)
+![Extended Leduc: final exploitability after 180 s of CFR+ for the full game, suit isomorphism and the combined abstractions; the number above each group is its information-set count. Hollow markers show the configurations with action abstraction (see text).](figures/day07_cfrplus_extended_leduc.png)
 
 | Configuration | Info sets | Mean exploitability | Mean iterations |
 |---|---:|---:|---:|
@@ -135,13 +135,13 @@ The action-abstracted game trains many more iterations because the tree is small
 | Suit + action | 504 | 4.696 | 4,145 |
 | Suit + action + buckets | 108 | 4.734 | 3,694 |
 
-Extended Leduc confirms the value of lossless abstraction at a larger scale: suit isomorphism cuts the information-set count by about 71% and reaches much lower exploitability under the same wall-clock budget. The action-abstracted configurations are useful as failure cases: aggressive action compression creates compact games, but the translated strategies are highly exploitable in the fuller action game.
+Extended Leduc confirms the value of lossless abstraction at a larger scale: suit isomorphism cuts the information-set count by about 71% and reaches much lower exploitability under the same wall-clock budget. The action-abstracted configurations are useful as failure cases: aggressive action compression creates compact games, but the deployed strategies are highly exploitable in the fuller action game — under the same deployment rule as in §3.2, so these numbers too describe that mapping, not translation quality.
 
 ---
 
 ## 4. Pareto frontier
 
-![Abstraction Pareto frontier](figures/day05_pareto.png)
+![Pareto frontier: information-set count against full-game exploitability after 180 s of CFR+ for each abstraction configuration (mean of three runs). Lines join each game's non-dominated points; hollow markers are action-abstraction configurations, whose values reflect the current deployment rule.](figures/day05_pareto.png)
 
 The Pareto frontier summarizes the central Chapter 04 tradeoff: smaller abstract games train faster, but not every reduction is strategically safe.
 
@@ -150,7 +150,7 @@ The Pareto frontier summarizes the central Chapter 04 tradeoff: smaller abstract
 | Suit isomorphism | Best tradeoff; smaller game with no strategic loss in Leduc |
 | Full rank buckets | Behaves close to suit isomorphism |
 | Coarse lossy buckets | Smaller trees, persistent exploitability floor |
-| Action abstraction | Largest risk; translation error dominates in Mini-NL and Extended Leduc |
+| Action abstraction | Highest measured loss in Mini-NL and Extended Leduc, under the current deployment rule (§3.2); not a measurement of translation error |
 
 The practical criterion is therefore not just "smaller is better." A useful abstraction must improve compute enough to compensate for the exploitability gap it introduces.
 
@@ -166,7 +166,7 @@ The practical criterion is therefore not just "smaller is better." A useful abst
 
 1. **Lossless abstraction is the highest-value compression.** In Leduc-family games, suit isomorphism reduces the game substantially and improves wall-clock convergence without introducing abstraction error.
 2. **Lossy information abstraction creates an exploitability floor.** Coarse card buckets solve faster but cannot recover distinctions they deliberately removed.
-3. **Action abstraction is more dangerous than card abstraction in these experiments.** Restricted action sets plus translation produced high exploitability even when the abstract tree was much smaller.
+3. **Action abstraction is more dangerous than card abstraction in these experiments.** Restricted action sets under the current deployment rule (§3.2) produced high exploitability even when the abstract tree was much smaller.
 4. **The Pareto frontier is the right reporting format.** Strategy quality must be presented together with game size and abstraction type.
 5. **Subgame solving is the natural next mechanism.** Static translation is brittle; Chapter 6's safe/nested solving methods are the production-grade response to off-tree actions.
 
@@ -186,8 +186,11 @@ python day04_train.py --iterations 20000
 python day05_train.py
 python day06_openspiel_compare.py --iterations 200
 
-# Final CFR+ benchmark panels:
+# Final CFR+ benchmark panels (plots only when all runs are already saved):
 python day07_cfrplus_panels.py
+
+# Pareto frontier from the CFR+ results:
+python day05_plots.py
 ```
 
 The generated JSON/CSV files are written into `implementation/step04/phase4/`, and figures are written into `implementation/step04/phase4/figures/`.

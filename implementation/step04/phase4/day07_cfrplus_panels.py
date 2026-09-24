@@ -65,6 +65,33 @@ PANEL_PLOT_PATHS = {
     "extended": FIG_DIR / "day07_cfrplus_extended_leduc.png",
 }
 
+# Tick labels of the single-panel figures (and the Pareto plot in
+# day05_plots.py). The raw config labels stored in the results file are
+# terse; these are what the reader sees, and what the Bulgarian label
+# mapping is keyed on.
+PANEL_DISPLAY_LABELS = {
+    "Full CFR+": "Full game",
+    "Full mini-NL": "Full game",
+    "Full extended": "Full game",
+    "Suit iso": "Suit isomorphism",
+    "k2 perfect": "k2, perfect recall",
+    "k2 imperfect": "k2, imperfect recall",
+    "k3 perfect": "k3, perfect recall",
+    "k3 imperfect": "k3, imperfect recall",
+    "k5 perfect": "k5, perfect recall",
+    "k5 imperfect": "k5, imperfect recall",
+    "full bucket p": "Rank buckets, perfect recall",
+    "full bucket i": "Rank buckets, imperfect recall",
+    "Action abs": "Action abstraction",
+    "Suit + action": "Suits + actions",
+    "Suit + action + buckets": "Suits + actions + buckets",
+}
+
+# Configurations that deploy an action abstraction. In the current harness
+# every abstract small bet is played as the large bet and the translators
+# never engage (final review F04-C01), so the plots mark them apart.
+ACTION_ABS_CONFIGS = {"mini_action_abs", "ext_suit_action", "ext_triple"}
+
 
 @dataclass
 class Config:
@@ -682,49 +709,50 @@ def _plot_single_panel(plt, rows: list[dict], panel: str, title: str,
     if not labels:
         return
 
-    width = 12 if len(labels) <= 4 else 16
-    fig, ax = plt.subplots(figsize=(width, 7))
-    colors = plt.get_cmap("tab20").colors
+    # Printed full-width (17.6 cm) in the chapter, so every text size here
+    # prints at >= 8.2 pt. The panel title and the legend are gone: the
+    # caption names the game, and the text/report tables give the means.
+    # The information-set count is a bare number above each group, so the
+    # tick labels stay translatable.
+    configs = {r["label"]: r["config"] for r in panel_rows}
+    fig, ax = plt.subplots(figsize=(8, 5.0 if len(labels) > 4 else 3.3))
     xs = list(range(len(labels)))
-    handles = []
-    legend_labels = []
 
-    for idx, (x, label, values, infos) in enumerate(
-            zip(xs, labels, values_by_label, info_by_label)):
-        color = colors[idx % len(colors)]
+    for x, label, values, infos in zip(xs, labels, values_by_label,
+                                       info_by_label):
+        # hollow markers: action-abstraction configs, whose numbers reflect
+        # the current deployment rule rather than translation quality
+        hollow = configs.get(label) in ACTION_ABS_CONFIGS
         jittered = [x + (i - (len(values) - 1) / 2) * 0.09
                     for i in range(len(values))]
-        handle = ax.scatter(jittered, values, color=color, alpha=0.75,
-                            s=56, zorder=3)
+        ax.scatter(jittered, values, s=40, zorder=3, alpha=0.8,
+                   facecolors="none" if hollow else "#1f77b4",
+                   edgecolors="#1f77b4", linewidths=1.2)
         m = mean(values)
         sd = stdev(values) if len(values) > 1 else 0.0
-        ax.errorbar([x], [m], yerr=[[sd], [sd]], fmt="o",
-                    color="black", capsize=5, markersize=5,
+        ax.errorbar([x], [m], yerr=[[sd], [sd]], fmt="_",
+                    color="black", capsize=5, markersize=12,
                     zorder=4)
-        handles.append(handle)
-        legend_labels.append(
-            f"{label} ({infos:,} infos): {m:.3g} +/- {sd:.2g}")
+        ax.annotate(f"{infos}", (x, max(values)), xytext=(0, 6),
+                    textcoords="offset points", ha="center", va="bottom",
+                    fontsize=10)
 
     ax.set_yscale("log")
-    ax.set_title(f"{title} - CFR+ after 180s")
-    ax.set_ylabel("Final exploitability (log scale)")
+    ax.set_ylabel("Final exploitability (log scale)", fontsize=11)
     ax.set_xticks(xs)
-    ax.set_xticklabels(
-        [f"{label}\n({info:,} infos)"
-         for label, info in zip(labels, info_by_label)],
-        rotation=25 if len(labels) <= 4 else 35,
-        ha="right",
-    )
-    ax.grid(True, axis="y", which="both", linestyle="--", alpha=0.3)
+    ax.set_xticklabels([PANEL_DISPLAY_LABELS.get(label, label)
+                        for label in labels],
+                       rotation=30 if len(labels) > 4 else 20, ha="right",
+                       fontsize=10)
+    ax.tick_params(axis="y", labelsize=10)
+    ax.grid(True, axis="y", which="major", linestyle="--", alpha=0.3)
+    ax.set_xlim(-0.6, len(labels) - 0.4)
     flat = [v for values in values_by_label for v in values if v > 0]
-    ax.set_ylim(min(flat) * 0.45, max(flat) * 1.8)
-    ax.legend(handles, legend_labels, loc="center left",
-              bbox_to_anchor=(1.01, 0.5), framealpha=0.95,
-              title="Mean +/- SD exploitability")
+    ax.set_ylim(min(flat) * 0.45, max(flat) * 4.0)
 
     fig.tight_layout()
     path = PANEL_PLOT_PATHS[panel]
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+    fig.savefig(path, dpi=300, bbox_inches="tight")
     print(f"Panel plot saved to {path}")
     plt.close(fig)
 
@@ -774,6 +802,7 @@ def main():
     print(f"Running {len(configs)} configs x {len(args.seeds)} seeds "
           f"x {args.seconds:.0f}s")
     print(f"Results: {RESULTS_PATH}")
+    trained_any = args.force
     for config in configs:
         for seed in args.seeds:
             key = (config.name, seed, float(args.seconds))
@@ -784,6 +813,7 @@ def main():
                   flush=True)
             row = _train_one(config, seed, args.seconds,
                              args.progress_every)
+            trained_any = True
             rows.append(row)
             rows = _with_gaps(rows)
             _save_results(rows)
@@ -795,7 +825,10 @@ def main():
             )
 
     rows = _with_gaps(rows)
-    _save_results(rows)
+    # When every (config, seed) row was already on disk this run only plots:
+    # the results files are left untouched.
+    if trained_any:
+        _save_results(rows)
     _plot(rows)
     _summarize(rows)
 
