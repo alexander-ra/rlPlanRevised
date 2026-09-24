@@ -26,6 +26,7 @@ NOTE (per implementation/WORKFLOW.md): written but NOT executed here.
 from __future__ import annotations
 
 import os
+import sys
 import json
 
 import _bootstrap  # noqa: F401
@@ -48,8 +49,46 @@ CONFIG = {
 _FIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures")
 
 
+def _plot(rows, exploitee_name, game_name):
+    """Draw the naive-blend curve from rows (plotting only; nothing is recomputed)."""
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("(matplotlib not installed -> skipping PNG; JSON written)")
+        return
+
+    xs = [r["profit"] for r in rows]
+    ys = [r["worst_case_loss"] for r in rows]
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    ax.plot(xs, ys, "-o", color="tab:blue")
+    for r in rows:
+        # lambda is the weight on Nash; the chapter's p is the weight on the best response
+        ax.annotate(f"{1 - r['lambda']:.1f}", (r["profit"], r["worst_case_loss"]),
+                    fontsize=10, xytext=(6, -12), textcoords="offset points")
+    ax.text(0.02, 0.95, "labels: weight on the best response",
+            transform=ax.transAxes, fontsize=10, va="top")
+    ax.set_xlabel(f"exploitation profit (EV vs {exploitee_name})", fontsize=10)
+    ax.set_ylabel("worst-case loss (exploitability, ≥ 0)", fontsize=10)
+    ax.tick_params(labelsize=10)
+    ax.margins(x=0.07, y=0.09)
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    png_path = os.path.join(_FIG_DIR, f"pareto_curve_{game_name}.png")
+    fig.savefig(png_path, dpi=300)
+    print(f"wrote {png_path}")
+
+
 def main():
     cfg = CONFIG
+    # Plot-only mode (PLOT_ONLY=1 or --plot-only): redraw from the saved JSON.
+    if os.environ.get("PLOT_ONLY") or "--plot-only" in sys.argv:
+        json_path = os.path.join(_FIG_DIR, f"pareto_curve_{cfg['game']}.json")
+        with open(json_path, encoding="utf-8") as fh:
+            saved = json.load(fh)
+        _plot(saved["rows"], saved["exploitee"], saved["game"])
+        return
     game = make_game(cfg["game"])
     hero = cfg["hero"]
     exploitee_name = cfg["exploitee"] if cfg["game"] == "kuhn" else "Rock"
@@ -79,30 +118,7 @@ def main():
                    "game_value": v_star, "rows": rows}, fh, indent=2)
     print(f"wrote {json_path}")
 
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-    except ImportError:
-        print("(matplotlib not installed -> skipping PNG; JSON written)")
-        return
-
-    xs = [r["profit"] for r in rows]
-    ys = [r["worst_case_loss"] for r in rows]
-    fig, ax = plt.subplots(figsize=(6, 4.5))
-    ax.plot(xs, ys, "-o", color="tab:blue")
-    for r in rows:
-        ax.annotate(f"{r['lambda']:.1f}", (r["profit"], r["worst_case_loss"]),
-                    fontsize=7, xytext=(3, 3), textcoords="offset points")
-    ax.set_xlabel(f"exploitation profit (EV vs {exploitee_name})")
-    ax.set_ylabel("worst-case loss (exploitability, >= 0)")
-    ax.set_title(f"Naive Nash/BR blend frontier -- {game.name}\n"
-                 "(labels = lambda; efficient solvers push ABOVE this)")
-    ax.grid(True, alpha=0.3)
-    fig.tight_layout()
-    png_path = os.path.join(_FIG_DIR, f"pareto_curve_{game.name}.png")
-    fig.savefig(png_path, dpi=130)
-    print(f"wrote {png_path}")
+    _plot(rows, exploitee_name, game.name)
 
 
 if __name__ == "__main__":

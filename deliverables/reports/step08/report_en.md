@@ -31,10 +31,12 @@ The expected value is *linear* in the hero's sequence-form realization plan, so 
 | Method | Safety floor | Origin |
 |---|---|---|
 | **Restricted Nash Response (RNR)** | tunable via a parameter *p* (Nash at *p*=0 → best response at *p*=1) | Johanson 2007 |
-| **Ganzfried** | ≥ the Nash game value `v*` | Ganzfried & Sandholm 2015 |
+| **Best equilibrium** (`ganzfried`) | ≥ the Nash game value `v*`, imposed on every hand's strategy | Ganzfried & Sandholm 2015 (their best-equilibrium baseline) |
 | **Prime-safe** | ≥ `v* − ε`, with ε = the baseline's own exploitability | Jeary & Turrini 2023 |
-| **SES (subgame)** | ≥ the blueprint value, enforced *locally* on one subgame via a gadget | Liu et al. 2022 |
+| **SES (subgame)** | ≥ the blueprint value, enforced *locally* on one subgame via a gadget (implemented here as Ge et al.'s adaptation safety) | Liu et al. 2022 |
 | **Adaptation safety** | worst-case ≥ blueprint worst-case (i.e. no more exploitable than the blueprint) | Ge et al. 2024 |
+
+A note on "best equilibrium". Ganzfried & Sandholm define safety over the repeated game (at least `v*` per hand in expectation). Imposed on each hand's strategy, as here, the floor admits only equilibrium strategies, so the LP returns the equilibrium that does best against the model: their *best-equilibrium* baseline, not their safe-exploitation algorithms. Those (RWYWE, BEFFE) deviate beyond equilibrium by risking only the gifts already banked: RWYWE is the same LP with a per-hand floor `v* − k_t` that moves with the banked gifts. They are provably safe and can exploit more; implementing and testing them is future work (§13).
 
 Part I probes the *naive* end of this menu — a behavioral blend of Nash and best response — precisely to show why the principled LP methods of Part II are needed. All Part I numbers are measured from seeded Kuhn runs; the hero is player 0, whose Kuhn game value is **−1/18 ≈ −0.056** (so "exploitation" means beating that value against a given opponent, and absolute numbers can stay negative against a tight opponent).
 
@@ -96,13 +98,13 @@ Part II evaluates the complete safe-exploitation system — **one sequence-form 
 
 **Exact yardsticks.** Both games are small enough to solve exactly, so every solver's reported profit and worst-case are computed on the full tree — no sampling. The two anchors are the **Nash game value** (`v*` — the safe baseline) and the **exact full best-response value** (the exploitation ceiling). A safe method sits between them; an unsafe one has a worst-case below `v*`.
 
-**The methods** (string ids as they appear in the result tables): `nash` (baseline, no adaptation), `full_br` (maximize EV vs the model, no safety), `rnr_0.5` (canonical RNR at p=0.5), `ganzfried` (floor = `v*`), `prime_safe` (floor = `v*−ε`), `adaptation` (floor = blueprint worst-case), `ses_subgame` (subgame gadget; on Kuhn the subgame is the whole game, so it coincides with an adaptation solve).
+**The methods** (string ids as they appear in the result tables): `nash` (baseline, no adaptation), `full_br` (maximize EV vs the model, no safety), `rnr_0.5` (canonical RNR at p=0.5), `ganzfried` (best equilibrium: floor = `v*`), `prime_safe` (floor = `v*−ε`), `adaptation` (floor = blueprint worst-case), `ses_subgame` (subgame gadget; on Kuhn the subgame is the whole game, so it coincides with an adaptation solve).
 
 **The three studies.**
 
 1. **Exact method × opponent table** — for each opponent type, solve each method against a *perfect* model of that type and report exploitation EV (profit), worst-case value (safety), and whether the worst-case meets the Nash floor.
-2. **The efficient frontier** — canonical RNR swept over *p*, the naive blend, and the Ganzfried / prime-safe / adaptation operating points, all on one exploitation-vs-exploitability plot.
-3. **Teaching attack (online)** — a deceptive opponent baits with a weak style then reveals a strong one; a Step-7 model feeds each solver every *k* hands; we track realized profit and safety-violation counts.
+2. **The efficient frontier** — canonical RNR swept over *p*, the naive blend, and the best-equilibrium / prime-safe / adaptation operating points, all on one exploitation-vs-exploitability plot.
+3. **Teaching attack (online)** — a deceptive opponent baits with a weak style then reveals a strong one; a Chapter 7 model feeds each solver every *k* hands; we track realized profit and safety-violation counts.
 
 **Configurations and runtimes** (measured). Kuhn `smoke` (30 000 CFR iters): **1.4 s**. Kuhn `scale` (200 000 CFR iters, adds `AlwaysBet`/`AlwaysPass`/`ses_subgame`, teaching attack over 5 seeds × 20 000 hands): **10.3 s**. Leduc `bounded_scale` (a human-added config: a 40-iteration cap on constraint generation, `leduc_tol = 0.01`, SES on the King-flop subgame): **minutes** (individual SES cells 10–79 s). Everything is CPU / LP-bound — CFR, full-tree best response, and small SciPy HiGHS linear programs — so the GPU is irrelevant, as predicted. Measured game values: Kuhn `v* = −0.0556` (≈ −1/18 ✓), Leduc `v* = −0.0862`.
 
@@ -114,7 +116,7 @@ Part II evaluates the complete safe-exploitation system — **one sequence-form 
 
 The core deliverable: each method solved against a perfect model of each opponent, scored on profit (EV) and safety (worst-case), with the Nash floor at `v* = −0.056`. From `results/kuhn_scale.json`.
 
-| Opponent | metric | nash | full_br | rnr_0.5 | **ganzfried** | prime_safe | adaptation | ses_subgame |
+| Opponent | metric | nash | full_br | rnr_0.5 | **best eq.** | prime_safe | adaptation | ses_subgame |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
 | **TightPassive** | EV | −0.047 | **+0.167** | −0.044 | −0.044 | −0.040 | −0.040 | −0.040 |
 | | worst-case | −0.056 | **−0.500** | −0.056 | −0.056 | −0.063 | −0.063 | −0.063 |
@@ -131,8 +133,8 @@ The core deliverable: each method solved against a perfect model of each opponen
 
 **Results — three carry the message.**
 
-1. **`full_br` is the cautionary tale.** It always wins the most against a fixed model (up to **+0.975** vs `AlwaysPass`), but its worst-case collapses to **−0.5** — an adversary can punish it catastrophically. This is the danger the whole step exists to prevent.
-2. **`ganzfried` is the safe-and-profitable sweet spot.** Against *every* opponent its worst-case stays at the Nash floor (safe within 1e-3) **and** it beats Nash's own EV on every exploitable type — most strikingly **+0.222 vs Nash's +0.146** against `AlwaysPass`, and +0.131 vs +0.118 against `LooseAggressive`. This is the central validated result of the chapter: you can exploit meaningfully while provably never dropping below equilibrium value.
+1. **`full_br` is the cautionary tale.** It always wins the most against a fixed model (up to **+0.975** vs `AlwaysPass`), but its worst-case collapses to **−0.5** — an adversary can punish it catastrophically. It is the only method unsafe against *every* opponent (`rnr_0.5` is unsafe against three). This is the danger the whole chapter exists to prevent.
+2. **Best equilibrium (`ganzfried`) is safe and still profitable — but only slightly.** Against *every* opponent its worst-case stays at the Nash floor (safe within 1e-3) **and** it beats Nash's own EV on every exploitable type — most strikingly **+0.222 vs Nash's +0.146** against `AlwaysPass`, and +0.131 vs +0.118 against `LooseAggressive`. You can exploit while provably never dropping below equilibrium value, but only a little: against the four exploitable types in the table the gain over Nash is 0.002–0.076 per hand, 1–9 % of what the full best response gains, because a per-hand floor at `v*` admits only equilibrium strategies (§1).
 3. **`rnr_0.5` is safe only for mild leaks.** Against `TightPassive` it is safe, but against the highly exploitable `AlwaysPass`/`AlwaysBet` it has *already jumped* to full best response (EV identical to `full_br`, worst-case −0.33 / −0.17, unsafe). The RNR transition is **opponent-dependent** — a single global *p* is not a safety setting (§7).
 
 **`prime_safe` / `adaptation` / `ses_subgame`** coincide on Kuhn (all target the same ε-adjusted / blueprint floor, and Kuhn's SES subgame is the whole game). They sit at worst-case −0.063 = `v* − 0.008`, flagged "unsafe" *only* because the flag compares to `v*` while they legitimately target a lower floor by design (§8).
@@ -153,55 +155,55 @@ Sweeping the canonical RNR parameter *p* against TightPassive, alongside the nai
 | **0.7** | **+0.167** | **0.444** | +0.103 | 0.311 |
 | 1.0 | +0.167 | 0.444 | +0.167 | 0.444 |
 
-Operating points: `ganzfried` (EV −0.044, exploitability 0.0005); `prime_safe` / `adaptation` (EV −0.040, exploitability 0.0079); measured `ε = 0.0074`.
+Operating points: best equilibrium `ganzfried` (EV −0.044, exploitability 0.0005); `prime_safe` / `adaptation` (EV −0.040, exploitability 0.0079); measured `ε = 0.0074`.
 
 ![Exploitation-safety frontier (Kuhn). The canonical RNR "curve" is an interpolation between just two achieved clusters (safe corner and full-BR corner); the naive blend traces the smooth line; the LP operating points (stars) sit at the efficient safe corner.](figures/impl_pareto_kuhn.png)
 
 ### Prediction ↔ reality: canonical RNR is bang-bang, not a smooth frontier
 
 - **Prediction (Phase 4):** *"the RNR sweep is monotone, and canonical RNR dominates the naive blend everywhere."*
-- **What actually happened:** canonical RNR is a **step function**. For *p* ∈ [0, 0.6] it returns the *same* safe strategy (EV −0.044, exploitability ≈ 0); at *p* ≈ 0.7 it jumps straight to the *full* best response (EV +0.167, exploitability 0.444). There are **no intermediate points**.
+- **What actually happened:** canonical RNR is a **step function**. For *p* ∈ [0, 0.6] it returns the *same* safe strategy (EV −0.044, exploitability ≈ 0); at *p* ≈ 0.7 it jumps straight to the *full* best response (EV +0.167, exploitability 0.444). Between the sampled values (steps of 0.1) there are **no intermediate points**.
 - **Why (verified reasoning).** The canonical RNR objective `max_x [ p·EV(model) + (1−p)·min_{σ'} EV(x, σ') ]` is *linear* in the hero realization plan over a *polytope*, so its optimum is a **vertex** that switches only when *p* crosses a critical ratio. Kuhn's strategy polytope is tiny (few vertices), so the transition is a single jump. Johanson's smooth RNR frontier is a large-game / data-biased phenomenon (many vertices, or a per-info-set *p*); it does not appear in a game this small. The **naive blend** *does* trace a smooth line — precisely because it interpolates two fixed strategies — but it is dominated at the safe corner (at exploitability ≈ 0 the LP methods reach EV −0.044 vs the blend's −0.047) and buys its interior profit at a steep exploitability cost.
-- **The takeaway survives, refined.** "Choose *where* to deviate, not *how much* uniformly" still holds — Ganzfried sits at the efficient safe corner and the naive blend is dominated there. But the *mechanism* ("a smooth tunable RNR knob") is a big-game artifact; in Kuhn the honest picture is a discrete safe-vertex → BR-vertex switch, whose threshold moves with how exploitable the opponent is (§6: `rnr_0.5` is already at full BR vs `AlwaysPass`). This is exactly why Ganzfried — which constrains the *value* rather than a *p* — is the better primitive.
+- **What is bang-bang is the map from *p* to a strategy, not the frontier.** Mixing the two RNR strategies (Johanson et al. define this mixture) reaches every point on the chord between the corners, because EV is linear in the mixture and the worst case is concave. With the two vertices found, the switch happens at *p* ≈ 0.68; any further vertex would be optimal only for *p* between 0.6 and 0.7, which the sweep did not sample. Against TightPassive the chord improves on the naive blend by only ≈ 0.002, so in this game choosing *where* to deviate buys almost nothing over uniform scaling (Johanson et al. report strongly concave frontiers in a large abstracted hold'em game). What Kuhn does show is that *p* is not a dial: the switch threshold moves with how exploitable the opponent is (§6: `rnr_0.5` is already at full BR vs `AlwaysPass`). This is why best equilibrium — which constrains the *value* rather than a *p* — is the better primitive.
 
 ---
 
 ## 8. Prime-safe / adaptation and the measured ε-budget
 
-Prime-safe and adaptation lower the safety floor from `v*` to `v* − ε`, where **ε is the baseline's own exploitability, measured from an early-stopped CFR run** (never fabricated). The run measured `ε = 0.0074`, and the prime-safe/adaptation worst-case came out at −0.063 = `v* − 0.0079` across every opponent — matching the ε-adjusted floor to rounding. Spending that budget, they earn slightly more than Ganzfried: **+0.266 vs +0.222** against `AlwaysPass`, +0.151 vs +0.131 against `LooseAggressive` (§6). They are flagged "unsafe" in the table only because the flag references `v*`; against their *own* ε-floor they are safe by construction. Prime-safe and adaptation coincide here because, for this baseline, `v* − ε = worst_case_value(blueprint)` — the two floors are equal (a fact the reading phase flagged, now confirmed by the run rather than assumed).
+Prime-safe and adaptation lower the safety floor from `v*` to `v* − ε`, where **ε is the baseline's own exploitability, measured from an early-stopped CFR run** (never fabricated). The run measured `ε = 0.0074`, and the prime-safe/adaptation worst-case came out at −0.063 = `v* − 0.0079` across every opponent — matching the ε-adjusted floor to rounding. Spending that budget, they earn slightly more than best equilibrium: **+0.266 vs +0.222** against `AlwaysPass`, +0.151 vs +0.131 against `LooseAggressive` (§6). They are flagged "unsafe" in the table only because the flag references `v*`; against their *own* ε-floor they are safe by construction. Prime-safe and adaptation coincide by construction: ε is defined as `v*` minus the baseline's worst case, so `v* − ε` *is* that worst case, and the run uses the same early-stopped CFR strategy as the prime-safe baseline and the adaptation blueprint. Jeary & Turrini's floor and Ge et al.'s coincide whenever the two are the same strategy; they differ in setting (whole-game exploitation versus subgame re-solving), not in the floor.
 
-**Conclusion.** The prime-safe mechanism works exactly as designed: an imperfect (ε-exploitable) baseline is honestly *measured*, and the safety floor is relaxed by precisely that amount — converting Ganzfried's "needs a perfect Nash" guarantee into one usable with the approximate baselines any real system has.
+**Conclusion.** The prime-safe mechanism works exactly as designed: an imperfect (ε-exploitable) baseline is honestly *measured*, and the safety floor is relaxed by precisely that amount — converting Ganzfried and Sandholm's "needs an exact Nash" guarantee into one usable with the approximate baselines any real system has.
 
 ---
 
 ## 9. The teaching attack — why realized profit is the wrong lens
 
-**What we test.** A deceptive opponent plays the weak `TightPassive` bait for the first 10 000 hands, then switches to a strong `Nash` "reveal" for 10 000 more; a Step-7 continuous model feeds each solver every 500 hands (5 seeds). Does the safety floor protect the safe methods when the opponent turns on them? From `results/kuhn_scale.json`.
+**What we test.** A deceptive opponent plays the weak `TightPassive` bait for the first 10 000 hands, then switches to a strong `Nash` "reveal" for 10 000 more; a Chapter 7 continuous model feeds each solver every 500 hands (5 seeds). Does the safety floor protect the safe methods when the opponent turns on them? From `results/kuhn_scale.json`.
 
 | method | mean/hand (all) | mean/hand (after switch) | safety violations / seed |
 |---|---:|---:|---|
 | full_br | **+0.051** | −0.061 | **40, 40, 40, 40, 40** |
-| ganzfried | −0.048 | −0.055 | **0, 0, 0, 0, 0** |
+| best eq. (`ganzfried`) | −0.048 | −0.055 | **0, 0, 0, 0, 0** |
 | adaptation | −0.046 | −0.055 | 40, 40, 40, 40, 40 |
 | nash | −0.051 | −0.061 | 0, 0, 0, 0, 0 |
 
-![Teaching attack (Kuhn), cumulative profit. full_br (blue) climbs on the bait to ≈ +1700, then only drifts down after the switch — it ends far ahead because a Nash "revealer" claws back only ≈ the game value per hand. The safe methods refuse the bait and pay the P0 tax throughout.](figures/impl_teaching_kuhn.png)
+![Teaching attack (Kuhn), cumulative profit (the run with seed 0). full_br (blue) climbs on the bait to ≈ +1700, then only drifts down after the switch — it ends far ahead because a Nash "revealer" claws back only ≈ the game value per hand. The safe methods refuse the bait and pay the P0 tax throughout.](figures/impl_teaching_kuhn.png)
 
 ### Prediction ↔ reality: a Nash revealer is too gentle to punish full_br
 
 - **Prediction (Phase 4):** *"safe methods' post-switch mean stays near baseline; full_br's is clearly worse; safety violations = 0 for safe methods, > 0 for full_br."*
-- **What actually happened.** The *safety-violation* half held **cleanly**: `full_br` violated the Nash floor at **40/40** refits, `ganzfried` at **0/40**. But `full_br`'s post-switch rate (−0.061) is only *marginally* worse than the game value (−0.056), and it ends **hugely net-positive** overall (+0.051/hand) — because the "reveal" opponent is *Nash*, which only wins back ≈ the game value per hand, so the bait-phase windfall is never clawed back within 10 000 hands.
+- **What actually happened.** The *safety-violation* half held **cleanly**: `full_br` violated the Nash floor at **40/40** refits, best equilibrium (`ganzfried`) at **0/40**. But `full_br`'s post-switch rate (−0.061) is only *marginally* worse than the game value (−0.056), and it ends **hugely net-positive** overall (+0.051/hand) — because the "reveal" opponent is *Nash*, which only wins back ≈ the game value per hand, so the bait-phase windfall is never clawed back within 10 000 hands.
 - **Why (verified reasoning).** A strategy's worst-case is realized by an opponent that *best-responds to it* (that is what drives `full_br` to −0.5 in §6). A stationary Nash reveal is **not** that adversary, so the online realized-profit experiment never triggers the risk that the exact worst-case column exposes. Measuring the teaching attack by profit-vs-Nash therefore *understates* the danger.
-- **Corrected takeaway.** The honest separating signal here is the **exact worst-case / safety-violation count** (full_br 40, ganzfried 0), not realized profit. To make the teaching attack punish `full_br` *in profit*, the reveal must be an **adaptive counter-exploiter** (a best response to the exploiter's stale model), not a fixed Nash. That is the concrete refinement for the next run (§13).
+- **Corrected takeaway.** The honest separating signal here is the **exact worst-case / safety-violation count** (full_br 40, best equilibrium 0), not realized profit. To make the teaching attack punish `full_br` *in profit*, the reveal must be an **adaptive counter-exploiter** (a best response to the exploiter's stale model), not a fixed Nash. That is the concrete refinement for the next run (§13).
 - **A design nuance, not a bug.** `adaptation` shows 40 violations while `nash` shows 0 (at scale): adaptation deliberately targets a floor *below* `v*` (§8), so its played strategy trips the `v*`-referenced counter every refit — by design. Nash's 0 (at scale) confirms the smoke-run's 10 "violations" were the CFR-resolution artifact of §6.
 
 ---
 
-## 10. Leduc — the headline finding: global safe-exploitation does not converge, but SES does
+## 10. Leduc — the headline finding: within a 40-iteration cap the global solvers do not converge; SES (cap 400) does
 
 The Leduc run is the human-extended **`bounded_scale`** config: a **40-iteration cap** on the constraint-generation loop, `leduc_tol = 0.01`, and the SES subgame set to the King-flop (`leduc_flop_rank(King)` — exploit only after a King appears on the board). Each cell records whether the solve **converged** or hit the cap (**capped**). From `results/leduc_bounded_scale.json`; Nash floor `v* = −0.086`.
 
-| Opponent | metric | nash | full_br | **ses_subgame** | ganzfried | prime_safe | adaptation |
+| Opponent | metric | nash | full_br | **ses_subgame** | best eq. | prime_safe | adaptation |
 |---|---|---:|---:|---:|---:|---:|---:|
 | **Rock** | EV | +0.201 | +0.937 | **+0.247** | +0.624 | +0.635 | +0.635 |
 | | worst-case | −0.089 | −1.633 | **−0.130** | −0.838 | −0.744 | −0.744 |
@@ -221,10 +223,10 @@ The Leduc run is the human-extended **`bounded_scale`** config: a **40-iteration
 ### Prediction ↔ reality: global safety does not scale to Leduc as written
 
 - **Prediction (Phase 4):** *"Ganzfried: worst-case ≥ v* within tolerance (safe)."* And the implementation README's #1 likely-to-break item: *"constraint-generation convergence + LP conditioning."*
-- **What actually happened.** On Leduc the **global** solvers (`ganzfried`, `prime_safe`, `adaptation`, `rnr_0.5`) **all hit the 40-iteration cap without converging**, leaving worst-case values of **−0.64 to −1.33** (safety violations of 0.55–1.25) — grossly unsafe. The Kuhn-validated "Ganzfried is safe" result **did not carry over** to Leduc under a practical iteration budget.
+- **What actually happened.** On Leduc the **global** solvers (best equilibrium `ganzfried`, `prime_safe`, `adaptation`, `rnr_0.5`) **all hit the 40-iteration cap without converging**, leaving worst-case values of **−0.64 to −1.33** (safety violations of 0.55–1.25) — grossly unsafe. The Kuhn-validated "best equilibrium is safe" result **did not carry over** to Leduc within a 40-iteration budget.
 - **Why (verified reasoning).** The cutting-plane loop adds one adversary best-response cut per iteration; on Leduc's larger tree the set of relevant pure best responses is large, so 40 cuts are nowhere near enough to pin the true worst case, and the master keeps returning optimistic-but-unsafe strategies. This is precisely the failure mode flagged before the run — now confirmed with numbers.
-- **The positive result.** The **subgame method (SES) converged** on 3 of 4 exploitable opponents (194 / 211 / 350 iterations), because it re-solves only the King-flop subgame with the rest of the tree pinned to the blueprint — a far smaller LP with a far smaller adversary set. It extracts real value (**+0.25 to +0.68** vs the weak types, beating Nash) at worst-case ≈ **−0.13**, an **order of magnitude closer to safe** than the global methods (−0.13 vs −0.64…−1.33).
-- **Honest caveat on SES.** Its residual exploitability (≈ 0.043) still exceeds the 0.01 Leduc tolerance, so it too is *flagged unsafe*, and on `LoosePassive` it ran 400 iterations without converging. Whether that residual 0.04 is (a) the gadget legitimately bounding to an already-below-`v*` blueprint (Nash's own worst-case is −0.089, itself 0.003 below `v*`), (b) a convergence-tolerance artifact, or (c) a small leak in the outside-subgame pinning, is the top item to investigate before citing SES as provably "safe."
+- **The positive result.** The **subgame method (SES) converged** on 3 of 4 exploitable opponents (194 / 211 / 350 iterations), because it re-solves only the King-flop subgame with the rest of the tree pinned to the blueprint — a far smaller LP with a far smaller adversary set. It extracts real value (**+0.25 to +0.68** vs the weak types, beating Nash) at worst-case ≈ **−0.13**, an **order of magnitude closer to safe** than the global methods (−0.13 vs −0.64…−1.33). The comparison is not at equal budgets, though: the global solvers were stopped after 40 iterations (about 2.5 s per cell), while SES had a cap of 400 and used 194–400 iterations (30–79 s per cell). The result shows the global loop is slow and unsafe *within this budget*, not that it cannot reach safety with a larger one.
+- **Honest caveat on SES.** Its residual exploitability (≈ 0.043) still exceeds the 0.01 Leduc tolerance, so it too is *flagged unsafe*, and on `LoosePassive` it ran 400 iterations without converging. That violation is measured against `v*`, though. SES's own floor is the blueprint's worst case — here the early-stopped CFR baseline (−0.120 in the run notes), not the Nash strategy (−0.089) — and the three converged cells sit 0.010 below it, exactly at the 0.01 tolerance. So SES held its gadget floor to within the tolerance, and the residual is mostly the blueprint's own exploitability; a rerun with a tighter tolerance would show whether it is *provably* safe.
 - **What this means.** This is the **global-vs-local safety** distinction — introduced in the intuition and reading phases as theory — appearing *empirically* at a scale as small as Leduc. It is the concrete, measured motivation for real-time subgame methods (SES / OX-Search) and for replacing the cutting-plane loop with an exact one-shot dual LP. A testbed this small was large enough to reveal the scaling wall.
 
 ### Solver hardening the runs forced
@@ -249,8 +251,8 @@ Three independent checks support the numbers, with two caveats.
 
 Ranked by how much they qualify the conclusions:
 
-1. **Global safe-exploitation did not converge on Leduc (§10).** Under a 40-iteration cap the cutting-plane loop leaves Ganzfried/prime-safe/adaptation grossly unsafe. This is the clearest gap and the main research hook — resolve with an exact dual-LP or a much larger budget, and confirm whether it is "slow" or "structurally stuck."
-2. **SES residual exploitability (§10).** SES converges but sits ≈ 0.04 above the 0.01 Leduc tolerance; whether the gadget-as-implemented is *provably* safe or only *approximately* so is unresolved.
+1. **Global safe-exploitation did not converge on Leduc (§10).** Under a 40-iteration cap the cutting-plane loop leaves best equilibrium/prime-safe/adaptation grossly unsafe. This is the clearest gap and the main research hook — resolve with an exact dual-LP or a much larger budget, and confirm whether it is "slow" or "structurally stuck."
+2. **SES residual exploitability (§10).** SES converges; its ≈ 0.04 violation is measured against `v*`, while against its own floor (the blueprint's worst case) the converged cells sit exactly at the 0.01 tolerance. Whether it is *provably* safe needs a rerun with a tighter tolerance.
 3. **The teaching attack under-punishes (§9).** A stationary Nash reveal does not trigger the worst-case, so realized profit fails to separate safe from unsafe — only the violation count does. An adaptive punisher is needed to show a safe method *out-earning* full_br under deception.
 4. **Two small games; perfect models in the exact table.** The §6/§10 tables solve against a *perfect* model of each type (the offline case); the online, learned-model case is only the teaching attack. Kuhn/Leduc are exact-solvable *because* they are tiny; the convergence wall that appears on Leduc will only worsen at scale — this is a controlled proof-of-concept, not a scaling claim.
 5. **Unverified cross-checks (§11).** `validate.py` and the OpenSpiel comparison were not captured as artifacts.
@@ -259,14 +261,16 @@ Ranked by how much they qualify the conclusions:
 
 ## 13. Conclusions and research directions
 
-**Conclusions.** Safe exploitation is one idea — *maximize value against the model subject to a safety floor* — and on a fully-solvable game it works exactly as the theory says: **Ganzfried is safe against every opponent while beating equilibrium value on every exploitable one** (+0.222 vs +0.146 against `AlwaysPass`), where naive best response earns more but is ruinously exploitable (worst-case −0.5). Prime-safe/adaptation extend this to imperfect baselines by spending a *measured* ε-budget below `v*`. But the step's most valuable result is negative and empirical: on a game as small as **Leduc**, the *global* safe-exploitation solve does **not** converge within a practical iteration budget, while the *local* subgame method (SES) does — the global-vs-local safety gap, measured. Two Phase-4 predictions (smooth RNR frontier; Ganzfried safe on Leduc) were contradicted and reconciled; the reconciliations are more instructive than the predictions would have been.
+**Conclusions.** Safe exploitation is one idea — *maximize value against the model subject to a safety floor* — and on a fully-solvable game it works exactly as the theory says: **best equilibrium (the Ganzfried–Sandholm baseline) is safe against every opponent and earns more than Nash on every exploitable one** (+0.222 vs +0.146 against `AlwaysPass`), if only by 0.002–0.076 per hand, where naive best response earns more but is ruinously exploitable (worst-case −0.5). Prime-safe/adaptation extend this to imperfect baselines by spending a *measured* ε-budget below `v*`. But the chapter's most valuable result is negative and empirical: on a game as small as **Leduc**, the *global* safe-exploitation solve did **not** converge within a 40-iteration cap, while the *local* subgame method (SES, cap 400) did — the global-vs-local safety gap, measured at unequal budgets. Two Phase-4 predictions (smooth RNR frontier; best equilibrium safe on Leduc) were contradicted and reconciled; the reconciliations are more instructive than the predictions would have been.
 
 **Research directions** (each motivated by a measured effect above):
 
+- **The stronger two-player baseline (§1).** Implement Ganzfried & Sandholm's gift-risking RWYWE — the existing LP with a per-hand floor `v* − k_t` that moves with the banked gifts — as the baseline for Contribution #2, and rerun the Kuhn/Leduc comparison, with the Leduc global and subgame solvers at equal budgets.
+
 - **Scalable safety — the central next chapter (§10).** Replace the cutting-plane loop with the **exact one-shot dual LP** for the worst-case constraint, *or* commit to **local / subgame** safety (SES / OX-Search) as the scalable path. The Leduc non-convergence is direct evidence for the latter.
-- **Resolve the SES gadget's residual exploitability (§10).** Determine whether the 0.04 gap is a blueprint-bounding effect, a tolerance artifact, or a pinning leak — this decides whether the subgame method is provably or only approximately safe.
+- **Resolve the SES gadget's residual exploitability (§10).** The 0.04 gap is measured against `v*`; against its own blueprint floor SES sits at the 0.01 tolerance. A rerun with a tighter tolerance decides whether the subgame method is provably or only approximately safe.
 - **A punishing teaching attack (§9).** Replace the Nash reveal with an adaptive counter-exploiter so realized profit corroborates the worst-case view, and a safe method can be shown to *out-earn* full_br under deception.
-- **N-player safety — thesis Contribution #2.** Every guarantee here rests on the two-player zero-sum fact that a Nash strategy secures `v*` against any opponent; for N > 2 there is no such `v*` anchor. Extending a value-anchored safety notion to the multi-agent case (or finding a structural substitute, e.g. coalition structure) is the open thesis problem this chapter makes precise.
+- **N-player safety — thesis Contribution #2.** Every guarantee here rests on the two-player zero-sum fact that a Nash strategy secures `v*` against any opponent; for N > 2 there is no such `v*` anchor. N-player safety notions exist but are either very conservative (maxmin against a coordinated coalition, Celli & Gatti 2018) or not securable in general (equal share, a fair-share target that cannot be secured against opponents with different fixed strategies, Ge et al. 2025). The open thesis problem this chapter makes precise is exploitation with a loss bound relative to a baseline, tested also against colluding opponents.
 - **Close the validation loop (§11).** Run and archive `validate.py` and the OpenSpiel cross-check; re-run the Leduc global solvers with a large budget / exact dual to distinguish "slow" from "structurally unsafe."
 
 ---
