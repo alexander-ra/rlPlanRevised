@@ -1,0 +1,120 @@
+{
+ "ch13": {
+  "pages": [
+   1,
+   17
+  ],
+  "figures": [
+   {
+    "file": "ch13/p004_f1.png",
+    "page": 4,
+    "printed_width_cm": 17.6,
+    "source_px": [
+     2615,
+     1570
+    ],
+    "effective_ppi": 378,
+    "caption": "Figure 1: The chapter’s pipeline: raw PHH hand histories (2.03 million iPoker hands and the 10,000 Pluribus hands) are replayed by the parser and checked by two validators; the parsed hands become seat rows, decision rows, token streams and a pair table, each feeding one or two of the analyses. Red boxes are the fair-play analyses."
+   },
+   {
+    "file": "ch13/p005_f1.png",
+    "page": 5,
+    "printed_width_cm": 17.6,
+    "source_px": [
+     1896,
+     1015
+    ],
+    "effective_ppi": 274,
+    "caption": "Figure 2: The classic VPIP × PFR map for the 2,906 iPoker regulars (grey), with the 13 professionals of the Pluribus games (blue) and Pluribus itself (orange). Dashed lines: loose at VPIP ≥27.5 % (midway between the plan’s tight 20 % and loose 35 %), aggressive when PFR ≥VPIP / 2."
+   },
+   {
+    "file": "ch13/p006_f1.png",
+    "page": 6,
+    "printed_width_cm": 17.6,
+    "source_px": [
+     1879,
+     849
+    ],
+    "effective_ppi": 271,
+    "caption": "Figure 3: Split-half correlation of six statistics across the iPoker regulars as a function of the number of hands in each half (3 seeds; standard errors are smaller than the markers). VPIP and PFR pass r = 0.8 below 100 hands, 3-bet near 500; the post-flop statistics stay below 0.8 at 1,000 hands."
+   },
+   {
+    "file": "ch13/p007_f1.png",
+    "page": 7,
+    "printed_width_cm": 16.5,
+    "source_px": [
+     1629,
+     1019
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 4: Median difference from Pluribus’s six-handed frequencies, for the 1,046 iPoker regulars with at least 500 six-handed hands and for the 13 professionals of the Pluribus games (percentage points). The regulars defend the big blind far less and c-bet far more; the professionals stay within a few points."
+   },
+   {
+    "file": "ch13/p008_f1.png",
+    "page": 8,
+    "printed_width_cm": 17.5,
+    "source_px": [
+     1727,
+     931
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 5: Behavioral cloning on the iPoker test days: (a) accuracy by street for the majority baseline, the frequency table, the MLP and the MLP with the player’s style vector (3-seed means); (b) accuracy above the majority baseline by player type. Knowing the player helps most for the loose players."
+   },
+   {
+    "file": "ch13/p010_f1.png",
+    "page": 10,
+    "printed_width_cm": 17.6,
+    "source_px": [
+     1755,
+     876
+    ],
+    "effective_ppi": 253,
+    "caption": "Figure 6: Re-identification of the same player on unseen days: share of players whose own later hands rank first (a) or in the top ten (b) among all candidates, for the player2vec embedding and the statistics vector, against the number of hands on each side (3 seeds, ± 1 SE). Chance is the dotted line."
+   },
+   {
+    "file": "ch13/p011_f1.png",
+    "page": 11,
+    "printed_width_cm": 17.5,
+    "source_px": [
+     1725,
+     1374
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 7: UMAP projection of the player2vec embeddings of the 2,906 iPoker regulars (seed 0), one panel per VPIP × PFR quadrant, highlighted in blue over all players in grey. The quadrants occupy different regions of the map, with the loose-aggressive players partly in a separate island."
+   },
+   {
+    "file": "ch13/p012_f1.png",
+    "page": 12,
+    "printed_width_cm": 17.5,
+    "source_px": [
+     1727,
+     799
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 8: (a) Share of regulars in the same style cluster in both halves of their hands: chronological halves (statistics and embedding) and random halves (statistics), with chance; (b) online Bayesian typing: share of players whose posterior mode after n hands equals the cluster of their later hands, with the largest-cluster share for comparison."
+   },
+   {
+    "file": "ch13/p014_f1.png",
+    "page": 14,
+    "printed_width_cm": 17.5,
+    "source_px": [
+     1727,
+     1050
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 9: Collusion injected into real iPoker sessions (multiway tables, 3 seeds, ± 1 SE): (a) AUC of the union detector and of Chapter 11’s raw help/harm score against the share of heads-up hands rewritten; (b) share of colluding pairs found at a false-positive rate of 1 % and 0.1 % among 2,802 real pairs."
+   },
+   {
+    "file": "ch13/p015_f1.png",
+    "page": 15,
+    "printed_width_cm": 17.6,
+    "source_px": [
+     1840,
+     917
+    ],
+    "effective_ppi": 266,
+    "caption": "Figure 10: (a) Five unsupervised detectors on 250-hand blocks of the Pluribus games: AUC of Pluribus’s blocks against the professionals’ (3 seeds) and Pluribus’s rank among 14 players by mean score; (b) share of distinct bet sizes among 50 random post-flop bets of each player: iPoker regulars (histogram), the 13 professionals (ticks) and Pluribus."
+   }
+  ]
+ }
+}

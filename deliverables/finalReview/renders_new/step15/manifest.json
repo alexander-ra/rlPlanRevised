@@ -1,0 +1,98 @@
+{
+ "ch15": {
+  "pages": [
+   1,
+   16
+  ],
+  "figures": [
+   {
+    "file": "ch15/p003_f1.png",
+    "page": 3,
+    "printed_width_cm": 17.6,
+    "source_px": [
+     2290,
+     1564
+    ],
+    "effective_ppi": 331,
+    "caption": "Figure 1: The frontier map. For each contribution: what exists (September 2026 literature check), what is still open (the verified gap wording, shortened), the thesis’s approach, and the evidence already in hand from Chapters 13–14 and this chapter’s pilots."
+   },
+   {
+    "file": "ch15/p006_f1.png",
+    "page": 6,
+    "printed_width_cm": 17.5,
+    "source_px": [
+     2280,
+     1201
+    ],
+    "effective_ppi": 330,
+    "caption": "Figure 2: One hand of the gift bank. The agent plays the best response to its model among strategies whose worst case is at least the reference minus the bank k, observes the hand, credits the worst opponent play consistent with what it saw, and updates k. The reference is the game value v* with two players and the team-maxmin value v_mm with three."
+   },
+   {
+    "file": "ch15/p008_f1.png",
+    "page": 8,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1701,
+     765
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 3: Replication of Ganzfried and Sandholm’s Table I on Kuhn poker: this chapter’s win rate (dots, 95 % intervals over 400 opponents per class) against the published values (bars), for random, near- equilibrium and dynamic opponents; the dotted line is the game value v*."
+   },
+   {
+    "file": "ch15/p009_f1.png",
+    "page": 9,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1703,
+     850
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 4: Gain over the Nash blueprint against the sub-optimal population, against the mean exposure of the policy in force, on Kuhn and Leduc (10 seeds × 2 seats; intervals are 95 % and mostly smaller than the markers)."
+   },
+   {
+    "file": "ch15/p010_f1.png",
+    "page": 10,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1702,
+     1154
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 5: Teaching attacks on Kuhn (10 seeds × 2 seats). (a) Running match-level safety S when the attacker baits as TightPassive and, from hand 1,000, best-responds to the agent’s current policy every hand. (b) RWYWE’s bank under a LooseAggr bait: built during the bait, spent within about 100 hands of the switch."
+   },
+   {
+    "file": "ch15/p011_f1.png",
+    "page": 11,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1703,
+     855
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 6: Gain over the blueprint against independent pairs, against the worst-case loss relative to the blueprint over all coordinated pairs (L, exact), for the capped mixture (ε from 0.01 to ∞) and the KL anchor (β from 1 to 30); 5 seeds × 3 seats."
+   },
+   {
+    "file": "ch15/p012_f1.png",
+    "page": 12,
+    "printed_width_cm": 17.2,
+    "source_px": [
+     1695,
+     928
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 7: Gain against independent pairs, against the seat-averaged expected payoff under adaptive colluders (hands 1,000–1,999), for every three-player agent. Solid line: equal share (0); dashed line: the seat-averaged maximin value."
+   },
+   {
+    "file": "ch15/p014_f1.png",
+    "page": 14,
+    "printed_width_cm": 17.4,
+    "source_px": [
+     1710,
+     1178
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 8: The research programme on one time axis: the individual plan’s stages, the experiments, and the papers’ submission dates. A filled marker is an announced deadline; a hollow one is estimated from the venue’s annual cycle; the faint one is the AAMAS 2027 stretch option."
+   }
+  ]
+ }
+}

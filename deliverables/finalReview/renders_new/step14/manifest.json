@@ -1,0 +1,98 @@
+{
+ "ch14": {
+  "pages": [
+   1,
+   16
+  ],
+  "figures": [
+   {
+    "file": "ch14/p004_f1.png",
+    "page": 4,
+    "printed_width_cm": 16.7,
+    "source_px": [
+     2169,
+     1399
+    ],
+    "effective_ppi": 330,
+    "caption": "Figure 1: The joint protocol. A bot zoo — equilibria, rule-based types, LLM-derived strategies, adaptive agents from Chapters 7 and 8, plus switching and teaching opponents — plays fixed-seat duplicate matches over several seeds. Each hand is scored by three estimators, and four readouts are reported together. Population rankings are reported alongside as context."
+   },
+   {
+    "file": "ch14/p006_f1.png",
+    "page": 6,
+    "printed_width_cm": 16.7,
+    "source_px": [
+     1641,
+     1164
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 2: Rank of every Leduc agent under eight methods (1 = best), agents ordered by population return. RNR(0.5) and DirBR lead Elo, population return and the RRPS score; BestEq and Nash share first place on exploitability and Nash averaging, BestEq leads VasE, and Nash leads α-Rank at α = 100."
+   },
+   {
+    "file": "ch14/p007_f1.png",
+    "page": 7,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1701,
+     871
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 3: α-Rank mass of the main agents as the selection pressure α grows. On Kuhn the top agent is DirBR for α ≤0.1, RNR(0.5) for 0.3 ≤α ≤3 and Nash for α ≥10; on Leduc it moves from DirBR to RNR(0.5), to BestEq and finally to Nash."
+   },
+   {
+    "file": "ch14/p008_f1.png",
+    "page": 8,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1700,
+     899
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 4: Share of the attainable gain estimated in 100-hand windows from raw chips, from AIVAT and from the exact policy values, for DirBR against LooseAggr (Kuhn) and Maniac (Leduc). Lines are means and bands ±1 SD over 20 matches."
+   },
+   {
+    "file": "ch14/p010_f1.png",
+    "page": 10,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1703,
+     779
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 5: Gain over the Nash blueprint against the sub-optimal population, against exposure. Error bars are 95 % intervals over 10 seeds and are smaller than the markers."
+   },
+   {
+    "file": "ch14/p011_f1.png",
+    "page": 11,
+    "printed_width_cm": 17.3,
+    "source_px": [
+     1700,
+     1487
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 6: Top: gain over Nash when the opponent switches at hand 1,000 (Kuhn: TightPassive to LooseAggr; Leduc: CallingStation to Rock). Bottom: expected payoff minus the game value under a teaching attack — bait until hand 1,000, then the exact best response to the agent’s current policy, refreshed every 50 hands."
+   },
+   {
+    "file": "ch14/p012_f1.png",
+    "page": 12,
+    "printed_width_cm": 17.1,
+    "source_px": [
+     1682,
+     977
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 7: Exploitability found by a learned best response (tabular Monte-Carlo control, ε = 0.1) divided by the exact exploitability, as the learning budget grows; mean over 3 seeds and both seats."
+   },
+   {
+    "file": "ch14/p013_f1.png",
+    "page": 13,
+    "printed_width_cm": 17.1,
+    "source_px": [
+     1680,
+     773
+    ],
+    "effective_ppi": 250,
+    "caption": "Figure 8: Left: each seat’s value in the CFR+ and CFR equilibria and its coalition value (the worst a coordinated pair can do to that seat’s equilibrium strategy). Right: the mean value of Nash, Blend3P and DirBR3P against a fixed colluding pair (the coalition best response to the blueprint), under a coalition teaching attack after the switch, and the coalition value of each agent’s final policy; 3 seats × 5 seeds."
+   }
+  ]
+ }
+}
