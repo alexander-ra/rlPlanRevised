@@ -14,6 +14,9 @@
 #   verbatim. Section, figure and version numbers ("раздел 7.5", "v1.6.13",
 #   "Melting Pot 2.0") are not decimals and are skipped by context.
 #
+# Run it ONCE, on text that has not been converted: after the first pass a
+#   decimal like 1,234 cannot be told apart from a thousands group.
+#
 # USAGE (run from repo root):
 #   python scripts/bg_typography.py            # dry run: counts + samples
 #   python scripts/bg_typography.py --apply
@@ -47,12 +50,12 @@ MATH = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$", re.S)
 
 # A number preceded by one of these words is a label, not a decimal.
 LABEL_BEFORE = re.compile(
-    r"(?:§|[Рр]аздел[аи]?|[Гг]лав[аи]|[Фф]игур[аи]|[Тт]аблиц[аи]|[Тт]еорем[аи]|"
-    r"[Тт]върдение|[Лл]ема|[Уу]пражнение|[Сс]тъпк[аи]|Thm\.?|Prop\.?|Theorem|"
-    r"Proposition|Lemma|Figure|Fig\.|Table|Section|Eq\.?|[Уу]равнение|"
-    r"[Вв]ерсия|Python|Pot|OpenSpiel|v|V|[Вв]ер\.)\s*$")
-DECIMAL = re.compile(r"(?<![\d.,\w])(-|−)?(\d+)\.(\d+)(?![\d.]|\.\d)")
-THOUSANDS = re.compile(r"(?<![\d.,])(\d{1,3})((?:,\d{3})+)(?![\d,]|\.\d)")
+    r"(?:§|(?<![\wА-Яа-я])(?:[Рр]аздел[аи]?|[Гг]лав[аи]|[Гг]л\.|[Фф]игур[аи]|[Фф]иг\.|"
+    r"[Тт]аблиц[аи]|[Тт]абл\.|[Тт]еорем[аи]|[Тт]върдение|[Лл]ема|[Уу]пражнение|"
+    r"[Сс]тъпк[аи]|Thm\.?|Prop\.?|Theorem|Proposition|Lemma|Figure|Fig\.|Table|"
+    r"Section|Eq\.?|[Уу]равнение|[Вв]ерсия|Python|Pot|OpenSpiel|v|V|[Вв]ер\.))\s*$")
+DECIMAL = re.compile(r"(?<![\d.,\w])(-|−)?(\d+)\.(\d+)(?!\d|\.\d)")
+THOUSANDS = re.compile(r"(?<![\d.,])(\d{1,3})((?:,\d{3})+)(?!\d|,\d|\.\d)")
 TIMES_BETWEEN = re.compile(r"(?<=\d)\s*[xх]\s*(?=\d)")
 TIMES_AFTER = re.compile(r"(?<=\d)[xх](?=[\s.,;:)]|$)")
 DASH = re.compile(r"(?<=\S) - (?=\S)")
