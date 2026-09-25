@@ -1,0 +1,12 @@
+
+===== protocol2p_kuhn started 2026-09-25T01:42:26 =====
+[01:42:26] [kuhn] 8 agents x 16 conditions x 10 seeds x 2 seats = 2560 matches of 2000 hands (tol 0.0)
+[01:45:17] [kuhn] Nash       gain +0.000±0.000 capture -0.00 expo 0.000 | teach loss TightPassive +0.000 LooseAggr +0.000 AlwaysBet +0.000 | teach match S +0.0407 (min +0.0028, 0 below 0)
+[01:45:17] [kuhn] BestEq     gain +0.020±0.000 capture 0.09 expo 0.000 | teach loss TightPassive +0.000 LooseAggr +0.000 AlwaysBet +0.000 | teach match S +0.0406 (min +0.0028, 0 below 0)
+[01:45:17] [kuhn] RNR(0.5)   gain +0.210±0.002 capture 0.60 expo 0.090 | teach loss TightPassive -0.000 LooseAggr +0.064 AlwaysBet +0.070 | teach match S +0.0832 (min -0.0007, 1 below 0)
+[01:45:17] [kuhn] DirBR      gain +0.273±0.001 capture 0.97 expo 0.338 | teach loss TightPassive +0.340 LooseAggr +0.191 AlwaysBet +0.188 | teach match S +0.0233 (min -0.1044, 21 below 0)
+[01:45:17] [kuhn] RWYWE      gain +0.062±0.002 capture 0.26 expo 0.030 | teach loss TightPassive +0.000 LooseAggr +0.002 AlwaysBet +0.009 | teach match S +0.0756 (min +0.0030, 0 below 0) | k_min -1.4e-04 viol 0 solves 489 1.4s
+[01:45:17] [kuhn] RWYWE-rev  gain +0.148±0.004 capture 0.44 expo 0.087 | teach loss TightPassive +0.000 LooseAggr +0.009 AlwaysBet +0.011 | teach match S +0.0866 (min +0.0033, 0 below 0) | k_min -1.2e-04 viol 0 solves 658 1.6s
+[01:45:17] [kuhn] RWYWE-tb   gain +0.063±0.002 capture 0.26 expo 0.031 | teach loss TightPassive +0.000 LooseAggr +0.002 AlwaysBet +0.011 | teach match S +0.0763 (min +0.0029, 0 below 0) | k_min -1.9e-04 viol 0 solves 490 3.3s
+[01:45:17] [kuhn] BEFEWP     gain +0.053±0.003 capture 0.22 expo 0.029 | teach loss TightPassive +0.000 LooseAggr +0.001 AlwaysBet +0.005 | teach match S +0.0693 (min +0.0026, 0 below 0) | k_min -3.8e-05 viol 0 solves 40 0.5s
+[01:45:17] [kuhn] done in 171 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step15\implementation\results\protocol2p_kuhn.json

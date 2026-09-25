@@ -1,0 +1,496 @@
+{
+ "game": "kuhn_poker(players=3)",
+ "seats": {
+  "0": {
+   "value": -0.03787878787878794,
+   "upper_bound": -0.03787878787878785,
+   "iterations": 15,
+   "gap": 9.020562075079397e-17,
+   "strategy": [
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.7272727272727275,
+     0.2727272727272725
+    ],
+    [
+     0.8181818181818179,
+     0.1818181818181821
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ]
+   ],
+   "history": [
+    {
+     "iter": 0,
+     "oracle_value_of_previous_x": -0.12500011686944973,
+     "lp_upper_bound": 0.33333333333333337
+    },
+    {
+     "iter": 1,
+     "oracle_value_of_previous_x": -1.5833333333333333,
+     "lp_upper_bound": 0.2833333333333334
+    },
+    {
+     "iter": 2,
+     "oracle_value_of_previous_x": -0.6666666666666667,
+     "lp_upper_bound": 0.0579710144927536
+    },
+    {
+     "iter": 3,
+     "oracle_value_of_previous_x": -0.2681159420289856,
+     "lp_upper_bound": 0.03578431372549018
+    },
+    {
+     "iter": 4,
+     "oracle_value_of_previous_x": -0.20735294117647046,
+     "lp_upper_bound": 0.012048192771084362
+    },
+    {
+     "iter": 5,
+     "oracle_value_of_previous_x": -0.21285140562248994,
+     "lp_upper_bound": 0.006535947712418262
+    },
+    {
+     "iter": 6,
+     "oracle_value_of_previous_x": -0.15196078431372553,
+     "lp_upper_bound": -0.0015449980687524253
+    },
+    {
+     "iter": 7,
+     "oracle_value_of_previous_x": -0.15140981073773668,
+     "lp_upper_bound": -0.020833333333333336
+    },
+    {
+     "iter": 8,
+     "oracle_value_of_previous_x": -0.08333333333333331,
+     "lp_upper_bound": -0.022023809523809532
+    },
+    {
+     "iter": 9,
+     "oracle_value_of_previous_x": -0.08869047619047614,
+     "lp_upper_bound": -0.02514367816091955
+    },
+    {
+     "iter": 10,
+     "oracle_value_of_previous_x": -0.10272988505747124,
+     "lp_upper_bound": -0.03645833333333336
+    },
+    {
+     "iter": 11,
+     "oracle_value_of_previous_x": -0.057291666666666796,
+     "lp_upper_bound": -0.03645833333333336
+    },
+    {
+     "iter": 12,
+     "oracle_value_of_previous_x": -0.041666666666666685,
+     "lp_upper_bound": -0.036575016972165635
+    },
+    {
+     "iter": 13,
+     "oracle_value_of_previous_x": -0.043024439918533545,
+     "lp_upper_bound": -0.037878787878787915
+    },
+    {
+     "iter": 14,
+     "oracle_value_of_previous_x": -0.037878787878787915,
+     "lp_upper_bound": -0.03787878787878785
+    }
+   ],
+   "blueprint_coalition_value": -0.12500011686944973,
+   "blueprint_value": -0.026887647486802477
+  },
+  "1": {
+   "value": -0.0265151515151517,
+   "upper_bound": -0.02651515151515151,
+   "iterations": 23,
+   "gap": 1.9081958235744878e-16,
+   "strategy": [
+    [
+     0.8863636363636367,
+     0.11363636363636331
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.45454545454545614,
+     0.5454545454545439
+    ],
+    [
+     0.7272727272727292,
+     0.2727272727272708
+    ],
+    [
+     0.7727272727272716,
+     0.2272727272727284
+    ],
+    [
+     0.5454545454545472,
+     0.4545454545454528
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.8863636363636367,
+     0.11363636363636331
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ]
+   ],
+   "history": [
+    {
+     "iter": 0,
+     "oracle_value_of_previous_x": -0.10617144269728244,
+     "lp_upper_bound": 0.4583333333333333
+    },
+    {
+     "iter": 1,
+     "oracle_value_of_previous_x": -1.0833333333333333,
+     "lp_upper_bound": 0.39814814814814825
+    },
+    {
+     "iter": 2,
+     "oracle_value_of_previous_x": -0.22685185185185186,
+     "lp_upper_bound": 0.30787037037037035
+    },
+    {
+     "iter": 3,
+     "oracle_value_of_previous_x": -0.35416666666666663,
+     "lp_upper_bound": 0.24338624338624337
+    },
+    {
+     "iter": 4,
+     "oracle_value_of_previous_x": -0.2969576719576718,
+     "lp_upper_bound": 0.1638981173864895
+    },
+    {
+     "iter": 5,
+     "oracle_value_of_previous_x": -0.2113787375415282,
+     "lp_upper_bound": 0.058585858585858616
+    },
+    {
+     "iter": 6,
+     "oracle_value_of_previous_x": -0.21717171717171724,
+     "lp_upper_bound": 0.04367201426024955
+    },
+    {
+     "iter": 7,
+     "oracle_value_of_previous_x": -0.09893048128342244,
+     "lp_upper_bound": 0.024147727272727213
+    },
+    {
+     "iter": 8,
+     "oracle_value_of_previous_x": -0.09251893939393938,
+     "lp_upper_bound": 0.004757275833627885
+    },
+    {
+     "iter": 9,
+     "oracle_value_of_previous_x": -0.15091217941164928,
+     "lp_upper_bound": -0.0011411655402981645
+    },
+    {
+     "iter": 10,
+     "oracle_value_of_previous_x": -0.06736732885655648,
+     "lp_upper_bound": -0.009057971014492768
+    },
+    {
+     "iter": 11,
+     "oracle_value_of_previous_x": -0.09963768115942029,
+     "lp_upper_bound": -0.013888888888888926
+    },
+    {
+     "iter": 12,
+     "oracle_value_of_previous_x": -0.09027777777777765,
+     "lp_upper_bound": -0.015840808771180374
+    },
+    {
+     "iter": 13,
+     "oracle_value_of_previous_x": -0.07457639185533238,
+     "lp_upper_bound": -0.022935779816513742
+    },
+    {
+     "iter": 14,
+     "oracle_value_of_previous_x": -0.05084097859327222,
+     "lp_upper_bound": -0.0229357798165137
+    },
+    {
+     "iter": 15,
+     "oracle_value_of_previous_x": -0.04525993883792037,
+     "lp_upper_bound": -0.02307028891763683
+    },
+    {
+     "iter": 16,
+     "oracle_value_of_previous_x": -0.05843035791289357,
+     "lp_upper_bound": -0.023420796890184597
+    },
+    {
+     "iter": 17,
+     "oracle_value_of_previous_x": -0.03770651117589875,
+     "lp_upper_bound": -0.025406504065040636
+    },
+    {
+     "iter": 18,
+     "oracle_value_of_previous_x": -0.05132113821138219,
+     "lp_upper_bound": -0.025406504065040667
+    },
+    {
+     "iter": 19,
+     "oracle_value_of_previous_x": -0.03861788617886172,
+     "lp_upper_bound": -0.025406504065040622
+    },
+    {
+     "iter": 20,
+     "oracle_value_of_previous_x": -0.03760162601626,
+     "lp_upper_bound": -0.02651515151515144
+    },
+    {
+     "iter": 21,
+     "oracle_value_of_previous_x": -0.037878787878788026,
+     "lp_upper_bound": -0.02651515151515151
+    },
+    {
+     "iter": 22,
+     "oracle_value_of_previous_x": -0.026515151515151658,
+     "lp_upper_bound": -0.02651515151515151
+    }
+   ],
+   "blueprint_coalition_value": -0.10617144269728244,
+   "blueprint_value": -0.020833331326756854
+  },
+  "2": {
+   "value": 0.04166666666666588,
+   "upper_bound": 0.04166666666666663,
+   "iterations": 14,
+   "gap": 7.494005416219807e-16,
+   "strategy": [
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.4999999999999999,
+     0.5000000000000001
+    ],
+    [
+     0.49999999999999856,
+     0.5000000000000014
+    ],
+    [
+     0.49999999999999056,
+     0.5000000000000094
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.75,
+     0.25
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     0.7499999999999996,
+     0.25000000000000044
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0
+    ]
+   ],
+   "history": [
+    {
+     "iter": 0,
+     "oracle_value_of_previous_x": -0.12499998205569635,
+     "lp_upper_bound": 0.33333333333333337
+    },
+    {
+     "iter": 1,
+     "oracle_value_of_previous_x": -1.1666666666666665,
+     "lp_upper_bound": 0.3333333333333334
+    },
+    {
+     "iter": 2,
+     "oracle_value_of_previous_x": -1.1666666666666665,
+     "lp_upper_bound": 0.33333333333333337
+    },
+    {
+     "iter": 3,
+     "oracle_value_of_previous_x": -0.33333333333333337,
+     "lp_upper_bound": 0.21285140562248991
+    },
+    {
+     "iter": 4,
+     "oracle_value_of_previous_x": -0.28714859437751006,
+     "lp_upper_bound": 0.06036646586345381
+    },
+    {
+     "iter": 5,
+     "oracle_value_of_previous_x": -0.12192520080321281,
+     "lp_upper_bound": 0.053212851405622465
+    },
+    {
+     "iter": 6,
+     "oracle_value_of_previous_x": -0.03514056224899598,
+     "lp_upper_bound": 0.05000000000000002
+    },
+    {
+     "iter": 7,
+     "oracle_value_of_previous_x": -0.017361111111110994,
+     "lp_upper_bound": 0.04731227486838457
+    },
+    {
+     "iter": 8,
+     "oracle_value_of_previous_x": 0.009888473261291164,
+     "lp_upper_bound": 0.04538791159224176
+    },
+    {
+     "iter": 9,
+     "oracle_value_of_previous_x": 0.03335024808299515,
+     "lp_upper_bound": 0.04487179487179482
+    },
+    {
+     "iter": 10,
+     "oracle_value_of_previous_x": -0.006410256410256138,
+     "lp_upper_bound": 0.044074722708698194
+    },
+    {
+     "iter": 11,
+     "oracle_value_of_previous_x": 0.03882078225335661,
+     "lp_upper_bound": 0.0435897435897436
+    },
+    {
+     "iter": 12,
+     "oracle_value_of_previous_x": 0.03493589743589734,
+     "lp_upper_bound": 0.04166666666666663
+    },
+    {
+     "iter": 13,
+     "oracle_value_of_previous_x": 0.04166666666666588,
+     "lp_upper_bound": 0.04166666666666663
+    }
+   ],
+   "blueprint_coalition_value": -0.12499998205569635,
+   "blueprint_value": 0.04772097881355964
+  }
+ },
+ "seat_average_maximin": -0.00757575757575792,
+ "equal_share": 0.0,
+ "runtime_seconds": 7.448360443115234
+}

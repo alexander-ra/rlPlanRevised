@@ -1,0 +1,22 @@
+[01:45:38] P0 G&S Table I replication: 7000 matches of 1000 hands, 14 workers
+[02:24:13] RWYWE             random        EV +0.3323±0.0247  chips +0.3326±0.0256  (G&S +0.3636)  k_end 28.34 k_min -4.3e-06 expo 0.131 viol 0 below v* 0/400
+[02:24:13] RWYWE             sophisticated EV -0.0144±0.0016  chips -0.0144±0.0044  (G&S -0.0110)  k_end 0.01 k_min -3.5e-05 expo 0.012 viol 0 below v* 0/400
+[02:24:13] RWYWE             dynamic       EV -0.0271±0.0016  chips -0.0257±0.0042  (G&S -0.0204)  k_end -0.00 k_min -9.3e-05 expo 0.011 viol 0 below v* 0/400
+[02:24:13] RWYWE             equilibrium   EV -0.0556±0.0000  chips -0.0540±0.0055  (G&S -0.0556)  k_end -0.00 k_min -9.1e-05 expo 0.000 viol 0 below v* 167/200
+[02:24:13] BEFEWP            random        EV +0.3223±0.0242  chips +0.3213±0.0246  (G&S +0.3553)  k_end 29.89 k_min -3.4e-06 expo 0.125 viol 0 below v* 0/400
+[02:24:13] BEFEWP            sophisticated EV -0.0138±0.0016  chips -0.0150±0.0042  (G&S -0.0115)  k_end 0.18 k_min -1.2e-05 expo 0.012 viol 0 below v* 0/400
+[02:24:13] BEFEWP            dynamic       EV -0.0272±0.0017  chips -0.0250±0.0043  (G&S -0.0214)  k_end 0.08 k_min -2.7e-06 expo 0.011 viol 0 below v* 0/400
+[02:24:13] BEFEWP            equilibrium   EV -0.0556±0.0000  chips -0.0522±0.0056  (G&S -0.0556)  k_end -0.00 k_min -9.2e-05 expo 0.000 viol 0 below v* 160/200
+[02:24:13] BEFFE             random        EV +0.1761±0.0095  chips +0.1757±0.0108  (G&S +0.1995)  k_end 33.44 k_min -1.7e-06 expo 0.032 viol 0 below v* 0/400
+[02:24:13] BEFFE             sophisticated EV -0.0150±0.0016  chips -0.0151±0.0043  (G&S -0.0131)  k_end 2.93 k_min -1.5e-05 expo 0.007 viol 0 below v* 0/400
+[02:24:13] BEFFE             dynamic       EV -0.0403±0.0007  chips -0.0386±0.0043  (G&S -0.0397)  k_end 0.56 k_min -2.6e-06 expo 0.003 viol 0 below v* 0/400
+[02:24:13] BEFFE             equilibrium   EV -0.0556±0.0000  chips -0.0540±0.0057  (G&S -0.0556)  k_end -0.00 k_min -9.1e-05 expo 0.000 viol 0 below v* 159/200
+[02:24:13] Best Equilibrium  random        EV +0.1328±0.0076  chips +0.1315±0.0090  (G&S +0.1450)  k_end 41.82 k_min -4.3e-06 expo 0.000 viol 0 below v* 0/400
+[02:24:13] Best Equilibrium  sophisticated EV -0.0177±0.0015  chips -0.0166±0.0042  (G&S -0.0148)  k_end 7.76 k_min -1.6e-05 expo 0.000 viol 0 below v* 0/400
+[02:24:13] Best Equilibrium  dynamic       EV -0.0365±0.0007  chips -0.0358±0.0041  (G&S -0.0352)  k_end 4.02 k_min -2.0e-06 expo 0.000 viol 0 below v* 0/400
+[02:24:13] Best Equilibrium  equilibrium   EV -0.0556±0.0000  chips -0.0548±0.0056  (G&S -0.0556)  k_end -0.00 k_min -9.3e-05 expo 0.000 viol 0 below v* 164/200
+[02:24:13] Best response     random        EV +0.3276±0.0245  chips +0.3277±0.0253  (G&S +0.4700)  k_end -12.67 k_min -3.2e+02 expo 0.179 viol 225164 below v* 0/400
+[02:24:13] Best response     sophisticated EV +0.0395±0.0048  chips +0.0391±0.0065  (G&S +0.0548)  k_end -179.80 k_min -3.4e+02 expo 0.264 viol 399995 below v* 0/400
+[02:24:13] Best response     dynamic       EV -0.1695±0.0028  chips -0.1707±0.0050  (G&S -0.1209)  k_end -150.67 k_min -2.3e+02 expo 0.165 viol 385286 below v* 400/400
+[02:24:13] Best response     equilibrium   EV -0.0556±0.0000  chips -0.0510±0.0057  (G&S -0.0556)  k_end -234.08 k_min -3.5e+02 expo 0.297 viol 200000 below v* 134/200
+[02:24:13] done in 2315 s

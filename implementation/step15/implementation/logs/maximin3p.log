@@ -1,0 +1,13 @@
+
+===== maximin3p started 2026-09-25T01:45:43 =====
+[01:45:43]   seat 0 it 0: upper 0.333333, last oracle -0.125000
+[01:45:44]   seat 0 it 10: upper -0.036458, last oracle -0.102730
+[01:45:45] seat 0: maximin value -0.03788 (LP upper -0.03788, 15 cuts); blueprint value -0.02689, blueprint coalition value -0.12500
+[01:45:46]   seat 1 it 0: upper 0.458333, last oracle -0.106171
+[01:45:47]   seat 1 it 10: upper -0.009058, last oracle -0.067367
+[01:45:48]   seat 1 it 20: upper -0.026515, last oracle -0.037602
+[01:45:48] seat 1: maximin value -0.02652 (LP upper -0.02652, 23 cuts); blueprint value -0.02083, blueprint coalition value -0.10617
+[01:45:48]   seat 2 it 0: upper 0.333333, last oracle -0.125000
+[01:45:49]   seat 2 it 10: upper 0.044075, last oracle -0.006410
+[01:45:50] seat 2: maximin value +0.04167 (LP upper +0.04167, 14 cuts); blueprint value +0.04772, blueprint coalition value -0.12500
+[01:45:50] seat-average maximin -0.00758; done in 7 s

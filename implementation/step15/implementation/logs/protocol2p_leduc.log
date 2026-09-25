@@ -1,0 +1,11 @@
+
+===== protocol2p_leduc started 2026-09-25T03:10:54 =====
+[03:10:54] [leduc] 7 agents x 12 conditions x 10 seeds x 2 seats = 1680 matches of 2000 hands (tol 0.01)
+[03:35:24] [leduc] Nash       gain +0.000±0.000 capture 0.00 expo 0.000 | teach loss Rock +0.000 Maniac +0.000 CallingStation +0.000 | teach match S +0.2451 (min +0.1335, 0 below 0)
+[03:35:24] [leduc] BestEq     gain +0.047±0.000 capture 0.04 expo 0.000 | teach loss Rock +0.000 Maniac +0.000 CallingStation +0.000 | teach match S +0.2744 (min +0.1588, 0 below 0)
+[03:35:24] [leduc] RNR(0.5)   gain +0.797±0.007 capture 0.71 expo 0.264 | teach loss Rock +0.126 Maniac +0.274 CallingStation +0.136 | teach match S +0.5596 (min +0.1693, 0 below 0)
+[03:35:24] [leduc] DirBR      gain +0.988±0.005 capture 0.94 expo 2.461 | teach loss Rock +1.208 Maniac +1.034 CallingStation +1.488 | teach match S -0.0013 (min -0.5335, 31 below 0)
+[03:35:24] [leduc] RWYWE      gain +0.113±0.001 capture 0.10 expo 0.006 | teach loss Rock +0.000 Maniac +0.000 CallingStation +0.000 | teach match S +0.3122 (min +0.1573, 0 below 0) | k_min -1.0e-04 viol 0 solves 488 34.3s
+[03:35:24] [leduc] RWYWE-rev  gain +0.134±0.001 capture 0.12 expo 0.010 | teach loss Rock +0.000 Maniac +0.000 CallingStation +0.000 | teach match S +0.3188 (min +0.1652, 0 below 0) | k_min -1.0e-04 viol 0 solves 589 40.0s
+[03:35:24] [leduc] BEFEWP     gain +0.049±0.000 capture 0.05 expo 0.004 | teach loss Rock +0.000 Maniac +0.000 CallingStation +0.000 | teach match S +0.2762 (min +0.1587, 0 below 0) | k_min -2.1e-05 viol 0 solves 40 4.8s
+[03:35:24] [leduc] done in 1471 s -> C:\Users\UserNIK\projects\rlPlanRevised\implementation\step15\implementation\results\protocol2p_leduc.json

@@ -1,0 +1,9 @@
+P(bet) at player 1's information sets: ['0', '0pb', '1', '1pb', '2', '2pb']
+  blueprint (CFR+)         [0.223 0.    0.    0.556 0.668 1.   ]
+  HiGHS vertex, eq. model  [0.    0.    0.    0.333 0.    1.   ]
+  tie-broken, eq. model    [0.223 0.    0.    0.556 0.668 1.   ]
+Mean EV against 300 sophisticated opponents (v* = -0.0556):
+  blueprint              -0.0191
+  HiGHS vertex           -0.0338
+  tie-broken             -0.0191
+  best eq, true model    -0.0112
