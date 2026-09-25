@@ -87,7 +87,7 @@ def fig_gs_replication():
         ax.set_xlim(lo - 0.25 * (hi - lo), hi + 0.25 * (hi - lo))
         ax.grid(axis="x")
         ax.set_xlabel("chips/hand")
-    fig.text(0.5, -0.02, "dot: this replication (95 % CI)   bar: G&S (2015), Table I   dotted: v*",
+    fig.text(0.5, -0.13, "dot: this replication (95 % CI)   bar: G&S (2015), Table I   dotted: v*",
              ha="center", fontsize=FS, color=INK2)
     fig.tight_layout(w_pad=1.0)
     save(fig, "gs_replication.png")

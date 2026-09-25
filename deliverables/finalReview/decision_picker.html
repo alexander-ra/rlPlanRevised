@@ -36,7 +36,7 @@
 <main>
   <h1>Chapter finalization decisions</h1>
   <p class="intro">Choose the Bulgarian wording and review the flagged passages for Chapters 1–15. Choices are saved in this browser. Copy the Markdown at the end and paste it into the Codex chat, or download it as a file.</p>
-  <p class="small">Sources: <a href="GLOSSARY_DECISIONS.md" target="_blank">glossary decisions</a>, <a href="../reports/TRANSLATION_REVIEW_BG.md" target="_blank">translation review</a>, and <a href="../reports/TRANSLATION_REVIEW_BLOCKS_BG.md" target="_blank">nine passages for review</a>. Chapter 15 translation is scheduled for later.</p>
+  <p class="small">Sources: <a href="GLOSSARY_DECISIONS.md" target="_blank">glossary decisions</a>, <a href="../reports/TRANSLATION_REVIEW_BG.md" target="_blank">translation review</a>, and <a href="../reports/TRANSLATION_REVIEW_BLOCKS_BG.md" target="_blank">nine passages for review</a>. Chapter 15's Bulgarian translation is now included.</p>
 
   <div class="toolbar">
     <button id="copy">Copy decisions</button>
@@ -111,7 +111,7 @@
     document.getElementById('exportPreview').value = exportText();
   }
   function exportText() {
-    const lines = ['# My chapter finalization decisions','','Please apply these decisions consistently to Chapters 1–15. I will finish the Chapter 15 Bulgarian translation later.'];
+    const lines = ['# My chapter finalization decisions','','Please apply these decisions consistently to Chapters 1–15, including the Chapter 15 Bulgarian translation.'];
     for (const group of groups) {
       lines.push('',`## ${document.querySelector('#'+group.target+' h2').textContent}`,'');
       for (const item of group.items) {

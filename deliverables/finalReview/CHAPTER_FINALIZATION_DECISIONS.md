@@ -1,6 +1,6 @@
 # Chapter finalization decisions — 25 September 2026
 
-Applies to Chapters 1–15. The Bulgarian translation of Chapter 15 will be completed later.
+Applies to Chapters 1–15. The Bulgarian translation of Chapter 15 was added in commit `d80fea0`.
 
 ## Terminology
 

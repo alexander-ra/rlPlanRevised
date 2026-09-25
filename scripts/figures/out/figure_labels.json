@@ -12898,5 +12898,993 @@
     "call": "overlay"
    }
   ]
+ },
+ {
+  "en": "Near-equilibrium",
+  "bg": "Близки до равновесието",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Dynamic",
+  "bg": "Динамични",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Best equilibrium",
+  "bg": "Най-добро равновесие",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "chips/hand",
+  "bg": "жетони/разд.",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "dot: this replication (95 % CI)   bar: G&S (2015), Table I   dotted: v*",
+  "bg": "точка: измерено   черта: G&S (2015)   пунктир: v*",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "0.05",
+  "bg": "0,05",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "-0.05",
+  "bg": "−0,05",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "-0.15",
+  "bg": "−0,15",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "RNR(0.5)",
+  "bg": "RNR(0,5)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "RWYWE (showdown)",
+  "bg": "RWYWE (разкриване)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "RWYWE (cards shown)",
+  "bg": "RWYWE (открити карти)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "mean exposure (chips/hand)",
+  "bg": "средна експозиция\n(жетони/разд.)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "gain over Nash (chips/hand)",
+  "bg": "приръст спрямо „Наш“\n(жетони/разд.)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "BestEq, RWYWE and RNR(0.5)\noverlap; S ends at +0.004",
+  "bg": "BestEq, RWYWE и RNR(0,5)\nсе припокриват; накрая S = +0,004",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "running S\n(chips/hand)",
+  "bg": "текуща S\n(жетони на раздаване)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "(a) bait TightPassive, then best response every hand",
+  "bg": "(а) примамка TightPassive, после най-добър отговор на всяко раздаване",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "RWYWE bank k\n(chips)",
+  "bg": "резерв k на RWYWE\n(жетони)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "(b) bait LooseAggr: the bank is spent after the switch",
+  "bg": "(б) примамка LooseAggr: резервът се изразходва след смяната",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "hand (attack from hand 1000)",
+  "bg": "раздаване (атака от раздаване 1 000)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "ε=0.01",
+  "bg": "ε=0,01",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "ε=0.03",
+  "bg": "ε=0,03",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "ε=0.1",
+  "bg": "ε=0,1",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "ε=0.3",
+  "bg": "ε=0,3",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "worst-case loss relative to the blueprint, L (chips/hand)",
+  "bg": "загуба в най-лошия случай спрямо плана, L (жетони на раздаване)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "gain over the blueprint\n(chips/hand)",
+  "bg": "приръст спрямо плана\n(жетони на раздаване)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "capped mixture BD(ε)",
+  "bg": "смес с таван BD(ε)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "KL anchor KL(β)",
+  "bg": "KL-котва KL(β)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "blueprint",
+  "bg": "план",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "maximin",
+  "bg": "максимин",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "equal share",
+  "bg": "равен дял",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "maximin value",
+  "bg": "максиминна стойност",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "gain over the blueprint vs independent pairs (chips/hand)",
+  "bg": "приръст спрямо плана срещу независими двойки (жетони на раздаване)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "EV under adaptive\ncolluders (chips/hand)",
+  "bg": "EV при адаптивни\nсъучастници (жетони на раздаване)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "MODEL\nof the opponents,\nfrom past hands",
+  "bg": "МОДЕЛ\nна противниците\nот предишните\nраздавания",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "PLAY π(t)\nbest response to the\nmodel, with worst\ncase ≥ ref − k",
+  "bg": "ИГРА π(t)\nнай-добър отговор\nна модела с най-лош\nслучай ≥ реф − k",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "OBSERVE\nthe actions; the cards\nonly at showdown",
+  "bg": "НАБЛЮДЕНИЕ\nна действията; картите –\nсамо при разкриване",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "CREDIT\nthe worst opponent play\nthat fits what was\nseen, against π(t)",
+  "bg": "ЗАЧИТАНЕ\nна най-лошата игра на\nпротивника, съвместима\nс видяното, срещу π(t)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "UPDATE THE BANK\nk ← k + credit − ref\n(k stays ≥ 0)",
+  "bg": "ОБНОВЯВАНЕ\nНА РЕЗЕРВА\nk ← k + зачетено − реф\n(k остава ≥ 0)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "REFERENCE\n2 players: v*\n3 players: v_mm,\nmaximin against a\ncoordinated pair",
+  "bg": "РЕФЕРЕНТНА\nСТОЙНОСТ\n2 играчи: v*\n3 играчи: v_mm,\nмаксимин срещу\nкоординирана двойка",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Over the whole match: total expected payoff ≥ T · ref, against any opponents",
+  "bg": "За целия мач: обща очаквана печалба ≥ T · реф срещу всякакви противници",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "C1  opponent inference",
+  "bg": "№1  Моделиране",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "C2  N-player safety",
+  "bg": "№2  Безопасност",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "C3  evaluation",
+  "bg": "№3  оценяване",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "EXISTS",
+  "bg": "НАЛИЧНО",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "OPEN",
+  "bg": "ОТВОРЕНО",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "APPROACH",
+  "bg": "ПОДХОД",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "EVIDENCE",
+  "bg": "РЕЗУЛТАТИ",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "2-player detect → adapt\n(GSCU, PACE); poker\nexploiters (StratFormer,\nAlphaExploitem)",
+  "bg": "2 играчи: откриване\n→ адаптация (GSCU,\nPACE); експлоататори\nв покера (StratFormer,\nAlphaExploitem)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "N players; shifts within\na match; coupled to a\nsafety criterion",
+  "bg": "N играчи; смени в\nрамките на мача;\nсвързано с критерий\nза безопасност",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Dirichlet model per\nopponent, log prior,\nchange points,\ncalibrated confidence",
+  "bg": "модел на Дирихле\nза всеки противник,\nтипове от записи,\nточки на промяна,\nкалибрирана увереност",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Ch. 13: re-ID 15.6 %\nof 834 players;\nCh. 14: 3P model +0.37\nchips/hand in 50 hands",
+  "bg": "Гл. 13: разпознати\n15,6 % от 834 играчи;\nГл. 14: за трима +0,37\nжетона за 50 раздавания",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "2P safe exploitation:\nRNR, RWYWE, OX-Search;\nN players: equal share,\nteam-maxmin",
+  "bg": "безопасна експлоатация\nза 2: RNR, RWYWE,\nOX-Search; за N: равен\nдял, team-maxmin",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "N-player exploitation\nwith a checked loss\nbound, tested against\ncolluders",
+  "bg": "експлоатация при N\nс проверена граница\nна загубата, изпитана\nсрещу съучастници",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "maximin-floor RWYWE;\ncapped mixture;\nKL anchor (measured)",
+  "bg": "RWYWE с максиминен\nпраг; смес с таван;\nKL-котва (измервана)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P1: RWYWE safe in all\n60 attacked matches;\nP2: MM-RWYWE +0.08,\n−0.007 vs colluders",
+  "bg": "P1: 60/60 мача\nбезопасни; P2:\nMM-RWYWE +0,08;\n−0,007 при сговор",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "exploitability, AIVAT,\nElo, α-Rank, VasE;\nRRPS (one 2P game)",
+  "bg": "експлоатируемост,\nAIVAT, Ело, α-Rank,\nVasE; RRPS (една игра\nза двама)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "gain, speed and a\ncoalition-aware worst\ncase, with confidence,\nacross games",
+  "bg": "приръст, скорост и\nнай-лош случай с\nотчитане на коалиции,\nс увереност, в\nразлични игри",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Ch. 14 joint protocol\n+ match-level safety S\n+ failure-mode matrix",
+  "bg": "обединен протокол\n(гл. 14) + безопасност\nна ниво мач S +\nматрица на откази",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Ch. 14: Elo vs exploit.\nτ = 0.36 (Leduc); 3P\nexploiter −0.47 under\nadaptive coalition",
+  "bg": "Гл. 14: Ело спрямо\nексплоат. τ = 0,36\n(Ледюк); за трима:\nекспл. −0,47 при\nадаптивна коалиция",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Stage I · Ch. I",
+  "bg": "Етап I · гл. I",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Stage II · Ch. II",
+  "bg": "Етап II · гл. II",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Stage III · Ch. III",
+  "bg": "Етап III · гл. III",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Stage IV · Ch. IV",
+  "bg": "Етап IV · гл. IV",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Write-up, defence",
+  "bg": "Оформяне, защита",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Exp. 2.1 (3P Kuhn → Leduc)",
+  "bg": "Експ. 2.1 (Кун за трима → Ледюк)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Exp. 1.1–1.2 (inference)",
+  "bg": "Експ. 1.1–1.2 (извеждане)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Exp. 2.2 (colluders)",
+  "bg": "Експ. 2.2 (съучастници)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "Exp. 3.1 (cross-game)",
+  "bg": "Експ. 3.1 (между игри)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P1 protocol (CoG)",
+  "bg": "Статия 1: протокол (CoG)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P3 N-player safety (IJCAI)",
+  "bg": "Статия 3: безопасност при N (IJCAI)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P4 inference (NeurIPS)",
+  "bg": "Статия 4: извеждане (NeurIPS)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P2 hand histories (ToG)",
+  "bg": "Статия 2: истории на раздавания (ToG)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P5 colluders (AAMAS)",
+  "bg": "Статия 5: съучастници (AAMAS)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "P6 cross-game (journal)",
+  "bg": "Статия 6: между игри (журнал)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "today ",
+  "bg": "днес ",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
+ },
+ {
+  "en": "filled ◆: announced deadline   hollow ◇: estimated\nfaint ◇: AAMAS 2027 stretch option for P1",
+  "bg": "◆ обявен   ◇ оценен\nблед ◇: AAMAS 2027 (вариант)",
+  "source": "final-review-2026-09",
+  "glossary_bg": null,
+  "occurrences": [
+   {
+    "file": "deliverables/finalReview/fixes/labels_step15.json",
+    "line": null,
+    "call": "overlay"
+   }
+  ]
  }
 ]

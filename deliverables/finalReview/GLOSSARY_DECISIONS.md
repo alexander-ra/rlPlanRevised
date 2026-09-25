@@ -10,7 +10,7 @@ settled `llmPipeline/glossary_settled.md`, via the picker).
 
 **Candidate picks (2026-09-25):** the seven formerly open rows are resolved below.
 Apply them to every Bulgarian chapter, report, one-pager, figure label and glossary.
-Chapter 15's Bulgarian prose will be translated later using these picks.
+Chapter 15's Bulgarian prose was added in commit `d80fea0` using these picks.
 
 Convention kept from the brief: algorithm and system names stay in Latin script (CFR, PPO,
 Libratus, Decision Transformer …); cited authors stay in Latin script in prose, while

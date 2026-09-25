@@ -63,6 +63,8 @@ ax.set_xlim(D(2026, 3), D(2029, 5))
 ax.set_ylim(-1.4, y - 0.3)
 ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 7)))
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%m.%Y"))
+ax.tick_params(axis="x", labelsize=9)
+plt.setp(ax.get_xticklabels(), rotation=25, ha="right")
 ax.grid(axis="x", color=GRID)
 ax.set_axisbelow(True)
 ax.set_xlabel("filled ◆: announced deadline   hollow ◇: estimated\n"
