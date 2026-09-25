@@ -9,10 +9,8 @@ of chapters 1–12 found what goes wrong — avoid all of it.
 ## Read first
 
 - The English sources you translate, completely.
-- `deliverables/finalReview/GLOSSARY_DECISIONS.md` — apply every ✅ row. For the rows still
-  open (1.10 blueprint, 2.3 self-play, 2.5 bootstrapping, 1.18 oracle) use the form the
-  corrected corpus currently uses ("план", "самообучение", "оракул"; for bootstrapping grep
-  the corpus) so the candidate's later decision can be applied in one pass everywhere.
+- `deliverables/finalReview/GLOSSARY_DECISIONS.md` — apply every ✅ row, including the
+  candidate's picks for blueprint, self-play, bootstrapping, oracle, author names and agent names.
 - `deliverables/terminology_EN_BG.md` (curated) and `llmPipeline/glossary_settled.md` (settled;
   where it conflicts with GLOSSARY_DECISIONS, GLOSSARY_DECISIONS wins).
 - Two corrected Bulgarian chapters as models of register and conventions:
@@ -31,9 +29,10 @@ of chapters 1–12 found what goes wrong — avoid all of it.
   "двуигров", "неразрешим" (intractable), "задно" (posterior), "сходява", "персонализиран"
   (custom), "реално време" for wall-clock, "извън линия" for offline, first-person verb
   forms ("рандомизирам"), "герой" for hero, "проверка" for check, "пас" for fold.
-- Names: algorithms, systems and datasets in Latin script (CFR, PPO, Pluribus, OpenSpiel,
-  player2vec, PHH, iPoker, HandHQ…); people transliterated (Наш, Кун, Шапли); Kuhn → Кун,
-  Leduc → Ледюк; Nash as an opponent type in quotes „Наш“, the concept "равновесие на Наш".
+- Names: algorithms, systems, datasets and named agents in Latin script (CFR, PPO, Pluribus,
+  OpenSpiel, player2vec, PHH, iPoker, HandHQ, Rock, Maniac…); cited authors retain Latin
+  spellings in prose. Game and concept names use Bulgarian (Кун, Ледюк, Наш, Шапли);
+  Nash as an opponent type stays in quotes „Наш“, the concept "равновесие на Наш".
 - "Глава N" for chapters; "раздел N.M" for sections.
 - Keep the Markdown structure identical (headings, tables, math, footnote labels, image
   paths, attributes). Footnote *bodies* (bibliography) stay as in English except linking

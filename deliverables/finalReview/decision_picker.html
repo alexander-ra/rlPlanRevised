@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chapter finalization decisions</title>
+  <style>
+    :root { color-scheme: light; --ink:#172331; --muted:#526376; --line:#d7dfe7; --paper:#fff; --bg:#eef3f7; --accent:#174b78; --soft:#e8f2fb; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,Segoe UI,sans-serif; }
+    main { max-width:960px; margin:0 auto; padding:32px 18px 70px; }
+    h1 { font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.15; margin:0 0 12px; }
+    h2 { font-size:1.3rem; margin:38px 0 8px; }
+    p { margin:0 0 15px; }
+    .intro { color:var(--muted); max-width:760px; }
+    .toolbar { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:12px; margin:18px 0 24px; border:1px solid var(--line); border-radius:12px; background:#fffefc; box-shadow:0 4px 18px #233c5114; }
+    button { cursor:pointer; border:1px solid var(--accent); border-radius:8px; background:var(--accent); color:white; font:inherit; font-weight:600; padding:8px 13px; }
+    button.secondary { color:var(--accent); background:white; }
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline:3px solid #eead3c; outline-offset:2px; }
+    #progress { margin-left:auto; color:var(--muted); font-size:.92rem; }
+    #message { width:100%; min-height:1.2em; font-size:.9rem; color:#12613f; }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin:14px 0; }
+    .card h3 { font-size:1.05rem; margin:0 0 4px; }
+    .card .context { color:var(--muted); font-size:.92rem; margin-bottom:12px; }
+    .option { display:block; padding:8px 10px; margin:5px 0; border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+    .option:has(input:checked) { border-color:var(--accent); background:var(--soft); }
+    .option input { margin:0 8px 0 0; accent-color:var(--accent); }
+    .note { display:block; margin-top:12px; color:var(--muted); font-size:.9rem; }
+    .note input { display:block; width:100%; margin-top:4px; padding:8px; border:1px solid var(--line); border-radius:7px; font:inherit; color:var(--ink); }
+    a { color:var(--accent); }
+    .small { font-size:.9rem; color:var(--muted); }
+    #exportPreview { width:100%; min-height:180px; padding:12px; border:1px solid var(--line); border-radius:8px; font:13px/1.45 ui-monospace,Consolas,monospace; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Chapter finalization decisions</h1>
+  <p class="intro">Choose the Bulgarian wording and review the flagged passages for Chapters 1–15. Choices are saved in this browser. Copy the Markdown at the end and paste it into the Codex chat, or download it as a file.</p>
+  <p class="small">Sources: <a href="GLOSSARY_DECISIONS.md" target="_blank">glossary decisions</a>, <a href="../reports/TRANSLATION_REVIEW_BG.md" target="_blank">translation review</a>, and <a href="../reports/TRANSLATION_REVIEW_BLOCKS_BG.md" target="_blank">nine passages for review</a>. Chapter 15 translation is scheduled for later.</p>
+
+  <div class="toolbar">
+    <button id="copy">Copy decisions</button>
+    <button id="download" class="secondary">Download .md</button>
+    <button id="clear" class="secondary">Clear picks</button>
+    <span id="progress"></span>
+    <span id="message" role="status"></span>
+  </div>
+
+  <section id="glossary"><h2>1. Glossary choices</h2><p class="small">The seven rows marked ❓ in the central decision file. Nothing is preselected.</p></section>
+  <section id="consistency"><h2>2. Translation consistency</h2><p class="small">The remaining corpus choices from the translation review. The blueprint question above also settles its duplicate here.</p></section>
+  <section id="headings"><h2>3. Six summary titles</h2><p class="small">For each chapter, choose which existing title should appear in both the YAML metadata and the visible heading. You may keep the difference if intentional.</p></section>
+  <section id="passages"><h2>4. Nine translated passages</h2><p class="small">Read the numbered passage in the <a href="../reports/TRANSLATION_REVIEW_BLOCKS_BG.md" target="_blank">side by side review</a>, then mark whether its Bulgarian version sounds right. Add wording in the note if it needs an edit.</p></section>
+  <section><h2>Export preview</h2><p class="small">Unanswered items are included as “undecided,” so you can send a partial set of choices.</p><textarea id="exportPreview" readonly aria-label="Markdown export preview"></textarea></section>
+</main>
+<script>
+(() => {
+  const key = 'rlplan-finalization-decisions-v1';
+  const groups = [
+    {target:'glossary', items:[
+      {id:'1.10', title:'Blueprint', context:'The corpus mostly says “план”; the curated glossary says “Схема”.', options:[['a','базова стратегия (blueprint)'],['b','план (blueprint)']]},
+      {id:'1.18', title:'Oracle', context:'Your curated choice was “предсказвач”; parts of Chapters 2 and 8–11 now use “оракул”.', options:[['a','предсказвач'],['b','оракул']]},
+      {id:'2.3', title:'Self-play', context:'Replace the misleading “самообучение” throughout.', options:[['a','самоигра'],['b','игра срещу себе си']]},
+      {id:'2.5', title:'Bootstrapping', context:'Choose one Bulgarian term for the corpus.', options:[['a','бутстрапинг'],['b','самоподкрепяне (bootstrapping on first use)']]},
+      {id:'6.13', title:'Poker player-type adjectives', context:'Chapters 7–8 use “стегнат-пасивен”; another form uses the connecting -о.', options:[['a','стегнато-пасивен / разпуснато-агресивен'],['b','стегнат-пасивен / разпуснат-агресивен']]},
+      {id:'6.24', title:'Authors in Bulgarian prose', context:'For example, Ganzfried and Sandholm in Chapter 14 versus Ганцфрид и Сандхолм in Chapter 8.', options:[['a','Transliterate names in prose'],['b','Keep Latin spellings in prose']]},
+      {id:'6.25', title:'Bot and agent names', context:'For example, Rock, Maniac and AlwaysPass versus Камък, Маниак and Винаги пас.', options:[['a','Keep code and figure names in Latin'],['b','Translate names in Bulgarian prose']]}
+    ]},
+    {target:'consistency', items:[
+      {id:'TR-Kuhn', title:'Kuhn capitalization', context:'The translation review finds both “кун” and “Кун”.', options:[['a','Кун everywhere'],['b','кун everywhere']]},
+      {id:'TR-Holdem', title:'Hold’em spelling', context:'The translation review finds both “Холдем” and “Hold’em”.', options:[['a','Холдем in Bulgarian prose'],['b','Hold’em in Bulgarian prose']]},
+      {id:'TR-English', title:'English article titles and source names', context:'The “Read more” entries retain original titles and some English source names.', options:[['a','Keep original English titles and names'],['b','Translate titles where practical']]}
+    ]},
+    {target:'headings', items:[
+      {id:'H02', title:'Chapter 2 summary', context:'Metadata: “Теория на игрите и основи на CFR” · Heading: “Основи на теорията на игрите и CFR”', options:[['yaml','Use metadata wording for both'],['h1','Use heading wording for both'],['keep','Keep the difference']]},
+      {id:'H04', title:'Chapter 4 summary', context:'Metadata: “Абстракция на игри и мащабиране на игри с непълна информация” · Heading: “Абстракция на играта и мащабиране на игри с непълна информация”', options:[['yaml','Use metadata wording for both'],['h1','Use heading wording for both'],['keep','Keep the difference']]},
+      {id:'H09', title:'Chapter 9 summary', context:'Metadata: “Многоагентно обучение с подкрепление” · Heading adds “координация, конкуренция и комуникация”', options:[['yaml','Use metadata wording for both'],['h1','Use heading wording for both'],['keep','Keep the difference']]},
+      {id:'H10', title:'Chapter 10 summary', context:'Metadata: “Обучение на базата на популации и Еволюционна теория на игрите” · Heading: “Обучение, базирано на популации и еволюционна теория на игрите”', options:[['yaml','Use metadata wording for both'],['h1','Use heading wording for both'],['keep','Keep the difference']]},
+      {id:'H11', title:'Chapter 11 summary', context:'Metadata includes “(So Long Sucker)”; the visible heading omits it.', options:[['yaml','Use metadata wording for both'],['h1','Use heading wording for both'],['keep','Keep the difference']]},
+      {id:'H12', title:'Chapter 12 summary', context:'Metadata ends “в стратегически среди”; heading ends “в стратегически ситуации”.', options:[['yaml','Use metadata wording for both'],['h1','Use heading wording for both'],['keep','Keep the difference']]}
+    ]},
+    {target:'passages', items:[
+      ['P1','Chapter 1 report — methodology note'],['P2','Chapter 9 summary — PSRO on Leduc'],['P3','Chapter 9 summary — Goofspiel K=4'],
+      ['P4','Chapter 10 summary — population decomposition'],['P5','Chapter 10 summary — second flagged passage'],
+      ['P6','Chapter 11 summary — first flagged passage'],['P7','Chapter 11 summary — second flagged passage'],['P8','Chapter 11 summary — third flagged passage'],
+      ['P9','Chapter 12 report — artifact caveat']
+    ].map(([id,title]) => ({id,title,context:'See passage '+id.slice(1)+' in TRANSLATION_REVIEW_BLOCKS_BG.md.',options:[['approve','Approve Bulgarian text'],['edit','Edit Bulgarian text (describe below)'],['english','Keep original English text']]}))}
+  ];
+  const all = groups.flatMap(g => g.items);
+  let saved;
+  try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch { saved = {}; }
+  const state = saved && typeof saved === 'object' ? saved : {};
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  for (const group of groups) {
+    const root = document.getElementById(group.target);
+    for (const item of group.items) {
+      const card = document.createElement('article'); card.className = 'card';
+      const opts = item.options.map(([value,label]) => `<label class="option"><input type="radio" name="${esc(item.id)}" value="${esc(value)}" ${state[item.id]?.choice === value ? 'checked' : ''}>${esc(label)}</label>`).join('');
+      card.innerHTML = `<h3>${esc(item.id)} · ${esc(item.title)}</h3><div class="context">${esc(item.context)}</div>${opts}<label class="note">Other wording or comment<input type="text" data-note="${esc(item.id)}" value="${esc(state[item.id]?.note || '')}" placeholder="Optional"></label>`;
+      root.appendChild(card);
+    }
+  }
+  function update() {
+    for (const item of all) {
+      const picked = document.querySelector(`input[name="${item.id}"]:checked`);
+      const note = document.querySelector(`input[data-note="${item.id}"]`).value.trim();
+      state[item.id] = {choice:picked?.value || '',note};
+    }
+    localStorage.setItem(key, JSON.stringify(state));
+    const chosen = all.filter(item => state[item.id].choice || state[item.id].note).length;
+    document.getElementById('progress').textContent = `${chosen} / ${all.length} answered`;
+    document.getElementById('exportPreview').value = exportText();
+  }
+  function exportText() {
+    const lines = ['# My chapter finalization decisions','','Please apply these decisions consistently to Chapters 1–15. I will finish the Chapter 15 Bulgarian translation later.'];
+    for (const group of groups) {
+      lines.push('',`## ${document.querySelector('#'+group.target+' h2').textContent}`,'');
+      for (const item of group.items) {
+        const s = state[item.id] || {};
+        const label = item.options.find(([v]) => v === s.choice)?.[1] || (s.note ? 'Custom answer' : 'UNDECIDED');
+        lines.push(`- ${item.id} ${item.title}: ${label}${s.note ? ' — '+s.note : ''}`);
+      }
+    }
+    return lines.join('\n')+'\n';
+  }
+  document.addEventListener('input', update);
+  document.addEventListener('change', update);
+  const msg = text => { const el=document.getElementById('message'); el.textContent=text; setTimeout(() => { if(el.textContent===text) el.textContent=''; },4000); };
+  document.getElementById('copy').addEventListener('click', async () => {
+    const content=exportText();
+    try { await navigator.clipboard.writeText(content); msg('Copied. Paste it into Codex.'); }
+    catch { const preview=document.getElementById('exportPreview'); preview.focus(); preview.select(); try { document.execCommand('copy'); msg('Copied. Paste it into Codex.'); } catch { msg('Select the preview text and copy it manually.'); } }
+  });
+  document.getElementById('download').addEventListener('click', () => {
+    const url=URL.createObjectURL(new Blob([exportText()],{type:'text/markdown;charset=utf-8'}));
+    const a=document.createElement('a'); a.href=url; a.download='chapter-finalization-decisions.md'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url),1000); msg('Downloaded chapter-finalization-decisions.md.');
+  });
+  document.getElementById('clear').addEventListener('click', () => {
+    if (!confirm('Clear every saved pick and comment?')) return;
+    document.querySelectorAll('input[type=radio]').forEach(el => el.checked=false);
+    document.querySelectorAll('input[data-note]').forEach(el => el.value='');
+    update(); msg('Picks cleared.');
+  });
+  update();
+})();
+</script>
+</body>
+</html>

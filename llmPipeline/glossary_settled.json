@@ -1113,10 +1113,10 @@
  },
  {
   "en": "no-abstraction self-play",
-  "bg": "самообучение без абстракция",
+  "bg": "игра срещу себе си без абстракция",
   "category": "Abstraction & State Representation",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -2081,7 +2081,7 @@
  },
  {
   "en": "blueprint strategy",
-  "bg": "план-стратегия",
+  "bg": "план",
   "category": "Algorithm Names",
   "freq": 2,
   "status": "picked",
@@ -2945,10 +2945,10 @@
  },
  {
   "en": "tabular blueprint",
-  "bg": "таблична схема",
+  "bg": "табличен план",
   "category": "Algorithm Names",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "auto: 5/5 unanimous, single candidate"
  },
  {
@@ -12785,10 +12785,10 @@
  },
  {
   "en": "fictitious self-play",
-  "bg": "фиктивна самоигра",
+  "bg": "фиктивна игра срещу себе си",
   "category": "Multi-Agent & Coalition Dynamics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -12897,10 +12897,10 @@
  },
  {
   "en": "heterogeneous adversarial self-play",
-  "bg": "хетерогенно антагонистично самообучение",
+  "bg": "хетерогенна антагонистична игра срещу себе си",
   "category": "Multi-Agent & Coalition Dynamics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -13129,10 +13129,10 @@
  },
  {
   "en": "model-free self-play",
-  "bg": "самообучение без използване на модел",
+  "bg": "игра срещу себе си без използване на модел",
   "category": "Multi-Agent & Coalition Dynamics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -13337,10 +13337,10 @@
  },
  {
   "en": "naive self-play",
-  "bg": "наивно самообучение",
+  "bg": "наивна игра срещу себе си",
   "category": "Multi-Agent & Coalition Dynamics",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -13713,10 +13713,10 @@
  },
  {
   "en": "self-play",
-  "bg": "самообучение",
+  "bg": "игра срещу себе си",
   "category": "Multi-Agent & Coalition Dynamics",
   "freq": 43,
-  "status": "auto",
+  "status": "picked",
   "reason": "5/5 unanimous + appears verbatim in human BG corpus"
  },
  {
@@ -16337,7 +16337,7 @@
  },
  {
   "en": "heads-up limit texas hold'em",
-  "bg": "хедс-ъп лимит тексаски холдем",
+  "bg": "хедс-ъп лимит тексаски Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 4,
   "status": "picked",
@@ -16353,7 +16353,7 @@
  },
  {
   "en": "heads-up no-limit Texas hold'em",
-  "bg": "Тексаски но-лимит покер за двама",
+  "bg": "безлимитен тексаски Холдем за двама",
   "category": "Poker & Domain Vocabulary",
   "freq": 4,
   "status": "picked",
@@ -16361,7 +16361,7 @@
  },
  {
   "en": "heads-up no-limit hold'em",
-  "bg": "Heads-Up No-Limit Холдем",
+  "bg": "безлимитен Холдем за двама",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
   "status": "picked",
@@ -16721,7 +16721,7 @@
  },
  {
   "en": "limit texas hold'em",
-  "bg": "Тексас холдем с лимит",
+  "bg": "Тексас Холдем с лимит",
   "category": "Poker & Domain Vocabulary",
   "freq": 2,
   "status": "picked",
@@ -16985,7 +16985,7 @@
  },
  {
   "en": "no-limit hold'em",
-  "bg": "No-Limit Холдем",
+  "bg": "безлимитен Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
   "status": "picked",
@@ -17001,7 +17001,7 @@
  },
  {
   "en": "no-limit texas hold'em",
-  "bg": "No-Limit Texas Холдем",
+  "bg": "безлимитен тексаски Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 2,
   "status": "picked",
@@ -17713,10 +17713,10 @@
  },
  {
   "en": "self-play values",
-  "bg": "стойности от самоигра",
+  "bg": "стойности от игра срещу себе си",
   "category": "Poker & Domain Vocabulary",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -17985,10 +17985,10 @@
  },
  {
   "en": "texas hold'em",
-  "bg": "Тексас холдем",
+  "bg": "Тексас Холдем",
   "category": "Poker & Domain Vocabulary",
   "freq": 2,
-  "status": "auto",
+  "status": "picked",
   "reason": "5/5 unanimous + appears verbatim in human BG corpus"
  },
  {
@@ -19873,15 +19873,15 @@
  },
  {
   "en": "self-play loop",
-  "bg": "цикъл на самообучение",
+  "bg": "цикъл на игра срещу себе си",
   "category": "Reinforcement Learning",
   "freq": 3,
-  "status": "auto",
+  "status": "picked",
   "reason": "composed: 5/5 and uses the settled constituents"
  },
  {
   "en": "self-play reinforcement learning",
-  "bg": "обучение чрез самоигра",
+  "bg": "обучение чрез игра срещу себе си",
   "category": "Reinforcement Learning",
   "freq": 5,
   "status": "picked",
@@ -19929,7 +19929,7 @@
  },
  {
   "en": "sound self-play",
-  "bg": "правилно самообучение",
+  "bg": "коректна игра срещу себе си",
   "category": "Reinforcement Learning",
   "freq": 3,
   "status": "picked",
@@ -22329,18 +22329,18 @@
  },
  {
   "en": "self-play equilibrium solver",
-  "bg": "решавач на равновесие чрез самообучение",
+  "bg": "решавач на равновесие чрез игра срещу себе си",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "self-play-with-search",
-  "bg": "самообучение с търсене",
+  "bg": "игра срещу себе си с търсене",
   "category": "Search & Equilibrium Solving",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -22793,10 +22793,10 @@
  },
  {
   "en": "GPU self-play",
-  "bg": "GPU самообучение",
+  "bg": "GPU игра срещу себе си",
   "category": "Software & Experimental Infrastructure",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -24353,18 +24353,18 @@
  },
  {
   "en": "bootstrapped self-play",
-  "bg": "самообучение с начални данни",
+  "bg": "игра срещу себе си с начални данни",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "bootstrapped target",
-  "bg": "цел с бутстрапиране",
+  "bg": "цел със самоподкрепяне",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
@@ -25593,26 +25593,26 @@
  },
  {
   "en": "self-play training",
-  "bg": "обучение чрез самообучение",
+  "bg": "обучение чрез игра срещу себе си",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "bulk: top-voted candidate (freq 1)"
  },
  {
   "en": "self-play training loop",
-  "bg": "цикъл на обучение чрез самообучение",
+  "bg": "цикъл на обучение чрез игра срещу себе си",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "normalised: agrees with its constituent term"
  },
  {
   "en": "self-play-trained",
-  "bg": "обучен чрез самоигра",
+  "bg": "обучен чрез игра срещу себе си",
   "category": "Training & Optimization",
   "freq": 1,
-  "status": "auto",
+  "status": "picked",
   "reason": "deepl: agrees with the top-voted candidate"
  },
  {

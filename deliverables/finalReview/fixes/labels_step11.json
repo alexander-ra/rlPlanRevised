@@ -16,7 +16,7 @@
   "Sparse reward\n$r_{\\text{sparse}}$\n(winner takes all)": "Рядка награда $r_{\\text{sparse}}$\n(победителят\nвзема всичко)",
   "Shapley coalition\ncredit (proxy\nor rollouts)": "Коалиционен принос\nпо Шапли (заместител\nили симулации)",
   "BLEND\n$r = \\alpha\\,r_{\\text{sparse}} + (1-\\alpha)\\,\\text{credit}$": "СМЕСВАНЕ\n$r = \\alpha\\,r_{\\text{sparse}} + (1-\\alpha)\\,\\text{принос}$",
-  "Masked episodic PPO\nself-play (4 seats)": "Епизодичен PPO\nс маскиране,\nсамообучение (4 места)",
+  "Masked episodic PPO\nself-play (4 seats)": "Епизодичен PPO\nс маскиране,\nигра срещу себе си (4 места)",
   "$\\alpha$ sets the balance: $\\alpha=1$ → win reward only (\"just win\"), $\\alpha=0$ → coalition credit only.": "$\\alpha$ задава баланса: $\\alpha=1$ → само наградата за победа, $\\alpha=0$ → само коалиционният принос.",
   "MEASURED (5 seeds, paired;\ngap = coalition score: Shapley − sparse):\n   $\\alpha=0$, proxy, synergy 0.3: +0.0376 ± 0.0103\n      (score 4.5x the sparse one)\n   $\\alpha=0$, rollout credit: +0.0128 ± 0.0026\n   $\\alpha \\geq 0.3$, scale tier: −0.0003 … −0.0035 (DEAD ZONE)": "ИЗМЕРЕНО (5 начални числа, сдвоени сравнения;\nразлика = коалиционен резултат: Шапли − рядка награда):\n   $\\alpha=0$, заместител, синергия 0,3: +0,0376 ± 0,0103\n      (резултатът е 4,5 пъти по-висок)\n   $\\alpha=0$, принос чрез симулации: +0,0128 ± 0,0026\n   $\\alpha \\geq 0{,}3$, пълен мащаб: −0,0003 … −0,0035 (МЪРТВА ЗОНА)",
   "TRADE-OFF (measured):\n$\\alpha=0$ → win rate ~0.29\n(random play: 0.25)\n$\\alpha \\geq 0.1$ → win rate ~0.52": "КОМПРОМИС (измерен):\n$\\alpha=0$ → дял победи ~0,29\n(случайна игра: 0,25)\n$\\alpha \\geq 0{,}1$ → дял победи ~0,52",

@@ -870,7 +870,7 @@
  },
  {
   "en": "Behavioral fingerprint — TightPassive",
-  "bg": "Поведенчески отпечатък — стегнат-пасивен",
+  "bg": "Поведенчески отпечатък — стегнато-пасивен",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -1078,7 +1078,7 @@
  },
  {
   "en": "Blueprint strategy — crisp on\nround 1, increasingly blurry on\nrounds 2–4 (played directly only\non round 1; a scaffold thereafter)",
-  "bg": "План-стратегия — ясна на\nкръг 1, все по-неясна на\nкръгове 2–4 (играе се директно само\nна кръг 1; скеле след това)",
+  "bg": "План — ясен на\nкръг 1, все по-неясен на\nкръгове 2–4 (използва се директно само\nна кръг 1; скеле след това)",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -1091,7 +1091,7 @@
  },
  {
   "en": "Blueprint strategy — crisp on\nrounds 1–2, blurry on rounds 3–4\n(late-round numbers only estimate\nthe value of reaching a subgame)",
-  "bg": "План-стратегия — подробна за\nкръгове 1–2, груба за кръгове 3–4\n(късните числа само оценяват\nстойността на достигането\nдо под-игра)",
+  "bg": "План — подробен за\nкръгове 1–2, груб за кръгове 3–4\n(късните числа само оценяват\nстойността на достигането\nдо под-игра)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -2129,7 +2129,7 @@
  },
  {
   "en": "double-oracle\ncutting-plane loop",
-  "bg": "двоен оракул:\nметод на отсичащите равнини",
+  "bg": "двоен предсказвач:\nметод на отсичащите равнини",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -3270,7 +3270,7 @@
  },
  {
   "en": "Ganzfried\nfloor = Nash value v*",
-  "bg": "Ганцфрид\nпод = стойност на Наш v*",
+  "bg": "Ganzfried\nпод = стойност на Наш v*",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -4231,7 +4231,7 @@
  },
  {
   "en": "LooseAggressive",
-  "bg": "Разпуснат-агресивен",
+  "bg": "LooseAggressive",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -4337,7 +4337,7 @@
  },
  {
   "en": "MAIN agents\n(the product)\nSP + PFSP vs everyone",
-  "bg": "ОСНОВНИ агенти\n(крайният продукт)\nсамообучение +\nPFSP срещу всички",
+  "bg": "ОСНОВНИ агенти\n(крайният продукт)\nигра срещу себе си +\nPFSP срещу всички",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -4377,7 +4377,7 @@
  },
  {
   "en": "Masked episodic PPO\nself-play (4 seats)",
-  "bg": "Епизодичен PPO\nс маскиране,\nсамообучение (4 места)",
+  "bg": "Епизодичен PPO\nс маскиране,\nигра срещу себе си (4 места)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -4610,7 +4610,7 @@
  },
  {
   "en": "measured: main exploitability falls 4.73 -> ~1.21 then regresses to ~2.05 (scale, 120 epochs); best frozen snapshot 1.31 beats PSRO 2.16 and self-play 3.68.",
-  "bg": "измерено: основната експлоатируемост пада от 4.73 -> ~1.21, след което регресира до ~2.05 (мащаб, 120 епохи); най-добрата замразена моментна снимка 1.31 побеждава PSRO 2.16 и самообучение 3.68.",
+  "bg": "измерено: основната експлоатируемост пада от 4.73 -> ~1.21, след което регресира до ~2.05 (мащаб, 120 епохи); най-добрата замразена моментна снимка 1.31 побеждава PSRO 2.16 и игра срещу себе си 3.68.",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -5146,7 +5146,7 @@
  },
  {
   "en": "OFFLINE: blueprint by self-play (one 64-core server, ~$150)",
-  "bg": "ОФЛАЙН: план чрез самообучение (един 64-ядрен сървър, ~$150)",
+  "bg": "ОФЛАЙН: план чрез игра срещу себе си (един 64-ядрен сървър, ~$150)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -5825,7 +5825,7 @@
  },
  {
   "en": "Play a self-play game, running a\nGT-CFR search at every decision",
-  "bg": "Партия със самообучение: търсене\nGT-CFR при всяко решение",
+  "bg": "Партия срещу себе си: търсене\nGT-CFR при всяко решение",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -7389,7 +7389,7 @@
  },
  {
   "en": "Solve with MCCFR +\nregret-based pruning\n(self-play; skips very-negative-\nregret branches; ~3× speedup)",
-  "bg": "Решаване с MCCFR +\nподрязване, базирано на съжаление\n(самообучение; пропуска много-отрицателни-\nсъжаления разклонения; ~3× ускорение)",
+  "bg": "Решаване с MCCFR +\nподрязване, базирано на съжаление\n(игра срещу себе си; пропуска много-отрицателни-\nсъжаления разклонения; ~3× ускорение)",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -7402,7 +7402,7 @@
  },
  {
   "en": "SOUND SELF-PLAY (training)",
-  "bg": "правилно самообучение (training)",
+  "bg": "коректна игра срещу себе си (training)",
   "source": "glossary",
   "glossary_bg": null,
   "occurrences": [
@@ -7827,7 +7827,7 @@
  },
  {
   "en": "the floor is the only thing that differs between methods:\nGanzfried >= Nash value  |  prime-safe >= Nash-eps  |  adaptation >= blueprint value",
-  "bg": "подът е единственото, което се различава между методите:\nГанцфрид >= стойност на Наш  |  безопасен спрямо прайм >= Наш-епс  |  адаптация >= стойност на плана",
+  "bg": "подът е единственото, което се различава между методите:\nGanzfried >= стойност на Наш  |  безопасен спрямо прайм >= Наш-епс  |  адаптация >= стойност на плана",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -7879,7 +7879,7 @@
  },
  {
   "en": "TightPassive",
-  "bg": "Стегнат-пасивен",
+  "bg": "TightPassive",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -7976,7 +7976,7 @@
  },
  {
   "en": "TRAINING: self-play RL + search (AlphaZero-style)",
-  "bg": "ОБУЧЕНИЕ: самообучение RL + търсене (в стил AlphaZero)",
+  "bg": "ОБУЧЕНИЕ: игра срещу себе си RL + търсене (в стил AlphaZero)",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -8210,7 +8210,7 @@
  },
  {
   "en": "Type posterior over time\nhidden = Mixture(Nash, TightPassive)",
-  "bg": "Тип апостериорно разпределение във времето\nскрит = Смес(Наш равновесие, стегнат-пасивен)",
+  "bg": "Тип апостериорно разпределение във времето\nскрит = Смес(Наш равновесие, стегнато-пасивен)",
   "source": "model-single",
   "glossary_bg": null,
   "occurrences": [
@@ -9927,7 +9927,7 @@
  },
  {
   "en": "Solve with MCCFR +\nregret-based pruning (self-play;\nskips very-negative-regret\nbranches; ~3× speedup)",
-  "bg": "Решаване с MCCFR + подрязване,\nосновано на съжалението\n(самообучение; пропуска\nклоновете с много отрицателно\nсъжаление; ~3× ускорение)",
+  "bg": "Решаване с MCCFR + подрязване,\nосновано на съжалението\n(игра срещу себе си; пропуска\nклоновете с много отрицателно\nсъжаление; ~3× ускорение)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -9953,7 +9953,7 @@
  },
  {
   "en": "Blueprint strategy — crisp on round 1, increasingly\nblurry on rounds 2–4 (played directly only on\nround 1; a scaffold thereafter)",
-  "bg": "План-стратегия — подробна в кръг 1, все по-груба\nв кръгове 2–4 (играе се директно само в кръг 1;\nслед това служи като скеле)",
+  "bg": "План — подробен в кръг 1, все по-груб\nв кръгове 2–4 (използва се директно само в кръг 1;\nслед това служи като скеле)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10057,7 +10057,7 @@
  },
  {
   "en": "TRAINING: self-play RL + search\n(AlphaZero-style)",
-  "bg": "ОБУЧЕНИЕ: самообучение с RL\n+ търсене (в стил AlphaZero)",
+  "bg": "ОБУЧЕНИЕ: игра срещу себе си с RL\n+ търсене (в стил AlphaZero)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10174,7 +10174,7 @@
  },
  {
   "en": "SOUND SELF-PLAY\n(training)",
-  "bg": "КОРЕКТНО САМООБУЧЕНИЕ\n(обучение на мрежата)",
+  "bg": "КОРЕКТНО ИГРА СРЕЩУ СЕБЕ СИ\n(обучение на мрежата)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10556,7 +10556,7 @@
  },
  {
   "en": "Calling station",
-  "bg": "Пасивен играч",
+  "bg": "Calling station",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10569,7 +10569,7 @@
  },
  {
   "en": "Maniac",
-  "bg": "Маниак",
+  "bg": "Maniac",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10582,7 +10582,7 @@
  },
  {
   "en": "Rock",
-  "bg": "Камък",
+  "bg": "Rock",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10595,7 +10595,7 @@
  },
  {
   "en": "Loose-passive",
-  "bg": "Разпуснат-пасивен",
+  "bg": "Loose-passive",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10621,7 +10621,7 @@
  },
  {
   "en": "Random",
-  "bg": "Случаен",
+  "bg": "Random",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10639,7 +10639,7 @@
  },
  {
   "en": "Level-1",
-  "bg": "Ниво 1",
+  "bg": "Level-1",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10652,7 +10652,7 @@
  },
  {
   "en": "Level-2",
-  "bg": "Ниво 2",
+  "bg": "Level-2",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10756,7 +10756,7 @@
  },
  {
   "en": "exact best response\n(worst-case oracle, Chapter 7)",
-  "bg": "точен най-добър отговор\n(оракул за най-лошия\nслучай, гл. 7)",
+  "bg": "точен най-добър отговор\n(предсказвач за най-лошия\nслучай, гл. 7)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -10782,7 +10782,7 @@
  },
  {
   "en": "best equilibrium (Ganzfried–Sandholm)\nfloor = Nash value v*",
-  "bg": "най-добро равновесие\n(Ганцфрид–Сандхолм): праг = v*",
+  "bg": "най-добро равновесие\n(Ganzfried–Sandholm): праг = v*",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -11146,7 +11146,7 @@
  },
  {
   "en": "Best-response oracle\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(exact BR, Chapter 7)",
-  "bg": "Оракул за най-добър отговор\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(точен BR, Глава 7)",
+  "bg": "Предсказвач за най-добър отговор\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(точен BR, Глава 7)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -11250,7 +11250,7 @@
  },
  {
   "en": "Kuhn self-play: the AVERAGE converges to Nash,\nthe last iterate does not",
-  "bg": "Кун, самообучение: СРЕДНАТА стратегия се сближава\nс равновесието на Наш, последната итерация - не",
+  "bg": "Кун, игра срещу себе си: СРЕДНАТА стратегия се сближава\nс равновесието на Наш, последната итерация - не",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12043,7 +12043,7 @@
  },
  {
   "en": "self-play (baseline)",
-  "bg": "самообучение (базова линия)",
+  "bg": "игра срещу себе си (базова линия)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12082,7 +12082,7 @@
  },
  {
   "en": "self-play – best iterate",
-  "bg": "самообучение – най-добра итерация",
+  "bg": "игра срещу себе си – най-добра итерация",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12095,7 +12095,7 @@
  },
  {
   "en": "PSRO (exact oracle)",
-  "bg": "PSRO (точен оракул)",
+  "bg": "PSRO (точен предсказвач)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12121,7 +12121,7 @@
  },
  {
   "en": "self-play – final agent",
-  "bg": "самообучение – краен агент",
+  "bg": "игра срещу себе си – краен агент",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12719,7 +12719,7 @@
  },
  {
   "en": "AlwaysPass",
-  "bg": "Винаги пас",
+  "bg": "AlwaysPass",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12732,7 +12732,7 @@
  },
  {
   "en": "AlwaysBet",
-  "bg": "Винаги залог",
+  "bg": "AlwaysBet",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -12745,7 +12745,7 @@
  },
  {
   "en": "Thresholdish",
-  "bg": "Прагов",
+  "bg": "Thresholdish",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [

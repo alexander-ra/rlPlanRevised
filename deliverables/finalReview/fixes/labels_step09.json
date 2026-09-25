@@ -25,7 +25,7 @@
  "Population of policies\n$\\{\\pi^1,\\dots,\\pi^k\\}$ per player": "Популация от стратегии\n$\\{\\pi^1,\\dots,\\pi^k\\}$\nза всеки играч",
  "Empirical meta-game\npayoff matrix $M$": "Емпирична матрица\nна печалбите $M$\nна мета-играта",
  "Meta-Nash mixture\n$\\sigma$ over the population": "Мета-Наш смес\n$\\sigma$ върху популацията",
- "Best-response oracle\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(exact BR, Chapter 7)": "Оракул за най-добър отговор\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(точен BR, Глава 7)",
+ "Best-response oracle\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(exact BR, Chapter 7)": "Предсказвач за най-добър отговор\n$\\pi^{k+1}=\\mathrm{BR}(\\sigma_{-i})$\n(точен BR, Глава 7)",
  "simulate\nmatch-ups": "симулиране\nна срещите",
  "solve": "решаване",
  "best-respond\nto $\\sigma$": "най-добър\nотговор на $\\sigma$",
@@ -54,7 +54,7 @@
  "P(col = Heads)": "P(колона = Ези)",
  "mixed Nash (0.5,0.5)": "смесено равновесие на Наш (0,5; 0,5)",
 
- "Kuhn self-play: the AVERAGE converges to Nash,\nthe last iterate does not": "Кун, самообучение: СРЕДНАТА стратегия се сближава\nс равновесието на Наш, последната итерация - не",
+ "Kuhn self-play: the AVERAGE converges to Nash,\nthe last iterate does not": "Кун, игра срещу себе си: СРЕДНАТА стратегия се сближава\nс равновесието на Наш, последната итерация - не",
  "average iterate": "средна стратегия",
  "last iterate (pure BR)": "последна итерация (чист BR)",
  "fictitious-play iteration": "итерация на фиктивната игра",

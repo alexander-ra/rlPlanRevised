@@ -166,7 +166,7 @@ working database; edit terms in the picker, not here.
 | nearest-action | най-близко действие | 1 |
 | nearest-action translator | транслатор към най-близкото действие | 1 |
 | net support | нетна подкрепа | 1 |
-| no-abstraction self-play | самообучение без абстракция | 1 |
+| no-abstraction self-play | игра срещу себе си без абстракция | 1 |
 | no-card-abstraction | стратегия без абстракции на картите | 1 |
 | observability function | функция на наблюдаемост | 1 |
 | observation function | функция за наблюдение | 1 |
@@ -276,7 +276,7 @@ working database; edit terms in the picker, not here.
 | CFR-D | CFR-D | 2 |
 | Estimated-Maxmargin | Estimated-Maxmargin | 2 |
 | approximate oracle | приблизителен предсказвач | 2 |
-| blueprint strategy | план-стратегия | 2 |
+| blueprint strategy | план | 2 |
 | deep counterfactual regret minimization | Deep CFR | 2 |
 | diversity-regularized meta-solver | метарешавател с регуляризация за разнообразие | 2 |
 | endgame minimax | минимакс на крайната игра | 2 |
@@ -288,7 +288,7 @@ working database; edit terms in the picker, not here.
 | per-iteration cost | разход на итерация | 2 |
 | skew-symmetric approximation | антисиметрично приближение | 2 |
 | spinning-top | пумпал | 2 |
-| tabular blueprint | таблична схема | 2 |
+| tabular blueprint | табличен план | 2 |
 | trpo | TRPO | 2 |
 | ABD | ABD | 1 |
 | AlphaGo | AlphaGo | 1 |
@@ -1537,7 +1537,7 @@ working database; edit terms in the picker, not here.
 
 | English | Bulgarian | freq |
 |---|---|---:|
-| self-play | самообучение | 43 |
+| self-play | игра срещу себе си | 43 |
 | opponent modeling | моделиране на противника | 32 |
 | PSRO | PSRO | 22 |
 | safe exploitation | безопасна експлоатация | 22 |
@@ -1683,7 +1683,7 @@ working database; edit terms in the picker, not here.
 | dynamic opponent | динамичен противник | 1 |
 | emergent cooperation | възникващо сътрудничество | 1 |
 | explicit opponent model | експлицитен модел на противника | 1 |
-| fictitious self-play | фиктивна самоигра | 1 |
+| fictitious self-play | фиктивна игра срещу себе си | 1 |
 | fixed-ally strategy | стратегия с фиксиран съюзник | 1 |
 | formal agents | формални агенти | 1 |
 | full cooperation | пълно сътрудничество | 1 |
@@ -1693,7 +1693,7 @@ working database; edit terms in the picker, not here.
 | gradient interference | смущение в градиента | 1 |
 | h unl agent | неинформиран агент | 1 |
 | help/harm matrices | матрици на помощ/вреда | 1 |
-| heterogeneous adversarial self-play | хетерогенно антагонистично самообучение | 1 |
+| heterogeneous adversarial self-play | хетерогенна антагонистична игра срещу себе си | 1 |
 | implicit alliances | неявни съюзи | 1 |
 | independent gradient learners | независими градиентни обучаеми | 1 |
 | intransitive competitive dynamics | нетранзитивна конкурентна динамика | 1 |
@@ -1712,7 +1712,7 @@ working database; edit terms in the picker, not here.
 | misspecified opponents | неправилно моделирани противници | 1 |
 | mixed population | смесена популация | 1 |
 | mixed-strategy population | популация от смесени стратегии | 1 |
-| model-free self-play | самообучение без използване на модел | 1 |
+| model-free self-play | игра срещу себе си без използване на модел | 1 |
 | multi-agent contributions | многоагентни приноси | 1 |
 | multi-agent decision making | многоагентно вземане на решения | 1 |
 | multi-agent extension | многоагентно разширение | 1 |
@@ -1730,7 +1730,7 @@ working database; edit terms in the picker, not here.
 | multiplayer safety gap | многопотребителска безопасна разлика | 1 |
 | n-player safe exploitation | експлоатация с гарантирана сигурност за n играчи | 1 |
 | naive learners | наивни учащи | 1 |
-| naive self-play | наивно самообучение | 1 |
+| naive self-play | наивна игра срещу себе си | 1 |
 | naive simultaneous learning | наивно едновременно учене | 1 |
 | nash preservation | съхраняване на Нашово равновесие | 1 |
 | non-exploitable population | неексплоатируема популация | 1 |
@@ -1996,8 +1996,8 @@ working database; edit terms in the picker, not here.
 | dead zone | мъртва зона | 4 |
 | ffa games | игри всеки срещу всеки | 4 |
 | game ai | игрови изкуствен интелект | 4 |
-| heads-up limit texas hold'em | хедс-ъп лимит тексаски холдем | 4 |
-| heads-up no-limit Texas hold'em | Тексаски но-лимит покер за двама | 4 |
+| heads-up limit texas hold'em | хедс-ъп лимит тексаски Холдем | 4 |
+| heads-up no-limit Texas hold'em | безлимитен тексаски Холдем за двама | 4 |
 | liar's dice | Лъжливи зарове | 4 |
 | nash self-leak | саморазкриване на Наш | 4 |
 | private card | тайна карта | 4 |
@@ -2058,7 +2058,7 @@ working database; edit terms in the picker, not here.
 | high card | висока карта | 2 |
 | kuhn notch | Kuhn Poker | 2 |
 | leaf value | стойност на възел | 2 |
-| limit texas hold'em | Тексас холдем с лимит | 2 |
+| limit texas hold'em | Тексас Холдем с лимит | 2 |
 | loose aggressive | разпуснат-агресивен | 2 |
 | loose passive | свободно-пасивен | 2 |
 | looseaggressive | свободно-агресивен | 2 |
@@ -2068,7 +2068,7 @@ working database; edit terms in the picker, not here.
 | modal gap | модален интервал | 2 |
 | multi-street poker | покер с няколко кръга на залагане | 2 |
 | natural-language game | игра на естествен език | 2 |
-| no-limit texas hold'em | No-Limit Texas Холдем | 2 |
+| no-limit texas hold'em | безлимитен тексаски Холдем | 2 |
 | no-press diplomacy | No-Press Diplomacy | 2 |
 | off-tree opponent bet | залог на противника извън дървото | 2 |
 | out-of-menu opponent | противник извън менюто | 2 |
@@ -2087,7 +2087,7 @@ working database; edit terms in the picker, not here.
 | shortfall | недостиг | 2 |
 | soft play | пасивна игра срещу съучастник | 2 |
 | sweep | обхождане | 2 |
-| texas hold'em | Тексас холдем | 2 |
+| texas hold'em | Тексас Холдем | 2 |
 | tight-passive | стегнат-пасивен | 2 |
 | treeplex | treeplex | 2 |
 | turn | ход | 2 |
@@ -2171,7 +2171,7 @@ working database; edit terms in the picker, not here.
 | hand-strength clustering | групиране по сила на ръката | 1 |
 | hands | раздаване | 1 |
 | heads-up | един на един | 1 |
-| heads-up no-limit hold'em | Heads-Up No-Limit Холдем | 1 |
+| heads-up no-limit hold'em | безлимитен Холдем за двама | 1 |
 | heads-up no-limit poker AI | изкуствен интелект за по̀кер без лимит един на един | 1 |
 | heads-up poker | покер един на един | 1 |
 | hero realization plan | план за реализация на героя | 1 |
@@ -2217,7 +2217,7 @@ working database; edit terms in the picker, not here.
 | multi-round structure | многорунтов строеж | 1 |
 | near-nash opponent | почти равновесен противник | 1 |
 | near-safe | почти безопасен | 1 |
-| no-limit hold'em | No-Limit Холдем | 1 |
+| no-limit hold'em | безлимитен Холдем | 1 |
 | no-op | неоперация | 1 |
 | non-action | недействие | 1 |
 | nuts | най-силната ръка | 1 |
@@ -2281,7 +2281,7 @@ working database; edit terms in the picker, not here.
 | seat bias | пристрастие към мястото | 1 |
 | seat-0 advantage | предимство за играч 0 | 1 |
 | seed luck | начална случайност | 1 |
-| self-play values | стойности от самоигра | 1 |
+| self-play values | стойности от игра срещу себе си | 1 |
 | separating signal | разграничителен сигнал | 1 |
 | side agreements | странични споразумения | 1 |
 | six-max | Six-Max | 1 |
@@ -2351,7 +2351,7 @@ working database; edit terms in the picker, not here.
 | regret | съжаление | 7 |
 | behavioural cloning | поведенческо клониране | 5 |
 | proximal policy optimization | оптимизация на проксималната стратегия | 5 |
-| self-play reinforcement learning | обучение чрез самоигра | 5 |
+| self-play reinforcement learning | обучение чрез игра срещу себе си | 5 |
 | bayesian opponent model | Байесов модел на противника | 4 |
 | behavioral prior | поведенчески априорен разпредел | 4 |
 | consistent model | съгласуван модел | 4 |
@@ -2388,8 +2388,8 @@ working database; edit terms in the picker, not here.
 | reward signal | сигнал за награда | 3 |
 | rollout | разгръщане | 3 |
 | self-improvement | самоусъвършенстване | 3 |
-| self-play loop | цикъл на самообучение | 3 |
-| sound self-play | правилно самообучение | 3 |
+| self-play loop | цикъл на игра срещу себе си | 3 |
+| sound self-play | коректна игра срещу себе си | 3 |
 | stochastic policy | стохастична стратегия | 3 |
 | supervised learning | обучение с учител | 3 |
 | td error | TD error | 3 |
@@ -2868,8 +2868,8 @@ working database; edit terms in the picker, not here.
 | search-as-inference | търсене като извод | 1 |
 | search-at-inference | търсене при извод | 1 |
 | seeded interior start | начало от вътрешността с предварително зададено разположение | 1 |
-| self-play equilibrium solver | решавач на равновесие чрез самообучение | 1 |
-| self-play-with-search | самообучение с търсене | 1 |
+| self-play equilibrium solver | решавач на равновесие чрез игра срещу себе си | 1 |
+| self-play-with-search | игра срещу себе си с търсене | 1 |
 | sequence-form approach | последователен подход | 1 |
 | sequence-form linear programming | линейно програмиране в последователна форма | 1 |
 | sequence-level search | търсене на ниво последователност | 1 |
@@ -2965,7 +2965,7 @@ working database; edit terms in the picker, not here.
 | CPU core-hours | часове ядро на процесор | 1 |
 | CPU-core-years | процесорно-ядрени години | 1 |
 | Deep Blue | Deep Blue | 1 |
-| GPU self-play | GPU самообучение | 1 |
+| GPU self-play | GPU игра срещу себе си | 1 |
 | GPU-year | gPU-година | 1 |
 | TPU pool | пул от TPU | 1 |
 | TPU resources | tPU ресурси | 1 |
@@ -3179,8 +3179,8 @@ working database; edit terms in the picker, not here.
 | best-model checkpointing | най-добър модел с контролна точка | 1 |
 | best-model saving | запазване на най-добър модел | 1 |
 | biased copies | пристрастни копия | 1 |
-| bootstrapped self-play | самообучение с начални данни | 1 |
-| bootstrapped target | цел с бутстрапиране | 1 |
+| bootstrapped self-play | игра срещу себе си с начални данни | 1 |
+| bootstrapped target | цел със самоподкрепяне | 1 |
 | clipped surrogate loss | отрязана заместителна загуба | 1 |
 | closed-form updates | затворена форма на обновяване | 1 |
 | combined loss | комбинирана загуба | 1 |
@@ -3287,9 +3287,9 @@ working database; edit terms in the picker, not here.
 | reward convergence | сходимост на наградата | 1 |
 | running average | плъзгаща средна | 1 |
 | second-order optimization | оптимизация от втори ред | 1 |
-| self-play training | обучение чрез самообучение | 1 |
-| self-play training loop | цикъл на обучение чрез самообучение | 1 |
-| self-play-trained | обучен чрез самоигра | 1 |
+| self-play training | обучение чрез игра срещу себе си | 1 |
+| self-play training loop | цикъл на обучение чрез игра срещу себе си | 1 |
+| self-play-trained | обучен чрез игра срещу себе си | 1 |
 | self-training | самообучение | 1 |
 | sequence-form projected gradient descent | последователна проекция на градиентен спуск | 1 |
 | slow convergence | бавна сходимост | 1 |

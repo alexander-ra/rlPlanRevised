@@ -145,7 +145,7 @@
 | Reach probability | Вероятност за достигане | |
 | Reach-weighted bound | Граница, претеглена по достигането | Kroer & Sandholm (2016) |
 | Counterfactual best-response value (CBV) | Стойност на най-добрия отговор по контрафактуалния стандарт | Keep „CBV" symbolic |
-| Blueprint (strategy) | Схема (на стратегията) | |
+| Blueprint (strategy) | План | Keep „план за реализация“ distinct for realization plan |
 | Off-tree action | Действие извън дървото | |
 | Information bottleneck (IB) | Информационно стеснение | Keep „IB" abbreviation in Latin. „Тясно място" is retired |
 | Bottleneck (general) | Стеснение | |
@@ -182,6 +182,8 @@
 | Clipped surrogate objective | Изрязана сурогатна цел | Also: ограничена / отрязана заместваща целева функция |
 | Target network | Целева мрежа | |
 | Multi-agent RL (MARL) | Многоагентно обучение с подкрепление | |
+| Self-play | Игра срещу себе си | Avoid „самообучение“ and „самоигра“ |
+| Bootstrapping (value estimates) | Самоподкрепяне | Add “(bootstrapping)” on first use in each chapter; bootstrap resampling is „повторни извадки с връщане“ |
 | Population-based training | Обучение на базата на популации | |
 
 ---

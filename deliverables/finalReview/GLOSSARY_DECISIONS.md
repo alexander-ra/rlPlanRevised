@@ -8,12 +8,13 @@ settled `llmPipeline/glossary_settled.md`, via the picker).
 **⟲** marks a recommendation that changes an entry *you* chose in the curated
 `terminology_EN_BG.md` — check those first.
 
-**How to answer:** everything marked ✅ is applied as recommended unless you change it.
-Rows marked ❓ are genuine choices — pick one or write your own. Edit the "Decision" column
-in place, or just reply with the row numbers you want different.
+**Candidate picks (2026-09-25):** the seven formerly open rows are resolved below.
+Apply them to every Bulgarian chapter, report, one-pager, figure label and glossary.
+Chapter 15's Bulgarian prose will be translated later using these picks.
 
 Convention kept from the brief: algorithm and system names stay in Latin script (CFR, PPO,
-Libratus, Decision Transformer …); people's names are transliterated (Наш, Кун, Шапли).
+Libratus, Decision Transformer …); cited authors stay in Latin script in prose, while
+established game and concept names remain Bulgarian (Наш, Кун, Шапли).
 On first use in each chapter, a Bulgarian term is followed by the English in parentheses.
 
 ## 0. Pipeline rules (not single terms)
@@ -40,7 +41,7 @@ On first use in each chapter, a Bulgarian term is followed by the English in par
 | 1.7 | Nash (opponent type) vs Nash (concept) | "наш противник" (= "our opponent"), Нашево, Нашов | type in quotes: „Наш“; concept: равновесие на Наш; Nash EV → очаквана стойност при равновесие на Наш | ✅ |
 | 1.8 | Restricted Nash Response | curated "Ограничен Наш отговор" (= "our response") | ограничен отговор по Наш (RNR) | ✅ ⟲ changes your curated entry (curated: Ограничен Наш отговор) |
 | 1.9 | SES (curated expansion) | Safe Exploitation *Subgame* | Safe Exploitation *Search* — търсене на безопасна експлоатация (Liu et al. 2022) | ✅ ⟲ changes your curated entry (curated: Safe Exploitation Subgame) |
-| 1.10 | blueprint | curated "Схема"; corpus "план" (≈130×); settled "план-стратегия" | ❓ **(a)** базова стратегия (blueprint) — no clash with "план за реализация" (realization plan, ch. 8) · **(b)** keep план (blueprint) — fewer edits | |
+| 1.10 | blueprint | curated "Схема"; corpus "план" (≈130×); settled "план-стратегия" | **план (blueprint)** | ✅ candidate pick |
 | 1.11 | counterfactual | curated "контрафактуален"; corpus "контрафактичен" (≈45× vs 2) | контрафактичен — change the curated file, not the text | ✅ ⟲ changes your curated entry (curated: контрафактуален) |
 | 1.12 | consistent / consistency (statistical, Ganzfried 2025) | съгласуван | състоятелен / състоятелност (as in "състоятелна оценка"); keep "съгласуван" only for "consistent with the observations" | ✅ ⟲ changes your curated entry (curated: Консистентно) |
 | 1.13 | intractable / tractable | неразрешим (= undecidable) | изчислително непосилен / ефективно изчислим | ✅ |
@@ -48,7 +49,7 @@ On first use in each chapter, a Bulgarian term is followed by the English in par
 | 1.15 | in expectation | в очакване (= "while waiting") | средно (по математическо очакване) | ✅ |
 | 1.16 | sound / soundness | звуково, правилно, надежден, коректен | коректен / коректност | ✅ |
 | 1.17 | opponent-blind(ness) | невидимост за противника (inverted) | „сляп“ за противника / „слепота“ за противника | ✅ |
-| 1.18 | oracle (best-response oracle, double oracle) | предсказвач — **your deliberate curated choice** ("not оракул — reads as the mythological sense") | ❓ **(a)** keep предсказвач (curated) · **(b)** оракул — the standard BG computer-science term ("машина с оракул"), which the reviewers proposed. *Wave 3 has already applied (b) in steps 02, 08–11; reverting is one mechanical pass.* | |
+| 1.18 | oracle (best-response oracle, double oracle) | предсказвач — your curated choice | **предсказвач** | ✅ candidate pick |
 | 1.19 | bang-bang | изненадващ обрат (= "a surprising twist") | скокообразно превключване; threshold → праг на превключване | ✅ |
 | 1.20 | gadget (subgame solving) | джаджа | приспособление (gadget) | ✅ |
 | 1.21 | cutting-plane / cut | равнина на отсичане; cut → сечение/срез/разрез | отсичаща равнина; метод на отсичащите равнини; cut → отсичащо ограничение | ✅ |
@@ -69,9 +70,9 @@ On first use in each chapter, a Bulgarian term is followed by the English in par
 |---|---|---|---|---|
 | 2.1 | policy | mixed "политика"/"стратегия" (curated says стратегия) | стратегия everywhere (policy iteration → итерация по стратегии) | ✅ |
 | 2.2 | on-policy / off-policy | политика на работа; извънполитикова | по текущата стратегия (on-policy); извън текущата стратегия (off-policy) | ✅ |
-| 2.3 | self-play (freq 43, 7 chapters) | самообучение (= self-study; "обучение чрез самообучение") | ❓ **(a)** самоигра — short, already used 7× in ch. 6 and in "фиктивна самоигра" · **(b)** игра срещу себе си — plainer, longer | |
+| 2.3 | self-play (freq 43, 7 chapters) | самообучение (= self-study; "обучение чрез самообучение") | **игра срещу себе си** | ✅ candidate pick |
 | 2.4 | independent learning | самостоятелно обучение (= self-study) | независимо обучение | ✅ |
-| 2.5 | bootstrapping | самоподкрепяне, буутстрапинг, „bootstrap“ | ❓ **(a)** бутстрапинг (common in BG ML writing) · **(b)** самоподкрепяне (with "(bootstrapping)" on first use) | |
+| 2.5 | bootstrapping | самоподкрепяне, буутстрапинг, „bootstrap“ | **самоподкрепяне (bootstrapping)** on first use in each chapter | ✅ candidate pick; statistical bootstrap resampling is separate |
 | 2.6 | converge / convergent | Сходява (non-word) | клони към / се сближава с; сходящ; convergence → сходимост | ✅ |
 | 2.7 | prior / posterior / likelihood | предварително убеждение / задно (= "rear") / вероятност | априорно разпределение / апостериорно разпределение / правдоподобие; conjugate prior → спрегнато априорно разпределение | ✅ |
 | 2.8 | variance / unbiased | also вариация / непредубеден | дисперсия / неизместен | ✅ |
@@ -151,9 +152,10 @@ OpenSpiel — the glossary and the figure mapping must stop translating them
 | 5.3 | Works cited in several chapters share one footnote number in the single-document bundle (note prints only in the first chapter) | ✅ repeat the note in each chapter that cites the work |
 | 5.4 | Cross-references "Раздел 5" inside chapter 7 | ✅ "раздел 7.5" |
 
-## 6. New terms from chapters 13–15 (chosen by the translation agents) — to confirm
+## 6. New terms from chapters 13–15
 
-Applied in the Bulgarian chapters 13–15 as listed; ✅ unless you change them.
+Applied in the Bulgarian chapters 13–14 as listed; use the same choices when Chapter 15
+is translated. ✅ unless you change them.
 
 | # | English | Chosen | Note |
 |---|---|---|---|
@@ -169,7 +171,7 @@ Applied in the Bulgarian chapters 13–15 as listed; ✅ unless you change them.
 | 6.10 | c-bet / limp / steal / post / donk bet | продължаващ залог / влизане с плащане / кражба на блайндовете / вноска / „донк“ залог | |
 | 6.11 | heads-up / hole cards / showdown | сблъсък един срещу друг / скрити карти / разкриване на картите | |
 | 6.12 | regulars / hand history | редовни играчи / история на раздаванията | |
-| 6.13 | TAG / LAG / nit / fish | стегнато- / разпуснато-агресивен; „нит“ / „риба“ | ❓ chapters 7–8 write "стегнат-пасивен" (no -о): pick one form for all |
+| 6.13 | TAG / LAG / nit / fish | стегнато- / разпуснато-агресивен; „нит“ / „риба“ | ✅ **стегнато-пасивен / разпуснато-агресивен** (connecting -о throughout) |
 | 6.14 | re-identification / multi-accounting | повторно разпознаване / множество акаунти | |
 | 6.15 | majority baseline / split-half / minimum sample | мажоритарна базова линия / корелация между половините / минимална извадка | |
 | 6.16 | archetype / parser | архетип / парсер | |
@@ -180,5 +182,5 @@ Applied in the Bulgarian chapters 13–15 as listed; ✅ unless you change them.
 | 6.21 | Nash averaging / maximal lotteries / round robin / selection pressure | усредняване по Наш / максимални лотарии / кръгов турнир / селекционен натиск | α-Rank, VasE, AIVAT, h50/r50, RRPS stay Latin with a gloss |
 | 6.22 | population return / within-population exploitability | възвръщаемост срещу популацията / експлоатируемост в рамките на популацията | |
 | 6.23 | zoo / duplicate / bootstrap resampling | зоопарк от агенти / дублирани карти / повторни извадки с връщане | the last kept apart from row 2.5 |
-| 6.24 | cited authors in running text | ❓ chapter 14 keeps Latin („Ganzfried и Sandholm“), chapter 8 transliterates („Ганцфрид и Сандхолм“) — pick one for the corpus | |
-| 6.25 | bot/agent names (AlwaysPass, Rock, Maniac, Random) | ❓ chapter 14 keeps Latin (names of agents in code and figures); chapters 7–8 translate („Камък“, „Маниак“, „Винаги пас“) — pick one | |
+| 6.24 | cited authors in running text | ✅ Keep Latin spellings in Bulgarian prose (e.g. Ganzfried и Sandholm); established game and concept names remain Bulgarian. | |
+| 6.25 | bot/agent names (AlwaysPass, Rock, Maniac, Random) | ✅ Keep code and figure names in Latin script in Bulgarian prose. | |

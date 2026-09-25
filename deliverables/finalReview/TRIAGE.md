@@ -27,8 +27,9 @@ call.
 
 ## A. Decisions — glossary and typography
 
-→ `GLOSSARY_DECISIONS.md`: ~100 rows, 3 open choices (❓ 1.10 blueprint, 2.3 self-play,
-2.5 bootstrapping), everything else recommended (✅). Plus § 5 typography/bundle policy.
+→ `GLOSSARY_DECISIONS.md`: candidate choices were settled on 2026-09-25, including
+blueprint, self-play, bootstrapping, oracle, author names and agent names. See also
+`deliverables/reports/TRANSLATION_REVIEW_BG.md` for the title and passage approvals.
 
 ## B. Decisions — findings that change results (code, reruns)
 
