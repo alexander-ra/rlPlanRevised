@@ -316,11 +316,18 @@ of random games in this engine end in deadlock, which leaves an alliance little 
 2. **The policy-exact estimator exists only for bots.** Real evaluation falls back to AIVAT (one
    strategy known) or chips; Experiment 4 shows the cost.
 3. **The white-box attacker is one strong adversary, not the worst adaptive one.** The worst case
-   of an adaptive agent against all adaptive opponents is not computed.
+   of an adaptive agent against all adaptive opponents is not computed. Its best response is
+   refreshed every 50 hands, in step with these agents' refits; against an agent whose policy
+   changes every hand that would understate the attack, so Chapter 15 refreshes it every hand.
 4. **The adaptive agents are Chapter 7–8 baselines.** No agent here combines online modelling with
    a checked N-player loss bound (Contribution 2); the protocol measures that gap, it does not
    close it.
 5. **So Long Sucker is weak evidence** — deadlock-dominated engine, baselines only.
+6. **BestEq's LP leaves ties to the solver.** Against an equilibrium-like model HiGHS can return a
+   degenerate equilibrium: on Kuhn it earns −0.034 against near-equilibrium opponents, where the
+   blueprint earns −0.019 (Chapter 15, `lp_ties.py`). A tie-break toward the blueprint would
+   change BestEq's small gains slightly (for Chapter 15's RWYWE, which uses the same LP, the Kuhn
+   gain moves from +0.062 to +0.063).
 
 ## Conclusions and research directions
 

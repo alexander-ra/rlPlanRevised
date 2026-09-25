@@ -44,6 +44,8 @@ attack. All numbers are measured, 10 seeds unless stated.
   a weak bot widen the exploiter's Elo lead (+84 → +113) but leave Nash averaging unchanged.
 - *The joint protocol separates what they conflate.* Leduc gain / exposure / teaching loss (chips
   per hand): BestEq 0.047 / 0 / 0; RNR(0.5) 0.797 / 0.26 / ≤ 0.27; DirBR 0.988 / 2.46 / 1.0–1.5.
+  BestEq's LP leaves ties to the solver; a tie-break toward the blueprint would shift its small
+  gain slightly (Chapter 15).
 - *Confidence binds.* One 100-hand window's capture to ±0.25 needs about 3,400 hands with raw
   chips and 380 with AIVAT (Kuhn). On Pluribus's released hands (Chapter 13) the raw 95 % interval
   is ±173 mbb/hand.
