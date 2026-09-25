@@ -143,6 +143,7 @@ def install(mapping: dict[str, str], written: list[Path],
     import matplotlib.pyplot as plt
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
+    from matplotlib.legend import Legend
 
     def tr(v):
         if isinstance(v, str):
@@ -185,6 +186,9 @@ def install(mapping: dict[str, str], written: list[Path],
     wrap(Figure, "suptitle", 1)
     wrap(Figure, "text", 3)
     wrap(Figure, "legend", (1, 2), ("title", "labels"))
+    # legend(handles=[Line2D(..., label=...)]) reads each label off its handle,
+    # past every wrapper above; Legend(parent, handles, labels) receives them all.
+    wrap(Legend, "__init__", 3, ("labels",))
     for fn in ("xlabel", "ylabel", "title", "suptitle"):
         wrap(plt, fn, 0)
     wrap(plt, "text", 2)

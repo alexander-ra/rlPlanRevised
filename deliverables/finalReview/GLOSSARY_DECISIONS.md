@@ -184,3 +184,15 @@ is translated. ✅ unless you change them.
 | 6.23 | zoo / duplicate / bootstrap resampling | зоопарк от агенти / дублирани карти / повторни извадки с връщане | the last kept apart from row 2.5 |
 | 6.24 | cited authors in running text | ✅ Keep Latin spellings in Bulgarian prose (e.g. Ganzfried и Sandholm); established game and concept names remain Bulgarian. | |
 | 6.25 | bot/agent names (AlwaysPass, Rock, Maniac, Random) | ✅ Keep code and figure names in Latin script in Bulgarian prose. | |
+| 6.26 | bank (RWYWE's k) / gift / credit (accounting) | резерв / подарък / зачита, зачетена стойност | chapter 15 — to confirm; „банка“ avoided |
+| 6.27 | floor / maximin floor / team-maxmin value | праг / максиминен праг / отборна максиминна стойност (team-maxmin) | as chapters 8 and 14 |
+| 6.28 | capped mixture / cap | смес с таван / таван | chapter 15 — to confirm |
+| 6.29 | KL anchor / KL anchoring | KL-котва / закотвяне чрез KL | chapter 15 — to confirm |
+| 6.30 | match-level safety S | безопасност на ниво мач | chapter 15 — to confirm |
+| 6.31 | frontier map / design documents / publication pipeline | карта на изследователската граница / проектни документи / публикационен план | as the study plan and the curated glossary |
+| 6.32 | (feasibility) pilot | пилотен експеримент (за осъществимост) | chapter 15 — to confirm |
+| 6.33 | opponent inference / calibrated confidence | извеждане на стратегията на противника / калибрирана увереност | "извеждане" as in chapter 1; chapter 15 — to confirm |
+| 6.34 | showdown-only accounting / cards shown (RWYWE variants) | отчитане само при разкриване на картите / открити карти; labels „RWYWE (разкриване)“, „RWYWE (открити карти)“ | chapter 15 — to confirm |
+| 6.35 | colluding pair / colluding opponents | двойка съучастници / противници в тайно съглашение | follows 6.3 |
+| 6.36 | stretch option (venue) | амбициозен вариант | chapter 15 — to confirm |
+| 6.37 | RQ1–RQ3 | kept Latin after „изследователските въпроси“ | chapter 15 — to confirm |
