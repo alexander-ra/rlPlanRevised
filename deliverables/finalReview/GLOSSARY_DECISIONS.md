@@ -173,3 +173,12 @@ Applied in the Bulgarian chapters 13–15 as listed; ✅ unless you change them.
 | 6.14 | re-identification / multi-accounting | повторно разпознаване / множество акаунти | |
 | 6.15 | majority baseline / split-half / minimum sample | мажоритарна базова линия / корелация между половините / минимална извадка | |
 | 6.16 | archetype / parser | архетип / парсер | |
+| 6.17 | gain / capture / exposure / confidence | приръст / реализиран дял / експозиция / статистическа увереност | chapter 14 |
+| 6.18 | teaching attack / teach loss | обучаваща атака (curated) / загуба от обучаващата атака | |
+| 6.19 | coalition value (exposure vs a pair) | стойност срещу коалиция | kept apart from chapter 11's „стойност на коалицията“ = v(S) |
+| 6.20 | estimator / policy-exact / control variate | оценка / точна по стратегиите / контролна променлива | "оценител" stays reserved for the critic (2.20) |
+| 6.21 | Nash averaging / maximal lotteries / round robin / selection pressure | усредняване по Наш / максимални лотарии / кръгов турнир / селекционен натиск | α-Rank, VasE, AIVAT, h50/r50, RRPS stay Latin with a gloss |
+| 6.22 | population return / within-population exploitability | възвръщаемост срещу популацията / експлоатируемост в рамките на популацията | |
+| 6.23 | zoo / duplicate / bootstrap resampling | зоопарк от агенти / дублирани карти / повторни извадки с връщане | the last kept apart from row 2.5 |
+| 6.24 | cited authors in running text | ❓ chapter 14 keeps Latin („Ganzfried и Sandholm“), chapter 8 transliterates („Ганцфрид и Сандхолм“) — pick one for the corpus | |
+| 6.25 | bot/agent names (AlwaysPass, Rock, Maniac, Random) | ❓ chapter 14 keeps Latin (names of agents in code and figures); chapters 7–8 translate („Камък“, „Маниак“, „Винаги пас“) — pick one | |
