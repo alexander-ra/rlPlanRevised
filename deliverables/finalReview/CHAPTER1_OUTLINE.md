@@ -352,3 +352,55 @@ From the extracts' "To verify" sections and the review:
 3. Candidate's choices in `GLOSSARY_DECISIONS.md` (blueprint, self-play, bootstrapping) fix
    the BG terms Chapter I uses.
 4. Citation format — provisional numbered IEEE-like; confirm with the supervisors.
+
+---
+
+## Update after chapters 13–15 (25 Sep 2026) — proposals, not yet applied above
+
+Chapters 13–15 were executed overnight (sources: `implementation/step1{3,4,5}/EXECUTION_NOTES.md`
+and results JSON). They add own evidence for §§ 1.4–1.6 and propose sharper research questions.
+Each item below is a proposal; nothing above was changed.
+
+**§ 1.1 (relevance, fair play).** Real hand histories from the iPoker network (Playtech's network
+in July 2009, 2.03 M hands, public PHH dataset) show the pipeline on real play; the Playtech data
+remains the future validation (Chapter 13). One sentence at most.
+
+**§ 1.4 own evidence (Chapter 13).** A player2vec-style embedding re-identifies a player on unseen
+days 15.6 ± 0.2 % of the time among 834, against 7.1 % for tracker statistics and 0.12 % by chance
+(`step13/…/results/player2vec.json`) — behaviour carries identity, the premise of C1. Behavioural
+cloning barely beats the majority action (72.0 % vs 70.2 %).
+
+**§ 1.5 own evidence (Chapter 15 pilots)** — replaces the best-equilibrium sentence:
+RWYWE gains +0.062 (Kuhn) / +0.113 (Leduc) chips per hand over the blueprint, 3.1× / 2.4× the
+best equilibrium, and never ended below the game value in 120 teaching-attack matches, where an
+unconstrained best response did in 52 (`step15/…/results/protocol2p_*.json`). With caution: in
+three-player Kuhn, a maximin-floor RWYWE held its floor in all 135 matches and −0.007 under
+adaptive colluders vs −0.119 for the blueprint (`bounded3p.json`; one game, pilot). Nuance for
+"team-maxmin is very conservative": in three-player Kuhn its value is within 0.008 of equal share
+(one game). Prior art to cite for C2's maximin-floor rule: Ganzfried & Sandholm (2015, § 2.3).
+Collusion detection (Chapter 13): strong soft play is found at 1 % false positives, weak chip
+dumping is missed — detection works only when collusion is strong.
+
+**§ 1.6 own evidence (Chapter 14).** On twelve Leduc agents the standard rankings contradict each
+other, and α-Rank names four different winners as α goes from 0.01 to 100
+(`step14/…/results/population_leduc.json`). The joint protocol separates them: gain / exposure
++0.047 / 0 (best equilibrium), +0.797 / 0.26 (RNR 0.5), +0.988 / 2.46 (best response) chips per
+hand (`adaptation_leduc.json`). With three players NashConv is not a guarantee: equilibrium seats
+lose 0.06–0.17 per hand more to a coordinated pair (`nplayer_kuhn3.json`). A gift-banking agent's
+safety must be read over the match (match-level safety S, Chapter 15).
+
+**§ 1.7 refined research questions (Chapter 15 design documents) — pick per RQ:**
+- **RQ1** — current text, with "reliably enough to act on" made operational as *calibrated*
+  confidence: *…fast enough and with calibrated confidence, so that the size of the deviation can
+  be scaled to it?*
+- **RQ2** — answered with two kinds of bound, since beyond two players no single value plays the
+  role of v*: *…a stated, empirically verifiable loss bound — absolute against a coordinated
+  coalition (the team-maxmin value) and relative to the equilibrium baseline against any
+  opponents…*
+- **RQ3** — add match-level safety: *…gain, speed of adaptation and worst-case (coalition-aware)
+  robustness, per hand and over the match, …*
+
+**Publications (Chapter 15, `implementation/step15/design/publications.md`).** First paper: the
+evaluation-protocol paper (Chapters 14–15) for IEEE CoG 2027 (deadline 1 Mar 2027); AAMAS 2027 is a
+stretch — its deadline is **8 Oct 2026**, 13 days from now. The individual plan's stage 1 also asks
+for a report/article by 11.2026.
