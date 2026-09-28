@@ -316,12 +316,10 @@ strategies per member) exist only because the games are tiny; at scale a learned
 only a lower bound on either. The policy-exact estimator exists only for bots. The white-box
 teaching attacker is a strong adversary but not the worst adaptive one. The adaptive agents are
 Chapter 7–8 baselines: the protocol *measures* the missing N-player loss bound; it does not
-provide one. So Long Sucker is weak evidence. Chapter 15 refines two details (a tie-break for
-BestEq and a per-hand attacker refresh).
+provide one. So Long Sucker is weak evidence.
 
-**Connections.** The engine absorbs Chapters 3, 7, 8 (now as one LP), 10, 11 and 12, and is the
-yardstick for Chapter 15's experiments. For Contribution 2 it supplies the
-measurement a safe N-player agent must pass — gain against independent pairs, coalition value and
+**Connections.** The engine absorbs Chapters 3, 7, 8 (now as one LP), 10, 11 and 12. For Contribution 2
+it supplies the measurement a safe N-player agent must pass — gain against independent pairs, coalition value and
 coalition teaching loss — and the one-shot LP removes the scaling obstacle Chapter 8 met.
 
 ---

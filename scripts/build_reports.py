@@ -63,11 +63,7 @@ AVAILABLE_STEPS = sorted(p.name for p in REPORTS_DIR.iterdir() if p.is_dir())
 # Bundles only ever cover the numbered stepNN/ directories, in order —
 # other folders under reports/ (e.g. ruseMay/) are one-off deliverables.
 STEP_DIR_RE = re.compile(r"^step\d{2}$")
-# Chapters kept out of every bundle. Chapter 15 will be written by hand after
-# reconciliation with the supervisors; its per-step PDFs still build as usual.
-BUNDLE_EXCLUDE = {"step15"}
-BUNDLE_STEPS = sorted(s for s in AVAILABLE_STEPS
-                      if STEP_DIR_RE.match(s) and s not in BUNDLE_EXCLUDE)
+BUNDLE_STEPS = sorted(s for s in AVAILABLE_STEPS if STEP_DIR_RE.match(s))
 
 # Progressively tighter (fontsize, linestretch, margin) tried in order until a
 # one-pager fits on a single page. See build_onepager().

@@ -59,13 +59,11 @@ are measured.**
 **Thesis connection.** Chapter 7 = sensor; Chapter 8 = actuator. The Kuhn results show the actuator
 behaves as the theory predicts (perfect models, an exactly solvable game); the Leduc non-convergence is the concrete argument for real-time subgame methods (SES /
 OX-Search) and/or an exact dual-LP formulation, and it is the empirical bridge into the scalable,
-multi-agent safe exploitation of Contribution #2. Chapter 15 adds the stronger two-player baseline,
-Ganzfried–Sandholm's RWYWE: +0.062 (Kuhn) and +0.113 (Leduc) chips per hand over the blueprint
-against best equilibrium's +0.020 and +0.047, never below the game value in 120 matches under
-teaching attacks, yet only 14–30 % of the gain of RNR at *p* = 0.5: few gifts are provable when
-cards are seen only at showdown.
+multi-agent safe exploitation of Contribution #2.
 
-**Open questions.** Scalable safety beyond Leduc (exact dual-LP vs local/subgame); whether SES is provably safe
+**Open questions.** Ganzfried–Sandholm's own gift-risking algorithm (RWYWE) as the stronger two-player
+baseline — the existing LP with a floor that moves with banked gifts (future work); scalable safety
+beyond Leduc (exact dual-LP vs local/subgame); whether SES is provably safe
 (its 0.04 residual is measured against `v*`; it holds its own blueprint floor only to the 0.01
 tolerance); a punishing teaching attack (adaptive reveal); and **N-player safety** — every guarantee
 here rests on the two-player zero-sum fact that Nash secures `v*` against any opponent, an anchor that

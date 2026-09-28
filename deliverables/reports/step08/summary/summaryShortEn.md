@@ -117,12 +117,8 @@ equilibrium, which is not computable in practice in any large game.
 *What the full algorithms would add.* Their RWYWE ("risk what you've won in expectation") lowers
 the floor each hand to $v^* - k_t$, where $k_t$ is the *gift* (the opponent's mistakes) banked in
 expectation so far, and BEFFE plays best equilibrium until the banked gifts cover full
-exploitation; both are provably safe over the repeated game. Chapter 15 implements RWYWE, the
-natural two-player baseline for Contribution #2, under Chapter 14's protocol: it gains +0.062
-(Kuhn) and +0.113 (Leduc) chips per hand over the blueprint, against +0.020 and +0.047 for best
-equilibrium, and none of its 120 matches under teaching attacks ends below the game value. That is
-only 14–30 % of the gain of RNR at *p* = 0.5, because few gifts are provable when the opponent's
-cards are seen only at showdown.
+exploitation; both are provably safe over the repeated game; implementing and testing them is future work (RWYWE is the natural
+two-player baseline for Contribution #2).
 
 **(b) Prime-safe / ε-safety (Jeary & Turrini 2023): correct for an imperfect baseline.** Every
 real baseline is an **ε-equilibrium** (from abstraction and finite compute, Chapter 4), so it is
@@ -432,7 +428,7 @@ floor is designed to prevent.
 one-shot dual LP** for the worst-case constraint, or **local / subgame** safety (SES, OX-Search)
 in real time; Chapter 14 took the first (full Leduc in 0.02–0.04 s). RWYWE (§ 8.3), the stronger
 two-player baseline for Contribution #2, needs only the existing LP with a floor that moves with
-the banked gifts; Chapter 15 implements and measures it. Either way, the safety floor is what turns
+the banked gifts; implementing it is future work. Either way, the safety floor is what turns
 Chapter 7's fragile sensor into a deployable adaptive agent.
 
 <!-- Source footnotes. Definitions may sit anywhere at top level; keeping them
