@@ -286,7 +286,7 @@ leading with the failures each existing metric misses.
 | Experiment | Question | Testbeds | Primary readouts | Stage |
 |---|---|---|---|---|
 | 1.1 | within-match inference, calibrated | Kuhn, Leduc, 3P Kuhn, 3P Leduc | gain, h50, r50, false alarms, calibration | II–III |
-| 1.2 | the same model on real logs | IPN hands (Playtech if available) | hands to a confident type, stability | III |
+| 1.2 | the same model on real logs | IPN hands (Chapter 13) | hands to a confident type, stability | III |
 | 2.0 | two-player baseline (RWYWE) | Kuhn, Leduc | gain, exposure, S | done (P1) |
 | 2.1 | N-player bounded exploitation | 3P Kuhn (exact), 3P Leduc (budgeted) | gain, L, coalition value, S vs v_mm | II–III |
 | 2.2 | coalition-aware response | 3P Kuhn, 3P Leduc with colluders | loss to colluders, detection delay, false flags | III |
@@ -304,8 +304,7 @@ leading with the failures each existing metric misses.
 | 6 | cross-game protocol (journal) | C3 → IV | JAIR / TMLR / IEEE ToG (06–08.2028) |
 
 The first publication is Paper 1: it is the yardstick every later paper uses, its results are
-exact and complete, and it carries the thesis's framing; Chapter 13's paper gains from waiting for
-the Playtech data decision.
+exact and complete, and it carries the thesis's framing.
 
 ---
 

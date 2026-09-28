@@ -18,8 +18,7 @@ vars:
 This is a ground-up chapter on how to evaluate game-playing agents that **adapt**: agents that
 watch their opponents and change their play. It builds the standard toolkit — exact
 exploitability, population rankings and variance reduction — validates every piece against an
-independent reference, and then uses it to measure what that toolkit misses. It is written to be
-read on its own. **All experimental numbers were measured** on reproducible runs on three small
+independent reference, and then uses it to measure what that toolkit misses. **All experimental numbers were measured** on reproducible runs on three small
 poker games (two-player Kuhn and Leduc, three-player Kuhn) and on Chapter 11's four-player So
 Long Sucker engine, and wherever the game allows they are *exact* rather than sampled. Where a
 run contradicted what I expected, I keep the expectation and reconcile it with what happened.

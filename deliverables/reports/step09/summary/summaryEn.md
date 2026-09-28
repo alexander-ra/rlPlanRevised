@@ -18,8 +18,7 @@ vars:
 This is a ground-up chapter on multi-agent reinforcement learning (MARL): the problem that
 makes it different from everything before it, the mathematics that frames it, the family of
 methods that attack it, and a set of controlled experiments run on small, exactly-solvable
-games. It is written to be read on its own; no
-prior familiarity with the project's code is assumed. **All experimental numbers reported here
+games. **All experimental numbers reported here
 were measured** on reproducible runs of the testbeds and, wherever possible, are bounded by
 *exact* analytical references (Nash equilibria, exact best-response values) rather than by
 other simulations. Where a run contradicted what theory led me to expect, I keep the original

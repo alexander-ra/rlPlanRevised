@@ -21,7 +21,7 @@ the four-player game of Hausner, Nash, Shapley & Shubik, published in 1964, whos
 almost entirely on bargaining between the players[^hausner1964] — and extends the only published
 RL treatment of it[^sharan2024], whose agents are coalition-blind, with a coalition detector and a
 Shapley-based reward. Through it the chapter internalizes the jump from $N=2$ to $N\ge 3$, where **Nash and exploitability stop being tractable *and* stop being
-meaningful**, so "did it work?" can no longer be a single number. It is written to be read on its own. **All experimental numbers reported here were
+meaningful**, so "did it work?" can no longer be a single number. **All experimental numbers reported here were
 measured** on reproducible runs and, wherever possible, are bounded by *exact* references (textbook
 Shapley/core values for the cooperative-game toys; an exact 2-player minimax solver for the SLS
 endgame). Where a run contradicted what I expected — including a real engine bug — I keep the
@@ -201,9 +201,8 @@ target and winning is secondary — exactly as the chapter's plan framed it, now
 
 ## EGTA and the spinning top — is SLS a wheel or a ladder?
 
-The final tool evaluates the *population*. **Empirical game-theoretic analysis (EGTA)** treats whole
-strategies as the atoms of a meta-game, plays every pair to fill an empirical payoff matrix, and
-analyzes its structure. To reuse Chapter 9's meta-Nash solver and Chapter 10's **spinning-top** (Hodge)
+The final tool evaluates the *population* with **empirical game-theoretic analysis (EGTA)**, as in
+Section 10.7. To reuse Chapter 9's meta-Nash solver and Chapter 10's **spinning-top** (Hodge)
 decomposition — both 2-player tools — the 4-player payoff *tensor* is **projected** to a pairwise
 matchup matrix, then split into a **transitive** (skill-ladder) component and a **cyclic**
 (rock-paper-scissors) component.

@@ -6,14 +6,10 @@ BG: Изследване на възможностите за приложени
 
 # Chapter 13 — Behavioral Analysis Pipelines on Real Hand Histories: Experiment Report
 
-**Testbed:** real online poker. The plan assumes Playtech hand histories, which the candidate does
-not have yet. The substitute is public: **2,032,655 no-limit hold'em hands played on the iPoker
+**Testbed:** real online poker. All data used here are public: **2,032,655 no-limit hold'em hands played on the iPoker
 Network at $0.50/$1 blinds in July 2009**, with obfuscated player IDs, from the MIT-licensed PHH
 dataset; and the **10,000 released hands of Pluribus** against professionals, the one sample in
-which a bot is known. iPoker was Playtech's own network in 2009 (launched by Playtech in 2004,
-described in its 2009 annual report as "Playtech's exclusive poker network"), so this is the
-closest public sample of a Playtech network. It is 2009 data, not Playtech's current data; the
-Playtech dataset remains the validation this chapter prepares for. On this data the chapter builds
+which a bot is known. On this data the chapter builds
 a parser with two validators, player statistics with measured minimum samples, a behavioral
 cloning baseline, a player2vec-style embedding, style clusters with online Bayesian typing, a
 collusion detector tested on colluders injected into real sessions, and a bot-detection test on
@@ -333,8 +329,8 @@ adds bets. The all-tables run gives the same picture with weaker dumping detecti
 they are candidates for review, not findings.
 
 **Conclusion.** The detector works only after two corrections — compare each player with their own
-behavior, and compare like with like (table format). Both are exactly the corrections a deployment
-on Playtech data would need, and the injection harness is the tool to calibrate them there.
+behavior, and compare like with like (table format). Both are exactly the corrections any deployment
+on live data would need, and the injection harness is the tool to calibrate them there.
 
 ---
 
@@ -367,7 +363,7 @@ the paper's remark and is too small to detect with.
 **Conclusion.** A strong equilibrium-style bot is not an outlier in behavior space, and a detector
 built on "unusual" or "unusually consistent" will miss it. The two signals that work — a discrete
 bet-size menu and randomization conditioned on private cards — were found with the label on one
-bot. They are hypotheses to test on the Playtech data, not validated detectors.
+bot. They are hypotheses to test on data with more known bots, not validated detectors.
 
 ---
 
@@ -435,8 +431,8 @@ all seeds converge and re-identification improves (top-1 at N = 400 from 10–13
 
 ## Limitations (ranked by how much they affect the conclusions)
 
-1. **2009 iPoker is not Playtech today.** Player populations, stakes and software have changed;
-   every threshold here must be re-measured on the Playtech data.
+1. **2009 data are not today's play.** Player populations, stakes and software have changed;
+   every threshold here must be re-measured before it is used on current data.
 2. **Synthetic collusion.** Two scripted patterns in heads-up confrontations; information sharing
    between colluders (the most common form) is not modelled and would not show in these signals.
 3. **One known bot.** The two features that separate Pluribus were found with its label.
@@ -459,7 +455,7 @@ rate and misses light collusion. Generic anomaly detection does not find Pluribu
 
 **Research directions.**
 
-- Re-run every experiment unchanged on the Playtech data, starting with the reliability curves and
+- Re-run every experiment unchanged on a present-day hand-history dataset, starting with the reliability curves and
   the collusion null distribution.
 - Add information-sharing collusion (colluders who see each other's cards) to the injection harness.
 - Test the two bot signals (bet-size menu, conditional randomization) as pre-registered detectors on

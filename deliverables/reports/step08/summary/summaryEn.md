@@ -16,9 +16,7 @@ vars:
 # Chapter 8 — Safe Exploitation in Imperfect-Information Games
 
 This is a ground-up chapter on *safe* opponent exploitation: the problem, the mathematics, the
-family of methods, and a set of controlled experiments run on two small poker games. It is
-written to be read on its own; no prior familiarity with
-the project's code is assumed. All experimental numbers reported here were **measured** on
+family of methods, and a set of controlled experiments run on two small poker games. All experimental numbers reported here were **measured** on
 reproducible runs of the two testbeds (Kuhn Poker and Leduc Hold'em) and are bounded, wherever
 possible, by *exact* analytical references rather than simulated ones. Where a run contradicted
 what theory led me to expect, I say so and reconcile it — those gaps are the most instructive
@@ -78,8 +76,8 @@ optimization problem** with one part swapped out. In words:
 > maximize the hero's expected value against the opponent model, **subject to** a safety floor on
 > the hero's worst-case value.
 
-To make that a *computable* program, represent the hero's strategy in **sequence form**: instead
-of per-situation action probabilities, use the **realization plan** $x$, which assigns a weight
+To make that a *computable* program, represent the hero's strategy in **sequence form**, introduced
+in Section 7.5 for the opponent's strategy: the **realization plan** $x$ assigns a weight
 to each of the hero's action *sequences* (root-to-here chains of their own choices), subject to
 the linear **treeplex** constraints (the empty sequence has weight 1; at each information set the
 children's weights sum to the parent's; all weights are non-negative). The reason to pay this
@@ -409,8 +407,7 @@ theirs.[^liu2022][^search2024][^milec2025]
 
 ## At Scale — Kuhn works; Leduc breaks globally, holds locally
 
-Leduc Hold'em adds a second betting round and a shared community card — roughly two orders of
-magnitude more situations than Kuhn, still exactly solvable, but large enough to stress the
+Leduc Hold'em (Section 3.4) is still exactly solvable, but large enough to stress the
 methods. The Leduc run used an iteration-capped configuration (a 40-iteration budget on the
 constraint-generation loop, tolerance $10^{-2}$, and the subgame set to the King-flop), recording
 for each cell whether the solve **converged** or hit the cap. Game value $v^* = -0.086$.

@@ -199,7 +199,7 @@
 | Play the blueprint ⏎ on rounds 1–2 | Играй плана ⏎ в кръгове 1–2 | модел |
 | Public belief state (PBS) β = a probability distribution over each player's possible hidden ⏎ states (in HUNL, both players' 1,326 possible two-card hands), conditioned on the public ⏎ history; Bayes-updated after every public action. | **— непреведен —** | — |
 | push new ⏎ net | изпращам нова ⏎ мрежа | модел |
-| Reach round 3 (or a small- ⏎ enough subtree): build a finer ⏎ subgame, NO card abstraction | Обхват кръг 3 (или достатъчно малко ⏎ под-дърво): изграждане на по-фина ⏎ под-игра, БЕЗ абстракция на карти | модел |
+| Reach round 3 (or a small- ⏎ enough subtree): build a finer ⏎ subgame, NO card abstraction | Обхват кръг 3 (или достатъчно малко ⏎ под-дърво): изграждане на по-детайлна ⏎ под-игра, БЕЗ абстракция на карти | модел |
 | Regret-update phase: run public-tree ⏎ CFR⁺ on the current tree; at each leaf, ⏎ query the CVPN for leaf values | Фаза на актуализация на съжалението: изпълнявам CFR⁺ върху публичното дърво ⏎ на текущото дърво; при всеки възел ⏎ правя заявка към CVPN за стойностите на възлите | модел |
 | retrain nets, ⏎ then repeat ⏎ the whole loop | преобучавам мрежите, ⏎ след това повтарям ⏎ целия цикъл | модел |
 | Sample an action, ⏎ then discard the strategy | Избира се действие, ⏎ след това стратегията се изхвърля | модел |

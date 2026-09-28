@@ -31,7 +31,7 @@ The critical distinction is between **perfect** and **imperfect** information:
 - **Perfect information** (chess, Go): every player sees the full game state. The game tree has no grouped nodes — each node is its own information set. Minimax and alpha-beta pruning solve these games.
 - **Imperfect information** (poker, many real-world problems): players cannot observe some aspects of the state. In poker, you see your own cards but not your opponent's. This means multiple game states are *indistinguishable* to the acting player.
 
-An **information set** groups all game states that a player cannot tell apart. At an information set, the player must choose the same strategy for all states in the group (since they cannot distinguish them). This constraint is what makes imperfect-information games fundamentally harder than perfect-information ones — you cannot simply pick the best action for each state; you must pick one action that works well *on average* across all states in the information set.
+An **information set** (Section 1.4) groups the game states a player cannot tell apart, so the player must use the same strategy for all of them. This constraint is what makes imperfect-information games fundamentally harder than perfect-information ones — you cannot simply pick the best action for each state; you must pick one action that works well *on average* across all states in the information set.
 
 In Kuhn Poker, the information set `"2pb"` contains two game states: "I hold Queen, opponent holds Jack, history is pass-bet" and "I hold Queen, opponent holds King, history is pass-bet." The player holding Queen cannot distinguish these and must use the same strategy (call probability) for both.[^shoham2008]
 
