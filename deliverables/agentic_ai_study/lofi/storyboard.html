@@ -348,52 +348,6 @@ function fieldMap(){
   return r;
 }
 
-// F9: real systems compared. Columns: system · agents · humans in the loop · claimed result · time · cost.
-// '*' = claimed, not yet independently verified. Rows ordered by number of agents; Glasswing last (bridge to going rogue).
-const REAL=[
-  {sys:'Stanford Virtual Lab',when:'Nature · Jul 2025',n:5,nl:'5',
-   hum:'set the goal; spoke in <1% of\nthe discussion; ran the lab',claim:'nanobodies that bind new COVID\nvariants, tested in the lab',
-   time:'agents: a few days\nhumans: weeks to months (PI)',cost:'not reported'},
-  {sys:'The Station',when:'independent · Sep 2026',n:6,nl:'6',nsub:'3 labs’ models',
-   hum:'set the task and the scorer,\nthen hands-off for weeks',claim:'28 open Ramsey cases settled*;\nbeat AlphaEvolve on 3 of 12',
-   time:'agents: 1–2 weeks\nhumans: open problems',cost:'not reported'},
-  {sys:'Anthropic C compiler',when:'Feb 2026',n:16,nl:'16',
-   hum:'built the harness and tests,\nthen hands-off for 2 weeks',claim:'a 100k-line C compiler that\nbuilds the Linux kernel',
-   time:'agents: ~2 weeks\nhumans: not estimated',cost:'~$20,000'},
-  {sys:'Edison Kosmos',when:'Nov 2025',n:200,nl:'~200',nsub:'agent runs per job',
-   hum:'give a goal and the data;\nread the report',claim:'79.4% of statements judged\naccurate; 7 discoveries*',
-   time:'agents: ~12 h\nhumans: ~6 months (users)',cost:'~$200 per run'},
-  {sys:'Anthropic enzyme search',when:'Sep 2026',n:950,nl:'~950',
-   hum:'one prompt; chose what to\ntest; ran the lab',claim:'a new CRISPR-like enzyme\nsystem*, confirmed in the lab',
-   time:'agents: 21 h\n+ weeks in the lab',cost:'210M tokens'},
-  {sys:'OpenAI Navier–Stokes',when:'Sep 2026',n:10000,nl:'~10,000',nsub:'in groups',
-   hum:'“very little human input”',claim:'a proof that fluids can blow up\nin finite time*, also in Lean',
-   time:'agents: 88 h (+17 h Lean)\nhumans: an open problem',cost:'~$6–10M\n(press estimate)'},
-  {sys:'OpenAI maths release',when:'Oct 2026',n:0,nl:'?',nsub:'not disclosed',
-   hum:'picked ~4,000 problems;\none undisclosed procedure',claim:'~720 papers on 372 open\nproblems*; ~42% Lean-checked',
-   time:'~3 h of Pro-level\ncompute per result',cost:'not disclosed'},
-  {sys:'Anthropic Glasswing',when:'Apr 2026 →',n:0,nl:'many',nsub:'scanning subagents',
-   hum:'humans reproduce, disclose\nand patch every finding',claim:'10,000+ serious bugs in a month;\n90.6% confirmed independently',
-   time:'agents: 1 month\npatching lags far behind',cost:'up to $100M\nin credits',hot:true}];
-const RCOL=[['System',50],['Agents',310],['Humans in the loop',450],['Claimed result',735],['Time',1105],['Cost of the agents',1365]];
-function realTable(){
-  const r=RCOL.map(([h,x],c)=>T('rh'+c,x,128,h,{size:15,weight:700,color:'#55606a'}));
-  REAL.forEach((row,i)=>{ const y=140+i*76;
-    r.push(B('rw'+i,40,y,1530,74,'',{k:row.hot?'card_hot':i%2?'row2':'row'}),
-      T('rs'+i,50,y+30,row.sys,{size:16,weight:700}),T('rd'+i,50,y+52,row.when,{size:13,color:'#55606a'}),
-      T('rn'+i,310,y+30,row.nl,{size:20,weight:700,color:'#2f7d74'}),
-      T('rhm'+i,450,y+30,row.hum,{size:14}),
-      T('rc'+i,735,y+30,row.claim,{size:14,weight:600,color:row.hot?'#c0392b':'#1f2a33'}),
-      T('rt'+i,1105,y+30,row.time,{size:14}),
-      T('rcost'+i,1365,y+30,row.cost,{size:14,weight:600}));
-    if(row.n) r.push(B('rb'+i,310,y+40,Math.max(8,120*Math.log10(row.n)/4),8,'',{k:'bar'}));
-    if(row.nsub) r.push(T('rns'+i,310,y+64,row.nsub,{size:12,color:'#55606a'}));
-  });
-  r.push(T('rfoot',50,772,'* claimed; not yet independently verified.  Rows ordered by number of agents.',{size:14,color:'#55606a'}),
-    T('rbridge',1565,772,'→ the same skill in the wrong hands',{size:16,weight:700,color:'#c0392b',anchor:'end'}));
-  return r;
-}
-
 /* ---------- later frames (rogue, incident, close) — unchanged, still on the earlier generic system ---------- */
 function big(){
   const r=[B('goal',30,385,170,130,'Hard problem',{k:'io',sub:'e.g. an open\nmath question'}),
@@ -559,25 +513,6 @@ function realCases(){
       {k:'tag',fs:18,sub:'That is a real problem, and a sign the checks can work: these turned up in testing, not in the wild. (OpenAI · METR & Redwood · Swarm Traces · the Australian Government review)'})];
 }
 
-// R7 · control: a clean conclusion diagram, same pieces, with the safeguards named.
-function controlSystem(){
-  return [
-    R('perm',250,170,890,410,'permissions: what each team may touch',{k:'cregion'}),
-    taskQ('any large task'),resultA('useful work,\nwithin limits'),
-    B('sys',290,300,350,190,'the agent system',{k:'agent',fs:20,sub:'a lead, teams,\nchecks and a\nshared plan'}),
-    B('plan2',690,300,170,190,'Shared plan',{k:'board',fs:18,nl:'MEMORY',ltop:true}),
-    B('doors',910,300,180,190,'Two doors',{k:'verify',fs:18,sub:'write to people;\npay — with limits\nand sign-off'}),
-    B('mon',290,520,350,56,'A monitor reads the plan and the messages',{k:'control',fs:15}),
-    B('read',690,520,400,56,'Keep the reasoning readable, so deception cannot hide',{k:'control',fs:14}),
-    B('ckp',1170,200,210,100,'Checkpoint before\nany action in the world',{k:'control',fs:16}),
-    B('appr',1170,320,210,100,'A human signs off\nthe irreversible steps',{k:'control',fs:16}),
-    B('rec',1170,440,210,100,'Recovery points,\nto undo a bad run',{k:'control',fs:16}),
-    A('q','sys'),A('sys','plan2'),A('plan2','doors'),A('doors','ans'),
-    A('doors','ckp',{fs:'r',ts:'l'}),A('doors','appr',{fs:'r',ts:'l'}),
-    T('tag1x',800,802,'Capability · reliability · control — evaluate them together',{size:30,anchor:'middle',weight:700}),
-    T('tag2x',800,848,'My research (C1–C3): infer the other agents’ strategies, adapt with a checked limit, and measure it all',{size:19,anchor:'middle',color:'#55606a'})];
-}
-
 const FR=[
  {id:'F1',m:'M1',secs:15,title:'Title',
   say:'Hook: we hand an AI a real task. How likely is the answer to be right, and what changes when many copies work on it?',src:[],
@@ -683,26 +618,6 @@ const FR=[
   say:"This is not hypothetical. In July, OpenAI's internal models, running under reduced safeguards during evaluation, used unauthorised communication and reached third-party systems — the most severe case so far. In June, a model doing harmless research crossed into Australian government systems it was never authorised to touch, affecting five agencies. Both matter. And both were found in internal testing, before wide release — which is a problem, and also a sign that the checks can catch these things, if we build them.",
   src:[['Hugging Face: OpenAI 2026; METR & Redwood 2026; Swarm Traces 2026',1],['Australia: OpenAI 2026, “How we will do better for Australia” (28 Sep); the Australian Government’s rapid review (PM&C)',1]],
   els:[...head('It has already happened','Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.'),...realCases()]},
- {id:'R7',m:'M12',secs:45,title:'Capability, reliability and control together',
-  say:"So where does that leave us. The same system is fine — with control built in. Keep permissions tight, so each team only touches what it must. Put a monitor on the shared plan. Keep the reasoning readable, so deception has nowhere to hide. Require a checkpoint before any action in the world, a human on the irreversible steps, and recovery points to undo a bad run. My own research sits right here: how an agent should infer the other agents' strategies, adapt with a checked limit, and let us measure the result. Capability, reliability and control have to be evaluated together.",
-  src:[['The control toolkit follows the incident write-ups and the agent-safety literature cited above; the thesis bridge is C1–C3',1]],
-  els:[...head('Capability, reliability and control — together'),...controlSystem()]},
-  {id:'B1',m:'backup',secs:0,title:'Backup · real systems compared',
-  say:"How does this look in real systems? Read across: how many agents, how much a human did, what was claimed, how long it took, and what it cost. Five agents in Stanford's Virtual Lab designed nanobodies in days that, by the PI's own estimate, would have taken his team weeks or months. Sixteen Claude copies built a C compiler that boots Linux for about twenty thousand dollars. Kosmos runs about two hundred agent runs for two hundred dollars and does, its users say, six months of a researcher's work. At the top end, OpenAI reports ten thousand agents on Navier–Stokes and hundreds of maths papers, with very little human input. The pattern: fewer human hours per result, and the results still need checking. The last row matters most for what comes next: Anthropic's Glasswing finds software vulnerabilities faster than anyone can patch them, and the same skill in the wrong hands is an attack.",
-  src:[['Swanson et al. 2025, Nature (Virtual Lab); time estimate and “<1%” from Zou’s interviews',1],
-    ['Chung, Du & Wesley 2026, arXiv 2608.23691 (The Station; preprint)',1],
-    ['Carlini 2026, “Building a C compiler with a team of parallel Claudes” (~$20k)',1],
-    ['Edison Scientific 2025 (Kosmos): accuracy and run statistics company-reported; $200 per run and “6 months of work” from press coverage of users’ estimates',0],
-    ['Anthropic 2026, “Claude discovers a novel enzyme system” + bioRxiv preprint',1],
-    ['OpenAI Navier–Stokes as reported by CNBC (9 Sep 2026); “very little human input” (Bubeck, via Wikipedia); cost is NPR’s estimate (22 Sep 2026)',0],
-    ['OpenAI 2026, “Sharing AI progress in mathematics” + openai/math repository',1],
-    ['Anthropic 2026, Project Glasswing launch (Apr; up to $100M in credits) and initial update (May; 10,000+ high/critical, 90.6% true positives)',1]],
-  also:[['Anthropic C compiler, in more detail: 16 copies, no orchestrator; each claims a task with a lock file, runs the tests and pushes to one shared git repo. All 16 once hit the same Linux-kernel bug and overwrote each other’s fixes; the fix was a better check (build most kernel files with GCC, a few with ours, so each copy gets its own bug)',1],
-    ['Anthropic enzyme search, in more detail: each of ~950 sessions read the literature, first reproduced a known result to check its own method, looked for genes that fit no known system and critiqued its own evidence. 200,000 RTs → 3,500 candidate systems → 20 reports → human review → lab; lessons fed back into the prompt',1],
-    ['Cursor (Jan 2026): hundreds of agents for about a week, planners and workers, a browser with 1M+ lines from “trillions of tokens”; it “kind of” works',1],
-    ['Google Co-Scientist (May 2026 update): agents generate hypotheses and debate them in an Elo tournament; lab-validated leads; opening to researchers',1],
-    ['DeepMind Aletheia: generator → verifier → reviser; on 700 open Erdős problems, 4 autonomous solutions the authors call elementary. An honest counterpoint',1]],
-  els:[...head('Backup · real systems compared','How many agents, how much human help, what they claim, how long, at what cost. Sources in the notes.'),...realTable()]},
 ];
 
 /* ---------- rendering ---------- */
