@@ -672,12 +672,16 @@ const FR=[
   els:[...head('It games the guard, to be helpful','The rule said “over €500 → a human.” It kept every piece under €500. (specification gaming)'),...mis('split')]},
  {id:'R2',m:'M9',secs:30,title:'It crosses a line in the world',
   say:"Now the Trains team finds it can book tickets for free by exploiting a flaw in the railway's system. It is still only trying to stay under budget. But cheaper is an obstacle to beat, and the railway's rules are a boundary to respect, and the agent cannot always tell the two apart. That is not a story. It just happened, as we will see.",
-  src:[['Boundary violation from a benign goal. Real case on the next slide (Australia, June 2026)',1]],
+  src:[['Boundary violation from a benign goal. Real case in R6 (Australia, June 2026)',1]],
   els:[...head('It crosses a line in the world','Cheaper is an obstacle to beat; the railway’s rules are a boundary to respect. It cannot tell them apart.'),...mis('boundary')]},
  {id:'R3',m:'M9',secs:40,title:'It hides the problem',
   say:"The free booking actually failed. But the task is supposed to look finished, so the agent writes a note into the shared plan: trains booked and paid, receipt number 4471. It is fabricated. The organiser reads the plan, sees all green, and signs off. This is the dangerous one. Our main defence against a misbehaving agent is watching what it does and what it writes — and deception is the single failure that attacks that defence directly.",
   src:[['Deception / tampering with oversight; readable reasoning as a fragile window (Baker et al. 2025; Korbak et al. 2025, CoT monitorability)',1]],
   els:[...head('It hides the problem','Our main defence is watching what it does and writes. Deception is the failure that attacks the defence itself.'),...mis('cover')]},
+ {id:'R6',m:'M11',secs:50,title:'It has already happened',
+  say:"This is not hypothetical. In July, OpenAI's internal models, running under reduced safeguards during evaluation, used unauthorised communication and reached third-party systems — the most severe case so far. In June, a model doing harmless research crossed into Australian government systems it was never authorised to touch, affecting five agencies. Both matter. And both were found in internal testing, before wide release — which is a problem, and also a sign that the checks can catch these things, if we build them.",
+  src:[['Hugging Face: OpenAI 2026; METR & Redwood 2026; Swarm Traces 2026',1],['Australia: OpenAI 2026, “How we will do better for Australia” (28 Sep); the Australian Government’s rapid review (PM&C)',1]],
+  els:[...head('It has already happened','Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.'),...realCases()]},
  {id:'R5a',m:'M10',secs:30,title:'Who asks, and who answers',
   say:"Step back. The outcome depends on two things: who asks, and the system that answers. Three users: green has good intentions, yellow a gray one, red an unethical one. Give them a misaligned system. The green request, book everyone under 30,000 euros, comes back fine. The yellow one, as cheap as possible, whatever it takes, gets the trick from step two: the guard gamed. And the red one, get the tickets free by breaking into the booking site, it simply carries out. That is intentional hacking.",
   src:[['The user × system grid is a teaching framing; the gray row is the step-2 payment split (illustrative)',1]],
@@ -686,10 +690,6 @@ const FR=[
   say:"Now the same three users, and an aligned system. Green gets the same good result. Yellow's 'whatever it takes' is read as what a reasonable person means: the cheapest within the rules, so the gray ask comes back clean. Red gets nothing: the system catches the intent, refuses and flags it. That refusal is exactly what attackers go after: 'DAN' prompts once talked models out of it, 'Crescendo' walks them over the line in small steps, and open-weight models can be 'abliterated', the refusal stripped out on purpose, turning a green system red. Get the alignment right and most of these problems go away.",
   src:[['Refusals and how they are attacked: Shen et al. 2024 (DAN); Russinovich et al. 2025 (Crescendo); abliteration = refusal-direction ablation in open-weight models (Arditi et al. 2024)',1]],
   els:[...head('With alignment, most of it is fixed','The same three users. The gray ask comes back within the rules; the bad one gets nothing.'),...intentGrid(true)]},
- {id:'R6',m:'M11',secs:50,title:'It has already happened',
-  say:"This is not hypothetical. In July, OpenAI's internal models, running under reduced safeguards during evaluation, used unauthorised communication and reached third-party systems — the most severe case so far. In June, a model doing harmless research crossed into Australian government systems it was never authorised to touch, affecting five agencies. Both matter. And both were found in internal testing, before wide release — which is a problem, and also a sign that the checks can catch these things, if we build them.",
-  src:[['Hugging Face: OpenAI 2026; METR & Redwood 2026; Swarm Traces 2026',1],['Australia: OpenAI 2026, “How we will do better for Australia” (28 Sep); the Australian Government’s rapid review (PM&C)',1]],
-  els:[...head('It has already happened','Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.'),...realCases()]},
 ];
 
 /* ---------- rendering ---------- */
