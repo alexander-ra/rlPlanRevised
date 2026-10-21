@@ -148,6 +148,15 @@ const Q=(x,y,w,h,sub=ASK_COST)=>B('q',x,y,w,h,'Question',{k:'io',sub});
 const Q2=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Cheapest way\nRuse → Sofia,\narriving within 24 h?'});
 
 /* ---------- F2–F5: one question, a short chain ---------- */
+// F4: the same per-step chance over longer chains, as bare equations in one row under the diagram
+// (explained aloud). Positions come from an estimate of each equation's width at this size.
+function powers(p,ns,y=740,size=30){
+  const sup=n=>String(n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+  const pc=v=>v>=1?String(Math.round(v)):v.toFixed(Math.ceil(-Math.log10(v)));   // 1.7e-7 → 0.0000002
+  const eqs=ns.map(n=>`${p}${sup(n)} ≈ ${pc(Math.pow(p,n)*100)}%`), w=eqs.map(s=>s.length*size*0.55), gap=90;
+  let x=800-(w.reduce((a,b)=>a+b,0)+gap*(eqs.length-1))/2;
+  return eqs.map((s,i)=>{ const e=T('pow'+i,x,y,s,{size,weight:600}); x+=w[i]+gap; return e; });
+}
 const STEP_L=['Search\nroad distance','Search\nfuel price','Search\ntrain fares','Calculate\nboth costs','Compare\n& answer'];
 const xs5=[300,520,740,960,1180];
 
@@ -593,7 +602,7 @@ const FR=[
  {id:'F4',m:'M3',secs:50,title:'Thinking before each step',
   say:'Reasoning models think before each step, a skill trained with reinforcement learning on problems with checkable answers. At 98% per step the chain climbs to 90%. The longer the task, the more every point per step matters.',
   src:[['OpenAI 2024, “Learning to reason with LLMs” (reading guide)',1],['98% per step is illustrative',1]],
-  els:[...head('Thinking before each step','98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.','⏱ ~1 min'),...chain(0.98,true)]},
+  els:[...head('Thinking before each step','98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.','⏱ ~1 min'),...chain(0.98,true),...powers(0.98,[5,10,100,1000])]},
  {id:'F5a',m:'M4',secs:35,title:'Tools and a check',
   say:"Some steps can go to an exact tool: the calculator is simply right. The rest still involve judgement, so we add a check. In programming that's obvious: run the tests and read the error. For our trip it is four independent checks: do two sources agree, is the number in a sensible range, is the page current and in the right currency, does the arithmetic recompute. And here it catches a real trap: the train fare came from a 2025 page, in leva, and the euro arrived in January.",
   src:[['Schluntz & Zhang 2024, “Building effective agents”',1],['Fares illustrative: 23 лв ÷ 1.95583 ≈ €12, matching the F7 table',1],['Bulgaria adopted the euro on 1 Jan 2026 at 1.95583 лв/€: add an official reference (ECB / EU Council)',0]],
