@@ -235,7 +235,7 @@ const LANES=[['car',215,[['s1','distance'],['s2','fuel price']]],
   ['bike',615,[['bk1','weather']]]];
 const CHIP={car:'car · €45 · 4 h',train:'train · €12 · 7 h',bus:'bus · €15 · 5 h',rideshare:'rideshare · €10 · 4 h',bike:'bike ✗ stopped (storm)'};
 
-// stage 'b' = fork/join, 'c' = split further / stop early / report, 'd' = gather into one table
+// stage 'b' = fork/join, 'c' = split further / stop early / report back
 function parTrip(stage){
   const els=[R('ai',240,185,1150,520,'AI system'),Q2(40,390,180,120),
     B('plan',255,410,120,80,'List\noptions',{fs:18,sub:'orchestrator'}),N('fk',392,436),
@@ -244,10 +244,9 @@ function parTrip(stage){
     B('v',1278,410,100,80,'Check',{k:'verify',fs:18}),
     B('ans',1420,390,150,120,'Answer',{k:'io',p:P_TRIP}),
     A('q','plan'),A('plan','fk'),...chainArrows(['s4','cmp','v','ans'])];
-  const dim=stage==='d'?{s:'dim'}:{};
   LANES.forEach(([name,y,steps],k)=>{
     steps.forEach(([id,l],j)=>{
-      els.push(B(id,440+j*130,y,120,70,l,{fs:18,sub:j===0?`copy ${k+1} · ${name}`:'',...dim}));
+      els.push(B(id,440+j*130,y,120,70,l,{fs:18,sub:j===0?`copy ${k+1} · ${name}`:''}));
       if(j===0) els.push(A('fk',id)); else els.push(A(steps[j-1][0],id));
     });
   });
@@ -262,25 +261,19 @@ function parTrip(stage){
     els.push(N('trf',563,342,{w:16,h:16}),N('trj',716,342,{w:16,h:16}),
       A('tr1','trf'),A('trf','s3'),A('trf','tr3'),A('s3','trj'),A('tr3','trj'));
     let e2=els;
-    e2=mod(e2,'s3',{x:588,y:297,w:120,h:46,label:'direct',sub:'copy 2a',fs:15,...dim});
-    e2=mod(e2,'tr3',{x:588,y:353,w:120,h:46,label:'with a change',sub:'copy 2b',fs:15,...dim});
-    e2=mod(e2,'bk1',{sub:'copy 5 · bike\nstorm ✗',s:stage==='d'?'dim':'bad'});
+    e2=mod(e2,'s3',{x:588,y:297,w:120,h:46,label:'direct',sub:'copy 2a',fs:15});
+    e2=mod(e2,'tr3',{x:588,y:353,w:120,h:46,label:'with a change',sub:'copy 2b',fs:15});
+    e2=mod(e2,'bk1',{sub:'copy 5 · bike\nstorm ✗',s:'bad'});
     e2=mod(e2,'bu3',{sub:'first bus full\n→ next one'});
     els.length=0; els.push(...e2);
     const ends={car:'s2',train:'trj',bus:'bu3',rideshare:'ri1',bike:'bk1'};
-    const chipPos=stage==='c'
-      ? {car:[840,228,140,44],train:[840,328,140,44],bus:[840,428,140,44],rideshare:[840,528,140,44],bike:[575,628,165,44]}
-      : {car:[840,240,170,40],train:[840,290,170,40],bus:[840,340,170,40],rideshare:[840,390,170,40],bike:[840,440,170,40]};
+    const chipPos={car:[840,228,140,44],train:[840,328,140,44],bus:[840,428,140,44],rideshare:[840,528,140,44],bike:[575,628,165,44]};
     for(const name in chipPos){ const [x,y,w,h]=chipPos[name];
       els.push(B('rc_'+name,x,y,w,h,CHIP[name],{k:'chip',fs:14,s:name==='bike'?'bad':undefined}));
-      els.push(A(ends[name],'rc_'+name,stage==='d'?{k:'dash'}:{})); }
-    if(stage==='c'){
-      els.push(N('mg',992,436));
-      for(const name in chipPos) els.push(A('rc_'+name,'mg',name==='bike'?{k:'dash'}:{}));
-      els.push(A('mg','s4'));
-    } else {
-      els.push(R('tbl',830,200,190,300,'gathered results'),A('tbl','s4'));
-    }
+      els.push(A(ends[name],'rc_'+name)); }
+    els.push(N('mg',992,436));
+    for(const name in chipPos) els.push(A('rc_'+name,'mg',name==='bike'?{k:'dash'}:{}));
+    els.push(A('mg','s4'));
   }
   // timeline: copies overlap, then the sequential tail
   const u=70, x0=230, rowY={car:712,train:732,bus:752,rideshare:772,bike:792};
@@ -620,13 +613,9 @@ const FR=[
   src:[['Hadfield 2025 (Anthropic research system: orchestrator + parallel subagents)',1],['Times illustrative',1]],
   els:[...head('Copies take the options in parallel','Each copy is an agent: the same model with its own working memory, spawned for one option.','⏱ ~25 min'),...parTrip('b')]},
  {id:'F7c',m:'M6',secs:25,title:'Copies split again, stop early, report back',
-  say:'Copies adapt. The train copy finds two routes and splits into two helpers. The bike copy sees a storm and stops early. The bus copy finds the first bus full and checks the next one. Each finishes with a short result.',
+  say:'Copies adapt. The train copy finds two routes and splits into two helpers. The bike copy sees a storm and stops early. The bus copy finds the first bus full and checks the next one. Each finishes with a short result. Each copy reports back, and nothing is compared until the slowest one is done.',
   src:[['Teaching illustration; prices illustrative (€, since 2026)',1]],
   els:[...head('Copies split again, stop early, report back','One task run by many threads, not a team of people.','⏱ ~20 min'),...parTrip('c')]},
- {id:'F7d',m:'M6',secs:20,title:'Results gather in one place',
-  say:'The copies are done and closed. Their results gather in one table, and only then can we compare, check and answer. Merging is where copies that shared one wrong assumption would show up, and it is not free.',
-  src:[['Teaching illustration',1]],
-  els:[...head('Results gather in one place','Joining = every copy reports into one place before anyone compares.','⏱ ~20 min'),...parTrip('d')]},
  {id:'F8',m:'M7',secs:60,title:'Where splitting helps, and where it hurts',
   say:"Splitting pays when the parts are independent, as in web research. Programming is mixed: separate bug fixes split well, but two copies building one feature must agree on a shared interface, and that coordination eats the gain. A novel is worse than one writer, because nobody holds the whole plot. As Moonshot put it, spawning more subtasks only helps if it shortens the critical path.",
   src:[['Hadfield 2025: “most coding tasks involve fewer truly parallelizable tasks than research”',1],['Moonshot AI 2026, Kimi K2.5 blog: critical-path quote; up to 100 sub-agents, up to 4.5× faster',1],['Brown, Dwarkesh Podcast 17 Sep 2026: subagent count vs. speed-up',0],['Cognition, “Don’t Build Multi-Agents” (novel / shared-context argument)',0],['Google, “Towards a Science of Scaling Agent Systems” figures',0]],
