@@ -151,10 +151,8 @@ const Q2=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Cheapest way\nRuse →
 // F4: the same per-step chance over longer chains, as bare equations in one row under the diagram
 // (explained aloud). Positions come from an estimate of each equation's width at this size.
 function powers(p,ns,y=740,size=30){
-  const sup=n=>String(n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]).replace('-','⁻');
-  const sci=v=>{ const [m,e]=v.toExponential(0).split('e'); return `${m} × 10${sup(+e)}`; };   // 5.3e-21 → 5 × 10⁻²¹
-  const pc=v=>v<1e-8?sci(v):v<1?v.toFixed(Math.ceil(-Math.log10(v)))   // 1.7e-7 → 0.0000002
-    :v<99?String(Math.round(v)):String(+v.toFixed(2));    // 99.95 stays 99.95, 99.005 → 99
+  const sup=n=>String(n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+  const pc=v=>v<99?String(Math.round(v)):String(+v.toFixed(2));   // whole percent (1.7e-7 → 0); 99.95 stays 99.95, never 100
   const eqs=ns.map(n=>`${p}${sup(n)} ≈ ${pc(Math.pow(p,n)*100)}%`), w=eqs.map(s=>s.length*size*0.55), gap=90;
   let x=800-(w.reduce((a,b)=>a+b,0)+gap*(eqs.length-1))/2;
   return eqs.map((s,i)=>{ const e=T('pow'+i,x,y,s,{size,weight:600}); x+=w[i]+gap; return e; });
