@@ -255,19 +255,29 @@ function parTrip(stage){
     LANES.forEach(([,,steps])=>els.push(A(steps[steps.length-1][0],'mg')));
     els.push(A('mg','s4'));
   } else {
-    // train copy splits in two, bike copy stops early, bus copy reroutes
+    // car and train copies each split in two and merge back, bike copy stops early, bus copy reroutes
+    els.splice(els.findIndex(e=>e.id==='a:fk>s1'),1);
+    els.splice(els.findIndex(e=>e.id==='a:s1>s2'),1);
+    els.push(N('carf',572,212,{w:16,h:16}),N('carj',786,212,{w:16,h:16}),
+      B('cr2',612,227,154,42,'via Veliko Tarnovo',{sub:'copy 1b · distance',fs:15}),
+      A('fk','s2'),A('s2','carf'),A('carf','s1'),A('carf','cr2'),A('s1','carj'),A('cr2','carj'));
     els.splice(els.findIndex(e=>e.id==='a:tr1>s3'),1);
     els.splice(els.findIndex(e=>e.id==='a:s3>tr3'),1);
-    els.push(N('trf',563,342,{w:16,h:16}),N('trj',716,342,{w:16,h:16}),
+    els.push(N('trf',572,342,{w:16,h:16}),N('trj',786,342,{w:16,h:16}),
       A('tr1','trf'),A('trf','s3'),A('trf','tr3'),A('s3','trj'),A('tr3','trj'));
     let e2=els;
-    e2=mod(e2,'s3',{x:588,y:297,w:120,h:46,label:'direct',sub:'copy 2a',fs:15});
-    e2=mod(e2,'tr3',{x:588,y:353,w:120,h:46,label:'with a change',sub:'copy 2b',fs:15});
+    // the area grows upward so the car lane can rise and open its two roads; forks and joins sit apart
+    // from the branches so the split and the merge read at a glance
+    e2=mod(e2,'ai',{y:150,h:555});
+    e2=mod(e2,'s2',{x:440,y:185,sub:'copy 1 · car'});   // fuel price first: both roads need it
+    e2=mod(e2,'s1',{x:612,y:171,w:154,h:42,label:'via Pleven',sub:'copy 1a · distance',fs:15});
+    e2=mod(e2,'s3',{x:612,y:297,w:150,h:46,label:'direct',sub:'copy 2a',fs:15});
+    e2=mod(e2,'tr3',{x:612,y:353,w:150,h:46,label:'with a change',sub:'copy 2b',fs:15});
     e2=mod(e2,'bk1',{sub:'copy 5 · bike\nstorm ✗',s:'bad'});
     e2=mod(e2,'bu3',{sub:'first bus full\n→ next one'});
     els.length=0; els.push(...e2);
-    const ends={car:'s2',train:'trj',bus:'bu3',rideshare:'ri1',bike:'bk1'};
-    const chipPos={car:[840,228,140,44],train:[840,328,140,44],bus:[840,428,140,44],rideshare:[840,528,140,44],bike:[575,628,165,44]};
+    const ends={car:'carj',train:'trj',bus:'bu3',rideshare:'ri1',bike:'bk1'};
+    const chipPos={car:[840,198,140,44],train:[840,328,140,44],bus:[840,428,140,44],rideshare:[840,528,140,44],bike:[575,628,165,44]};
     for(const name in chipPos){ const [x,y,w,h]=chipPos[name];
       els.push(B('rc_'+name,x,y,w,h,CHIP[name],{k:'chip',fs:14,s:name==='bike'?'bad':undefined}));
       els.push(A(ends[name],'rc_'+name)); }
@@ -280,15 +290,18 @@ function parTrip(stage){
   els.push(tlLabel(),B('g_plan',160,752,70,16,'',{k:'seg'}));
   LANES.forEach(([name,,steps])=>steps.forEach(([id],j)=>{
     let x=x0+j*u, w=u, y=rowY[name], h=16;
+    if(stage!=='b'&&id==='s2'){ x=x0; }
+    if(stage!=='b'&&id==='s1'){ x=x0+u; y=709; h=7; }
     if(stage!=='b'&&id==='s3'){ x=x0+u; y=728; h=8; }
     if(stage!=='b'&&id==='tr3'){ x=x0+u; y=740; h=8; }
     if(stage!=='b'&&id==='bk1'){ w=u/2; }
     els.push(B('g_'+id,x,y,w,h,'',{k:'seg',s:stage!=='b'&&id==='bk1'?'bad':undefined}));
   }));
+  if(stage!=='b') els.push(B('g_cr2',x0+u,719,u,7,'',{k:'seg'}));   // the second road runs beside the first
   const tail=x0+3*u;
   els.push(B('g_mg',tail,752,30,16,'',{k:'seg'}),B('g_s4',tail+30,752,50,16,'',{k:'seg'}),
     B('g_cmp',tail+80,752,70,16,'',{k:'seg'}),B('g_v',tail+150,752,110,16,'',{k:'seg'}));
-  els.push(T('tln',tail+290,768,stage==='b'?'copies run at the same time: ~25 min instead of ~2 h':'split the slow copy, stop the hopeless one',{size:18,color:'#55606a'}));
+  els.push(T('tln',tail+290,768,stage==='b'?'copies run at the same time: ~25 min instead of ~2 h':'split into options, merge back, stop the hopeless one',{size:18,color:'#55606a'}));
   return els;
 }
 
@@ -613,7 +626,7 @@ const FR=[
   src:[['Hadfield 2025 (Anthropic research system: orchestrator + parallel subagents)',1],['Times illustrative',1]],
   els:[...head('Copies take the options in parallel','Each copy is an agent: the same model with its own working memory, spawned for one option.','⏱ ~25 min'),...parTrip('b')]},
  {id:'F7c',m:'M6',secs:25,title:'Copies split again, stop early, report back',
-  say:'Copies adapt. The train copy finds two routes and splits into two helpers. The bike copy sees a storm and stops early. The bus copy finds the first bus full and checks the next one. Each finishes with a short result. Each copy reports back, and nothing is compared until the slowest one is done.',
+  say:'Copies adapt. The train copy finds two routes and splits into two helpers. The car copy does the same with two roads, through Pleven or through Veliko Tarnovo, and the two halves merge back before it reports. The bike copy sees a storm and stops early. The bus copy finds the first bus full and checks the next one. Each finishes with a short result. Each copy reports back, and nothing is compared until the slowest one is done.',
   src:[['Teaching illustration; prices illustrative (€, since 2026)',1]],
   els:[...head('Copies split again, stop early, report back','One task run by many threads, not a team of people.','⏱ ~20 min'),...parTrip('c')]},
  {id:'F8',m:'M7',secs:60,title:'Where splitting helps, and where it hurts',
