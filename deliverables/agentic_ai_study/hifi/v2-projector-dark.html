@@ -165,7 +165,7 @@ function F4() {
   const sy = 296, sh = 204;
   return [
     ...chrome('Thinking before each step', '98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.', '⏱ ~1 min'),
-    { id: 'ai', k: 'region', x: 48, y: 250, w: 1304, h: 280, label: 'AI model' },
+    { id: 'ai', k: 'region', x: 48, y: 250, w: 1304, h: 280, label: 'AI model', ext: 0, ey: 500 },
     { id: 'q', k: 'prompt', x: 48, y: 120, w: 1504, h: 100, label: 'Question', sub: ASK + '\n**Think hard and describe the answer step by step.**' },
     ...STEP_L.map((l, i) => ({ id: 's' + (i + 1), k: 'step', x: SX(i), y: sy, w: 228, h: sh, label: l, p: 0.98, padB: 58 })),
     ...STEP_L.map((l, i) => ({ id: 'th' + (i + 1), k: 'think', x: SX(i) + 34, y: sy + sh - 56, w: 160, h: 40, label: 'thinking…' })),
@@ -182,17 +182,17 @@ function F5a() {
   const sub = ['web search', 'web search', '2025 page · 23 лв', 'calculator · exact', ''];
   return [
     ...chrome('Tools and a check', 'In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.', '⏱ ~5 min'),
-    { id: 'ai', k: 'region', x: 48, y: 214, w: 1304, h: 560, label: 'AI model' },
+    { id: 'ai', k: 'region', x: 48, y: 214, w: 1304, h: 560, label: 'AI model', ext: 200, ey: 500 },
     { id: 'q', k: 'prompt', x: 48, y: 120, w: 1504, h: 70, label: 'Question', sub: ASK },
     ...STEP_L.map((l, i) => ({ id: 's' + (i + 1), k: i === 3 ? 'exact' : 'step', x: SX(i), y: sy, w: 228, h: sh, label: l,
       p: i === 3 ? 1 : 0.98, sub: sub[i], s: i === 2 ? 'bad' : undefined, padB: i === 3 ? 0 : 58 })),
     ...[0, 1, 2, 4].map(i => ({ id: 'th' + (i + 1), k: 'think', x: SX(i) + 34, y: sy + sh - 56, w: 160, h: 40, label: 'thinking…' })),
-    { id: 'v', k: 'band', x: 70, y: 570, w: 1260, h: 180, label: 'Check', hx: SX(4), hw: 228 },
+    { id: 'v', k: 'band', x: 70, y: 570, w: 1460, h: 180, label: 'Check', hx: SX(4), hw: 428 },
     ...['sources agree ✓', 'sensible range ✓', 'date & currency ✗', 'recompute ✓'].map((l, i) => ({
       id: 'ck' + (i + 1), k: 'chip', x: SX(i) + 11, y: 624, w: 206, h: 72, label: l, s: i === 2 ? 'bad' : 'good' })),
-    { id: 'ans', k: 'io', x: 1382, y: 580, w: 170, h: 160, label: 'Answer', sub: 'on hold', s: 'warn', p: 0.9223681599999999 },
+    { id: 'ans', k: 'io', x: 1382, y: 262, w: 170, h: 216, label: 'Answer', sub: 'on hold', s: 'warn', p: 0.9223681599999999 },
     A('a:q>s1', 'q', 's1', { r: 'v', xa: 'to' }), ...chainArrows(),
-    A('a:s5>v', 's5', 'v', { r: 'v' }), A('a:v>ans', 'v', 'ans', { ya: 'to' }),
+    A('a:s5>v', 's5', 'v', { r: 'v' }), A('a:v>ans', 'v', 'ans', { r: 'v', xa: 'to' }),   // the verdict leaves the model upward
     // the check's verdict goes back from the failing test to the step it caught
     A('back', 'ck3', 's3', { r: 'v', ak: 'bad', label: '✗ fare from a 2025 page, in leva', lp: 'right', lyo: -27 }),
   ];
@@ -373,7 +373,7 @@ function layout(e) {
       break;
     }
     case 'region': {
-      rect('shape', e.x, e.y, e.w, e.h, { rx: 22, fill: C.panel, stroke: C.panelEdge, sw: 2 });
+      add({ pt: 'L', key: 'shape', x: e.x, y: e.y, w: e.w, h: e.h, ext: e.ext || 0, ey: e.ey ?? e.y + e.h / 2, rx: 22, fill: C.panel, stroke: C.panelEdge, sw: 2 });
       if (e.label) text('L:' + e.label, e.x + 22, e.y + 30, e.label, 18, { wt: 600, fill: C.ink3, ls: 0.02 });
       // N2: the system's boundary becomes a wall; the doors are the only openings in it
       if (e.wall) rect('wall', e.x + 22, e.y + e.h - 3, e.w - 44, 6, { rx: 3, fill: C.wall, sw: 0 });
@@ -556,6 +556,16 @@ function pathD(pts, r = 10) {
   const l = pts[pts.length - 1];
   return d + ` L${f1(l[0])},${f1(l[1])}`;
 }
+function closedPath(pts, r) {
+  const n = pts.length; let d = '';
+  for (let i = 0; i < n; i++) {
+    const [px, py] = pts[(i + n - 1) % n], [x, y] = pts[i], [nx, ny] = pts[(i + 1) % n];
+    const l1 = Math.hypot(x - px, y - py), l2 = Math.hypot(nx - x, ny - y), rr = Math.min(r, l1 / 2, l2 / 2);
+    const ax = l1 ? x + (px - x) / l1 * rr : x, ay = l1 ? y + (py - y) / l1 * rr : y, bx = l2 ? x + (nx - x) / l2 * rr : x, by = l2 ? y + (ny - y) / l2 * rr : y;
+    d += `${i ? 'L' : 'M'}${f1(ax)},${f1(ay)} Q${f1(x)},${f1(y)} ${f1(bx)},${f1(by)} `;
+  }
+  return d + 'Z';
+}
 function arrowSVG(p) {
   const st = AST[p.kind] || AST.solid, op = p.op ?? 1;
   if (op <= 0.003 || p.draw <= 0.001) return '';
@@ -623,6 +633,11 @@ function primSVG(p) {
       const sw = p.sw || 0, st = sw > 0 ? ` stroke="${p.stroke}" stroke-width="${f1(sw)}"` : '';
       return `<rect x="${f1(p.x)}" y="${f1(p.y)}" width="${f1(p.w)}" height="${f1(p.h)}" rx="${f1(Math.min(p.rx || 0, p.w / 2, p.h / 2))}" fill="${p.fill}"${st}${p.dash ? ` stroke-dasharray="${p.dash}"` : ''}${op < 0.999 ? ` opacity="${f1(op * 1000) / 1000}"` : ''}${p.el && p.key === 'shape' ? ` data-b="${esc(p.el)}"` : ''}/>`;
     }
+    case 'L': {                                   // region: a rectangle whose lower part can reach further right
+      const { x, y, w, h } = p, ex = Math.max(0, p.ext || 0), ey = clamp(p.ey, y, y + h);
+      const pts = [[x, y], [x + w, y], [x + w, ey], [x + w + ex, ey], [x + w + ex, y + h], [x, y + h]];
+      return `<path d="${closedPath(pts, p.rx)}" fill="${p.fill}" stroke="${p.stroke}" stroke-width="${f1(p.sw)}"${op < 0.999 ? ` opacity="${f1(op * 1000) / 1000}"` : ''}/>`;
+    }
     case 'T': return textSVG(p);
     case 'B': return badgeSVG(p);
     case 'I': return iconSVG(p);
@@ -632,7 +647,7 @@ function primSVG(p) {
 }
 
 /* ---------- interpolation of matched primitives ---------- */
-const NUMK = ['x', 'y', 'w', 'h', 'rx', 'sw', 'size', 'wt', 'cx', 'cy', 's', 'v', 'ex', 'xr', 'op'];
+const NUMK = ['x', 'y', 'w', 'h', 'rx', 'sw', 'size', 'wt', 'cx', 'cy', 's', 'v', 'ex', 'xr', 'op', 'ext', 'ey'];
 const COLK = ['fill', 'stroke', 'color'];
 function lerpPrim(a, b, u) {
   const r = { ...b };
@@ -659,6 +674,8 @@ function xform(prims, { dx = 0, dy = 0, sc = 1, ox = 0, oy = 0, op = 1 }) {
     if (typeof q.xr === 'number') q.xr = X(q.xr);
     if (typeof q.cx === 'number') q.cx = X(q.cx);
     if (typeof q.cy === 'number') q.cy = Y(q.cy);
+    if (typeof q.ey === 'number') q.ey = Y(q.ey);
+    if (typeof q.ext === 'number') q.ext *= sc;
     if (typeof q.w === 'number') q.w *= sc;
     if (typeof q.h === 'number') q.h *= sc;
     if (typeof q.size === 'number') q.size *= sc;

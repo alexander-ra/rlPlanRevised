@@ -568,9 +568,9 @@ function buildN(n2) {
     I.push(Tx('guard.s', T + 46, 304, ['stays under €30k;', '> €500 → organiser'], { s: 16, w: 500, c: C.muted, lh: 19 }));
     I.push({ id: 'gate>org', type: 'pill', x: L + 24, y: 362, h: 30, text: '> €500', size: 18, align: 'l', fill: '#fff', color: C.ink, stroke: C.ink });
     I.push({ id: 'pay', type: 'stn', kind: 'stop', x: T, y: 592, c: C.pay, r: 12 });
-    I.push(Tx('pay.n', T + 26, 578, 'Payments', { s: 21, w: 800 }));
-    I.push({ id: 'pay.nl', type: 'pill', x: T + 34 + tw('Payments', 21, 800), y: 571, h: 24, text: '×2', size: 15, align: 'l', padX: 8, fill: C.pay, color: '#fff' });
-    I.push(Tx('pay.s', T + 30, 602, ['the only agents', 'that can pay'], { s: 16, w: 500, c: C.muted, lh: 19 }));
+    I.push(Tx('pay.n', T + 28, 578, 'Payments', { s: 21, w: 800 }));
+    I.push({ id: 'pay.nl', type: 'pill', x: T + 36 + tw('Payments', 21, 800), y: 571, h: 24, text: '×2', size: 15, align: 'l', padX: 8, fill: C.pay, color: '#fff' });
+    I.push(Tx('pay.s', T + 28, 602, ['the only agents', 'that can pay'], { s: 16, w: 500, c: C.muted, lh: 19 }));
     I.push({ id: 'l.book', type: 'line', pts: [[T, 688], [T - 28, 716], [1134, 716]], c: C.pay, w: 9, r: 14, arrow: true });
     I.push({ id: 'l.card', type: 'line', pts: [[T, 688], [T + 28, 716], [1346, 716]], c: C.pay, w: 9, r: 14, arrow: true });
     // correspondence: the other door, both ways
