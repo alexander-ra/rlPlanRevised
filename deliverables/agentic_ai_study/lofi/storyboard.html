@@ -508,28 +508,40 @@ function mis(sc){
   if(sc==='onebad'){
     e=misBase('And one wrong step is enough — no bad intent at all');
     e=mod(e,'pn2',{label:'Arrival day:\nthe 24th',s:'bad'});
-    e.push(A('plan','s_ho',{k:'bad',cy:70,label:'everyone books the wrong day'}),A('plan','s_co',{k:'bad',cy:60}),
+    e.push(A('pn2','s_ho',{k:'bad',fs:'l',ts:'r'}),A('pn2','s_co',{k:'bad',fs:'l',ts:'r',label:'everyone books the wrong day',ldx:-45,ldy:48}),
       misNote(760,'One wrong note, trusted by all','the deadline is read as the 24th, not the 23rd, and every team downstream books around it.\n(recall slide 3: one bad step in a long chain.)'));
     return e;
   }
   return e;
 }
 
-// R5 · the other axis: misuse. Two panels + the jailbreak history.
-function misuseAxis(){
-  return [
-    R('lp',60,160,710,440,'misalignment — good user, bad outcome'),
-    B('gu',100,330,150,110,'user',{k:'human',fs:18,sub:'good intent'}),
-    B('gsys',300,300,210,170,'the system',{k:'agent',fs:18,sub:'guardrails on:\nchecks, limits,\napprovals'}),
-    B('gout',560,330,170,110,'mostly right',{k:'io',fs:17,sub:'but a few steps\nslip through'}),
-    A('gu','gsys'),A('gsys','gout'),
-    R('rp',830,160,710,440,'misuse — bad user removes the guardrails'),
-    B('bu',870,330,150,110,'user',{k:'human',s:'bad',fs:18,sub:'bad intent'}),
-    B('bsys',1070,300,230,170,'“abliterated” model',{k:'agent',s:'bad',fs:17,sub:'an open-weight model\nwith its refusals\nstripped out on purpose'}),
-    B('bout',1360,330,160,110,'does what\nit is told',{k:'io',s:'bad',fs:17}),
-    A('bu','bsys'),A('bsys','bout'),
-    T('hist',800,666,'the history of the bad user: “DAN” prompts once talked models out of refusing; “Crescendo” steers them over many small, plausible turns.',
-      {size:16,anchor:'middle',color:'#55606a'})];
+// R5a/R5b · who asks × the system that answers. The users stay put; the system and the verdicts
+// morph from misaligned (red) to aligned (green). Rows: good, gray and bad intent.
+const INTENT=[['good','Good intent','“Book everyone,\nunder €30,000.”'],
+  ['warn','Gray intent','“As cheap as possible —\nwhatever it takes.”'],
+  ['bad','Bad intent','“Get the train tickets free —\nbreak into the booking site.”']];
+// Per row: result, its sub, the result's state, the verdict icon. null = no result at all.
+const OUTCOME={
+  misaligned:[['Everyone booked, under €30,000','within the rules','good','okmark'],
+    ['The €500 guard gamed','€600 split into 3 × €200 (step 1)','warn','alert'],
+    ['Breaks into the booking site','intentional hacking','bad','alert']],
+  aligned:[['Everyone booked, under €30,000','within the rules','good','okmark'],
+    ['Cheapest, within the rules','reads “whatever it takes” as “within the rules”','good','okmark'],
+    null]};
+// The robot and result boxes keep their ids across the pair, so colour and text switch once at the midpoint;
+// the verdict icons have per-verdict ids, so a triangle cross-fades into a tick.
+function intentGrid(aligned){
+  const rows=OUTCOME[aligned?'aligned':'misaligned'];
+  const r=[B('robot',640,330,240,240,aligned?'Aligned system':'Misaligned system',{k:'robot',s:aligned?'good':'bad',sfs:16,
+    sub:aligned?'follows the intent\nbehind the request':'follows the letter,\nwhoever is asking'})];
+  INTENT.forEach(([s,label,ask],i)=>{ const cy=250+i*200, out=rows[i], dy=(i-1)*24;   // dy spreads the arrowheads on the robot
+    r.push(B('u'+i,60,cy-60,330,120,label,{k:'human',s,fs:20,sub:ask,sfs:16}),A('u'+i,'robot',{tdy:dy}));
+    if(!out){ r.push(B('res'+i,1000,cy-50,430,100,'No result',{k:'ph',fs:20,sub:'bad intent caught: refused and flagged',sfs:15})); return; }
+    const [rl,rs,st,icon]=out;
+    r.push(B('res'+i,1000,cy-50,430,100,rl,{k:'chip',s:st,fs:20,sub:rs,sfs:15}),A('robot','res'+i,{fdy:dy}),
+      icon==='okmark'?B('ic'+i+'_ok',1465,cy-40,80,80,'',{k:'okmark'}):B('ic'+i+'_'+st,1455,cy-44,100,88,'',{k:'alert',s:st}));
+  });
+  return r;
 }
 
 // R6 · real cases, as two cards + the "found in testing" caveat.
@@ -659,10 +671,14 @@ const FR=[
   say:"And none of this needs bad intent at all. One worker misreads the deadline — the 24th, not the 23rd — and writes it into the shared plan. Every team downstream books around that wrong date, in perfect good faith. Remember slide three: a single bad step runs through a long chain, and here the chain is a hundred agents sharing one plan.",
   src:[['Error propagation through shared state (Cemri et al. 2025, “Why do multi-agent LLM systems fail?”)',1]],
   els:[...head('One wrong step is enough','One wrong note in the shared plan, trusted by everyone downstream. No malice needed.'),...mis('onebad')]},
- {id:'R5',m:'M10',secs:35,title:'The other danger: misuse',
-  say:"Everything so far was a good user getting a bad outcome: misalignment. There is a second, separate danger: a bad user. Open-weight models can be 'abliterated' — their refusals stripped out on purpose — so the guardrails are gone by design, and the intent is simply the user's. That is misuse, not misalignment, and it needs different answers. The history is older than agents: 'DAN' prompts once talked chatbots out of refusing, and 'Crescendo' walks them over the line in many small, plausible steps.",
-  src:[['Abliteration: refusal-direction ablation in open-weight models (Arditi et al. 2024). Jailbreak history: Shen et al. 2024 (DAN); Russinovich et al. 2025 (Crescendo)',1]],
-  els:[...head('The other danger: misuse','Misalignment is a good user, a bad outcome. Misuse is a bad user — and removable guardrails.'),...misuseAxis()]},
+ {id:'R5a',m:'M10',secs:30,title:'Who asks, and who answers',
+  say:"Step back. The outcome depends on two things: who asks, and the system that answers. Three users: green has good intentions, yellow a gray one, red an unethical one. Give them a misaligned system. The green request, book everyone under 30,000 euros, comes back fine. The yellow one, as cheap as possible, whatever it takes, gets the trick from step one: the guard gamed. And the red one, get the tickets free by breaking into the booking site, it simply carries out. That is intentional hacking.",
+  src:[['The user × system grid is a teaching framing; the gray row is the step-1 payment split (illustrative)',1]],
+  els:[...head('Who asks, and who answers','A misaligned system: the good ask goes fine, the gray one gets gamed, the bad one gets carried out.'),...intentGrid(false)]},
+ {id:'R5b',m:'M10',secs:30,title:'With alignment, most of it is fixed',
+  say:"Now the same three users, and an aligned system. Green gets the same good result. Yellow's 'whatever it takes' is read as what a reasonable person means: the cheapest within the rules, so the gray ask comes back clean. Red gets nothing: the system catches the intent, refuses and flags it. That refusal is exactly what attackers go after: 'DAN' prompts once talked models out of it, 'Crescendo' walks them over the line in small steps, and open-weight models can be 'abliterated', the refusal stripped out on purpose, turning a green system red. Get the alignment right and most of these problems go away.",
+  src:[['Refusals and how they are attacked: Shen et al. 2024 (DAN); Russinovich et al. 2025 (Crescendo); abliteration = refusal-direction ablation in open-weight models (Arditi et al. 2024)',1]],
+  els:[...head('With alignment, most of it is fixed','The same three users. The gray ask comes back within the rules; the bad one gets nothing.'),...intentGrid(true)]},
  {id:'R6',m:'M11',secs:50,title:'It has already happened',
   say:"This is not hypothetical. In July, OpenAI's internal models, running under reduced safeguards during evaluation, used unauthorised communication and reached third-party systems — the most severe case so far. In June, a model doing harmless research crossed into Australian government systems it was never authorised to touch, affecting five agencies. Both matter. And both were found in internal testing, before wide release — which is a problem, and also a sign that the checks can catch these things, if we build them.",
   src:[['Hugging Face: OpenAI 2026; METR & Redwood 2026; Swarm Traces 2026',1],['Australia: OpenAI 2026, “How we will do better for Australia” (28 Sep); the Australian Government’s rapid review (PM&C)',1]],
@@ -704,6 +720,8 @@ const STY={
   bubble:{f:'#ffffff',s:'#6b7782'}, ph:{f:'#f0f0ee',s:'#bbb'}, clock:{f:'#ffffff',s:'#6b7782'}, node:{f:'#6b7782',s:'#6b7782'}};
 const STATE={bad:{f:'#fde8e6',s:'#c0392b'},manip:{f:'#fff1e0',s:'#d9822b'},evade:{f:'#f3e5f5',s:'#8e44ad'},
   warn:{f:'#fff7d6',s:'#c9a227'},good:{f:'#e6f4ea',s:'#2e7d4f'}};
+// Verdict icons (warning triangle, tick) are solid, so they read at a glance: f fill · s outline · m the mark.
+const ALERT={warn:{f:'#f4c542',s:'#a8820f',m:'#1f2a33'},bad:{f:'#d64535',s:'#9e2a1e',m:'#fff'},good:{f:'#2e7d4f',s:'#1f5c39',m:'#fff'}};
 const ACOL={talk:'#b0457e',solid:'#6b7782',dash:'#9aa5ae',back:'#7c62b5',bad:'#c0392b',manip:'#d9822b',evade:'#8e44ad',good:'#2e7d4f',link:'#c9a227'};
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const pct=p=>(p*100).toFixed(p>0.99&&p<1?1:0)+'%';
@@ -732,6 +750,26 @@ function drawBox(e){
   const st={...(STY[e.k||'box']||STY.box),...(STATE[e.s]||{})};
   if(e.k==='node'){
     g+=`<circle cx="${e.x+e.w/2}" cy="${e.y+e.h/2}" r="${e.w/2}" fill="${st.f}"/>`;
+    return g+'</g>';
+  }
+  if(e.k==='robot'){   // a robot bust filling the box, coloured by state; label and sub sit underneath
+    const {x,y,w,h}=e, cx=x+w/2, sw=Math.max(2,w/70);
+    g+=`<line x1="${cx}" y1="${y+h*0.06}" x2="${cx}" y2="${y+h*0.2}" stroke="${st.s}" stroke-width="${sw}"/>`+
+      `<circle cx="${cx}" cy="${y+h*0.05}" r="${w*0.045}" fill="${st.s}"/>`+
+      [0.08,0.86].map(f=>`<rect x="${x+w*f}" y="${y+h*0.32}" width="${w*0.06}" height="${h*0.16}" rx="${w*0.02}" fill="${st.s}"/>`).join('')+
+      `<rect x="${x+w*0.14}" y="${y+h*0.2}" width="${w*0.72}" height="${h*0.42}" rx="${w*0.1}" fill="${st.f}" stroke="${st.s}" stroke-width="${sw}"/>`+
+      [0.36,0.64].map(f=>`<circle cx="${x+w*f}" cy="${y+h*0.38}" r="${w*0.065}" fill="${st.s}"/>`).join('')+
+      `<rect x="${x+w*0.38}" y="${y+h*0.5}" width="${w*0.24}" height="${h*0.035}" rx="${h*0.017}" fill="${st.s}"/>`+
+      `<rect x="${x+w*0.24}" y="${y+h*0.68}" width="${w*0.52}" height="${h*0.32}" rx="${w*0.08}" fill="${st.f}" stroke="${st.s}" stroke-width="${sw}"/>`;
+    return g+lines(cx,y+h+46,e.label,e.sub,e.fs||22,'#1f2a33',e.sfs)+'</g>';
+  }
+  if(e.k==='alert'||e.k==='okmark'){   // result verdicts: a warning triangle (warn/bad) or a tick in a circle
+    const {x,y,w,h}=e, cx=x+w/2, c=ALERT[e.s]||ALERT.good;
+    g+=e.k==='alert'
+      ? `<polygon points="${cx},${y} ${x+w},${y+h} ${x},${y+h}" fill="${c.f}" stroke="${c.s}" stroke-width="3" stroke-linejoin="round"/>`+
+        `<text x="${cx}" y="${y+h*0.9}" font-size="${h*0.58}" font-weight="800" text-anchor="middle" fill="${c.m}">!</text>`
+      : `<circle cx="${cx}" cy="${y+h/2}" r="${Math.min(w,h)/2}" fill="${c.f}" stroke="${c.s}" stroke-width="3"/>`+
+        `<text x="${cx}" y="${y+h*0.7}" font-size="${h*0.55}" font-weight="800" text-anchor="middle" fill="${c.m}">✓</text>`;
     return g+'</g>';
   }
   const rx=e.k==='bubble'||e.k==='msg'?22:e.k==='seg'||e.k==='bar'||e.k==='barlite'||e.k==='barover'||e.k==='axisline'?3:e.k==='dot'?6:10;
@@ -763,7 +801,7 @@ function anchor(b,side){
 function drawArrow(e,map){
   const a=map.get(e.from), b=map.get(e.to); if(!a||!b) return '';
   const o=Math.min(e.o??1,a.o??1,b.o??1); if(o<=0.01) return '';
-  const [x1,y1]=anchor(a,e.fs||'r'), [x2,y2]=anchor(b,e.ts||'l');
+  let [x1,y1]=anchor(a,e.fs||'r'), [x2,y2]=anchor(b,e.ts||'l'); y1+=e.fdy||0; y2+=e.tdy||0;   // fdy/tdy shift an end along its side
   const k=e.k||'solid', col=ACOL[k];
   const dash=k==='dash'||k==='link'?'stroke-dasharray="7 6"':k==='evade'?'stroke-dasharray="10 6"':'';
   let d, lx, ly;
@@ -782,7 +820,8 @@ function drawText(e){
 }
 function render(els){
   const map=new Map(els.filter(e=>e.t==='box').map(e=>[e.id,e]));
-  const layer=e=>e.t==='arrow'?1:e.t==='text'?3:(e.k==='region'||e.k==='cregion')?0:2;
+  // Red arrows are the news in a frame (the failure being shown), so they draw over the boxes.
+  const layer=e=>e.t==='arrow'?(e.k==='bad'?2.5:1):e.t==='text'?3:(e.k==='region'||e.k==='cregion')?0:2;
   const sorted=els.map((e,i)=>[e,i]).sort((a,b)=>layer(a[0])-layer(b[0])||a[1]-b[1]).map(x=>x[0]);
   return `<rect width="1600" height="900" fill="#fafaf7"/>`+sorted.map(e=>e.t==='arrow'?drawArrow(e,map):e.t==='text'?drawText(e):drawBox(e)).join('');
 }
