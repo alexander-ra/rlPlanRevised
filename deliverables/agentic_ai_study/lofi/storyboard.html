@@ -308,6 +308,46 @@ function confSystem(stage){
   return r;
 }
 
+// F9: zoom out. N3's own boxes shrink into a miniature on the left (same ids, so the morph pulls back),
+// then a fork fans out to four fields; each chip = who drives it, roughly how many agents, how fast, what it claims.
+function miniOfOurSystem(){
+  const s=0.2, x0=30, y0=382;
+  return confSystem(3).filter(e=>e.t==='box'&&!['g_h','g_a'].includes(e.id)).map(e=>({...e,
+    x:x0+(e.x-40)*s, y:y0+(e.y-120)*s, w:e.w*s, h:e.h*s, label:'', sub:'', nl:undefined, stack:undefined, fs:8}));
+}
+const FIELDS=[
+  ['Maths','proofs · open problems',[
+    ['OpenAI\nNavier–Stokes','COMPANY','drv_co','~10,000 agents · 88 hours\nclaimed: a blow-up proof*'],
+    ['OpenAI\nmaths release','COMPANY','drv_co','agents: not disclosed\n~720 papers, ~3 h each*'],
+    ['The Station','INDEPENDENT','drv_ind','6 agents from 3 labs · 1–2 weeks\n28 open Ramsey cases settled*']]],
+  ['Biology\n& medicine','enzymes · drugs ·\nantibodies',[
+    ['Anthropic\nenzyme search','COMPANY','drv_co','~950 agents · 21 hours\na new CRISPR-like system*'],
+    ['Google\nCo-Scientist','COMPANY','drv_co','agents in 6 roles, 100+ labs\nanalysis: months → days'],
+    ['Stanford\nVirtual Lab','UNIVERSITY','drv_pub','5 agents · days, not months\nnanobodies, lab-tested']]],
+  ['Robotic labs','agents run the experiments',[
+    ['Google\nVERID','COMPANY','drv_co','agents drive the lab robots\nhit rate 0 → 42% in 3 rounds'],
+    ['CAS Shenzhen, China\nMARS','ACADEMY','drv_pub','19 agents + robots\na new material in 3.5 hours']]],
+  ['Cybersecurity','finding and fixing bugs',[
+    ['DARPA\nAI Cyber Challenge','GOVERNMENT + UNIVERSITIES','drv_pub','autonomous bug hunters\n77% of planted bugs found'],
+    ['Anthropic\nProject Glasswing','COMPANY + ~50 PARTNERS','drv_co','many scanning agents\n10,000+ serious bugs in a month',true]]]];
+function fieldMap(){
+  const r=[...miniOfOurSystem(),
+    R('mini',22,374,322,138,''),
+    T('minilbl',183,540,'our system, zoomed out:\n~125 agents, a few humans',{size:15,anchor:'middle',color:'#55606a',weight:600}),
+    N('fk9',362,429),A('mini','fk9')];
+  FIELDS.forEach(([field,sub,chips],i)=>{ const y=118+i*150;
+    r.push(B('fld'+i,410,y,180,136,field,{k:'io',fs:20,sub,sfs:14}),A('fk9','fld'+i,{ts:'l'}));
+    chips.forEach(([name,drv,k,txt,hot],j)=>{
+      r.push(B('fc'+i+'_'+j,610+j*322,y,308,136,name,{k,fs:17,nl:drv,sub:txt,sfs:14,s:hot?'bad':undefined}));
+      if(j===0) r.push(A('fld'+i,'fc'+i+'_0'));
+    });
+  });
+  r.push(T('fbridge',1544,730,'→ the same skill in the wrong hands',{size:17,weight:700,color:'#c0392b',anchor:'end'}),
+    B('lgco',610,722,130,28,'company',{k:'drv_co',fs:13}),B('lgpu',750,722,230,28,'university · academy · government',{k:'drv_pub',fs:13}),
+    B('lgin',990,722,130,28,'independent',{k:'drv_ind',fs:13}));
+  return r;
+}
+
 // F9: real systems compared. Columns: system · agents · humans in the loop · claimed result · time · cost.
 // '*' = claimed, not yet independently verified. Rows ordered by number of agents; Glasswing last (bridge to going rogue).
 const REAL=[
@@ -470,22 +510,16 @@ const FR=[
   say:"On day nine the airline emails: a flight is cancelled, and ten of our people are on it. Correspondence posts it to the plan. Flights re-books the ten through Vienna, Trains and buses move their coach, Hotels adds two nights, and Payments asks the organiser to approve 1,850 euros. Within hours everyone has a new route. One person will arrive a day late, and a human calls them.",
   src:[['Illustrative scenario; numbers are invented for teaching',1]],
   els:[...head('Day 9: a flight is cancelled','One email from the airline ripples through the plan; ten people are re-booked within hours.','⏱ ~1 day'),...confSystem(3)]},
- {id:'F9',m:'M8',secs:50,title:'Real systems, real results',
-  say:"How does this look in real systems? Read across: how many agents, how much a human did, what was claimed, how long it took, and what it cost. Five agents in Stanford's Virtual Lab designed nanobodies in days that, by the PI's own estimate, would have taken his team weeks or months. Sixteen Claude copies built a C compiler that boots Linux for about twenty thousand dollars. Kosmos runs about two hundred agent runs for two hundred dollars and does, its users say, six months of a researcher's work. At the top end, OpenAI reports ten thousand agents on Navier–Stokes and hundreds of maths papers, with very little human input. The pattern: fewer human hours per result, and the results still need checking. The last row matters most for what comes next: Anthropic's Glasswing finds software vulnerabilities faster than anyone can patch them, and the same skill in the wrong hands is an attack.",
-  src:[['Swanson et al. 2025, Nature (Virtual Lab); time estimate and “<1%” from Zou’s interviews',1],
-    ['Chung, Du & Wesley 2026, arXiv 2608.23691 (The Station; preprint)',1],
-    ['Carlini 2026, “Building a C compiler with a team of parallel Claudes” (~$20k)',1],
-    ['Edison Scientific 2025 (Kosmos): accuracy and run statistics company-reported; $200 per run and “6 months of work” from press coverage of users’ estimates',0],
-    ['Anthropic 2026, “Claude discovers a novel enzyme system” + bioRxiv preprint',1],
-    ['OpenAI Navier–Stokes as reported by CNBC (9 Sep 2026); “very little human input” (Bubeck, via Wikipedia); cost is NPR’s estimate (22 Sep 2026)',0],
-    ['OpenAI 2026, “Sharing AI progress in mathematics” + openai/math repository',1],
-    ['Anthropic 2026, Project Glasswing launch (Apr; up to $100M in credits) and initial update (May; 10,000+ high/critical, 90.6% true positives)',1]],
-  also:[['Anthropic C compiler, in more detail: 16 copies, no orchestrator; each claims a task with a lock file, runs the tests and pushes to one shared git repo. All 16 once hit the same Linux-kernel bug and overwrote each other’s fixes; the fix was a better check (build most kernel files with GCC, a few with ours, so each copy gets its own bug)',1],
-    ['Anthropic enzyme search, in more detail: each of ~950 sessions read the literature, first reproduced a known result to check its own method, looked for genes that fit no known system and critiqued its own evidence. 200,000 RTs → 3,500 candidate systems → 20 reports → human review → lab; lessons fed back into the prompt',1],
-    ['Cursor (Jan 2026): hundreds of agents for about a week, planners and workers, a browser with 1M+ lines from “trillions of tokens”; it “kind of” works',1],
-    ['Google Co-Scientist (May 2026 update): agents generate hypotheses and debate them in an Elo tournament; lab-validated leads; opening to researchers',1],
-    ['DeepMind Aletheia: generator → verifier → reviser; on 700 open Erdős problems, 4 autonomous solutions the authors call elementary. An honest counterpoint',1]],
-  els:[...head('Real systems, real results','How many agents, how much human help, what they claim, how long, at what cost. Sources in the notes.'),...realTable()]},
+ {id:'F9',m:'M8',secs:45,title:'Systems like ours are already at work',
+  say:"Zoom out. Systems like this one are already at work, in very different fields. In maths: OpenAI's ten thousand agents on Navier–Stokes, hundreds of papers on open problems, and The Station, a small independent team of six agents from three different labs. In biology: Anthropic's 950 agents found a new enzyme system, Google's Co-Scientist cut analysis from months to days, and Stanford's Virtual Lab designed nanobodies in days. In robotic labs, agents now run the experiments themselves: Google's VERID, and in China the Academy of Sciences' MARS, with 19 agents and robots. In cybersecurity: DARPA's challenge for university teams, and Anthropic's Glasswing, which found more than ten thousand serious bugs in a month. Most of this is driven by the big AI companies, but universities, governments and independent teams are in it too. Every name here is searchable. And the last one matters for what comes next: the same skill, in the wrong hands.",
+  src:[['OpenAI 2026: Navier–Stokes (as reported by CNBC/NPR) and “Sharing AI progress in mathematics”; Chung, Du & Wesley 2026 (The Station, preprint)',1],
+    ['Anthropic 2026, enzyme system (+ bioRxiv preprint); Google Co-Scientist update (May 2026, “months to days”); Swanson et al. 2025, Nature (Virtual Lab)',1],
+    ['Google Research 2026, VERID blog (16 Oct): aptamer hit rate 0% → 26.0% → 42.1%',1],
+    ['Yu Xuefeng et al. 2026, Matter (MARS, SIAT, Chinese Academy of Sciences): 19 LLM agents, 16 tools, robotic experiments; 3.5 h figure via CAS/SIAT press release',1],
+    ['DARPA 2025, AIxCC final results (Team Atlanta: Georgia Tech, Samsung, KAIST, POSTECH); 77% average detection of planted bugs',1],
+    ['Anthropic 2026, Project Glasswing launch (Apr) and initial update (May)',1],
+    ['* claimed; not yet independently verified',1]],
+  els:[...head('Systems like ours are already at work','* claimed, not yet independently verified. Every name is searchable; sources in the notes.'),...fieldMap()]},
  {id:'F11a',m:'M9',secs:20,title:'Going rogue (1): an unchecked error spreads',
   say:'The same system, now going wrong. One wrong finding enters shared memory and the others build on it. No bad intent is needed.',
   src:[['Cemri 2025, “Why do multi-agent LLM systems fail?”',1],['Not yet reworked: still uses the earlier generic system',0]],
@@ -515,6 +549,22 @@ const FR=[
   say:"The same structure with control built in: permissions, a monitor, checkpoints before external actions, recovery points. My research sits here: inferring and adapting to other agents' strategies. Capability, reliability and control, evaluated together.",
   src:[['Existing conclusion',1]],
   els:[...head('Same system, with control built in'),...closing()]},
+ {id:'B1',m:'backup',secs:0,title:'Backup · real systems compared',
+  say:"How does this look in real systems? Read across: how many agents, how much a human did, what was claimed, how long it took, and what it cost. Five agents in Stanford's Virtual Lab designed nanobodies in days that, by the PI's own estimate, would have taken his team weeks or months. Sixteen Claude copies built a C compiler that boots Linux for about twenty thousand dollars. Kosmos runs about two hundred agent runs for two hundred dollars and does, its users say, six months of a researcher's work. At the top end, OpenAI reports ten thousand agents on Navier–Stokes and hundreds of maths papers, with very little human input. The pattern: fewer human hours per result, and the results still need checking. The last row matters most for what comes next: Anthropic's Glasswing finds software vulnerabilities faster than anyone can patch them, and the same skill in the wrong hands is an attack.",
+  src:[['Swanson et al. 2025, Nature (Virtual Lab); time estimate and “<1%” from Zou’s interviews',1],
+    ['Chung, Du & Wesley 2026, arXiv 2608.23691 (The Station; preprint)',1],
+    ['Carlini 2026, “Building a C compiler with a team of parallel Claudes” (~$20k)',1],
+    ['Edison Scientific 2025 (Kosmos): accuracy and run statistics company-reported; $200 per run and “6 months of work” from press coverage of users’ estimates',0],
+    ['Anthropic 2026, “Claude discovers a novel enzyme system” + bioRxiv preprint',1],
+    ['OpenAI Navier–Stokes as reported by CNBC (9 Sep 2026); “very little human input” (Bubeck, via Wikipedia); cost is NPR’s estimate (22 Sep 2026)',0],
+    ['OpenAI 2026, “Sharing AI progress in mathematics” + openai/math repository',1],
+    ['Anthropic 2026, Project Glasswing launch (Apr; up to $100M in credits) and initial update (May; 10,000+ high/critical, 90.6% true positives)',1]],
+  also:[['Anthropic C compiler, in more detail: 16 copies, no orchestrator; each claims a task with a lock file, runs the tests and pushes to one shared git repo. All 16 once hit the same Linux-kernel bug and overwrote each other’s fixes; the fix was a better check (build most kernel files with GCC, a few with ours, so each copy gets its own bug)',1],
+    ['Anthropic enzyme search, in more detail: each of ~950 sessions read the literature, first reproduced a known result to check its own method, looked for genes that fit no known system and critiqued its own evidence. 200,000 RTs → 3,500 candidate systems → 20 reports → human review → lab; lessons fed back into the prompt',1],
+    ['Cursor (Jan 2026): hundreds of agents for about a week, planners and workers, a browser with 1M+ lines from “trillions of tokens”; it “kind of” works',1],
+    ['Google Co-Scientist (May 2026 update): agents generate hypotheses and debate them in an Elo tournament; lab-validated leads; opening to researchers',1],
+    ['DeepMind Aletheia: generator → verifier → reviser; on 700 open Erdős problems, 4 autonomous solutions the authors call elementary. An honest counterpoint',1]],
+  els:[...head('Backup · real systems compared','How many agents, how much human help, what they claim, how long, at what cost. Sources in the notes.'),...realTable()]},
 ];
 
 /* ---------- rendering ---------- */
@@ -526,7 +576,7 @@ const STY={
   control:{f:'#e6f4ea',s:'#2e7d4f'}, ext:{f:'#ffffff',s:'#999'}, seg:{f:'#cfd8de',s:'#6b7782'},
   chip:{f:'#ffffff',s:'#6b7782'}, dot:{f:'#e3e7ea',s:'#8a949c'}, card:{f:'#ffffff',s:'#c9ced2'}, row:{f:'#ffffff',s:'#e3e6e8'}, row2:{f:'#f5f6f4',s:'#e3e6e8'}, neck:{f:'#f6f7f8',s:'#9aa5ae',dash:1}, card_hot:{f:'#fffaf9',s:'#c0392b',sw:3}, room:{f:'#f4f6f8',s:'#6b7782'},
   fn_rank:{f:'#e8eef8',s:'#4a6fa5'}, fn_coord:{f:'#eceef0',s:'#1f2a33'}, fn_talk:{f:'#fbeef5',s:'#b0457e'},
-  fn_imp:{f:'#e4f4f6',s:'#2a8a99'}, msg:{f:'#fbeef5',s:'#b0457e'}, fn_agents:{f:'#f3f3f3',s:'#444'},
+  fn_imp:{f:'#e4f4f6',s:'#2a8a99'}, drv_co:{f:'#eef3fb',s:'#3b6ea8'}, drv_pub:{f:'#eef6e8',s:'#4f7f36'}, drv_ind:{f:'#fbf1e6',s:'#b5651d'}, msg:{f:'#fbeef5',s:'#b0457e'}, fn_agents:{f:'#f3f3f3',s:'#444'},
   ag_gpt:{f:'#e7f0fb',s:'#3b6ea8'}, ag_claude:{f:'#fbeee6',s:'#c26a3d'}, ag_gemini:{f:'#eef6e8',s:'#5a8f3c'},
   bar:{f:'#9cc9c2',s:'#2f7d74'}, barlite:{f:'#e3f1ee',s:'#2f7d74',dash:1}, axisline:{f:'#6b7782',s:'#6b7782'},
   bubble:{f:'#ffffff',s:'#6b7782'}, ph:{f:'#f0f0ee',s:'#bbb'}, clock:{f:'#ffffff',s:'#6b7782'}, node:{f:'#6b7782',s:'#6b7782'}};
@@ -537,9 +587,9 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'
 const pct=p=>(p*100).toFixed(p>0.99&&p<1?1:0)+'%';
 const pcol=p=>p>=0.85?'#2e7d4f':p>=0.6?'#c9a227':'#c0392b';
 
-function lines(x,cy,label,sub,fs,color){
+function lines(x,cy,label,sub,fs,color,sfs){
   const L=label?label.split('\n'):[], S=sub?sub.split('\n'):[];
-  const lh=fs*1.18, fs2=Math.max(12,Math.round(fs*0.7)), lh2=fs2*1.2;
+  const lh=fs*1.18, fs2=sfs||Math.max(12,Math.round(fs*0.7)), lh2=fs2*1.2;
   const total=L.length*lh+(S.length?S.length*lh2+6:0);
   const top=cy-total/2, subTop=top+L.length*lh+(L.length?6:0); let out='';
   L.forEach((l,i)=>{out+=`<text x="${x}" y="${top+fs*0.85+i*lh}" font-size="${fs}" text-anchor="middle" fill="${color}" font-weight="600">${esc(l)}</text>`;});
@@ -571,7 +621,7 @@ function drawBox(e){
   const fs=e.fs||22;
   if(e.w>30) g+=e.ltop
     ? `<text x="${e.x+e.w/2}" y="${e.y+fs+10}" font-size="${fs}" text-anchor="middle" fill="#1f2a33" font-weight="600">${esc(e.label)}</text>`
-    : lines(e.x+e.w/2,e.y+e.h/2,e.label,e.sub,fs,e.k==='tag'?'#55606a':'#1f2a33');
+    : lines(e.x+e.w/2,e.y+e.h/2,e.label,e.sub,fs,e.k==='tag'?'#55606a':'#1f2a33',e.sfs);
   if(e.nl){
     const pw=Math.max(54,18+String(e.nl).length*9.5);
     g+=`<rect x="${e.x-12}" y="${e.y-14}" width="${pw}" height="28" rx="14" fill="${st.s}"/>`;
