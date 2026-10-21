@@ -151,8 +151,9 @@ const Q2=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Cheapest way\nRuse →
 // F4: the same per-step chance over longer chains, as bare equations in one row under the diagram
 // (explained aloud). Positions come from an estimate of each equation's width at this size.
 function powers(p,ns,y=740,size=30){
-  const sup=n=>String(n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
-  const pc=v=>v<1?v.toFixed(Math.ceil(-Math.log10(v)))   // 1.7e-7 → 0.0000002
+  const sup=n=>String(n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]).replace('-','⁻');
+  const sci=v=>{ const [m,e]=v.toExponential(0).split('e'); return `${m} × 10${sup(+e)}`; };   // 5.3e-21 → 5 × 10⁻²¹
+  const pc=v=>v<1e-8?sci(v):v<1?v.toFixed(Math.ceil(-Math.log10(v)))   // 1.7e-7 → 0.0000002
     :v<99?String(Math.round(v)):String(+v.toFixed(2));    // 99.95 stays 99.95, 99.005 → 99
   const eqs=ns.map(n=>`${p}${sup(n)} ≈ ${pc(Math.pow(p,n)*100)}%`), w=eqs.map(s=>s.length*size*0.55), gap=90;
   let x=800-(w.reduce((a,b)=>a+b,0)+gap*(eqs.length-1))/2;
@@ -599,7 +600,7 @@ const FR=[
  {id:'F3',m:'M2',secs:50,title:'A real task has many steps',
   say:'Real questions need several steps: search, search, search, calculate, answer. If each is 95% right, all five are right only 77% of the time. Stretch it to a thousand steps and even 99.9% per step leaves just 37%.',
   src:[['Author calculation, pⁿ (0.95⁵; 0.999¹⁰⁰⁰ spoken only)',1]],
-  els:[...head('A real task has many steps','5 steps × 95% each → 0.95⁵ ≈ 77%. Every step must be right.','⏱ ~10 s'),...chain(0.95,false)]},
+  els:[...head('A real task has many steps','5 steps × 95% each → 0.95⁵ ≈ 77%. Every step must be right.','⏱ ~10 s'),...chain(0.95,false),...powers(0.95,[5,10,100,1000])]},
  {id:'F4',m:'M3',secs:50,title:'Thinking before each step',
   say:'Reasoning models think before each step, a skill trained with reinforcement learning on problems with checkable answers. At 98% per step the chain climbs to 90%. The longer the task, the more every point per step matters.',
   src:[['OpenAI 2024, “Learning to reason with LLMs” (reading guide)',1],['98% per step is illustrative',1]],
