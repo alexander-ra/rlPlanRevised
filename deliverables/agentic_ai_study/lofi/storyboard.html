@@ -152,7 +152,8 @@ const Q2=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Cheapest way\nRuse →
 // (explained aloud). Positions come from an estimate of each equation's width at this size.
 function powers(p,ns,y=740,size=30){
   const sup=n=>String(n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
-  const pc=v=>v>=1?String(Math.round(v)):v.toFixed(Math.ceil(-Math.log10(v)));   // 1.7e-7 → 0.0000002
+  const pc=v=>v<1?v.toFixed(Math.ceil(-Math.log10(v)))   // 1.7e-7 → 0.0000002
+    :v<99?String(Math.round(v)):String(+v.toFixed(2));    // 99.95 stays 99.95, 99.005 → 99
   const eqs=ns.map(n=>`${p}${sup(n)} ≈ ${pc(Math.pow(p,n)*100)}%`), w=eqs.map(s=>s.length*size*0.55), gap=90;
   let x=800-(w.reduce((a,b)=>a+b,0)+gap*(eqs.length-1))/2;
   return eqs.map((s,i)=>{ const e=T('pow'+i,x,y,s,{size,weight:600}); x+=w[i]+gap; return e; });
@@ -172,10 +173,10 @@ function chain(p,think){
 
 // Checked chain: the check sits at the end and covers every step before it.
 // 'a' = the check fails on the train fare (2025 page, priced in leva); 'b' = redo with the reason, check passes.
-// Search steps 98% → 99.9% once checked (catches 19 of 20 errors, step is redone); calculator exact.
+// Search steps 98% → 99.99% once checked (catches 199 of 200 errors, step is redone); calculator exact.
 const CHECKS=['sources agree','sensible range','date & currency','recompute'];
 function vchain(stage){
-  const fail=stage==='a', p=fail?0.98:0.999;
+  const fail=stage==='a', p=fail?0.98:0.9999;
   const X={s1:280,s2:470,s3:660,s4:850,s5:1040};
   const els=[R('ai',260,300,1150,300,'AI model'),Q(40,390,180,120)];
   ['s1','s2','s3','s4','s5'].forEach((id,i)=>{
@@ -188,7 +189,7 @@ function vchain(stage){
   els.push(B('v',1225,320,175,260,'Check',{k:'verify',ltop:true,fs:20}));
   CHECKS.forEach((c,i)=>{ const bad=fail&&i===2;
     els.push(B('ck'+(i+1),1235,370+i*50,155,40,c+(bad?' ✗':' ✓'),{k:'chip',s:bad?'bad':'good',fs:15})); });
-  els.push(B('ans',1420,390,150,120,'Answer',fail?{k:'io',p:Math.pow(0.98,4),sub:'on hold'}:{k:'io',p:0.996}));
+  els.push(B('ans',1420,390,150,120,'Answer',fail?{k:'io',p:Math.pow(0.98,4),sub:'on hold'}:{k:'io',p:Math.pow(0.9999,4)}));
   els.push(...chainArrows(['q','s1','s2','s3','s4','s5','v','ans']));
   els.push(A('v','s3',{id:'back',fs:'t',ts:'t',cy:-230,k:fail?'bad':'back',
     label:fail?'✗ fare from a 2025 page, in leva':'redo with the reason: find the 2026 fare in €'}));
@@ -608,9 +609,9 @@ const FR=[
   src:[['Schluntz & Zhang 2024, “Building effective agents”',1],['Fares illustrative: 23 лв ÷ 1.95583 ≈ €12, matching the F7 table',1],['Bulgaria adopted the euro on 1 Jan 2026 at 1.95583 лв/€: add an official reference (ECB / EU Council)',0]],
   els:[...head('Tools and a check','In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.','⏱ ~5 min'),...vchain('a')]},
  {id:'F5b',m:'M4',secs:35,title:'Redo, with the reason',
-  say:"What comes back matters. Not just 'wrong', but why: an old page, the wrong currency. So the second attempt is different: it looks for the current fare in euros. Checked like this, each step goes from 98 to 99.9 percent, and the chain to about 99.6. Two caveats. If the check is just the same model asking itself 'are you sure?', it repeats its own mistake. And after a few failed tries it should stop and tell you it is unsure, not loop forever.",
-  src:[['1 − 0.02 × 0.05 = 0.999 per checked step; 0.999⁴ × 1 ≈ 99.6%; illustrative',1],['Retry limit and escalation: standard agent practice (Schluntz & Zhang 2024)',1]],
-  els:[...head('Redo, with the reason','The reason goes back with the redo, so attempt 2 is different. Checked steps 98% → 99.9%; chain ≈ 99.6%.','⏱ ~6 min'),...vchain('b')]},
+  say:"What comes back matters. Not just 'wrong', but why: an old page, the wrong currency. So the second attempt is different: it looks for the current fare in euros. Checked like this, each step goes from 98 to 99.99 percent, and the chain to about 99.96. Two caveats. If the check is just the same model asking itself 'are you sure?', it repeats its own mistake. And after a few failed tries it should stop and tell you it is unsure, not loop forever.",
+  src:[['1 − 0.02 × 0.005 = 0.9999 per checked step (the check catches 199 of 200 errors); 0.9999⁴ × 1 ≈ 99.96%; illustrative',1],['Retry limit and escalation: standard agent practice (Schluntz & Zhang 2024)',1]],
+  els:[...head('Redo, with the reason','The reason goes back with the redo, so attempt 2 is different. Checked steps 98% → 99.99%; chain ≈ 99.96%.','⏱ ~6 min'),...vchain('b'),...powers(0.9999,[5,10,100,1000])]},
  {id:'F7a',m:'M6',secs:35,title:'An open question takes many more steps',
   say:'Now make the question open: the cheapest way to Sofia, arriving within 24 hours. Suddenly there are options to list, timetables, fares, free seats, the weather for the bike. Done one after another with thinking, tools and checks, that is around two hours.',
   src:[['Times and step counts illustrative (could: METR task-length data)',1]],
@@ -709,7 +710,7 @@ const STATE={bad:{f:'#fde8e6',s:'#c0392b'},manip:{f:'#fff1e0',s:'#d9822b'},evade
 const ALERT={warn:{f:'#f4c542',s:'#a8820f',m:'#1f2a33'},bad:{f:'#d64535',s:'#9e2a1e',m:'#fff'},good:{f:'#2e7d4f',s:'#1f5c39',m:'#fff'}};
 const ACOL={talk:'#b0457e',solid:'#6b7782',dash:'#9aa5ae',back:'#7c62b5',bad:'#c0392b',manip:'#d9822b',evade:'#8e44ad',good:'#2e7d4f',link:'#c9a227'};
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const pct=p=>(p*100).toFixed(p>0.99&&p<1?1:0)+'%';
+const pct=p=>(p*100).toFixed(p>0.999&&p<1?2:p>0.99&&p<1?1:0)+'%';   // 99.99% must not show as 100.0%
 const pcol=p=>p>=0.85?'#2e7d4f':p>=0.6?'#c9a227':'#c0392b';
 
 function lines(x,cy,label,sub,fs,color,sfs){
@@ -774,9 +775,9 @@ function drawBox(e){
     g+=`<text x="${e.x-12+pw/2}" y="${e.y+6}" font-size="${e.nl.length>3?13:16}" font-weight="700" text-anchor="middle" fill="#fff" letter-spacing="0.04em">${esc(e.nl)}</text>`;
   }
   if(e.p!=null){
-    const bx=e.x+e.w-78, by=e.y-16, c=pcol(e.p);
-    g+=`<rect x="${bx}" y="${by}" width="72" height="32" rx="16" fill="#fff" stroke="${c}" stroke-width="2"/>`;
-    g+=`<text x="${bx+36}" y="${by+22}" font-size="18" font-weight="700" text-anchor="middle" fill="${c}">${pct(e.p)}</text>`;
+    const t=pct(e.p), bw=Math.max(72,22+t.length*10.5), bx=e.x+e.w-6-bw, by=e.y-16, c=pcol(e.p);   // the pill grows for 99.99%
+    g+=`<rect x="${bx}" y="${by}" width="${bw}" height="32" rx="16" fill="#fff" stroke="${c}" stroke-width="2"/>`;
+    g+=`<text x="${bx+bw/2}" y="${by+22}" font-size="18" font-weight="700" text-anchor="middle" fill="${c}">${t}</text>`;
   }
   return g+'</g>';
 }
