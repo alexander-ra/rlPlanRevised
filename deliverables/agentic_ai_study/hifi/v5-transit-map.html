@@ -465,7 +465,7 @@ function buildF(f5) {
     I.push({ id: 'sig3', type: 'signal', x: X.s3 - 46, y: LY, state: 'red' });
     I.push({ id: 'sigA', type: 'signal', x: 1336, y: LY, state: 'amber' });
     I.push({ id: 'train', type: 'train', x: 1178, y: LY, a: 0 });
-    I.push({ id: 'key', type: 'key', x: 72, y: 778, entries: [['stop', 'a step, thought through'], ['tool', 'express: an exact tool'], ['check', 'a check'],
+    I.push({ id: 'key', type: 'key', x: 72, y: 778, entries: [['stop', 'a step'], ['tool', 'express: an exact tool'], ['check', 'a check'],
       ['red', 'caught'], ['back', 'sent back'], ['amber', 'on hold']] });
   } else {
     ['0.98⁵ ≈ 90%', '0.98¹⁰ ≈ 82%', '0.98¹⁰⁰ ≈ 13%', '0.98¹⁰⁰⁰ ≈ 0%'].forEach((t, i) => {
@@ -591,7 +591,10 @@ const SEQ = ['F4', 'F5a', 'N1', 'N2'];
 const TITLES = { F4: 'Thinking before each step', F5a: 'Tools and a check', N1: 'A real-scale job: 100 people to this conference', N2: 'Acting in the world, through two doors' };
 function buildAll() {
   FRAMES.F4 = buildF(false); FRAMES.F5a = buildF(true); FRAMES.N1 = buildN(false); FRAMES.N2 = buildN(true);
-  for (const k in FRAMES) FRAMES[k].forEach((it, i) => { it.z = it.z ?? (Z[it.type] ?? 5) + (it.type === 'line' && it.c === C.bad ? .5 : 0); it.ord = i; });
+  for (const k in FRAMES) FRAMES[k].forEach((it, i) => {
+    it.z = it.z ?? (Z[it.type] ?? 5) + (it.type === 'line' && it.c === C.bad ? .5 : 0); it.ord = i;
+    if (it.type === 'board') it.hh = it.hh ?? 40;   // explicit, so a board that changes header height glides
+  });
 }
 
 /* =====================================================================
@@ -708,20 +711,23 @@ function compose(A, B, t, ch, reduced) {
     }
     const [ms, me] = c.move || ch.move;
     const g = lerpGeo(a, b, E.io(win(t, ms, me)));
-    if (visualKey(a) === visualKey(b)) { push(b, drawItem(g, 1, 1, 'none')); continue; }
+    const pz = t < .5 ? a : b;   // paint order follows the frame that is showing
+    const pushP = html => { if (html) parts.push([pz.z, pz.ord, html]); };
+    if (visualKey(a) === visualKey(b)) { pushP(drawItem(g, 1, 1, 'none')); continue; }
     const [cs, ce] = c.chg || ch.chg, ck = E.sine(win(t, cs, ce));
     const ga = { ...a }; for (const k of GEO) if (k in g) ga[k] = g[k]; if (g.pts) ga.pts = g.pts;
+    if (ck <= .001 || ck >= .999) { pushP(drawItem(ck >= .999 ? g : ga, 1, 1, 'none')); continue; }
     if (R[b.type].parts) {   // a sign whose words change: the panel recolours in place, its words roll over
       const [fa, ca] = R[b.type].parts(ga), [fb, cb] = R[b.type].parts(g), ko = clamp01(ck / .55), ki = clamp01((ck - .45) / .55);
-      push(b, (fa === fb ? fb : fa + wrap(b, fb, ck)) + wrap(b, ca, 1 - ko) + wrap(b, cb, ki));
+      pushP((fa === fb ? fb : fa + wrap(b, fb, ck)) + wrap(b, ca, 1 - ko) + wrap(b, cb, ki));
     } else if (b.type === 'pill' || b.type === 'stn') {   // a marker that changes meaning is swapped: the old one shrinks away, the new one pops in
       const ko = clamp01(ck / .5), ki = clamp01((ck - .5) / .5), [cx, cy] = center(ga), sc = 1 - .4 * ko;
-      push(b, drawItem(ga, 1 - ko, 1, 'none', `translate(${n1(cx)} ${n1(cy)}) scale(${sc.toFixed(3)}) translate(${n1(-cx)} ${n1(-cy)})`) + drawItem(g, 1, ki, 'pop'));
-    } else if (OPAQUE.has(b.type)) push(b, drawItem(ga, 1, 1, 'none') + drawItem(g, ck, 1, 'none'));   // new state laid over the old
+      pushP(drawItem(ga, 1 - ko, 1, 'none', `translate(${n1(cx)} ${n1(cy)}) scale(${sc.toFixed(3)}) translate(${n1(-cx)} ${n1(-cy)})`) + drawItem(g, 1, ki, 'pop'));
+    } else if (OPAQUE.has(b.type)) pushP(drawItem(ga, 1, 1, 'none') + drawItem(g, ck, 1, 'none'));   // new state laid over the old
     else if (b.type === 'text' || b.type === 'xlabel') {   // like a departure board: the old line rolls up and out, then the new one rolls in
       const ko = clamp01(ck / .55), ki = clamp01((ck - .45) / .55);
-      push(b, drawItem(ga, 1 - ko, 1, 'none', `translate(0 ${n1(-10 * ko)})`) + drawItem(g, ki, 1, 'none', `translate(0 ${n1(10 * (1 - ki))})`));
-    } else push(b, drawItem(ga, 1 - ck, 1, 'none') + drawItem(g, ck, 1, 'none'));
+      pushP(drawItem(ga, 1 - ko, 1, 'none', `translate(0 ${n1(-10 * ko)})`) + drawItem(g, ki, 1, 'none', `translate(0 ${n1(10 * (1 - ki))})`));
+    } else pushP(drawItem(ga, 1 - ck, 1, 'none') + drawItem(g, ck, 1, 'none'));
   }
   for (const a of A) {
     const b = mb.get(a.id); if (b && b.type === a.type) continue;

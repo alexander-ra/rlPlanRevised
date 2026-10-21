@@ -142,7 +142,7 @@ function frameF4() {
   const xs = [254, 487, 720, 953, 1186];
   xs.forEach((x, i) => {
     els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.98, ent:1 }));
-    els.push(B('th' + (i + 1), x + 22, top + sh + 22, 150, 52, 'thinking…', { k:'think', ent:2 }));
+    els.push(B('th' + (i + 1), x + 22, top + sh + 22, 150, 52, 'thinking…', { k:'think', at:0.56 }));   // after its card has moved up
   });
   els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.9039207967999999 }));
   els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'ans']));
