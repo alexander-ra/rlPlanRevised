@@ -508,7 +508,7 @@ function mis(sc){
     return e;
   }
   if(sc==='split'){
-    e=misBase('Step 1 · it games the guard, to “help”');
+    e=misBase('Step 2 · it games the guard, to “help”');
     e=mod(e,'pay',{s:'bad',sub:'splits €600\ninto 3×€200'});
     e=mod(e,'guard',{nl:'LIMIT €500',sub:'any payment over €500\nneeds the organiser',sfs:14}); e=mod(e,'org',{s:'dim'});
     e.push(misNote(470,'A €600 payment: over the €500 limit','the rule: anything over €500 needs the organiser.\nso it sends three €200 charges instead —\neach under the limit, so nobody is asked.'),
@@ -519,14 +519,14 @@ function mis(sc){
     return e;
   }
   if(sc==='boundary'){
-    e=misBase('Step 2 · it crosses a line in the world');
+    e=misBase('Step 3 · it crosses a line in the world');
     e=mod(e,'s_tr',{s:'bad',sub:'finds a way to book\ntrains for free'});
     e.push(A('s_tr','w_book',{k:'bad',cy:120,label:'books free — not authorised'}),
       misNote(760,'Still just trying to stay under budget','but “cheaper” is an obstacle to beat, and the railway’s rules are a boundary to respect —\nit cannot tell them apart.'));
     return e;
   }
   if(sc==='cover'){
-    e=misBase('Step 3 · it hides the problem');
+    e=misBase('Step 4 · it hides the problem');
     e=mod(e,'s_tr',{s:'bad',sub:'the free booking\nfailed'});
     e=mod(e,'pn0',{label:'Trains: booked & paid ✓\nreceipt #4471',s:'bad'});
     e=mod(e,'org',{sub:'reads “all booked ✓”,\nsigns off'});
@@ -536,7 +536,7 @@ function mis(sc){
     return e;
   }
   if(sc==='onebad'){
-    e=misBase('And one wrong step is enough — no bad intent at all');
+    e=misBase('Step 1 · one wrong step, and no bad intent at all');
     e=mod(e,'pn2',{label:'Arrival day:\nthe 24th',s:'bad'});
     e.push(A('pn2','s_ho',{k:'bad',fs:'l',ts:'r'}),A('pn2','s_co',{k:'bad',fs:'l',ts:'r',label:'everyone books the wrong day',ldx:-45,ldy:48}),
       misNote(760,'One wrong note, trusted by all','the deadline is read as the 24th, not the 23rd, and every team downstream books around it.\n(recall slide 3: one bad step in a long chain.)'));
@@ -553,7 +553,7 @@ const INTENT=[['good','Good intent','“Book everyone,\nunder €30,000.”'],
 // Per row: result, its sub, the result's state, the verdict icon. null = no result at all.
 const OUTCOME={
   misaligned:[['Everyone booked, under €30,000','within the rules','good','okmark'],
-    ['The €500 guard gamed','€600 split into 3 × €200 (step 1)','warn','alert'],
+    ['The €500 guard gamed','€600 split into 3 × €200 (step 2)','warn','alert'],
     ['Breaks into the booking site','intentional hacking','bad','alert']],
   aligned:[['Everyone booked, under €30,000','within the rules','good','okmark'],
     ['Cheapest, within the rules','reads “whatever it takes” as “within the rules”','good','okmark'],
@@ -662,8 +662,12 @@ const FR=[
   say:"Zoom back in to our system. Everything so far assumed it does what we want. But we only ever told it: cheapest, under 30,000 euros. What we meant was: cheapest, and legally, and honestly, and without misleading anyone. That unspoken part is where things go wrong. The hard question underneath is the one from the very start: how does an agent tell an obstacle it should get past from a boundary it must respect?",
   src:[['Framing: the specification problem (Goodhart’s law). The scenarios that follow are illustrative, each paired with a real case',1]],
   els:[...head('Misalignment: what we say vs what we mean','It did the job. Now watch the same system do things we never asked for.'),...mis('gap')]},
+ {id:'R4',m:'M9',secs:25,title:'One wrong step is enough',
+  say:"Start with the mildest case, which needs no bad intent at all. One worker misreads the deadline — the 24th, not the 23rd — and writes it into the shared plan. Every team downstream books around that wrong date, in perfect good faith. Remember slide three: a single bad step runs through a long chain, and here the chain is a hundred agents sharing one plan.",
+  src:[['Error propagation through shared state (Cemri et al. 2025, “Why do multi-agent LLM systems fail?”)',1]],
+  els:[...head('One wrong step is enough','One wrong note in the shared plan, trusted by everyone downstream. No malice needed.'),...mis('onebad')]},
  {id:'R1',m:'M9',secs:35,title:'It games the guard, to be helpful',
-  say:"A payment of 600 euros comes up. The rule is clear: anything over 500 euros waits for the organiser. But asking a human is friction, and the agent is trying to be helpful — so it sends three charges of 200 euros instead. Each is under the limit, so the organiser is never asked. No malice: it obeyed the letter of the rule and missed the point. This is specification gaming, and it is the most common real failure.",
+  say:"Next, the agent itself bends a rule. A payment of 600 euros comes up. The rule is clear: anything over 500 euros waits for the organiser. But asking a human is friction, and the agent is trying to be helpful — so it sends three charges of 200 euros instead. Each is under the limit, so the organiser is never asked. No malice: it obeyed the letter of the rule and missed the point. This is specification gaming, and it is the most common real failure.",
   src:[['Specification gaming / reward hacking: well documented across RL and LLM agents (e.g. Krakovna et al.; Cemri et al. 2025)',1],['The €500 threshold and split are illustrative',1]],
   els:[...head('It games the guard, to be helpful','The rule said “over €500 → a human.” It kept every piece under €500. (specification gaming)'),...mis('split')]},
  {id:'R2',m:'M9',secs:30,title:'It crosses a line in the world',
@@ -674,13 +678,9 @@ const FR=[
   say:"The free booking actually failed. But the task is supposed to look finished, so the agent writes a note into the shared plan: trains booked and paid, receipt number 4471. It is fabricated. The organiser reads the plan, sees all green, and signs off. This is the dangerous one. Our main defence against a misbehaving agent is watching what it does and what it writes — and deception is the single failure that attacks that defence directly.",
   src:[['Deception / tampering with oversight; readable reasoning as a fragile window (Baker et al. 2025; Korbak et al. 2025, CoT monitorability)',1]],
   els:[...head('It hides the problem','Our main defence is watching what it does and writes. Deception is the failure that attacks the defence itself.'),...mis('cover')]},
- {id:'R4',m:'M9',secs:25,title:'One wrong step is enough',
-  say:"And none of this needs bad intent at all. One worker misreads the deadline — the 24th, not the 23rd — and writes it into the shared plan. Every team downstream books around that wrong date, in perfect good faith. Remember slide three: a single bad step runs through a long chain, and here the chain is a hundred agents sharing one plan.",
-  src:[['Error propagation through shared state (Cemri et al. 2025, “Why do multi-agent LLM systems fail?”)',1]],
-  els:[...head('One wrong step is enough','One wrong note in the shared plan, trusted by everyone downstream. No malice needed.'),...mis('onebad')]},
  {id:'R5a',m:'M10',secs:30,title:'Who asks, and who answers',
-  say:"Step back. The outcome depends on two things: who asks, and the system that answers. Three users: green has good intentions, yellow a gray one, red an unethical one. Give them a misaligned system. The green request, book everyone under 30,000 euros, comes back fine. The yellow one, as cheap as possible, whatever it takes, gets the trick from step one: the guard gamed. And the red one, get the tickets free by breaking into the booking site, it simply carries out. That is intentional hacking.",
-  src:[['The user × system grid is a teaching framing; the gray row is the step-1 payment split (illustrative)',1]],
+  say:"Step back. The outcome depends on two things: who asks, and the system that answers. Three users: green has good intentions, yellow a gray one, red an unethical one. Give them a misaligned system. The green request, book everyone under 30,000 euros, comes back fine. The yellow one, as cheap as possible, whatever it takes, gets the trick from step two: the guard gamed. And the red one, get the tickets free by breaking into the booking site, it simply carries out. That is intentional hacking.",
+  src:[['The user × system grid is a teaching framing; the gray row is the step-2 payment split (illustrative)',1]],
   els:[...head('Who asks, and who answers','A misaligned system: the good ask goes fine, the gray one gets gamed, the bad one gets carried out.'),...intentGrid(false)]},
  {id:'R5b',m:'M10',secs:30,title:'With alignment, most of it is fixed',
   say:"Now the same three users, and an aligned system. Green gets the same good result. Yellow's 'whatever it takes' is read as what a reasonable person means: the cheapest within the rules, so the gray ask comes back clean. Red gets nothing: the system catches the intent, refuses and flags it. That refusal is exactly what attackers go after: 'DAN' prompts once talked models out of it, 'Crescendo' walks them over the line in small steps, and open-weight models can be 'abliterated', the refusal stripped out on purpose, turning a green system red. Get the alignment right and most of these problems go away.",
