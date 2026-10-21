@@ -8,7 +8,7 @@ Draft for the author to triage, 18 October 2026, revised after the first storybo
 
 ## Running example
 
-**M1–M4:** *"Is it cheaper to drive or take the train from Ruse to Sofia?"* Five steps: search the distance → fuel price → train fares → calculate → compare and answer.
+**M1:** *"Should I drive or take the train to Sofia?"* **M2–M4** narrow it to *"Which is cheaper from Ruse to Sofia: driving or taking the train?"* Five steps: search the distance → fuel price → train fares → calculate → compare and answer.
 
 **From M6 on, the question opens up:** *"What is the cheapest way to get from Ruse to Sofia, arriving within 24 hours?"* Options to list, timetables, fares, free seats, rideshare offers and the weather for a bike. That gives 14 sequential steps (~2 h), which is what makes parallel copies worth having. Prices on the slides are illustrative, in euros (Bulgaria's currency since 2026).
 

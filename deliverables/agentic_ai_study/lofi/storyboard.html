@@ -6,7 +6,7 @@
 <title>Lofi Storyboard</title>
 <style>
   :root { --bg:#f4f4f1; --ink:#1f2a33; --muted:#5b6670; --card:#fff; --line:#d9dcd8; --ok:#2e7d4f; --warn:#b5651d;
-          --rec:#d64535; --series:#2f7d74; --bar-ink:#e8ecef; --bar-muted:#aab3ba; --bar-late:#f0a35e; }
+          --rec:#d64535; --series:#2f7d74; --bar-late:#f0a35e; }
   [hidden] { display:none !important; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui, Arial, sans-serif; }
@@ -43,7 +43,7 @@
   @keyframes blink { to { visibility:hidden; } }
   @media (prefers-reduced-motion: reduce) { #rec .dot { animation:none; } }
   #rec .late { color:var(--bar-late); }
-  #rec .note { color:var(--bar-muted); font-size:13px; }
+  #flash { font-weight:600; }
   #bar #btnFinish { border-color:var(--rec); }
   #runs { position:fixed; inset:0; z-index:20; overflow:auto; background:var(--bg); color:var(--ink); padding-block:20px 48px;
           padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
@@ -98,6 +98,7 @@
   <button id="btnRehearse">● Rehearse (timed)</button>
   <button id="btnRuns">Rehearsals</button>
   <span class="meta">Click a frame to play from it · ← → step · N notes · Esc back · ✅ in our sources · ⚠ unconfirmed</span>
+  <span id="flash" role="status"></span>
 </header>
 <main id="grid"></main>
 
@@ -107,7 +108,7 @@
     <button id="prev">←</button><button id="next">→</button>
     <span id="pos"></span>
     <span id="rec" hidden><span class="dot" aria-hidden="true"></span>REC <b id="recTotal">0:00</b> · this frame
-      <b id="recFrame">0:00</b> of <span id="recPlan">0:00</span> <span class="note" id="recNote"></span></span>
+      <b id="recFrame">0:00</b> of <span id="recPlan">0:00</span></span>
     <button id="btnNotes">Notes</button>
     <button id="btnFull">Full screen</button>
     <button id="btnFinish" hidden>■ Finish</button>
@@ -138,7 +139,10 @@ const head=(title,cap,clock)=>{const r=[];
   return r;};
 const chainArrows=ids=>ids.slice(0,-1).map((id,i)=>A(id,ids[i+1]));
 const mod=(els,id,props)=>els.map(e=>e.id===id?{...e,...props}:e);
-const Q=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Drive or train\nRuse → Sofia?'});
+// F2 asks the everyday question; F3–F5 narrow it to the one a chain of steps can answer.
+const ASK_EVERYDAY='Should I drive or take\nthe train to Sofia?';
+const ASK_COST='Which is cheaper from\nRuse to Sofia — driving\nor taking the train?';
+const Q=(x,y,w,h,sub=ASK_COST)=>B('q',x,y,w,h,'Question',{k:'io',sub});
 const Q2=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Cheapest way\nRuse → Sofia,\narriving within 24 h?'});
 
 /* ---------- F2–F5: one question, a short chain ---------- */
@@ -578,7 +582,7 @@ const FR=[
   say:"The simplest case: one question in, one answer out, in about two seconds. Say it's right 9 times out of 10: an illustrative number we'll follow through the talk.",
   src:[['Illustrative probability, not the model’s own confidence score',1]],
   els:[...head('One question, one answer','Illustrative number: the chance the final answer is right.','⏱ ~2 s'),
-       Q(100,380,280,140),B('ai',660,380,280,140,'AI model',{k:'model'}),B('ans',1220,380,280,140,'Answer',{k:'io',p:0.90}),
+       Q(100,380,280,140,ASK_EVERYDAY),B('ai',660,380,280,140,'AI model',{k:'model'}),B('ans',1220,380,280,140,'Answer',{k:'io',p:0.90}),
        A('q','ai'),A('ai','ans')]},
  {id:'F3',m:'M2',secs:50,title:'A real task has many steps',
   say:'Real questions need several steps: search, search, search, calculate, answer. If each is 90% right, all five are right only 59% of the time. Stretch it to a thousand steps and even 99.9% per step leaves just 37%.',
@@ -866,9 +870,10 @@ btnFull.hidden=!document.fullscreenEnabled;
 btnFull.onclick=()=>{ try{ const p=document.fullscreenElement?document.exitFullscreen():play.requestFullscreen(); if(p) p.catch(()=>{}); }catch(e){} };
 
 /* ---------- rehearsal timing ---------- */
-// "Rehearse" plays from F1 and records the moment each frame comes on screen. Each run is one document in
-// the artifact's db (collection "runs", id = start time) so Claude can read it back; a copy of the page
-// without db (opened locally) keeps its runs in this browser and offers them as JSON.
+// "Rehearse" plays from F1 and records the moment each frame comes on screen. A run is kept only if it
+// reaches the last frame: then it is saved as one document in the artifact's db (collection "runs",
+// id = start time) so Claude can read it back; stopped earlier, it is dropped. A copy of the page without
+// db (opened locally) keeps its runs in this browser and offers them as JSON.
 const LS_KEY='lofi-storyboard-runs', $=id=>document.getElementById(id);
 let dbPromise=null;
 const getDb=()=>dbPromise||(dbPromise=(window.claude&&window.claude.use?window.claude.use('db'):Promise.resolve(null)).catch(()=>null));
@@ -881,28 +886,36 @@ function startRehearsal(){
   REH.run={id:'run-'+at.toISOString().replace(/[:.]/g,'-'),startedAt:at.toISOString(),startMs:at.getTime(),endedAt:null,
     status:'recording',plannedTotal:cum,budget:BUDGET,frames:FR.map(f=>({id:f.id,m:f.m,title:f.title,planned:f.secs})),
     events:[{i:0,id:FR[0].id,t:0}]};
-  openPlay(0); recUi(true); saveRun();
+  openPlay(0); recUi(true);
   try{ navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>{REH.wake=l;},()=>{}); }catch(e){}
 }
-function logFrame(){ const r=REH.run; r.events.push({i:cur,id:FR[cur].id,t:since(r)}); saveRun(); }
-function finishRehearsal(){
+function logFrame(){ const r=REH.run; r.events.push({i:cur,id:FR[cur].id,t:since(r)}); finishLabel(); }
+// The run reached the last frame of the talk it was recorded against.
+const reachedEnd=r=>(r.events||[]).some(e=>!e.end&&e.i===(r.frames||[]).length-1);
+const finishLabel=()=>{ $('btnFinish').textContent=cur===FR.length-1?'■ Finish':'■ Stop (not saved)'; };
+async function finishRehearsal(){
   const r=REH.run; if(!r) return;
   r.events.push({end:true,t:since(r)}); r.status='finished'; r.endedAt=new Date().toISOString();
-  const a=analyse(r); r.spoken=a.spoken; r.frames=a.rows;   // per-frame actuals ride along for whoever reads the run
-  REH.run=null; recUi(false); saveRun(r);
+  REH.run=null; recUi(false);
   try{ REH.wake&&REH.wake.release(); }catch(e){} REH.wake=null;
   try{ if(document.fullscreenElement) document.exitFullscreen().catch(()=>{}); }catch(e){}
-  closePlay(); openRuns(r.id);
+  closePlay();
+  if(!reachedEnd(r)){ flash(`Rehearsal stopped at ${FR[cur].id}, before the last frame, so it was not saved.`); return; }
+  const a=analyse(r); r.spoken=a.spoken; r.frames=a.rows;   // per-frame actuals ride along for whoever reads the run
+  $('runs').hidden=false; $('runsWhere').textContent='Saving…';
+  saveRun(r); if(saving) await saving;
+  openRuns(r.id);
 }
+function flash(msg){ $('flash').textContent=msg; clearTimeout(flash.t); flash.t=setTimeout(()=>{ $('flash').textContent=''; },10000); }
 function recUi(on){
   $('rec').hidden=!on; $('btnFinish').hidden=!on; $('btnGrid').hidden=on;
-  clearInterval(REH.timer); REH.timer=on?setInterval(tick,250):0; if(on) tick();
+  clearInterval(REH.timer); REH.timer=on?setInterval(tick,250):0; if(on){ finishLabel(); tick(); }
 }
 function tick(){
   const r=REH.run; if(!r) return;
   const t=since(r), ft=t-r.events[r.events.length-1].t, plan=FR[cur].secs;
   $('recTotal').textContent=fmtS(t); $('recFrame').textContent=fmtS(ft); $('recFrame').className=ft>plan?'late':'';
-  $('recPlan').textContent=fmtS(plan); $('recNote').textContent=REH.saved==='browser'?'saving in this browser only':'';
+  $('recPlan').textContent=fmtS(plan);
 }
 $('btnRehearse').onclick=startRehearsal;
 $('btnFinish').onclick=finishRehearsal;
@@ -932,7 +945,7 @@ async function listRuns(){
   const all=localAll(), db=await getDb();
   if(db){ try{ (await db.collection('runs').orderBy('startedAt','desc').limit(100).get()).docs
     .forEach(d=>{ all[d.id]=fuller(all[d.id],{...d.data(),id:d.id}); }); }catch(e){} }
-  return Object.values(all).filter(r=>r&&r.events).sort((a,b)=>(b.startMs||0)-(a.startMs||0));
+  return Object.values(all).filter(r=>r&&r.events&&r.status==='finished'&&reachedEnd(r)).sort((a,b)=>(b.startMs||0)-(a.startMs||0));
 }
 async function deleteRun(id){
   localDel(id); const db=await getDb();
@@ -941,7 +954,6 @@ async function deleteRun(id){
 }
 
 // Analysis: a frame's time runs from the moment it came on screen to the next change; going back adds to it.
-// An unfinished run (the page closed mid-talk) leaves its last frame untimed.
 function analyse(run){
   const ev=run.events||[], end=ev.find(e=>e.end), act={}, visits={};
   ev.forEach((e,k)=>{ const nx=ev[k+1]; if(e.end||!nx) return;
@@ -965,7 +977,7 @@ function runHtml(run){
   const bar=r=>`<div class="track" title="${esc(r.id)}: ${fmtS(r.actual)} spoken, ${fmtS(r.planned)} planned">`+
     `<div class="bar" style="width:${(r.actual/max*100).toFixed(1)}%"></div><div class="plan" style="left:calc(${(r.planned/max*100).toFixed(1)}% - 1px)"></div></div>`;
   return `<div class="stats">
-    <div class="stat"><div class="k">Spoken</div><div class="v">${fmtS(a.spoken)}</div><div class="d">${a.finished?'finished':'unfinished: the last frame is not timed'}</div></div>
+    <div class="stat"><div class="k">Spoken</div><div class="v">${fmtS(a.spoken)}</div><div class="d">${esc(when(run))}</div></div>
     <div class="stat"><div class="k">Against the plan</div><div class="v">${fmtD(a.spoken-planned)}</div><div class="d">planned ${fmtS(planned)}</div></div>
     <div class="stat"><div class="k">Against the budget</div><div class="v">${fmtD(a.spoken-budget)}</div><div class="d">budget ${fmtS(budget)}</div></div>
     <div class="stat"><div class="k">Frames over plan</div><div class="v">${over.length}</div><div class="d">${over.slice(0,3).map(r=>`${esc(r.id)} ${fmtD(r.actual-r.planned)}`).join(' · ')||'none'}</div></div>
@@ -983,16 +995,18 @@ function runHtml(run){
 }
 function renderRuns(sel){
   const runs=REH.runs;
-  if(!runs.length){ $('runList').innerHTML=''; $('runView').innerHTML='<p>No rehearsals yet. Press <b>● Rehearse (timed)</b>, present the talk as you will on the day, and press → after the last frame (or <b>■ Finish</b>) to end. Each frame’s time shows up here.</p>'; return; }
+  if(!runs.length){ $('runList').innerHTML=''; $('runView').innerHTML='<p>No rehearsals yet. Press <b>● Rehearse (timed)</b> and present the talk as you will on the day. On the last frame, press → or <b>■ Finish</b>; a run is saved only when it reaches the end. Each frame’s time shows up here.</p>'; return; }
   const run=runs.find(r=>r.id===sel)||runs[0]; REH.sel=run.id;
-  $('runList').innerHTML=runs.map(r=>`<button data-run="${esc(r.id)}" aria-pressed="${r.id===run.id}">${esc(when(r))} · ${fmtS(analyse(r).spoken)}${r.status==='finished'?'':' · unfinished'}</button>`).join('');
+  $('runList').innerHTML=runs.map(r=>`<button data-run="${esc(r.id)}" aria-pressed="${r.id===run.id}">${esc(when(r))} · ${fmtS(analyse(r).spoken)}</button>`).join('');
   $('runView').innerHTML=runHtml(run);
 }
 async function openRuns(sel){
   $('runs').hidden=false;
   $('runsWhere').textContent='Loading…';
   const db=await getDb();
-  $('runsWhere').textContent=db?'Each run is saved with this page, so Claude can read it.':'Runs are kept in this browser only. Use “Copy as JSON” to share one.';
+  $('runsWhere').textContent=!db?'Runs are kept in this browser only. Use “Copy as JSON” to share one.'
+    :REH.saved==='browser'?'The last run could not be saved with this page, so it is kept in this browser only.'
+    :'Each run is saved with this page, so Claude can read it.';
   REH.runs=await listRuns(); renderRuns(sel);
 }
 $('btnRuns').onclick=()=>openRuns(REH.sel);
