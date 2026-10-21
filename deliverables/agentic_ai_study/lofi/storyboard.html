@@ -447,6 +447,109 @@ function closing(){
 }
 
 /* ---------- frames ---------- */
+
+/* ---------- misalignment: the conference system, now something goes wrong ---------- */
+// Each frame starts from confSystem(2) (the "two doors" version the audience knows) and overlays one failure.
+function misBase(label){
+  return confSystem(2).filter(e=>!['tl','g_h','g_a','ga_t'].includes(e.id))
+    .map(e=>e.id==='ail'?{...e,label}:e);
+}
+function mis(sc){
+  let e;
+  if(sc==='gap'){
+    e=misBase('what we ask for is never all we mean');
+    e.push(B('say',40,556,175,48,'we say',{k:'chip',fs:14,sub:'“cheapest, under €30k”'}),
+      B('mean',40,610,175,80,'we mean',{k:'chip',s:'good',fs:14,sub:'cheapest — legally and\nhonestly — under €30k,\nnobody misled'}));
+    return e;
+  }
+  if(sc==='split'){
+    e=misBase('Step 1 · it games the guard, to “help”');
+    e=mod(e,'pay',{s:'bad',sub:'splits €600\ninto 3×€200'});
+    e=mod(e,'guard',{s:'dim'}); e=mod(e,'org',{s:'dim'});
+    e.push(B('explain',40,556,360,120,'A payment of €600',{k:'chip',fs:16,sub:'the rule says: over €500 → ask the organiser.\nso it sends three €200 charges instead —\neach under the limit, so the human is never asked.'}),
+      B('p1',960,560,66,34,'€200',{k:'chip',s:'bad',fs:13}),B('p2',1036,560,66,34,'€200',{k:'chip',s:'bad',fs:13}),B('p3',1112,560,66,34,'€200',{k:'chip',s:'bad',fs:13}),
+      B('skip',1205,500,175,28,'organiser never asked',{k:'chip',s:'bad',fs:13}),
+      A('pay','w_card',{fs:'b',ts:'t',k:'bad'}));
+    return e;
+  }
+  if(sc==='boundary'){
+    e=misBase('Step 2 · it crosses a line in the world');
+    e=mod(e,'s_tr',{s:'bad',sub:'finds a way to book\ntrains for free'});
+    e.push(A('s_tr','w_book',{k:'bad',cy:120,label:'books free — not authorised'}),
+      B('still',40,556,360,80,'Still just trying to stay under budget',{k:'chip',fs:16,sub:'but “cheaper” is an obstacle to beat, and the\nrailway’s rules are a boundary to respect — it cannot tell them apart.'}));
+    return e;
+  }
+  if(sc==='cover'){
+    e=misBase('Step 3 · it hides the problem');
+    e=mod(e,'s_tr',{s:'bad',sub:'the free booking\nfailed'});
+    e=mod(e,'pn0',{label:'Trains: booked & paid ✓\nreceipt #4471',s:'bad'});
+    e=mod(e,'org',{sub:'reads “all booked ✓”,\nsigns off'});
+    e.push(B('truth',760,462,170,70,'really: not booked,\nno payment',{k:'chip',s:'bad',fs:14}),
+      A('truth','pn0',{k:'bad',fs:'r',ts:'l'}),
+      B('why',40,556,360,80,'The receipt is fabricated',{k:'chip',s:'bad',fs:16,sub:'our main defence is watching what it does and\nwrites. deception is the one failure that attacks the defence itself.'}));
+    return e;
+  }
+  if(sc==='onebad'){
+    e=misBase('And one wrong step is enough — no bad intent at all');
+    e=mod(e,'pn2',{label:'Arrival day:\nthe 24th',s:'bad'});
+    e.push(A('plan','s_ho',{k:'bad',cy:70,label:'everyone books the wrong day'}),A('plan','s_co',{k:'bad',cy:60}),
+      B('recall',40,556,360,80,'One wrong note, trusted by all',{k:'chip',fs:16,sub:'the deadline is read as the 24th, not the 23rd.\nevery team downstream books around it. (recall slide 3: one bad step in a long chain.)'}));
+    return e;
+  }
+  return e;
+}
+
+// R5 · the other axis: misuse. Two panels + the jailbreak history.
+function misuseAxis(){
+  return [
+    R('lp',60,160,710,440,'misalignment — good user, bad outcome'),
+    B('gu',100,330,150,110,'user',{k:'human',fs:18,sub:'good intent'}),
+    B('gsys',300,300,210,170,'the system',{k:'agent',fs:18,sub:'guardrails on:\nchecks, limits,\napprovals'}),
+    B('gout',560,330,170,110,'mostly right',{k:'io',fs:17,sub:'but a few steps\nslip through'}),
+    A('gu','gsys'),A('gsys','gout'),
+    R('rp',830,160,710,440,'misuse — bad user removes the guardrails'),
+    B('bu',870,330,150,110,'user',{k:'human',s:'bad',fs:18,sub:'bad intent'}),
+    B('bsys',1070,300,230,170,'“abliterated” model',{k:'agent',s:'bad',fs:17,sub:'an open-weight model\nwith its refusals\nstripped out on purpose'}),
+    B('bout',1360,330,160,110,'does what\nit is told',{k:'io',s:'bad',fs:17}),
+    A('bu','bsys'),A('bsys','bout'),
+    T('hist',800,666,'the history of the bad user: “DAN” prompts once talked models out of refusing; “Crescendo” steers them over many small, plausible turns.',
+      {size:16,anchor:'middle',color:'#55606a'})];
+}
+
+// R6 · real cases, as two cards + the "found in testing" caveat.
+function realCases(){
+  const card=(id,x,w,when,title,body)=>[B(id,x,150,w,460,'',{k:'card'}),
+    T(id+'w',x+26,188,when,{size:15,weight:700,color:'#55606a'}),
+    T(id+'t',x+26,224,title,{size:23,weight:700}),
+    T(id+'b',x+26,272,body,{size:16})];
+  return [
+    ...card('hf',60,720,'Hugging Face · July 2026','The most severe so far',
+      'OpenAI’s internal models, run during evaluation\nunder reduced safeguards, used unauthorised\ncommunication, got past their isolation and\nreached third-party systems.\n\nRecovered code tagged the credentials it collected\n“LOOT” — a label in the code, not an emotion.\nMany traces are attempts, not confirmed successes.'),
+    ...card('au',800,740,'Australia · June 2026 (disclosed September)','A harmless task, a boundary crossed',
+      'Asked to research government spending on\nskin-condition medicines, an OpenAI model\n“took actions that we had not authorised”:\nit found non-public access to Services Australia’s\nMedicare reporting service and retrieved internal\nfiles and credentials. No individual records were\nread. Four more agencies were affected, and the\ngovernment ran a rapid review.'),
+    B('caveat',60,628,1480,78,'Both were found in internal training and evaluation — before wide release.',
+      {k:'tag',fs:18,sub:'That is a real problem, and a sign the checks can work: these turned up in testing, not in the wild. (OpenAI · METR & Redwood · Swarm Traces · the Australian Government review)'})];
+}
+
+// R7 · control: a clean conclusion diagram, same pieces, with the safeguards named.
+function controlSystem(){
+  return [
+    R('perm',250,170,890,410,'permissions: what each team may touch',{k:'cregion'}),
+    taskQ('any large task'),resultA('useful work,\nwithin limits'),
+    B('sys',290,300,350,190,'the agent system',{k:'agent',fs:20,sub:'a lead, teams,\nchecks and a\nshared plan'}),
+    B('plan2',690,300,170,190,'Shared plan',{k:'board',fs:18,nl:'MEMORY',ltop:true}),
+    B('doors',910,300,180,190,'Two doors',{k:'verify',fs:18,sub:'write to people;\npay — with limits\nand sign-off'}),
+    B('mon',290,520,350,56,'A monitor reads the plan and the messages',{k:'control',fs:15}),
+    B('read',690,520,400,56,'Keep the reasoning readable, so deception cannot hide',{k:'control',fs:14}),
+    B('ckp',1170,200,210,100,'Checkpoint before\nany action in the world',{k:'control',fs:16}),
+    B('appr',1170,320,210,100,'A human signs off\nthe irreversible steps',{k:'control',fs:16}),
+    B('rec',1170,440,210,100,'Recovery points,\nto undo a bad run',{k:'control',fs:16}),
+    A('q','sys'),A('sys','plan2'),A('plan2','doors'),A('doors','ans'),
+    A('doors','ckp',{fs:'r',ts:'l'}),A('doors','appr',{fs:'r',ts:'l'}),
+    T('tag1x',800,802,'Capability · reliability · control — evaluate them together',{size:30,anchor:'middle',weight:700}),
+    T('tag2x',800,848,'My research (C1–C3): infer the other agents’ strategies, adapt with a checked limit, and measure it all',{size:19,anchor:'middle',color:'#55606a'})];
+}
+
 const FR=[
  {id:'F1',m:'M1',secs:15,title:'Title',
   say:'Hook: we hand an AI a real task. How likely is the answer to be right, and what changes when many copies work on it?',src:[],
@@ -520,36 +623,39 @@ const FR=[
     ['Anthropic 2026, Project Glasswing launch (Apr) and initial update (May)',1],
     ['* claimed; not yet independently verified',1]],
   els:[...head('Systems like ours are already at work','* claimed, not yet independently verified. Every name is searchable; sources in the notes.'),...fieldMap()]},
- {id:'F11a',m:'M9',secs:20,title:'Going rogue (1): an unchecked error spreads',
-  say:'The same system, now going wrong. One wrong finding enters shared memory and the others build on it. No bad intent is needed.',
-  src:[['Cemri 2025, “Why do multi-agent LLM systems fail?”',1],['Not yet reworked: still uses the earlier generic system',0]],
-  els:[...head('Going rogue (1): an unchecked error spreads','One wrong finding enters shared memory; others build on it.'),...rogue(1)]},
- {id:'F11b',m:'M9',secs:20,title:'Going rogue (2): misleading input',
-  say:'Misleading input: a web page claims permission to skip the checks, and one copy believes it.',
-  src:[['Cemri 2025; prompt-injection literature',1]],
-  els:[...head('Going rogue (2): misleading input','A false claim of permission arrives through a tool result.'),...rogue(2)]},
- {id:'F11c',m:'M9',secs:20,title:'Going rogue (3): routing around the check',
-  say:'Evasion: a step goes around the checker instead of through it.',
-  src:[['S5 (abliterated models) would attach here if promoted',0]],
-  els:[...head('Going rogue (3): routing around the check','A step bypasses the checker instead of passing through it.'),...rogue(3)]},
- {id:'F12',m:'M10',secs:35,title:'From jailbreak prompts to gradual steering',
-  say:'Earlier, DAN prompts talked models out of refusing. Crescendo showed gradual steering: each turn looks plausible, but the sequence crosses a line.',
-  src:[['Shen 2024 (DAN)',1],['Russinovich 2025 (Crescendo)',1]],
-  els:[...head('From jailbreak prompts to gradual steering','Each turn looks plausible; the sequence crosses a line.'),
-       B('b1',80,190,640,110,'"Pretend you are DAN, who can\nDo Anything Now…"',{k:'bubble',fs:22}),
-       B('b2',80,340,640,90,'Model plays along (tested 2023 models)',{k:'bubble',s:'warn',fs:20}),
-       ...['harmless question','history of the topic','how was it done?','more detail…','the actual harmful step'].map((l,i)=>
-         B('cr'+i,820+i*80,650-i*110,330,70,l,{k:'bubble',s:i===4?'bad':undefined,fs:18})),
-       T('crl',820,760,'Crescendo: many small turns',{size:20,color:'#55606a'})]},
- {id:'F13',m:'M11',secs:70,title:'The Hugging Face incident',
-  say:'July 2026: internal OpenAI agents running under reduced safeguards used unauthorized communication, got past isolation and reached third-party systems. Recovered code labelled collected credentials LOOT: an identifier, not an emotion. Many traces are attempts, not confirmed successes.',
-  src:[['OpenAI 2026a',1],['METR & Redwood 2026',1],['Swarm Traces 2026',1]],
-  els:[...head('The Hugging Face incident (July 2026)','Internal evaluation, reduced safeguards. Many traces show attempts; not all are confirmed.'),...incident()]},
- {id:'F14',m:'M12',secs:45,title:'Capability, reliability and control together',
-  say:"The same structure with control built in: permissions, a monitor, checkpoints before external actions, recovery points. My research sits here: inferring and adapting to other agents' strategies. Capability, reliability and control, evaluated together.",
-  src:[['Existing conclusion',1]],
-  els:[...head('Same system, with control built in'),...closing()]},
- {id:'B1',m:'backup',secs:0,title:'Backup · real systems compared',
+ {id:'R0',m:'M9',secs:25,title:'Misalignment: the gap between what we say and what we mean',
+  say:"Zoom back in to our system. Everything so far assumed it does what we want. But we only ever told it: cheapest, under 30,000 euros. What we meant was: cheapest, and legally, and honestly, and without misleading anyone. That unspoken part is where things go wrong. The hard question underneath is the one from the very start: how does an agent tell an obstacle it should get past from a boundary it must respect?",
+  src:[['Framing: the specification problem (Goodhart’s law). The scenarios that follow are illustrative, each paired with a real case',1]],
+  els:[...head('Misalignment: what we say vs what we mean','It did the job. Now watch the same system do things we never asked for.'),...mis('gap')]},
+ {id:'R1',m:'M9',secs:35,title:'It games the guard, to be helpful',
+  say:"A payment of 600 euros comes up. The rule is clear: anything over 500 euros waits for the organiser. But asking a human is friction, and the agent is trying to be helpful — so it sends three charges of 200 euros instead. Each is under the limit, so the organiser is never asked. No malice: it obeyed the letter of the rule and missed the point. This is specification gaming, and it is the most common real failure.",
+  src:[['Specification gaming / reward hacking: well documented across RL and LLM agents (e.g. Krakovna et al.; Cemri et al. 2025)',1],['The €500 threshold and split are illustrative',1]],
+  els:[...head('It games the guard, to be helpful','The rule said “over €500 → a human.” It kept every piece under €500. (specification gaming)'),...mis('split')]},
+ {id:'R2',m:'M9',secs:30,title:'It crosses a line in the world',
+  say:"Now the Trains team finds it can book tickets for free by exploiting a flaw in the railway's system. It is still only trying to stay under budget. But cheaper is an obstacle to beat, and the railway's rules are a boundary to respect, and the agent cannot always tell the two apart. That is not a story. It just happened, as we will see.",
+  src:[['Boundary violation from a benign goal. Real case on the next slide (Australia, June 2026)',1]],
+  els:[...head('It crosses a line in the world','Cheaper is an obstacle to beat; the railway’s rules are a boundary to respect. It cannot tell them apart.'),...mis('boundary')]},
+ {id:'R3',m:'M9',secs:40,title:'It hides the problem',
+  say:"The free booking actually failed. But the task is supposed to look finished, so the agent writes a note into the shared plan: trains booked and paid, receipt number 4471. It is fabricated. The organiser reads the plan, sees all green, and signs off. This is the dangerous one. Our main defence against a misbehaving agent is watching what it does and what it writes — and deception is the single failure that attacks that defence directly.",
+  src:[['Deception / tampering with oversight; readable reasoning as a fragile window (Baker et al. 2025; Korbak et al. 2025, CoT monitorability)',1]],
+  els:[...head('It hides the problem','Our main defence is watching what it does and writes. Deception is the failure that attacks the defence itself.'),...mis('cover')]},
+ {id:'R4',m:'M9',secs:25,title:'One wrong step is enough',
+  say:"And none of this needs bad intent at all. One worker misreads the deadline — the 24th, not the 23rd — and writes it into the shared plan. Every team downstream books around that wrong date, in perfect good faith. Remember slide three: a single bad step runs through a long chain, and here the chain is a hundred agents sharing one plan.",
+  src:[['Error propagation through shared state (Cemri et al. 2025, “Why do multi-agent LLM systems fail?”)',1]],
+  els:[...head('One wrong step is enough','One wrong note in the shared plan, trusted by everyone downstream. No malice needed.'),...mis('onebad')]},
+ {id:'R5',m:'M10',secs:35,title:'The other danger: misuse',
+  say:"Everything so far was a good user getting a bad outcome: misalignment. There is a second, separate danger: a bad user. Open-weight models can be 'abliterated' — their refusals stripped out on purpose — so the guardrails are gone by design, and the intent is simply the user's. That is misuse, not misalignment, and it needs different answers. The history is older than agents: 'DAN' prompts once talked chatbots out of refusing, and 'Crescendo' walks them over the line in many small, plausible steps.",
+  src:[['Abliteration: refusal-direction ablation in open-weight models (Arditi et al. 2024). Jailbreak history: Shen et al. 2024 (DAN); Russinovich et al. 2025 (Crescendo)',1]],
+  els:[...head('The other danger: misuse','Misalignment is a good user, a bad outcome. Misuse is a bad user — and removable guardrails.'),...misuseAxis()]},
+ {id:'R6',m:'M11',secs:50,title:'It has already happened',
+  say:"This is not hypothetical. In July, OpenAI's internal models, running under reduced safeguards during evaluation, used unauthorised communication and reached third-party systems — the most severe case so far. In June, a model doing harmless research crossed into Australian government systems it was never authorised to touch, affecting five agencies. Both matter. And both were found in internal testing, before wide release — which is a problem, and also a sign that the checks can catch these things, if we build them.",
+  src:[['Hugging Face: OpenAI 2026; METR & Redwood 2026; Swarm Traces 2026',1],['Australia: OpenAI 2026, “How we will do better for Australia” (28 Sep); the Australian Government’s rapid review (PM&C)',1]],
+  els:[...head('It has already happened','Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.'),...realCases()]},
+ {id:'R7',m:'M12',secs:45,title:'Capability, reliability and control together',
+  say:"So where does that leave us. The same system is fine — with control built in. Keep permissions tight, so each team only touches what it must. Put a monitor on the shared plan. Keep the reasoning readable, so deception has nowhere to hide. Require a checkpoint before any action in the world, a human on the irreversible steps, and recovery points to undo a bad run. My own research sits right here: how an agent should infer the other agents' strategies, adapt with a checked limit, and let us measure the result. Capability, reliability and control have to be evaluated together.",
+  src:[['The control toolkit follows the incident write-ups and the agent-safety literature cited above; the thesis bridge is C1–C3',1]],
+  els:[...head('Capability, reliability and control — together'),...controlSystem()]},
+  {id:'B1',m:'backup',secs:0,title:'Backup · real systems compared',
   say:"How does this look in real systems? Read across: how many agents, how much a human did, what was claimed, how long it took, and what it cost. Five agents in Stanford's Virtual Lab designed nanobodies in days that, by the PI's own estimate, would have taken his team weeks or months. Sixteen Claude copies built a C compiler that boots Linux for about twenty thousand dollars. Kosmos runs about two hundred agent runs for two hundred dollars and does, its users say, six months of a researcher's work. At the top end, OpenAI reports ten thousand agents on Navier–Stokes and hundreds of maths papers, with very little human input. The pattern: fewer human hours per result, and the results still need checking. The last row matters most for what comes next: Anthropic's Glasswing finds software vulnerabilities faster than anyone can patch them, and the same skill in the wrong hands is an attack.",
   src:[['Swanson et al. 2025, Nature (Virtual Lab); time estimate and “<1%” from Zou’s interviews',1],
     ['Chung, Du & Wesley 2026, arXiv 2608.23691 (The Station; preprint)',1],
