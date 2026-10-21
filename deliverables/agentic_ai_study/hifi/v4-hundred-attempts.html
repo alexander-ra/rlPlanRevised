@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Hundred Attempts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Golos+Text:wght@400..700&display=swap">
+<style>
+  :root { --page:#d5dce2; --stage:#f4f6f7; --ink:#14202b; --ink2:#3b4855; --barbg:#e8ecef; --barline:#c3ccd4; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; background:var(--page); }
+  body { display:flex; flex-direction:column; color:var(--ink);
+         font-family:Archivo, "Golos Text", "Arial Narrow", "Helvetica Neue", Arial, sans-serif; }
+  #wrap { flex:1; min-height:0; position:relative; overflow:hidden; }
+  #stage, #ghost { position:absolute; left:0; top:0; width:1600px; height:900px; transform-origin:0 0; background:var(--stage); }
+  #stage { box-shadow:0 1px 3px rgba(20,32,43,.12), 0 8px 30px rgba(20,32,43,.08); cursor:pointer; }
+  #ghost { pointer-events:none; opacity:1; transition:opacity .34s linear; }
+  #ghost.out { opacity:0; }
+  svg.layer, canvas.layer { position:absolute; left:0; top:0; width:1600px; height:900px; display:block; }
+  svg text { font-family:Archivo, "Golos Text", "Arial Narrow", "Helvetica Neue", Arial, sans-serif; font-kerning:normal;
+             font-variant-numeric:tabular-nums; }
+  #bar { flex:none; height:44px; display:flex; align-items:center; gap:6px; padding:0 12px; background:var(--barbg);
+         border-top:1px solid var(--barline); font-size:14px; white-space:nowrap; overflow:hidden; }
+  #bar button { font:inherit; font-weight:600; font-stretch:92%; color:var(--ink); background:#fff; border:1px solid #b3bec8;
+                border-radius:7px; padding:5px 11px; cursor:pointer; line-height:1.2; }
+  #bar button:hover { background:#f2f5f7; }
+  #bar button[aria-current="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+  #bar button:focus-visible { outline:2px solid #2563b0; outline-offset:2px; }
+  #bar .sep { width:1px; height:22px; background:var(--barline); margin:0 6px; }
+  #bar .hint { color:var(--ink2); font-stretch:92%; margin-left:auto; overflow:hidden; text-overflow:ellipsis; }
+  #bar .t { font-weight:500; }
+  body.review #bar { display:none; }
+  body.review #stage { box-shadow:none; cursor:default; }
+  @media (max-width:900px) { #bar .t, #bar .hint { display:none; } #bar { height:38px; } #bar button { padding:4px 9px; } }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage" role="img" aria-label="Slide">
+    <svg id="svg" class="layer" viewBox="0 0 1600 900" width="1600" height="900"></svg>
+    <canvas id="cv" class="layer"></canvas>
+  </div>
+</div>
+<nav id="bar" aria-label="Slides">
+  <button data-f="0"><b>F4</b><span class="t"> · Thinking</span></button>
+  <button data-f="1"><b>F5a</b><span class="t"> · Tools &amp; check</span></button>
+  <button data-f="2"><b>N1</b><span class="t"> · Real-scale job</span></button>
+  <button data-f="3"><b>N2</b><span class="t"> · Two doors</span></button>
+  <span class="sep"></span>
+  <button id="replay">Replay transition</button>
+  <span class="hint">→ / Space / click: next · ← back</span>
+</nav>
+<script>
+'use strict';
+/* =====================================================================
+   V4 · A hundred attempts.
+   Probability made visible: 100 dots (attempts) flow through the chain;
+   each step drops its share, exact tools drop none, the check catches
+   the stale fare and sends it back. Every attempt leaves a faint thread,
+   so the settled slide still shows where the attempts went.
+   On N1/N2 the dots are work, actions and messages; on N2 they leave the
+   system only through two doors.
+   Everything that moves is a pure function of (time, seed).
+   ===================================================================== */
+const W = 1600, H = 900;
+const URLQ = new URLSearchParams(location.search);
+const SEED = (parseInt(URLQ.get('seed'), 10) || 20261024) >>> 0;
+const D = 1.1;                       // transition length, seconds
+const ORDER = ['F4', 'F5a', 'N1', 'N2'];
+
+/* ---------- palette: one colour per meaning ---------- */
+const C = {
+  ink:'#14202b', ink2:'#3b4855', mute:'#56626e', faint:'#8a96a1',
+  line:'#9aa6b1', track:'#e3e8ec', card:'#ffffff', cardS:'#bcc6cf', group:'#edf1f4', stage:'#f4f6f7',
+  dot:'#1b2834',
+  good:'#13804d', goodBg:'#e3f2e9', goodInk:'#0d6a3f',
+  warn:'#d08700', warnBg:'#fdf1d4', warnInk:'#8a5800',
+  bad:'#cf3426', badBg:'#fde8e5', badInk:'#b0261a',
+  chk:'#6a49c8', chkBg:'#f2eefc', chkInk:'#4b2fa0', chkDim:'#b9aae6',
+  msg:'#2563b0', plan:'#2f5f8a', world:'#e4e9ed', worldS:'#aeb9c3', dim:'#c5ced6',
+};
+
+/* ---------- small helpers ---------- */
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (e0, e1, x) => { const t = clamp((x - e0) / (e1 - e0)); return t * t * (3 - 2 * t); };
+const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;   // cubic in-out: geometry
+const eout = t => 1 - Math.pow(1 - t, 3);                                     // cubic out: entrances
+const f1 = v => Math.round(v * 10) / 10;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const hexRGB = c => { const n = parseInt(c.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+function mix(a, b, t) {
+  if (a === b || t <= 0) return a; if (t >= 1) return b;
+  if (!a || !b || a[0] !== '#' || b[0] !== '#') return t < .5 ? a : b;
+  const A = hexRGB(a), B = hexRGB(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+const lum = c => { if (!c || c[0] !== '#') return 0; const [r, g, b] = hexRGB(c); return (.2126 * r + .7152 * g + .0722 * b) / 255; };
+function hsh(a, b = 0, c = 0) {                       // deterministic hash → [0,1)
+  let h = (SEED ^ 0x9e3779b9) >>> 0;
+  for (const v of [a, b, c]) { h = Math.imul(h ^ ((v * 2654435761) | 0), 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; }
+  return (h >>> 0) / 4294967296;
+}
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// "0.98^100" → superscript tspans that do not depend on the font having ⁰¹…
+function sup(s, size) {
+  return esc(s).replace(/\^(\d+)/g, (m, d) => `<tspan dy="${f1(-size * .4)}" font-size="${f1(size * .62)}">${d}</tspan><tspan dy="${f1(size * .4)}"> </tspan>`);
+}
+
+/* =====================================================================
+   SVG element renderers
+   ===================================================================== */
+function T(x, y, s, o = {}) {
+  const { size = 18, w = 600, c = C.ink, a = 'start', st = 88, it = false, op = 1, ls = 0, halo = null } = o;
+  return `<text x="${f1(x)}" y="${f1(y)}" font-size="${size}" font-weight="${w}" fill="${c}"${a !== 'start' ? ` text-anchor="${a}"` : ''}` +
+    ` style="font-stretch:${st}%${it ? ';font-style:italic' : ''}"${ls ? ` letter-spacing="${ls}"` : ''}${op < 1 ? ` opacity="${op.toFixed(3)}"` : ''}` +
+    `${halo ? ` stroke="${halo}" stroke-width="7" stroke-linejoin="round" paint-order="stroke"` : ''}>${s}</text>`;
+}
+const G = (o, inner) => o >= .999 ? inner : o <= .002 ? '' : `<g opacity="${o.toFixed(3)}">${inner}</g>`;
+
+/* Text inside boxes is laid out as lines, so a morph can keep the lines that stay
+   (they glide) and swap the ones that change: old out first, new in after — never on top of each other. */
+function blockLines(g, P) {
+  const fs = P.fs || 20, sfs = P.sfs || 15, L = P.label ? String(P.label).split('\n') : [], S = P.sub ? String(P.sub).split('\n') : [];
+  const lh = fs * 1.13, slh = sfs * 1.27, gap = L.length && S.length ? (P.gap ?? 6) : 0;
+  const total = L.length * lh + gap + S.length * slh;
+  const top = g.y + (P.hd ? 40 : 0) + (P.pt ?? 6), bot = g.y + g.h - (P.pb ?? 6);
+  const y0 = P.va === 'top' ? top + 6 : (top + bot) / 2 - total / 2;
+  const cx = g.x + g.w / 2 + (P.dx || 0), out = [];
+  L.forEach((l, i) => out.push({ k: 'L', s: l, x: cx, y: y0 + fs * .8 + i * lh, size: fs, w: P.lw || 700, c: P.lc || C.ink, a: 'middle', st: P.lst || 86 }));
+  S.forEach((l, i) => {
+    const b = /^\*\*(.*)\*\*$/.exec(l);
+    out.push({ k: 'S', s: b ? b[1] : l, x: cx, y: y0 + L.length * lh + gap + sfs * .8 + i * slh, size: sfs, w: b ? 700 : (P.sw2 || 500), c: b ? C.ink : (P.sc || C.ink2), a: 'middle', st: 90 });
+  });
+  if (P.hd) {
+    if (P.hl) out.push({ k: 'HL', s: P.hl, x: g.x + 14, y: g.y + 28, size: 16, w: 500, c: P.hlc || C.mute, it: true, st: 92, a: 'start' });
+    if (P.hr) out.push({ k: 'HR', s: P.hr, x: g.x + g.w - 13, y: g.y + 29, size: 19, w: 800, c: P.hrc || C.ink, st: 92, a: 'end' });
+  }
+  return out;
+}
+const lineSVG = (l, op) => op <= .004 ? '' : T(l.x, l.y + (l.dy || 0), esc(l.s), { size: l.size, w: l.w, c: l.c, a: l.a, st: l.st, it: l.it, op });
+function xfLines(LA, LB, e) {
+  const t = e._t, lag = e._lag || 0, g = e._g ?? 1;
+  const outO = 1 - smooth(.04 + lag, .3 + lag, t), inO = smooth(.4 + lag, .66 + lag, t);
+  const used = new Set(); let s = '';
+  for (const lb of LB) {
+    const j = LA.findIndex((la, k) => !used.has(k) && la.k === lb.k && la.s === lb.s && (lum(la.c) < .5) === (lum(lb.c) < .5));
+    if (j >= 0) { used.add(j); const la = LA[j]; s += lineSVG({ ...lb, x: lerp(la.x, lb.x, g), y: lerp(la.y, lb.y, g), size: f1(lerp(la.size, lb.size, g)), c: mix(la.c, lb.c, g) }, 1); }
+    else s += lineSVG({ ...lb, dy: 6 * (1 - inO) }, inO);
+  }
+  LA.forEach((la, k) => { if (!used.has(k)) s += lineSVG({ ...la, dy: -4 * (1 - outO) }, outO); });
+  return s;
+}
+function textOf(e, P) {   // the box's lines, cross-faded when the element is mid-morph
+  if (e._A) return xfLines(blockLines(e, e._A), blockLines(e, e._B), e);
+  const op = e._txo ?? 1;
+  return blockLines(e, P).map(l => lineSVG(l, op)).join('');
+}
+
+function pillSVG(x, y, text, fill, color, size = 15, h = 26) {
+  const w = Math.max(h + 6, text.length * size * .62 + 20);
+  return `<g data-pill="1"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="${fill}"/>` +
+    T(x + w / 2, y + h / 2 + size * .36, esc(text), { size, w: 800, c: color, a: 'middle', st: 92, ls: .6 }) + '</g>';
+}
+function personIcon(x, y, s, col) {      // a simple head-and-shoulders line icon
+  return `<g fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round"><circle cx="${f1(x)}" cy="${f1(y - s * .25)}" r="${f1(s * .22)}"/>` +
+    `<path d="M${f1(x - s * .42)},${f1(y + s * .42)}c0,-${f1(s * .34)} ${f1(s * .2)},-${f1(s * .46)} ${f1(s * .42)},-${f1(s * .46)}s${f1(s * .42)},${f1(s * .12)} ${f1(s * .42)},${f1(s * .46)}"/></g>`;
+}
+function markSVG(x, y, ok, col, s = 7) {  // drawn ✓ / ✗ so they never depend on a font
+  return ok
+    ? `<path d="M${f1(x - s)},${f1(y)}l${f1(s * .7)},${f1(s * .75)}l${f1(s * 1.35)},-${f1(s * 1.55)}" fill="none" stroke="${col}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<path d="M${f1(x - s * .8)},${f1(y - s * .8)}l${f1(s * 1.6)},${f1(s * 1.6)}M${f1(x + s * .8)},${f1(y - s * .8)}l-${f1(s * 1.6)},${f1(s * 1.6)}" fill="none" stroke="${col}" stroke-width="2.8" stroke-linecap="round"/>`;
+}
+
+function rCard(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const rx = e.rx ?? 12;
+  let s = '';
+  if (e.lift) s += `<rect x="${f1(e.x)}" y="${f1(e.y + 3)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${rx}" fill="#14202b" opacity=".07"/>`;
+  s += `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${rx}" fill="${e.fill || C.card}" stroke="${e.stroke || C.cardS}" stroke-width="${e.sw ?? 1.8}"/>`;
+  s += textOf(e, e);
+  const top = e._A ? null : e;   // icon + pill: cross-fade too
+  const deco = (P, op) => {
+    if (op <= .004) return ''; let d = '';
+    if (P.icon === 'person') d += personIcon(e.x + e.w - 24, e.y + 26, 24, P.stroke || C.ink);
+    if (P.pill) d += pillSVG(e.x - 10, e.y - 13, P.pill, P.pillBg || C.ink, '#fff');
+    return G(op, d);
+  };
+  if (e._A) {
+    const same = (e._A.pill || '') === (e._B.pill || '') && (e._A.icon || '') === (e._B.icon || '');
+    s += same ? deco(e._B, 1) : deco(e._A, 1 - smooth(.04, .3, e._t)) + deco(e._B, smooth(.4, .66, e._t));
+  } else s += deco(e, e._txo ?? 1);
+  return `<g opacity="${o.toFixed(3)}" data-box="${e.id}">${s}</g>`;
+}
+
+function rRegion(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  let s = `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="18" fill="none" stroke="#a3afba" stroke-width="1.8" stroke-dasharray="8 7"/>`;
+  if (e.label) s += T(e.x + 18, e.y + 30, esc(e.label), { size: 19, w: 700, c: C.mute, st: 92, ls: .3 });
+  return G(o, s);
+}
+
+function ringsPath(g, from, to) {
+  const r = g.r ?? g.p * .32; let d = '';
+  for (let k = from; k < to; k++) {
+    const cx = g.x + (k % 10 + .5) * g.p, cy = g.y + (Math.floor(k / 10) + .5) * g.p;
+    d += `M${f1(cx - r)},${f1(cy)}a${f1(r)},${f1(r)} 0 1,0 ${f1(2 * r)},0a${f1(r)},${f1(r)} 0 1,0 ${f1(-2 * r)},0`;
+  }
+  return d;
+}
+function rGrid(e) {   // 10×10 slots; n filled (SVG-drawn grids) or rings only (canvas dots sit on top)
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const n = Math.round(e.n ?? 0);
+  let s = n < 100 ? `<path d="${ringsPath(e, n, 100)}" fill="none" stroke="${e.ring || '#b4bec7'}" stroke-width="1.3"/>` : '';
+  if (n > 0) s += `<path d="${ringsPath({ ...e, r: (e.r ?? e.p * .32) + .6 }, 0, n)}" fill="${e.col || C.dot}"/>`;
+  return G(o, s);
+}
+
+function swapText(e, one) {   // generic old-out / new-in for single-label elements
+  if (e._A && e._A.label !== e._B.label) {
+    const t = e._t, w = e.xw || [.04, .3, .4, .66], outO = 1 - smooth(w[0], w[1], t), inO = smooth(w[2], w[3], t);
+    return one(e._A.label, outO, -5 * (1 - outO)) + one(e._B.label, inO, 7 * (1 - inO));
+  }
+  return one(e.label, e._txo ?? 1, 0);
+}
+function rText(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  return swapText(e, (label, op, dy) => op <= .004 ? '' : T(e.x, e.y + dy, e.sup ? sup(label, e.size) : esc(label),
+    { size: e.size, w: e.weight || 600, c: e.color || C.ink, a: e.anchor || 'start', st: e.st || 88, op: op * o }));
+}
+function rPill(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  return `<g data-pill="1">${G(o, swapText(e, (text, op, dy) => {
+    if (op <= .004) return '';
+    const P = e._A && e._A.label !== e._B.label ? (text === e._A.label ? e._A : e._B) : e;   // each label keeps its own colours
+    const w = text.length * 9.6 + 28;
+    return G(op, `<rect x="${f1(e.x - w / 2)}" y="${f1(e.y + dy)}" width="${f1(w)}" height="30" rx="15" fill="${P.fill}" stroke="${P.stroke}" stroke-width="1.6"/>` +
+      T(e.x, e.y + dy + 21, esc(text), { size: 17, w: 800, c: P.color, a: 'middle', st: 92 }));
+  }))}</g>`;
+}
+function rCount(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  return G(o, `<text x="${f1(e.x)}" y="${f1(e.y)}" text-anchor="middle" fill="${C.ink}" style="font-stretch:96%">` +
+    `<tspan font-size="50" font-weight="800">${Math.round(e.n)}</tspan><tspan font-size="21" font-weight="600" fill="${C.ink2}" dx="6">of 100</tspan></text>`);
+}
+function rKey(e) {   // tiny legend with drawn dots
+  const o = e.o ?? 1; if (o <= .005) return '';
+  let x = e.x, s = '';
+  const items = e.items.map(it => ({ ...it, w: it.label.length * 8.1 + 30 }));
+  if (e.anchor === 'end') x -= items.reduce((a, it) => a + it.w + 14, -14);
+  for (const it of items) {
+    const r = it.r || 5.5;
+    s += it.ring ? `<circle cx="${f1(x + 8)}" cy="${f1(e.y - 5)}" r="${r - 1}" fill="#fff" stroke="${it.c}" stroke-width="2.2"/>`
+      : `<circle cx="${f1(x + 8)}" cy="${f1(e.y - 5)}" r="${r}" fill="${it.c}"/>`;
+    s += T(x + 20, e.y, esc(it.label), { size: 16, w: 600, c: C.mute, st: 90 });
+    x += it.w + 14;
+  }
+  return G(o, s);
+}
+function rLane(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  return G(o, `<rect x="${f1(e.x0)}" y="${f1(e.y - e.h / 2)}" width="${f1(e.x1 - e.x0)}" height="${f1(e.h)}" rx="${f1(e.h / 2)}" fill="${C.track}" opacity=".7"/>`);
+}
+function rGate(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  let s = '';
+  const ex = e.exA ?? 0;   // 0 = judgement step, 1 = exact tool
+  if (ex < 1) s += G(1 - ex, `<line x1="${f1(e.x)}" y1="${f1(e.y0)}" x2="${f1(e.x)}" y2="${f1(e.y1)}" stroke="${C.line}" stroke-width="2" stroke-dasharray="3 4"/>`);
+  if (ex > 0) s += G(ex, [e.ex0, e.ex1].map(x => `<line x1="${f1(x)}" y1="${f1(e.ly - 9)}" x2="${f1(x)}" y2="${f1(e.ly + 9)}" stroke="${C.ink}" stroke-width="2.4" stroke-linecap="round"/>`).join(''));
+  return G(o, s);
+}
+function rChip(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const st = e.s === 'good' ? { f: '#fff', s: C.good, c: C.ink } : e.s === 'bad' ? { f: C.badBg, s: C.bad, c: C.badInk } : { f: '#fff', s: e.stroke || C.cardS, c: C.ink };
+  let s = `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${e.rx ?? 9}" fill="${st.f}" stroke="${st.s}" stroke-width="${e.s === 'bad' ? 2.4 : 1.6}"/>`;
+  const L = String(e.label).split('\n'), fs = e.fs || 15, lh = fs * 1.2, mk = e.mark != null;
+  const cx = mk ? e.x + 14 : e.x + e.w / 2, y0 = e.y + e.h / 2 - L.length * lh / 2 + fs * .8;
+  let tx = '';
+  L.forEach((l, i) => { tx += T(cx, y0 + i * lh, esc(l), { size: fs, w: e.s === 'bad' ? 800 : 600, c: st.c, a: mk ? 'start' : 'middle', st: 90 }); });
+  if (mk) tx += markSVG(e.x + e.w - 20, e.y + e.h / 2, e.mark, e.mark ? C.good : C.bad, 6.5);
+  s += G(e._txo ?? 1, tx);
+  return `<g opacity="${o.toFixed(3)}" data-box="${e.id}">${s}</g>`;
+}
+function rWaffle(e) {   // F4: the same 98% over longer chains, as 100-dot squares
+  const o = e.o ?? 1; if (o <= .005) return '';
+  let s = rGrid({ x: e.x, y: e.y, p: e.p, n: e.n, col: e.col, r: e.p * .34, ring: '#c3ccd4' });
+  s += T(e.x + e.p * 10 + 18, e.y + e.p * 5 + 11, sup(e.label, 30), { size: 30, w: 700, c: C.ink, st: 92 });
+  return G(o, s);
+}
+function rClock(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const cx = e.x + 30, cy = e.y + e.h / 2;
+  let s = `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${f1(e.h / 2)}" fill="#fff" stroke="${C.cardS}" stroke-width="1.6"/>`;
+  s += `<g fill="none" stroke="${C.ink2}" stroke-width="2.2" stroke-linecap="round"><circle cx="${cx}" cy="${f1(cy + 1.5)}" r="10"/><path d="M${cx},${f1(cy - 11)}v-3.5M${cx - 4},${f1(cy - 14.5)}h8M${cx},${f1(cy + 1.5)}l4,-5"/></g>`;
+  s += swapText(e, (l, op, dy) => op <= .004 ? '' : T(e.x + 50, cy + 8 + dy, esc(l), { size: 22, w: 700, c: C.ink, st: 92, op }));
+  return G(o, s);
+}
+function rWorld(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  return G(o, `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="14" fill="${C.world}" stroke="${C.worldS}" stroke-width="1.4"/>` +
+    G(e._txo ?? 1, T(e.x + 18, e.y + e.h / 2 + 7, 'outside world', { size: 21, w: 800, c: C.ink2, st: 92 })));
+}
+function rWall(e, m) {  // the system's edge that faces the world: solid, with two doors
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const ds = e.doors.map(d => ({ ...d, x: m.get(d.at).x + m.get(d.at).w / 2 }));
+  let segs = [], x = e.x0;
+  for (const d of ds) { const half = d.w * (e.open ?? 1) / 2; segs.push([x, d.x - half]); x = d.x + half; }
+  segs.push([x, e.x1]);
+  let s = segs.filter(([a, b]) => b - a > 1).map(([a, b]) => `<line x1="${f1(a)}" y1="${f1(e.y)}" x2="${f1(b)}" y2="${f1(e.y)}" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/>`).join('');
+  for (const d of ds) {
+    const half = d.w * (e.open ?? 1) / 2;
+    for (const xx of [d.x - half, d.x + half]) s += `<line x1="${f1(xx)}" y1="${f1(e.y - 12)}" x2="${f1(xx)}" y2="${f1(e.y + 12)}" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/>`;
+    const pw = d.label.length * 9.3 + 22;
+    s += G(e.lab ?? 1, `<g data-pill="1"><rect x="${f1(d.x - half - 14 - pw)}" y="${f1(e.y - 14)}" width="${f1(pw)}" height="28" rx="14" fill="${C.ink}"/>` +
+      T(d.x - half - 14 - pw / 2, e.y + 6, esc(d.label), { size: 15, w: 800, c: '#fff', a: 'middle', st: 92, ls: .8 }) + '</g>');
+  }
+  return G(o, s);
+}
+function rBar(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  let s = `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="5" fill="${e.fill}" stroke="${e.stroke}" stroke-width="1.4"/>`;
+  if (e.label) s += T(e.x + e.w / 2, e.y + e.h / 2 + 5.5, esc(e.label), { size: 15, w: 700, c: C.ink, a: 'middle', st: 92 });
+  return G(o, s);
+}
+
+/* ---------- arrows: orthogonal routes between box edges ---------- */
+function side(b, s, at) {
+  switch (s) {
+    case 'l': return [b.x, at ?? b.y + b.h / 2];
+    case 'r': return [b.x + b.w, at ?? b.y + b.h / 2];
+    case 't': return [at ?? b.x + b.w / 2, b.y];
+    default: return [at ?? b.x + b.w / 2, b.y + b.h];
+  }
+}
+const fnv = (v, a, b) => typeof v === 'function' ? v(a, b) : v;
+function arrowPts(e, m) {
+  const a = m.get(e.from), b = m.get(e.to); if (!a || !b) return null;
+  if (e.pts) return e.pts(a, b);
+  const fs = e.fs || 'r', ts = e.ts || 'l';
+  if ((fs === 'r' || fs === 'l') && (ts === 'l' || ts === 'r')) {
+    if (e.straight) {   // horizontal at a y both boxes share
+      const lo = Math.max(a.y, b.y) + 8, hi = Math.min(a.y + a.h, b.y + b.h) - 8;
+      const pref = e.yAt === 'to' ? b.y + b.h / 2 : e.yAt === 'from' ? a.y + a.h / 2 : (a.h < b.h ? a.y + a.h / 2 : b.y + b.h / 2);
+      const y = clamp(pref, lo, Math.max(lo, hi));
+      return [side(a, fs, y), side(b, ts, y)];
+    }
+    const p1 = side(a, fs), p2 = side(b, ts);
+    if (Math.abs(p1[1] - p2[1]) < .5) return [p1, p2];
+    const xm = e.xm != null ? fnv(e.xm, a, b) : (p1[0] + p2[0]) / 2;
+    return [p1, [xm, p1[1]], [xm, p2[1]], p2];
+  }
+  const p1 = side(a, fs, e.fx != null ? fnv(e.fx, a, b) : undefined), p2 = side(b, ts, e.tx != null ? fnv(e.tx, a, b) : undefined);
+  if (Math.abs(p1[0] - p2[0]) < .5) return [p1, p2];
+  const ym = (p1[1] + p2[1]) / 2;
+  return [p1, [p1[0], ym], [p2[0], ym], p2];
+}
+function polyD(P, rad = 9) {
+  let d = `M${f1(P[0][0])},${f1(P[0][1])}`;
+  for (let i = 1; i < P.length - 1; i++) {
+    const [x0, y0] = P[i - 1], [x1, y1] = P[i], [x2, y2] = P[i + 1];
+    const l1 = Math.hypot(x1 - x0, y1 - y0) || 1, l2 = Math.hypot(x2 - x1, y2 - y1) || 1, r = Math.min(rad, l1 / 2, l2 / 2);
+    const ax = x1 - (x1 - x0) / l1 * r, ay = y1 - (y1 - y0) / l1 * r, bx = x1 + (x2 - x1) / l2 * r, by = y1 + (y2 - y1) / l2 * r;
+    d += `L${f1(ax)},${f1(ay)}Q${f1(x1)},${f1(y1)} ${f1(bx)},${f1(by)}`;
+  }
+  const L = P[P.length - 1]; return d + `L${f1(L[0])},${f1(L[1])}`;
+}
+const polyLen = P => P.reduce((s, p, i) => i ? s + Math.hypot(p[0] - P[i - 1][0], p[1] - P[i - 1][1]) : 0, 0);
+function headSVG(x, y, ang, col, s = 10) {
+  const c = Math.cos(ang), n = Math.sin(ang);
+  const p = [[x, y], [x - c * s - n * s * .55, y - n * s + c * s * .55], [x - c * s + n * s * .55, y - n * s - c * s * .55]];
+  return `<path d="M${p.map(q => f1(q[0]) + ',' + f1(q[1])).join('L')}Z" fill="${col}"/>`;
+}
+const AK = {
+  solid: { c: '#8d99a5', w: 2 }, faint: { c: '#b3bdc6', w: 1.8 }, door: { c: C.ink, w: 2.4 },
+  pay: { c: C.ink2, w: 2.2 }, msg: { c: C.msg, w: 2.2 },
+};
+function rArrow(e, m) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const P = arrowPts(e, m); if (!P) return '';
+  const k = AK[e.k || 'solid'], len = polyLen(P), dr = e.dr ?? 1;
+  let s = `<path d="${polyD(P)}" fill="none" stroke="${k.c}" stroke-width="${k.w}"${dr < 1 ? ` stroke-dasharray="${f1(len * dr)} ${f1(len + 20)}"` : ''}/>`;
+  if (dr > .97) { const a = P[P.length - 2], b = P[P.length - 1]; s += headSVG(b[0], b[1], Math.atan2(b[1] - a[1], b[0] - a[0]), k.c, e.k === 'faint' ? 8 : 10); }
+  if (e.label) s += T(e.lx(P), e.ly(P), esc(e.label), { size: 17, w: 800, c: e.lc || C.ink2, a: e.la || 'start', st: 92, halo: C.stage, op: smooth(.6, 1, dr) });
+  return G(o, s);
+}
+// the redo arc: from the check back to the failing step, over the chain
+function arcGeo(e, m) {
+  const a = m.get(e.from), b = m.get(e.to); if (!a || !b) return null;
+  const x1 = a.x + a.w / 2, y1 = a.y, x2 = b.x + b.w / 2 + 14, y2 = b.y - 2;
+  const cx = (x1 + x2) / 2, cy = 2 * e.peak - (y1 + y2) / 2;
+  return { x1, y1, x2, y2, cx, cy };
+}
+const qpt = (g, u) => ({ x: (1 - u) * (1 - u) * g.x1 + 2 * (1 - u) * u * g.cx + u * u * g.x2, y: (1 - u) * (1 - u) * g.y1 + 2 * (1 - u) * u * g.cy + u * u * g.y2 });
+function rArc(e, m) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const g = arcGeo(e, m); if (!g) return '';
+  const dr = e.dr ?? 1;
+  const len = 1.15 * Math.hypot(g.x2 - g.x1, g.y2 - g.y1) + 2 * Math.abs(g.cy - g.y1) * .6;
+  let s = `<path d="M${f1(g.x1)},${f1(g.y1)}Q${f1(g.cx)},${f1(g.cy)} ${f1(g.x2)},${f1(g.y2 - 6)}" fill="none" stroke="${C.bad}" stroke-width="3.6"${dr < 1 ? ` stroke-dasharray="${f1(len * dr)} ${f1(len + 40)}"` : ''} stroke-linecap="round"/>`;
+  if (dr > .96) s += headSVG(g.x2, g.y2, Math.atan2(g.y2 - g.cy, g.x2 - g.cx), C.bad, 15);
+  const top = qpt(g, .5), lo = e.lo ?? smooth(.7, 1, dr);
+  if (lo > .005) s += G(lo, markSVG(top.x - 168, top.y - 22, false, C.bad, 7) + T(top.x - 150, top.y - 15, esc(e.label), { size: 22, w: 800, c: C.badInk, st: 90, halo: C.stage }));
+  return G(o, s);
+}
+
+/* ---------- layering ---------- */
+const LAYER = { region: 0, world: 0, lane: 1, gate: 1.5, arrow: 2, card: 3, chip: 4, grid: 4.5, wall: 5, text: 6, pill: 6, count: 6, waffle: 6, clock: 6, bar: 6, key: 6, arc: 7 };
+function render(els) {
+  const m = new Map(els.filter(e => e.x != null).map(e => [e.id, e]));
+  const sorted = els.map((e, i) => [e, i]).sort((a, b) => (LAYER[a[0].t] ?? 3) + (a[0].z || 0) - (LAYER[b[0].t] ?? 3) - (b[0].z || 0) || a[1] - b[1]).map(x => x[0]);
+  let s = `<rect width="1600" height="900" fill="${C.stage}"/>`;
+  for (const e of sorted) {
+    switch (e.t) {
+      case 'card': s += rCard(e); break;          case 'region': s += rRegion(e); break;
+      case 'grid': s += rGrid(e); break;          case 'text': s += rText(e); break;
+      case 'pill': s += rPill(e); break;          case 'count': s += rCount(e); break;
+      case 'lane': s += rLane(e); break;          case 'gate': s += rGate(e); break;
+      case 'chip': s += rChip(e); break;          case 'waffle': s += rWaffle(e); break;
+      case 'clock': s += rClock(e); break;        case 'world': s += rWorld(e); break;
+      case 'wall': s += rWall(e, m); break;       case 'bar': s += rBar(e); break;
+      case 'arrow': s += rArrow(e, m); break;     case 'arc': s += rArc(e, m); break;
+      case 'key': s += rKey(e); break;
+    }
+  }
+  return s;
+}
+
+/* =====================================================================
+   Frames (all text and numbers from frames.json; layout is this variant's own)
+   ===================================================================== */
+const head = (title, cap, clock) => [
+  { id: 'ttl', t: 'text', x: 56, y: 92, label: title, size: 46, weight: 800, st: 104 },
+  { id: 'cap', t: 'text', x: 56, y: 866, label: cap, size: 21, weight: 500, color: C.ink2, st: 92, sup: true },
+  { id: 'clock', t: 'clock', x: 1376, y: 48, w: 168, h: 50, label: clock },
+];
+const ASK = 'Which is cheaper from\nRuse to Sofia — driving\nor taking the train?';
+const STEP_LABELS = { s1: 'Search\nroad distance', s2: 'Search\nfuel price', s3: 'Search\ntrain fares', s4: 'Calculate\nboth costs', s5: 'Compare\n& answer' };
+const KEY_ATTEMPT = r => ({ id: 'key', t: 'key', x: r.x + 20, y: r.y + r.h - 18, items: [{ c: C.dot, label: 'one attempt' }, { c: C.bad, label: 'lost on the way' }] });
+
+/* ----- F4 · Thinking before each step ----- */
+function F4() {
+  const LY = 470, LH = 84, cy = 212, ch = 150;
+  const els = head('Thinking before each step', '98% per step → 0.98^5 ≈ 90%. Reasoning is trained with RL on answers that can be checked.', '~1 min');
+  const ai = { id: 'ai', t: 'region', x: 286, y: 158, w: 1030, h: 500, label: 'AI model' };
+  els.push(ai, KEY_ATTEMPT(ai));
+  els.push({ id: 'q', t: 'card', x: 56, y: 196, w: 210, h: 412, label: 'Question', fs: 24, sub: ASK + '\n**Think hard and**\n**describe the answer**\n**step by step.**', sfs: 17, va: 'top', pt: 10, gap: 10, lift: 1 });
+  els.push({ id: 'qgrid', t: 'grid', x: 56 + 35, y: LY - 70, p: 14 });
+  ['s1', 's2', 's3', 's4', 's5'].forEach((s, i) => {
+    const x = 306 + i * 200, w = 178;
+    els.push({ id: s, t: 'card', x, y: cy, w, h: ch, label: STEP_LABELS[s], fs: 25, hd: 1, hl: 'thinking…', hr: '98%', pb: 14, lift: 1 });
+    els.push({ id: 'g:' + s, t: 'gate', x: x + w / 2, y0: cy + ch, y1: LY + LH / 2, ty: LY + LH / 2 + 48, ex0: x + 6, ex1: x + w - 6, ly: LY, exA: 0 });
+    els.push({ id: 'tl:' + s, t: 'text', x: x + w / 2, y: LY + LH / 2 + 90, label: '2 lost', size: 19, weight: 700, color: C.badInk, anchor: 'middle', st: 92 });
+  });
+  els.push({ id: 'lane', t: 'lane', x0: 266, x1: 1340, y: LY, h: LH, x: 266, w: 1074 });
+  els.push({ id: 'ans', t: 'card', x: 1340, y: 196, w: 204, h: 412, label: 'Answer', fs: 24, va: 'top', pt: 10, lift: 1 });
+  els.push({ id: 'agrid', t: 'grid', x: 1340 + 32, y: LY - 70, p: 14 });
+  els.push({ id: 'acount', t: 'count', x: 1442, y: 306, n: 90 });
+  els.push({ id: 'apill', t: 'pill', x: 1442, y: 326, label: '90%', fill: C.goodBg, stroke: C.good, color: C.goodInk });
+  const pw = [['0.98^5 ≈ 90%', 90], ['0.98^10 ≈ 82%', 82], ['0.98^100 ≈ 13%', 13], ['0.98^1000 ≈ 0%', 0]];
+  pw.forEach(([l, n], i) => els.push({ id: 'pow' + i, t: 'waffle', x: 70 + i * 372, y: 676, p: 11, n, label: l,
+    col: n >= 85 ? C.good : n >= 60 ? C.warn : C.bad, en: .1 + i * .06 }));
+  return { id: 'F4', kind: 'chain', sem: 'F4', els };
+}
+
+/* ----- F5a · Tools and a check ----- */
+function F5a() {
+  const LY = 548, LH = 96, cy = 300, ch = 158;
+  const els = head('Tools and a check', 'In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.', '~5 min');
+  const ai = { id: 'ai', t: 'region', x: 252, y: 140, w: 1108, h: 622, label: 'AI model' };
+  els.push(ai, KEY_ATTEMPT(ai));
+  els.push({ id: 'q', t: 'card', x: 56, y: 300, w: 176, h: 410, label: 'Question', fs: 24, sub: ASK, sfs: 17, va: 'top', pt: 10, gap: 10, lift: 1 });
+  els.push({ id: 'qgrid', t: 'grid', x: 56 + 18, y: LY - 70, p: 14 });
+  const xs = { s1: 272, s2: 446, s3: 620, s4: 794, s5: 968 }, w = 156;
+  for (const s of ['s1', 's2', 's3', 's4', 's5']) {
+    const x = xs[s];
+    const e = { id: s, t: 'card', x, y: cy, w, h: ch, label: STEP_LABELS[s], fs: 23, sub: 'web search', sfs: 16, hd: 1, hl: 'thinking…', hr: '98%', pb: 14, lift: 1 };
+    if (s === 's3') Object.assign(e, { sub: '2025 page · 23 лв', fill: C.badBg, stroke: C.bad, sw: 2.6, sc: C.badInk, sw2: 700 });
+    if (s === 's4') Object.assign(e, { sub: 'calculator · exact', fill: C.ink, stroke: C.ink, lc: '#ffffff', sc: '#d5dde4', hl: '', hr: '100%', hrc: '#ffffff' });
+    if (s === 's5') Object.assign(e, { sub: '' });
+    els.push(e);
+    els.push({ id: 'g:' + s, t: 'gate', x: x + w / 2, y0: cy + ch, y1: LY + LH / 2, ty: LY + LH / 2 + 46, ex0: x + 6, ex1: x + w - 6, ly: LY, exA: s === 's4' ? 1 : 0 });
+    els.push({ id: 'tl:' + s, t: 'text', x: x + w / 2, y: LY + LH / 2 + 90, label: s === 's4' ? 'none lost' : '2 lost', size: 19, weight: 700,
+      color: s === 's4' ? C.goodInk : C.badInk, anchor: 'middle', st: 92 });
+  }
+  // the check: a scanner the stream passes through, two tests above it and two below
+  els.push({ id: 'v', t: 'card', x: 1144, y: 300, w: 196, h: 432, label: 'Check', fs: 24, lc: C.chkInk, va: 'top', pt: 8, fill: C.chkBg, stroke: C.chk, sw: 2.6, lift: 1, en: .44, grow: 'lane' });
+  const ck = [['ck1', 'sources agree', true, 352], ['ck2', 'sensible range', true, 402], ['ck3', 'date & currency', false, 612], ['ck4', 'recompute', true, 662]];
+  ck.forEach(([id, l, ok, y], i) => els.push({ id, t: 'chip', x: 1156, y, w: 172, h: 42, label: l, fs: 17, mark: ok, s: ok ? 'good' : 'bad', en: .44 + i * .05 }));
+  els.push({ id: 'lane', t: 'lane', x0: 232, x1: 1380, y: LY, h: LH, x: 232, w: 1148 });
+  els.push({ id: 'ans', t: 'card', x: 1380, y: 300, w: 164, h: 410, label: 'Answer', fs: 24, va: 'top', pt: 10, lift: 1 });
+  els.push({ id: 'agrid', t: 'grid', x: 1380 + 12, y: LY - 70, p: 14 });
+  els.push({ id: 'acount', t: 'count', x: 1462, y: 406, n: 92 });
+  els.push({ id: 'apill', t: 'pill', x: 1462, y: 426, label: '92% · on hold', fill: C.warnBg, stroke: C.warn, color: C.warnInk, xw: [.62, .74, .8, .94] });
+  els.push({ id: 'back', t: 'arc', from: 'v', to: 's3', peak: 206, label: 'fare from a 2025 page, in leva', en: .6 });
+  return { id: 'F5a', kind: 'chain', sem: 'F5a', els };
+}
+
+/* ----- N1 / N2 · the conference system ----- */
+// Base layout is N2's; N1 stretches the system down into the space the outside world takes on N2.
+const NB = {
+  q: [44, 200, 156, 300], lead: [236, 290, 120, 120],
+  gt: [378, 160, 154, 136], ga: [378, 312, 154, 136], gc: [378, 464, 154, 76],
+  s_fl: [552, 160, 182, 62], s_tr: [552, 234, 182, 62], s_ho: [552, 312, 182, 62], s_ca: [552, 386, 182, 62], s_co: [552, 464, 182, 76],
+  c_t: [754, 160, 134, 136], c_a: [754, 312, 134, 136], c_c: [754, 464, 134, 76],
+  plan: [908, 160, 198, 380], ans: [1404, 200, 150, 300],
+};
+const PN = [['pn0', 'Flights: 12 land\nafter 22:00'], ['pn1', 'Hotels: holding 12\nlate check-ins'], ['pn2', 'Attendee 37:\nneeds a step-free room'],
+  ['pn3', 'Catering: 9 vegetarian\nlunches'], ['pn4', 'Trains & buses: coach\nfrom Bucharest 15:30']];
+function netCommon(n2) {
+  const K = n2 ? 1 : (692 - 152) / (540 - 160), sy = y => n2 ? y : 152 + (y - 160) * K;
+  const B = (id, extra) => {
+    const [x, y, w, h] = NB[id], inR = !(id === 'q' || id === 'ans');
+    const yy = inR ? sy(y) : sy(y + h / 2) - h / 2, hh = inR ? h * K : h;
+    return { id, t: 'card', x, y: yy, w, h: hh, lift: 1, ...extra };
+  };
+  // on N2 the inside recedes so the doors and the payment path carry the slide
+  const dim = n2 ? { stroke: C.dim, lc: C.ink2, lift: 0 } : {};
+  const dimChk = n2 ? { stroke: C.chkDim, lift: 0 } : {};
+  const els = [];
+  els.push({ id: 'ai', t: 'region', x: 222, y: 144, w: 1170, h: n2 ? 636 - 144 : 712 - 144 });
+  els.push({ id: 'ail', t: 'text', x: 236, y: 132, label: n2 ? '~127 agents · a lead, three groups, five teams, two payment agents' : '~125 agents · a lead, three groups, five teams', size: 17, weight: 700, color: C.mute, st: 92 });
+  const q = B('q', { label: 'Task', fs: 22, sub: 'get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000', sfs: 16, va: 'top', pt: 8 });
+  const a = B('ans', { label: 'Result', fs: 22, sub: 'every attendee:\nan itinerary, a bed\nand lunches', sfs: 16, va: 'top', pt: 8 });
+  els.push(q, { id: 'tgrid', t: 'grid', x: q.x + 18, y: q.y + q.h - 136, p: 12, n: 100, col: '#8995a0', r: 3 });
+  els.push(a, { id: 'rgrid', t: 'grid', x: a.x + 15, y: a.y + a.h - 136, p: 12, n: 100, col: '#4f9d77', r: 3 });
+  els.push(B('lead', { label: 'Lead', fs: 22, sub: 'splits the job,\nwatches progress', pill: 'COORDINATE', stroke: n2 ? '#8d99a5' : C.ink, sw: 2.2, pt: 12, lift: n2 ? 0 : 1 }));
+  els.push(B('gt', { label: 'Transport', sub: n2 ? 'posts requests\nin the plan' : 'long and\nshort distance', fill: C.group, ...dim }));
+  els.push(B('ga', { label: 'Accommodation', sub: n2 ? 'posts requests\nin the plan' : 'beds and lunches', fill: C.group, ...dim }));
+  els.push(B('gc', { label: 'Correspondence', sub: n2 ? 'the only agents that\nwrite to people' : 'speaks for\neach attendee', fill: C.group, ...(n2 ? { stroke: C.msg, sw: 2.6 } : {}) }));
+  const tm = [['s_fl', 'Flights', '×8', 'long distance'], ['s_tr', 'Trains & buses', '×6', 'short distance'], ['s_ho', 'Hotels', '×4', 'rooms in Ruse'],
+    ['s_ca', 'Catering', '×3', 'lunches during the stay'], ['s_co', 'Attendee workers', '×100', 'one per attendee']];
+  for (const [id, l, nl, sub] of tm) els.push(B(id, { label: l, sub, pill: nl, pt: 8, ...(id === 's_co' && n2 ? { stroke: C.msg, sw: 2.6 } : dim) }));
+  const chk = { fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2 };
+  els.push(B('c_t', { label: 'Verifier', sub: 'connections\n≥ 60 min;\nlands by the 23rd', ...chk, ...dimChk }));
+  els.push(B('c_a', { label: 'Room & meal\ncheck', sub: 'a bed and a lunch\nfor everyone', ...chk, ...dimChk }));
+  els.push(B('c_c', { label: 'Fact check', sub: 'names, dates,\nvisas', ...chk, ...dimChk }));
+  const p = B('plan', { label: 'Living plan', fs: 22, va: 'top', pt: 12, pill: 'MEMORY', pillBg: C.plan, stroke: C.plan, sw: 2.2 });
+  els.push(p);
+  const chipH = n2 ? 50 : 58, top = p.y + 54, bot = p.y + p.h - 34, gap = (bot - top - 5 * chipH) / 4;
+  PN.forEach(([id, l], i) => els.push({ id, t: 'chip', x: p.x + 10, y: top + i * (chipH + gap), w: p.w - 20, h: chipH, label: l, fs: 15 }));
+  els.push({ id: 'planfoot', t: 'text', x: p.x + p.w / 2, y: p.y + p.h - 12, label: 'every team writes and reads', size: 15, weight: 700, color: C.plan, anchor: 'middle', st: 86 });
+  // arrows (the routes double as the dots' paths)
+  const A = (from, to, o = {}) => ({ id: 'a:' + from + '>' + to, t: 'arrow', from, to, k: n2 ? 'faint' : 'solid', ...o });
+  els.push(A('q', 'lead', { straight: 1 }));
+  for (const g of ['gt', 'ga', 'gc']) els.push(A('lead', g, { xm: (a, b) => a.x + a.w + 11 }));
+  for (const [g, s] of [['gt', 's_fl'], ['gt', 's_tr'], ['ga', 's_ho'], ['ga', 's_ca'], ['gc', 's_co']]) els.push(A(g, s, { straight: 1, yAt: 'to' }));
+  for (const [s, c] of [['s_fl', 'c_t'], ['s_tr', 'c_t'], ['s_ho', 'c_a'], ['s_ca', 'c_a'], ['s_co', 'c_c']]) els.push(A(s, c, { straight: 1, yAt: 'from' }));
+  for (const c of ['c_t', 'c_a', 'c_c']) els.push(A(c, 'plan', { straight: 1, yAt: 'from' }));
+  // time comparison
+  els.push({ id: 'tl', t: 'text', x: 56, y: 792, label: 'time →', size: 20, weight: 700, color: C.ink2, st: 92 });
+  els.push({ id: 'g_h', t: 'bar', x: 150, y: 772, w: 1242, h: 26, label: 'a human team: ~3 weeks of work', fill: '#d3dbe2', stroke: '#9aa6b1' });
+  els.push({ id: 'g_a', t: 'bar', x: 150, y: 806, w: 60, h: 22, fill: C.goodBg, stroke: C.good });
+  els.push({ id: 'ga_t', t: 'text', x: 222, y: 823, label: 'agents: ~1 day of work (plus waiting for replies and approvals)', size: 16, weight: 700, color: C.goodInk, st: 92 });
+  return { els, sy, K };
+}
+function N1() {
+  const { els, sy } = netCommon(false);
+  els.unshift(...head('A real-scale job: 100 people to this conference', 'A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.', '~1 day'));
+  els.push({ id: 'org', t: 'card', x: 1168, y: sy(350) - 70, w: 204, h: 140, label: 'Budget guard\n+ organiser', fs: 21, sub: 'stays under €30k;\nfinal sign-off', icon: 'person', stroke: C.ink, sw: 2.4, pt: 14, lift: 1 });
+  els.push({ id: 'a:plan>org', t: 'arrow', from: 'plan', to: 'org', straight: 1, yAt: 'to', k: 'solid' });
+  els.push({ id: 'a:org>ans', t: 'arrow', from: 'org', to: 'ans', straight: 1, yAt: 'from', k: 'solid' });
+  return { id: 'N1', kind: 'net', els };
+}
+function N2() {
+  const { els } = netCommon(true);
+  els.unshift(...head('Acting in the world, through two doors', 'Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.', '~1 day'));
+  const R = 1168;
+  els.push({ id: 'key', t: 'key', x: 1392, y: 132, anchor: 'end', items: [{ c: C.msg, label: 'message' }, { c: C.msg, ring: 1, label: 'reply' }, { c: C.good, label: 'payment' }, { c: C.warn, r: 8, label: 'over €500' }] });
+  els.push({ id: 'guard', t: 'card', x: R, y: 160, w: 204, h: 104, label: 'Budget guard', fs: 21, sub: 'stays under €30k;\n> €500 → organiser', fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.6, lift: 1, en: .26, from: 'org', z: -.5 });
+  els.push({ id: 'org', t: 'card', x: R + 38, y: 322, w: 166, h: 118, label: 'Organiser', fs: 21, sub: 'approves big\npayments;\nfinal sign-off', icon: 'person', pill: 'APPROVE', stroke: C.ink, sw: 2.6, pt: 14, lift: 1 });
+  els.push({ id: 'pay', t: 'card', x: R, y: 478, w: 204, h: 80, label: 'Payments', fs: 21, sub: 'the only agents\nthat can pay', pill: '×2', stroke: C.ink, sw: 2.6, pt: 8, lift: 1, en: .3, from: 'org', z: -.5 });
+  els.push({ id: 'a:plan>guard', t: 'arrow', from: 'plan', to: 'guard', straight: 1, yAt: 'to', k: 'pay', en: .5 });
+  els.push({ id: 'a:guard>org', t: 'arrow', from: 'guard', to: 'org', fs: 'b', ts: 't', fx: (a, b) => b.x + b.w / 2, tx: (a, b) => b.x + b.w / 2, k: 'pay', en: .55,
+    label: '> €500', lx: P => P[0][0] - 22, ly: P => (P[0][1] + P[1][1]) / 2 + 6, la: 'end', lc: C.warnInk });
+  els.push({ id: 'a:guard>pay', t: 'arrow', from: 'guard', to: 'pay', fs: 'b', ts: 't', fx: (a) => a.x + 16, tx: (a, b) => b.x + 16, k: 'pay', en: .55,
+    label: '≤ €500', lx: P => P[0][0] - 9, ly: P => (P[0][1] + P[1][1]) / 2 + 6, la: 'end', lc: C.goodInk });
+  els.push({ id: 'a:org>pay', t: 'arrow', from: 'org', to: 'pay', fs: 'b', ts: 't', fx: (a) => a.x + a.w / 2, tx: (a) => a.x + a.w / 2, k: 'pay', en: .6 });
+  els.push({ id: 'a:org>ans', t: 'arrow', from: 'org', to: 'ans', straight: 1, yAt: 'from', k: 'solid' });
+  // the outside world and the two doors
+  els.push({ id: 'world', t: 'world', x: 222, y: 652, w: 1170, h: 92, en: .34 });
+  els.push({ id: 'w_people', t: 'card', x: 552, y: 676, w: 182, h: 54, label: 'attendees, hotels,\ncarriers · email', fs: 16, lw: 700, stroke: '#8d99a5', sw: 1.6, en: .44 });
+  els.push({ id: 'w_book', t: 'card', x: 908, y: 676, w: 198, h: 54, label: 'booking systems', fs: 17, lw: 700, stroke: '#8d99a5', sw: 1.6, en: .5 });
+  els.push({ id: 'w_card', t: 'card', x: R, y: 676, w: 204, h: 54, label: 'payment card', fs: 17, lw: 700, stroke: '#8d99a5', sw: 1.6, en: .54 });
+  els.push({ id: 'wall', t: 'wall', x0: 222, x1: 1392, y: 636, doors: [{ at: 's_co', w: 66, label: 'DOOR 1' }, { at: 'pay', w: 66, label: 'DOOR 2' }], en: .32, x: 222, w: 1170 });
+  els.push({ id: 'a:s_co>w_people', t: 'arrow', from: 's_co', to: 'w_people', fs: 'b', ts: 't', fx: a => a.x + a.w / 2 - 13, tx: (a, b) => b.x + b.w / 2 - 13, k: 'msg', en: .56 });
+  els.push({ id: 'a:w_people>s_co', t: 'arrow', from: 'w_people', to: 's_co', fs: 't', ts: 'b', fx: a => a.x + a.w / 2 + 13, tx: (a, b) => b.x + b.w / 2 + 13, k: 'msg', en: .6 });
+  els.push({ id: 'a:pay>w_card', t: 'arrow', from: 'pay', to: 'w_card', fs: 'b', ts: 't', fx: a => a.x + a.w / 2 + 12, tx: (a, b) => a.x + a.w / 2 + 12, k: 'door', en: .6 });
+  els.push({ id: 'a:pay>w_book', t: 'arrow', from: 'pay', to: 'w_book', k: 'door', en: .62,
+    pts: (a, b) => { const x = a.x + a.w / 2 - 12; return [[x, a.y + a.h], [x, 660], [b.x + b.w / 2, 660], [b.x + b.w / 2, b.y]]; } });
+  return { id: 'N2', kind: 'net', els };
+}
+const FRAMES = { F4: F4(), F5a: F5a(), N1: N1(), N2: N2() };
+
+/* =====================================================================
+   Dots I · the chain (F4, F5a): 100 attempts, one pass each
+   ===================================================================== */
+const RUN = { rel0: .45, dt: .028, exit: .32, v: 560, fall: .6, arr: .42 };
+const STEPS = ['s1', 's2', 's3', 's4', 's5'];
+const FATE = (() => {           // which attempt fails at which step: fixed by the seed, two per step
+  const r = mulberry(SEED), idx = [...Array(100).keys()];
+  for (let i = 99; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  const f = Array(100).fill(null); STEPS.forEach((s, k) => { f[idx[2 * k]] = s; f[idx[2 * k + 1]] = s; }); return f;
+})();
+const TRAY = FATE.map((g, i) => g ? FATE.slice(0, i).filter(x => x === g).length : 0);
+const J = [...Array(100)].map((_, i) => hsh(i, 1) * 2 - 1), PH = [...Array(100)].map((_, i) => hsh(i, 2) * 6.283);
+const SEM = {
+  F4: { loss: { s1: 1, s2: 1, s3: 1, s4: 1, s5: 1 }, exact: {}, check: false, hold: false },
+  F5a: { loss: { s1: 1, s2: 1, s3: 1, s4: 0, s5: 1 }, exact: { s4: 1 }, check: true, hold: true },
+};
+const lostAt = (i, sem) => FATE[i] && SEM[sem].loss[FATE[i]] ? FATE[i] : null;
+const SLOT = {};
+for (const k of Object.keys(SEM)) {   // answer slots: attempts that arrive on every slide keep their slot
+  const all = i => Object.keys(SEM).every(s => !lostAt(i, s));
+  const order = [...Array(100).keys()].filter(i => !lostAt(i, k)).sort((a, b) => (all(b) - all(a)) || a - b);
+  SLOT[k] = {}; order.forEach((i, r) => SLOT[k][i] = r);
+}
+const slotXY = (g, k) => ({ x: g.x + (k % 10 + .5) * g.p, y: g.y + (Math.floor(k / 10) + .5) * g.p });
+function chainGeo(m) {
+  const gates = {}; for (const s of STEPS) if (m.get('g:' + s)) gates[s] = m.get('g:' + s);
+  return { L: m.get('lane'), qg: m.get('qgrid'), ag: m.get('agrid'), gates, v: m.get('v') };
+}
+function amp(x, geo, sem) {   // how widely attempts spread across the lane; an exact tool squeezes them into single file
+  let a = 1; const S = SEM[sem];
+  for (const s in geo.gates) {
+    const g = geo.gates[s];
+    if (S.exact[s]) a *= smooth(0, 40, Math.max(g.ex0 - x, x - g.ex1, 0));
+    else { const d = x - g.x; a *= 1 - .45 * Math.exp(-d * d / (2 * 20 * 20)); }
+  }
+  if (S.check && geo.v) a *= 1 - .3 * (1 - smooth(0, 24, Math.max(geo.v.x - x, x - geo.v.x - geo.v.w, 0)));
+  return a;
+}
+const laneY = (i, x, geo, sem) => geo.L.y + (geo.L.h / 2 - 10) * amp(x, geo, sem) * (.8 * J[i] + .2 * Math.sin(x * .016 + PH[i]));
+const checkX = geo => geo.v ? geo.v.x + geo.v.w * .5 : 1e9;
+// st: 0 waiting · 1 in the lane · 2 lost · 3 arrived
+function chainDot(i, sem, geo, tau) {
+  const S = SEM[sem], L = geo.L, x0 = L.x0, x1 = L.x1, r0 = RUN.rel0 + i * RUN.dt;
+  const src = slotXY(geo.qg, i);
+  if (tau <= r0) return { x: src.x, y: src.y, c: C.dot, st: 0 };
+  const t1 = r0 + RUN.exit;
+  if (tau < t1) { const u = eio((tau - r0) / RUN.exit), ty = laneY(i, x0, geo, sem); return { x: lerp(src.x, x0, u), y: lerp(src.y, ty, u), c: C.dot, st: 1 }; }
+  const x = x0 + (tau - t1) * RUN.v, lg = lostAt(i, sem);
+  if (lg && geo.gates[lg] && x >= geo.gates[lg].x) {
+    const g = geo.gates[lg], tf = t1 + (g.x - x0) / RUN.v, u = clamp((tau - tf) / RUN.fall);
+    const sy = laneY(i, g.x, geo, sem), tx = g.x + (TRAY[i] - .5) * 17;
+    return { x: lerp(g.x, tx, eout(u)), y: lerp(sy, g.ty, u * u), c: mix(C.dot, C.bad, clamp(u * 3)), st: 2, g: lg, u };
+  }
+  if (x < x1) return { x, y: laneY(i, x, geo, sem), c: S.check && x > checkX(geo) ? C.warn : C.dot, st: 1 };
+  const ta = t1 + (x1 - x0) / RUN.v, u = eout(clamp((tau - ta) / RUN.arr)), d = slotXY(geo.ag, SLOT[sem][i]), yy = laneY(i, x1, geo, sem);
+  return { x: lerp(x1, d.x, u), y: lerp(yy, d.y, u), c: S.hold ? C.warn : mix(C.dot, C.good, u), st: 3 };
+}
+const SETTLED = 1e6;
+function chainState(sem, geo, tau) {
+  const dots = [], lost = {}; let arrived = 0;
+  for (let i = 0; i < 100; i++) {
+    const d = chainDot(i, sem, geo, tau); dots.push({ ...d, r: 5.2, a: 1 });
+    if (d.st === 3) arrived++; if (d.st === 2) (lost[d.g] = lost[d.g] || []).push(d.u);
+  }
+  for (const g in lost) lost[g] = lost[g].length < 2 ? 0 : Math.min(...lost[g]);   // label shows once both have landed
+  return { dots, arrived, lost };
+}
+// Every attempt leaves a faint thread: the settled slide still shows the river, where attempts peel off,
+// the single file through the calculator, and the colour they take after the check.
+function tEnd(i, sem, geo) {
+  const t1 = RUN.rel0 + i * RUN.dt + RUN.exit, L = geo.L, lg = lostAt(i, sem);
+  if (lg && geo.gates[lg]) return t1 + (geo.gates[lg].x - L.x0) / RUN.v + RUN.fall;
+  return t1 + (L.x1 - L.x0) / RUN.v + RUN.arr;
+}
+function chainThreads(sem, geo, tau, alphaOf, out) {
+  const S = SEM[sem];
+  for (let i = 0; i < 100; i++) {
+    const a = alphaOf(i); if (a <= .01) continue;
+    const r0 = RUN.rel0 + i * RUN.dt, te = Math.min(tau, tEnd(i, sem, geo));
+    if (te <= r0 + .01) continue;
+    let seg = null;
+    for (let s = r0 + .004; ; s += .022) {
+      const tt = Math.min(s, te), d = chainDot(i, sem, geo, tt);
+      const cat = d.st === 2 ? 'bad' : d.c === C.warn ? 'warn' : d.st === 3 && !S.hold ? 'good' : 'ink';
+      if (!seg || seg.cat !== cat) {
+        const prev = seg ? seg.pts.slice(-2) : [];
+        if (seg) out.push(seg);
+        seg = { cat, a, pts: prev };
+      }
+      seg.pts.push(d.x, d.y);
+      if (tt >= te) break;
+    }
+    if (seg) out.push(seg);
+  }
+}
+// first moment an attempt reaches the check (drives the run-mode reveal of the redo arc)
+const tCheck = geo => RUN.rel0 + RUN.exit + (checkX(geo) - geo.L.x0) / RUN.v;
+// the redo loop: red dots running back along the arc, a pure function of the clock
+function redoDots(m, clock, alpha) {
+  const e = m.get('back'); if (!e || alpha <= .01) return [];
+  const g = arcGeo(e, m); if (!g) return [];
+  const out = [], N = 5, per = 2.6;
+  for (let j = 0; j < N; j++) {
+    const u = ((clock / per + j / N) % 1 + 1) % 1, p = qpt(g, u), pt = qpt(g, Math.max(0, u - .025));
+    out.push({ x: p.x, y: p.y, c: C.bad, r: 6, a: alpha * smooth(0, .08, u) * (1 - smooth(.9, 1, u)), tail: [[pt.x, pt.y]] });
+  }
+  return out;
+}
+
+/* =====================================================================
+   Dots II · the network (N1, N2): work, actions and messages on a loop
+   ===================================================================== */
+function sampler(P) {
+  const seg = []; let tot = 0;
+  for (let i = 1; i < P.length; i++) { const l = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); seg.push(l); tot += l; }
+  return { len: tot, at(s) {
+    s = clamp(s, 0, tot);
+    for (let i = 0; i < seg.length; i++) { if (s <= seg[i] || i === seg.length - 1) { const u = seg[i] ? s / seg[i] : 0; return [lerp(P[i][0], P[i + 1][0], u), lerp(P[i][1], P[i + 1][1], u)]; } s -= seg[i]; }
+  } };
+}
+const tailOf = (smp, s) => [smp.at(s - 7), smp.at(s - 15)];
+const CHAINS = [['s_fl', 'gt', 'c_t'], ['s_tr', 'gt', 'c_t'], ['s_ho', 'ga', 'c_a'], ['s_ca', 'ga', 'c_a'], ['s_co', 'gc', 'c_c']];
+// A stream: emissions every `per` s; segments are arrows (visible, at speed v) or pauses inside a box (hidden).
+function streamDefs(id) {
+  const n2 = id === 'N2', S = [];
+  const a = n2 ? .38 : .95, r = n2 ? 3.8 : 4.8;
+  S.push({ id: 'task', per: n2 ? 1.4 : .9, ph: .2, v: 110, r, c: C.dot, a, segs: [{ a: 'a:q>lead' }] });
+  CHAINS.forEach(([s, g, c], i) => S.push({ id: 'ch:' + s, per: n2 ? 2.2 : 1.45, ph: hsh(i, 9) * 2.2, v: 120, r, c: C.dot, a,
+    segs: [{ a: 'a:lead>' + g }, { h: .3 }, { a: 'a:' + g + '>' + s }, { h: .45 }, { a: 'a:' + s + '>' + c }, { h: .3 }, { a: 'a:' + c + '>plan' }] }));
+  if (!n2) S.push({ id: 'n1:out', per: .9, ph: .5, v: 110, r: 4.8, c: C.dot, a: .95, segs: [{ a: 'a:plan>org' }, { h: .45 }, { a: 'a:org>ans' }] });
+  if (n2) {
+    S.push({ id: 'sign', per: 2.2, ph: .3, v: 90, r: 4.6, c: C.dot, a: .85, segs: [{ a: 'a:org>ans' }] });
+    S.push({ id: 'msg:out', per: .36, ph: .1, v: 70, r: 6, c: C.msg, a: 1, segs: [{ a: 'a:s_co>w_people' }] });
+    S.push({ id: 'msg:in', per: .55, ph: .3, v: 70, r: 6, c: C.msg, ring: 1, a: 1, segs: [{ a: 'a:w_people>s_co' }] });
+  }
+  return S;
+}
+function streamDots(s, P, clock, full, out, alpha) {   // P: arrow id → sampler
+  if (alpha <= .01) return;
+  const segs = s.segs.map(g => g.a ? { smp: P[g.a], d: P[g.a] ? P[g.a].len / s.v : 0 } : { h: 1, d: g.h });
+  if (segs.some(g => !g.h && !g.smp)) return;
+  const tot = segs.reduce((a, g) => a + g.d, 0);
+  const kmax = Math.floor((clock - s.ph) / s.per), kmin = Math.max(full ? -1e9 : 0, Math.ceil((clock - s.ph - tot) / s.per));
+  for (let k = kmin; k <= kmax; k++) {
+    let age = clock - (s.ph + k * s.per); if (age < 0 || age > tot) continue;
+    for (const g of segs) {
+      if (age <= g.d) {
+        if (g.h) break;
+        const sd = age * s.v, [x, y] = g.smp.at(sd), edge = Math.min(age, g.d - age);   // fade at box edges
+        out.push({ x, y, r: s.r, c: s.c, ring: s.ring, a: alpha * s.a * smooth(0, .12, edge), tail: tailOf(g.smp, Math.max(0, sd)) });
+        break;
+      }
+      age -= g.d;
+    }
+  }
+}
+// Payments queue at the guard (one place forward per period); over €500 they wait at the organiser.
+const PAY = { per: 1.0, ph: 2.7, Q: 3, gap: 19, guardH: .35, v: 120, wait: 2.0, orgH: .3, payH: .35 };
+const bigPay = k => (((k % 3) + 3) % 3) === 1;
+function payDots(m, P, clock, full, out, alpha) {
+  if (alpha <= .01) return;
+  const pl = m.get('plan'), gd = m.get('guard');
+  const sBy = P['a:guard>pay'], sBig = P['a:guard>org'], sOP = P['a:org>pay'], sCard = P['a:pay>w_card'], sBook = P['a:pay>w_book'];
+  if (!pl || !gd || !sBy || !sBig || !sOP || !sCard || !sBook) return;
+  const qy = gd.y + gd.h / 2, qx0 = gd.x - 12, tQ = PAY.Q * PAY.per, enter = .25, waitS = Math.max(0, sBig.len - 27);
+  const kmax = Math.floor((clock - PAY.ph) / PAY.per), kmin = full ? kmax - 16 : Math.max(0, kmax - 16);
+  const on = (smp, s, c, r, a) => { const [x, y] = smp.at(s); out.push({ x, y, r, c, a: alpha * a, tail: tailOf(smp, s) }); };
+  for (let k = kmin; k <= kmax; k++) {
+    let age = clock - (PAY.ph + k * PAY.per); if (age < 0) continue;
+    const big = bigPay(k), r = big ? 8 : 5.2;
+    if (age < enter + tQ) {                         // out of the plan, then the queue
+      let slot;
+      if (age < enter) slot = PAY.Q - 1 + (1 - age / enter) * 1.4;
+      else { const u = (age - enter) / PAY.per, st = Math.floor(u); slot = PAY.Q - 1 - st - smooth(.62, 1, u - st); }
+      const x = qx0 - slot * PAY.gap;
+      out.push({ x, y: qy, r, c: C.dot, a: alpha * smooth(pl.x + pl.w, pl.x + pl.w + 14, x) }); continue;
+    }
+    age -= enter + tQ;
+    if (age < PAY.guardH) continue;                // inside the guard
+    age -= PAY.guardH;
+    if (!big) {
+      const d = sBy.len / PAY.v;
+      if (age < d) { on(sBy, age * PAY.v, C.good, r, smooth(0, .1, age) * (1 - smooth(d - .1, d, age))); continue; }
+      age -= d;
+    } else {
+      const d1 = waitS / PAY.v;
+      if (age < d1) { on(sBig, age * PAY.v, C.warn, r, smooth(0, .1, age)); continue; }
+      age -= d1;
+      if (age < PAY.wait) {                       // waiting for the organiser: amber and pulsing; approved → green
+        const [x, y] = sBig.at(waitS), ok = smooth(PAY.wait - .45, PAY.wait - .15, age), pulse = .5 + .5 * Math.sin(age * 7);
+        out.push({ x, y, r, c: mix(C.warn, C.good, ok), a: alpha, halo: (1 - ok) * (.3 + .35 * pulse), hc: C.warn, hr: 6 });
+        continue;
+      }
+      age -= PAY.wait;
+      const d2 = 27 / PAY.v;
+      if (age < d2) { on(sBig, waitS + age * PAY.v, C.good, r, 1 - smooth(0, d2, age)); continue; }
+      age -= d2;
+      if (age < PAY.orgH) continue;
+      age -= PAY.orgH;
+      const d3 = sOP.len / PAY.v;
+      if (age < d3) { on(sOP, age * PAY.v, C.good, r, smooth(0, .1, age) * (1 - smooth(d3 - .1, d3, age))); continue; }
+      age -= d3;
+    }
+    if (age < PAY.payH) continue;                  // inside Payments
+    age -= PAY.payH;
+    const ex = (Math.floor(k / 2) % 2) ? sBook : sCard, d4 = ex.len / PAY.v;
+    if (age < d4) on(ex, age * PAY.v, C.good, r, smooth(0, .1, age) * (1 - smooth(d4 - .12, d4, age)));
+  }
+}
+function netDots(fid, els, m, clock, full, alphaOf) {
+  const P = {};
+  for (const e of els) if (e.t === 'arrow') { const pts = arrowPts(e, m); if (pts) P[e.id] = sampler(pts); }
+  const out = [];
+  for (const s of streamDefs(fid)) streamDots(s, P, clock, full, out, alphaOf(s.id));
+  if (fid === 'N2') payDots(m, P, clock, full, out, alphaOf('pay'));
+  return out;
+}
+
+/* =====================================================================
+   Morph: persistent elements glide, new ones enter staggered, old ones leave
+   ===================================================================== */
+const NUM = ['x', 'y', 'w', 'h', 'fs', 'sfs', 'size', 'x0', 'x1', 'y0', 'y1', 'ty', 'ex0', 'ex1', 'ly', 'p', 'peak', 'exA', 'sw', 'n', 'pt', 'pb', 'r'];
+const COL = ['fill', 'stroke', 'color', 'col', 'pillBg'];
+const DEF = { card: { fill: C.card, stroke: C.cardS, pillBg: C.ink }, text: { color: C.ink } };
+function morph(A, B, t) {
+  const ma = new Map(A.map(e => [e.id, e])), mb = new Map(B.map(e => [e.id, e])), out = [];
+  for (const b of B) {
+    const a = ma.get(b.id);
+    if (a) {
+      const lag = .05 * clamp(((b.x ?? 800) + (b.w || 0) / 2) / 1600);
+      const g = eio(clamp((t - lag) / .7));
+      const r = { ...b, _A: a, _B: b, _t: t, _lag: lag, _g: g };
+      for (const k of NUM) if (typeof a[k] === 'number' && typeof b[k] === 'number') r[k] = lerp(a[k], b[k], g);
+      // fills change while the text is out, so text never sits on a half-way colour
+      for (const k of COL) { const ca = a[k] ?? (DEF[a.t] || {})[k], cb = b[k] ?? (DEF[b.t] || {})[k]; if (ca && cb) r[k] = mix(ca, cb, smooth(.28 + lag, .42 + lag, t)); }
+      r.o = lerp(a.o ?? 1, b.o ?? 1, g);
+      if (b.t === 'arc' || b.t === 'arrow') { r.dr = 1; r.lo = 1; }
+      out.push(r);
+    } else {
+      const d = b.en ?? .42, u = clamp((t - d) / Math.min(.4, 1 - d)), g = eout(u);   // every entrance completes by t = 1
+      const r = { ...b, o: (b.o ?? 1) * smooth(0, .55, u), _t: t };
+      const split = b.from && b.t === 'card' && ma.get(b.from);
+      const txo = b.t === 'chip' ? 1 : split ? smooth(d + .08, d + .3, t) : smooth(d + .16, d + .42, t);
+      r._txo = b.t === 'chip' ? 1 : r.o > .001 ? clamp(txo / r.o) : 0;
+      if (b.t === 'arrow' || b.t === 'arc') { r.dr = eout(clamp((t - d) / .36)); r.o = b.o ?? 1; r._txo = 1; }
+      if (b.t === 'wall') { r.o = smooth(0, .3, u); r.open = smooth(.35, 1, u); r.lab = smooth(.6, 1, u); }
+      const src = b.from && b.t === 'card' ? ma.get(b.from) : null;
+      if (b.grow === 'lane') {                    // the check grows out of the attempts' lane
+        const lane = mb.get('lane'); r.y = lerp(lane.y - lane.h / 2, b.y, g); r.h = lerp(lane.h, b.h, g);
+      } else if (src) {                           // split out of the box it used to be part of
+        const sa = { x: lerp(src.x, (mb.get(b.from) || src).x, g), y: lerp(src.y, (mb.get(b.from) || src).y, g) };
+        r.x = lerp(sa.x, b.x, g); r.y = lerp(sa.y, b.y, g); r.w = lerp(src.w, b.w, g); r.h = lerp(src.h, b.h, g);
+        r.o = (b.o ?? 1) * smooth(0, .25, u);
+      } else if (b.y != null && b.t !== 'arrow' && b.t !== 'arc' && b.t !== 'wall') r.y = b.y + (b.t === 'text' || b.t === 'key' ? 10 : 22) * (1 - g);
+      out.push(r);
+    }
+  }
+  for (const a of A) if (!mb.has(a.id)) {
+    const u = clamp((t - (a.ex ?? 0)) / .34);
+    const r = { ...a, o: (a.o ?? 1) * (1 - smooth(0, 1, u)) };
+    if (a.y != null && a.t !== 'arrow' && a.t !== 'arc') r.y = a.y + 14 * u * u;
+    out.push(r);
+  }
+  return out;
+}
+
+/* =====================================================================
+   Views: what to draw for (frame, clock) or (from, to, t)
+   ===================================================================== */
+const TFINAL = f => 8 + ORDER.indexOf(f) * D;   // the clock at which ?frame=X is captured
+function dynEls(fid, els, info, run, tau) {
+  // values that come from the dots (counter) and, in run mode, reveals that wait for the dots
+  return els.map(e => {
+    if (e.id === 'acount') return { ...e, n: info.arrived };
+    if (!run) return e;
+    if (e.id.startsWith('tl:')) return { ...e, o: e.id === 'tl:s4' && fid === 'F5a' ? smooth(0, 6, info.arrived) : smooth(.5, 1, info.lost[e.id.slice(3)] || 0) };
+    if (e.id === 'apill') return { ...e, o: fid === 'F4' ? smooth(0, .3, info.arrived - 89) : smooth(0, 1, info.arrived) };
+    if (e.id === 'back') { const u = clamp((tau - info.tc) / .7); return { ...e, dr: eout(u), lo: smooth(.6, 1, u) }; }
+    if (e.id === 'rgrid' && fid === 'N1') return { ...e, n: clamp(Math.floor((tau - 1) / .07), 0, 100) };
+    return e;
+  });
+}
+function stillView(fid, clock, run) {
+  const F = FRAMES[fid], m0 = new Map(F.els.map(e => [e.id, e]));
+  if (F.kind === 'chain') {
+    const geo = chainGeo(m0), tau = run ? clock : SETTLED, st = chainState(F.sem, geo, tau);
+    const info = { arrived: st.arrived, lost: st.lost, tc: tCheck(geo) };
+    const els = dynEls(fid, F.els, info, run, clock), threads = [];
+    chainThreads(F.sem, geo, tau, () => 1, threads);
+    let dots = st.dots;
+    if (fid === 'F5a') dots = dots.concat(redoDots(new Map(els.map(e => [e.id, e])), clock, run ? smooth(info.tc + .5, info.tc + 1, clock) : 1));
+    return { els, dots, threads };
+  }
+  const els = dynEls(fid, F.els, { arrived: 0, lost: {} }, run, clock);
+  return { els, dots: netDots(fid, els, new Map(els.map(e => [e.id, e])), clock, !run, () => 1), threads: [] };
+}
+function transView(fa, fb, t, clockA, runA) {
+  // t: linear progress 0..1; easing happens inside morph and the dot choreography
+  const A = FRAMES[fa], B = FRAMES[fb], ma0 = new Map(A.els.map(e => [e.id, e]));
+  const tauA = runA ? clockA + t * D : SETTLED;
+  let infoA = { arrived: 0, lost: {} };
+  if (A.kind === 'chain') { const g0 = chainGeo(ma0), st = chainState(A.sem, g0, tauA); infoA = { arrived: st.arrived, lost: st.lost, tc: tCheck(g0) }; }
+  const elsA = dynEls(fa, A.els, infoA, runA, clockA);
+  const elsB = dynEls(fb, B.els, { arrived: 0, lost: {} }, false, 0);
+  let els = morph(elsA, elsB, t);
+  const m = new Map(els.map(e => [e.id, e]));
+  const clock = clockA + t * D;
+  let dots = [], threads = [];
+  if (A.kind === 'chain' && B.kind === 'chain') {
+    const geo = chainGeo(m); let arrived = 0;
+    const rescued = i => { const pa = lostAt(i, A.sem), pb = lostAt(i, B.sem); return pa && !pb; };
+    const xa = 1 - smooth(.3, .75, t), xb = smooth(.3, .75, t);
+    chainThreads(A.sem, geo, tauA, i => xa, threads);
+    chainThreads(B.sem, geo, SETTLED, i => rescued(i) ? smooth(.9, 1, t) : xb, threads);
+    for (let i = 0; i < 100; i++) {
+      const pa = chainDot(i, A.sem, geo, tauA), pb = chainDot(i, B.sem, geo, SETTLED);
+      if (pa.st === 2 && pb.st === 3 && (pa.u ?? 1) >= 1) {      // rescued: the exact tool no longer loses it
+        const g = geo.gates[FATE[i]], u = clamp((t - .26 - TRAY[i] * .05) / .6), x1 = geo.L.x1;
+        const tray = { x: g.x + (TRAY[i] - .5) * 17, y: g.ty };
+        let p, tail = null;
+        if (u < .16) { const v = eout(u / .16); p = { x: lerp(tray.x, g.x, v), y: lerp(tray.y, laneY(i, g.x, geo, B.sem), v), c: mix(C.bad, C.dot, v) }; }
+        else if (u < .84) {
+          const v = eio((u - .16) / .68), x = lerp(g.x, x1, v);
+          p = { x, y: laneY(i, x, geo, B.sem), c: x > checkX(geo) ? C.warn : C.dot };
+          const xb2 = Math.max(g.x, x - 26); tail = [[xb2 + 13, laneY(i, xb2 + 13, geo, B.sem)], [xb2, laneY(i, xb2, geo, B.sem)]];
+        } else { const v = eout((u - .84) / .16), d = slotXY(geo.ag, SLOT[B.sem][i]), yy = laneY(i, x1, geo, B.sem); p = { x: lerp(x1, d.x, v), y: lerp(yy, d.y, v), c: C.warn }; if (v > .5) arrived++; }
+        dots.push({ ...p, r: 5.2, a: 1, tail });
+        continue;
+      }
+      const lag = .06 * clamp(pa.x / 1600), g = eio(clamp((t - lag) / .7));
+      const slot = pb.st === 3 ? SLOT[B.sem][i] : 0;
+      const cu = pa.st === 3 && pb.st === 3 ? smooth(.56 + slot * .0028, .7 + slot * .0028, t) : smooth(.3, .7, t);
+      dots.push({ x: lerp(pa.x, pb.x, g), y: lerp(pa.y, pb.y, g), c: mix(pa.c, pb.c, cu), r: 5.2, a: 1 });
+      if ((g < .5 ? pa.st : pb.st) === 3) arrived++;
+    }
+    els = els.map(e => e.id === 'acount' ? { ...e, n: arrived } : e);
+    if (fb === 'F5a') dots = dots.concat(redoDots(m, clock, smooth(.86, 1, t)));
+    if (fa === 'F5a') dots = dots.concat(redoDots(m, clock, 1 - smooth(0, .3, t)));
+  } else if (A.kind === 'net' && B.kind === 'net') {
+    const ids = f => new Set(streamDefs(f).map(s => s.id).concat(f === 'N2' ? ['pay'] : []));
+    const ida = ids(fa), idb = ids(fb);
+    const da = netDots(fa, els, m, clock, !runA, id => idb.has(id) ? 0 : 1 - smooth(0, .4, t));
+    const db = netDots(fb, els, m, clock, true, id => ida.has(id) ? 1 : smooth(.62, 1, t));
+    dots = da.concat(db);
+  } else {
+    // different kinds of slide: the old flow fades out, the new one fades in
+    const fo = 1 - smooth(0, .35, t), fi = smooth(.62, 1, t);
+    if (A.kind === 'chain') {
+      const geo = chainGeo(m), st = chainState(A.sem, geo, tauA);
+      dots = st.dots.map(d => ({ ...d, a: fo }));
+      chainThreads(A.sem, geo, tauA, () => fo, threads);
+      if (fa === 'F5a') dots = dots.concat(redoDots(m, clock, fo));
+    } else dots = netDots(fa, els, m, clock, !runA, () => fo);
+    if (B.kind === 'chain') {
+      const geo = chainGeo(m), st = chainState(B.sem, geo, SETTLED);
+      dots = dots.concat(st.dots.map(d => ({ ...d, a: fi })));
+      chainThreads(B.sem, geo, SETTLED, () => fi, threads);
+      if (fb === 'F5a') dots = dots.concat(redoDots(m, clock, fi));
+      els = els.map(e => e.id === 'acount' ? { ...e, n: st.arrived } : e);
+    } else dots = dots.concat(netDots(fb, els, m, clock, true, () => fi));
+  }
+  return { els, dots, threads };
+}
+
+/* =====================================================================
+   Drawing
+   ===================================================================== */
+const svg = document.getElementById('svg'), cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const stage = document.getElementById('stage'), wrap = document.getElementById('wrap');
+const TH = { ink: [C.dot, .1, 1.3], warn: [C.warn, .2, 1.3], good: [C.good, .19, 1.3], bad: [C.bad, .6, 1.7] };
+let lastSVG = '';
+function fit() {
+  const r = wrap.getBoundingClientRect(), s = Math.min(r.width / W, r.height / H);
+  stage.style.transform = `translate(${(r.width - W * s) / 2}px,${(r.height - H * s) / 2}px) scale(${s})`;
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.max(1, Math.round(W * s * dpr)); cv.height = Math.max(1, Math.round(H * s * dpr));
+}
+function draw(view) {
+  const s = render(view.els);
+  if (s !== lastSVG) { svg.innerHTML = s; lastSVG = s; }
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  for (const th of view.threads || []) {
+    const [c, a, w] = TH[th.cat], p = th.pts; if (p.length < 4) continue;
+    ctx.globalAlpha = a * th.a; ctx.strokeStyle = c; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(p[0], p[1]); for (let k = 2; k < p.length; k += 2) ctx.lineTo(p[k], p[k + 1]); ctx.stroke();
+  }
+  for (const d of view.dots) {
+    if (d.a <= .01) continue;
+    const a = clamp(d.a);
+    if (d.tail) {   // a short motion tail, so direction reads in a still frame
+      ctx.globalAlpha = a * .3; ctx.strokeStyle = d.c; ctx.lineWidth = d.r * 1.3;
+      ctx.beginPath(); ctx.moveTo(d.x, d.y); for (const [x, y] of d.tail) ctx.lineTo(x, y); ctx.stroke();
+    }
+    if (d.halo) { ctx.globalAlpha = a * d.halo; ctx.fillStyle = d.hc; ctx.beginPath(); ctx.arc(d.x, d.y, d.r + (d.hr || 8), 0, 6.2832); ctx.fill(); }
+    ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(d.x, d.y, d.ring ? d.r - 1.1 : d.r, 0, 6.2832);
+    if (d.ring) { ctx.lineWidth = 2.4; ctx.strokeStyle = d.c; ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.stroke(); }
+    else { ctx.fillStyle = d.c; ctx.fill(); }
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* =====================================================================
+   Controller: navigation, review hooks, reduced motion
+   ===================================================================== */
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+const qF = URLQ.get('frame'), qFrom = URLQ.get('from'), qT = URLQ.get('t');
+const REVIEW = !!(qF && FRAMES[qF]);
+let cur = REVIEW ? ORDER.indexOf(qF) : 0;
+// mode: {k:'still', f, t0 (ms), c0 (clock at t0), run} or {k:'trans', a, b, t0, c0, runA}
+let mode = null, raf = 0;
+const now = () => performance.now();
+const clockOf = md => md.c0 + (now() - md.t0) / 1000;
+function setButtons() { document.querySelectorAll('#bar [data-f]').forEach(b => b.setAttribute('aria-current', String(+b.dataset.f === cur))); }
+function frameLoop() {
+  raf = 0; if (!mode) return;
+  if (mode.k === 'trans') {
+    const t = clamp((now() - mode.t0) / (D * 1000));
+    draw(transView(mode.a, mode.b, t, mode.c0, mode.runA));
+    if (t >= 1) mode = { k: 'still', f: mode.b, t0: now(), c0: mode.c0 + D, run: false };
+  } else draw(stillView(mode.f, clockOf(mode), mode.run));
+  // F4 has no loop: once its run has settled there is nothing left to animate
+  const idle = mode.k === 'still' && mode.f === 'F4' && (!mode.run || clockOf(mode) > 7.5);
+  if (!idle && !RM.matches) raf = requestAnimationFrame(frameLoop);
+}
+const kick = () => { if (!raf) raf = requestAnimationFrame(frameLoop); };
+const currentClock = () => mode ? (mode.k === 'trans' ? mode.c0 + D : clockOf(mode)) : TFINAL(ORDER[cur]);
+function crossfade(then) {      // reduced motion: snapshot the old slide and fade it out over the new one
+  const g = document.createElement('div'); g.id = 'ghost';
+  g.innerHTML = `<svg class="layer" viewBox="0 0 1600 900" width="1600" height="900">${lastSVG}</svg>`;
+  const c2 = document.createElement('canvas'); c2.className = 'layer'; c2.width = cv.width; c2.height = cv.height; c2.getContext('2d').drawImage(cv, 0, 0); g.appendChild(c2);
+  g.style.transform = stage.style.transform; wrap.appendChild(g);
+  then();
+  requestAnimationFrame(() => requestAnimationFrame(() => g.classList.add('out')));
+  setTimeout(() => g.remove(), 420);
+}
+function go(i, how) {
+  i = clamp(i, 0, ORDER.length - 1);
+  const prev = ORDER[cur], next = ORDER[i];
+  if (RM.matches) {
+    cur = i; setButtons();
+    crossfade(() => { mode = { k: 'still', f: next, t0: now(), c0: TFINAL(next), run: false }; draw(stillView(next, TFINAL(next), false)); });
+    return;
+  }
+  if (how === 'run') { cur = i; setButtons(); mode = { k: 'still', f: next, t0: now(), c0: 0, run: true }; kick(); return; }
+  const c0 = currentClock(), runA = mode && mode.k === 'still' ? mode.run : false;
+  cur = i; setButtons();
+  mode = { k: 'trans', a: prev, b: next, t0: now(), c0, runA };
+  kick();
+}
+function step(d) {
+  const j = clamp(cur + d, 0, ORDER.length - 1); if (j === cur) return;
+  if (mode && mode.k === 'trans') mode = { k: 'still', f: mode.b, t0: now(), c0: mode.c0 + D, run: false };
+  go(j, 'trans');
+}
+function replay() {
+  if (cur === 0 || RM.matches) { go(cur, 'run'); return; }
+  mode = { k: 'trans', a: ORDER[cur - 1], b: ORDER[cur], t0: now(), c0: TFINAL(ORDER[cur - 1]), runA: false }; kick();
+}
+async function fontsReady() {
+  try {
+    await Promise.race([
+      Promise.all(['800 46px Archivo', '700 20px Archivo', '500 15px Archivo', 'italic 500 16px Archivo'].map(f => document.fonts.load(f))
+        .concat([document.fonts.load('700 16px "Golos Text"', 'лв')])),
+      new Promise(r => setTimeout(r, 2500)),
+    ]);
+  } catch (e) { /* the fallback stack still renders */ }
+}
+function drawReview() {
+  if (qFrom && FRAMES[qFrom] && qT != null) draw(transView(qFrom, qF, clamp(parseFloat(qT) || 0), TFINAL(qFrom), false));
+  else draw(stillView(qF, TFINAL(qF), false));
+}
+window.addEventListener('resize', () => {
+  fit(); lastSVG = '';
+  if (REVIEW) drawReview(); else if (mode) { if (mode.k === 'still') draw(stillView(mode.f, clockOf(mode), mode.run)); kick(); }
+});
+(async function init() {
+  if (REVIEW) document.body.classList.add('review');
+  fit();
+  await fontsReady();
+  lastSVG = '';
+  if (REVIEW) { drawReview(); window.__ready = true; return; }
+  setButtons();
+  document.querySelectorAll('#bar [data-f]').forEach(b => b.addEventListener('click', ev => {
+    ev.stopPropagation(); const i = +b.dataset.f;
+    if (i !== cur) go(i, Math.abs(i - cur) === 1 ? 'trans' : 'run');
+  }));
+  document.getElementById('replay').addEventListener('click', ev => { ev.stopPropagation(); replay(); });
+  stage.addEventListener('click', () => step(1));
+  window.addEventListener('keydown', ev => {
+    if (['ArrowRight', 'PageDown', ' ', 'Spacebar'].includes(ev.key)) { ev.preventDefault(); step(1); }
+    else if (['ArrowLeft', 'PageUp'].includes(ev.key)) { ev.preventDefault(); step(-1); }
+  });
+  if (RM.matches) { mode = { k: 'still', f: ORDER[cur], t0: now(), c0: TFINAL(ORDER[cur]), run: false }; draw(stillView(ORDER[cur], TFINAL(ORDER[cur]), false)); }
+  else { mode = { k: 'still', f: ORDER[cur], t0: now(), c0: 0, run: true }; kick(); }
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>

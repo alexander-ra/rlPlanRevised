@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icons and the Change</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600&text=%D0%BB%D0%B2&display=block">
+<style>
+  /* V3 "Icons and the change": a 1600x900 slide stage, letterboxed, with a slim control bar below it. */
+  :root { --page:#1b2127; --bar:#12171c; --barInk:#dfe5ea; --barMuted:#8e9aa5; --btn:#232b33; --btnLine:#38434d; --accent:#7fb0ff; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--page); overflow:hidden; }
+  body { font:500 13.5px/1.2 'Barlow Semi Condensed','Roboto Condensed','Arial Narrow','Helvetica Neue',Arial,sans-serif; color:var(--barInk); }
+  #stage { position:absolute; left:0; right:0; top:0; bottom:38px; cursor:pointer; }
+  #stage svg { display:block; width:100%; height:100%; }
+  #bar { position:absolute; left:0; right:0; bottom:0; height:38px; display:flex; align-items:center; gap:6px;
+         padding:0 10px; background:var(--bar); border-top:1px solid #262f37; white-space:nowrap; overflow:hidden; }
+  #bar button { font:inherit; font-weight:600; color:var(--barInk); background:var(--btn); border:1px solid var(--btnLine);
+                border-radius:6px; padding:3px 9px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  #bar button:hover { background:#2d3640; }
+  #bar button:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  #bar button[aria-current="true"] { background:var(--barInk); color:var(--bar); border-color:var(--barInk); }
+  #bar .pips { display:inline-flex; gap:3px; }
+  #bar .pip { width:7px; height:7px; border-radius:50%; border:1.5px solid currentColor; opacity:.55; }
+  #bar .pip.on { background:currentColor; opacity:1; }
+  #frames { display:flex; gap:6px; }
+  #pos { color:var(--barMuted); overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; padding-left:6px; }
+  #replay { margin-left:auto; }
+  body.review #bar { display:none; }
+  body.review #stage { bottom:0; cursor:default; }
+  @media (max-width:900px), (max-height:520px) { #stage { bottom:32px; } #bar { height:32px; gap:4px; padding:0 6px; font-size:12.5px; } #bar button { padding:2px 7px; } #pos { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><svg id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Slide"><g id="root"></g></svg></div>
+<nav id="bar" aria-label="Slide controls">
+  <button id="prev" aria-label="Previous step" title="Previous (←)">‹</button>
+  <button id="next" aria-label="Next step" title="Next (→, Space)">›</button>
+  <div id="frames"></div>
+  <span id="pos"></span>
+  <button id="replay" title="Replay the transition into this step (R)">Replay transition</button>
+</nav>
+<script>
+'use strict';
+/* =====================================================================================
+   Fonts, measuring, text
+   ===================================================================================== */
+const FD = "'Barlow Semi Condensed','Roboto Condensed','Arial Narrow','Helvetica Neue',Arial,sans-serif";   // diagram
+const FT = "'Barlow','Helvetica Neue',Arial,sans-serif";                                                      // title, caption
+const INK = '#16212c', STAGE = '#f2f4f7';
+const mctx = document.createElement('canvas').getContext('2d');
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const r1 = v => Math.round(v*10)/10;
+const MW = new Map();
+function tw(s, size, weight=600, fam=FD){
+  const k = s+'|'+size+'|'+weight+'|'+fam; let v = MW.get(k);
+  if(v==null){ mctx.font = `${weight} ${size}px ${fam}`;
+    v = 0; String(s).split(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/).forEach((p,i)=>{   // superscripts are drawn smaller
+      if(i%2){ mctx.font = `${weight} ${size*0.66}px ${fam}`; v += mctx.measureText(p.replace(/./g,c=>SUP.indexOf(c))).width; mctx.font = `${weight} ${size}px ${fam}`; }
+      else v += mctx.measureText(p).width; });
+    MW.set(k,v); }
+  return v;
+}
+// Rich text: superscript digits become raised tspans (the web fonts have no superscript glyphs).
+function rich(s, size){
+  let out = '', last = 0; const str = String(s), re = /[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g; let m;
+  while((m = re.exec(str))){
+    out += esc(str.slice(last, m.index));
+    out += `<tspan dy="${r1(-size*0.38)}" font-size="${r1(size*0.66)}">${m[0].replace(/./g,c=>SUP.indexOf(c))}</tspan><tspan dy="${r1(size*0.38)}">​</tspan>`;
+    last = m.index + m[0].length; }
+  return out + esc(str.slice(last));
+}
+// Hard breaks at \n, soft wrap at spaces when a line is wider than maxW. **line** = bold.
+const WR = new Map();
+function wrap(text, size, weight, maxW, fam=FD){
+  const key = text+'|'+size+'|'+weight+'|'+Math.round(maxW)+'|'+fam; if(WR.has(key)) return WR.get(key);
+  const out = [];
+  for(const raw of String(text).split('\n')){
+    const m = /^\*\*(.*)\*\*$/.exec(raw), line = m ? m[1] : raw, b = m ? 1 : 0, w8 = b ? 700 : weight;
+    if(tw(line,size,w8,fam) <= maxW){ out.push({t:line,b}); continue; }
+    let cur = '';
+    for(const w of line.split(' ')){ const tryS = cur ? cur+' '+w : w;
+      if(!cur || tw(tryS,size,w8,fam) <= maxW) cur = tryS; else { out.push({t:cur,b}); cur = w; } }
+    if(cur) out.push({t:cur,b});
+  }
+  WR.set(key,out); return out;
+}
+// Lines of text at local origin (x=0 is the anchor, y=0 the top of the first line).
+function textLines(L, size, weight, fill, anchor, lh, fam=FD, boldFill){
+  return L.map((l,i)=>`<text x="0" y="${r1(size*0.8+i*lh)}" font-family="${fam}" font-size="${r1(size)}" font-weight="${l.b?700:weight}" fill="${l.b&&boldFill?boldFill:fill}" text-anchor="${anchor}">${rich(l.t,size)}</text>`).join('');
+}
+
+/* =====================================================================================
+   Icons: one 24-unit line set, stroke only, round joins. Drawn here, no library.
+   ===================================================================================== */
+const ICONS = {
+  stopwatch:'M12 21a8 8 0 1 0 0-16a8 8 0 1 0 0 16z M12 9.5V13l2.4 2.4 M9.5 2.5h5 M12 2.5V5 M18.2 6.3l1.6-1.6',
+  question:'M4.5 4.5h15a1.5 1.5 0 0 1 1.5 1.5v10a1.5 1.5 0 0 1-1.5 1.5H11l-4.5 3.5v-3.5h-2A1.5 1.5 0 0 1 3 16V6a1.5 1.5 0 0 1 1.5-1.5z M9.6 9a2.4 2.4 0 1 1 3.4 2.2c-.6.3-1 .8-1 1.5v.3 M12 15.3v.05',
+  flag:'M5.5 21V3.5 M5.5 4.5h12.5l-2.6 4 2.6 4H5.5',
+  pause:'M12 21a9 9 0 1 0 0-18a9 9 0 1 0 0 18z M10 9v6 M14 9v6',
+  road:'M9 3.5L4.5 20.5 M15 3.5l4.5 17 M12 4.5v2.5 M12 10.5v3 M12 17v3.5',
+  fuel:'M4.5 20.5V5a1.5 1.5 0 0 1 1.5-1.5h6.5A1.5 1.5 0 0 1 14 5v15.5 M3 20.5h12.5 M7 7h5v4H7z M14 9.5h1.8a1.7 1.7 0 0 1 1.7 1.7v4.3a1.5 1.5 0 0 0 3 0V8.2L18 5.5',
+  ticket:'M3.5 6.5h17v3.5a2 2 0 0 0 0 4v3.5h-17V14a2 2 0 0 0 0-4z M15 7.6v1.6 M15 11.2v1.6 M15 14.8v1.6',
+  calc:'M6.5 2.5h11A1.5 1.5 0 0 1 19 4v16a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V4a1.5 1.5 0 0 1 1.5-1.5z M8 5.5h8v3.5H8z M8.6 12.6h.01 M12 12.6h.01 M15.4 12.6h.01 M8.6 15.9h.01 M12 15.9h.01 M15.4 15.9h.01 M8.6 19h.01 M12 19h.01 M15.4 19h.01',
+  scales:'M12 3.5v16.5 M8 20.5h8 M4.5 7h15 M4.5 7L2 13.5 M4.5 7L7 13.5 M2 13.5a2.5 2.5 0 0 0 5 0z M19.5 7L17 13.5 M19.5 7l2.5 6.5 M17 13.5a2.5 2.5 0 0 0 5 0z',
+  thought:'M12 4.5c4.4 0 8 2.8 8 6.3s-3.6 6.2-8 6.2c-.9 0-1.8-.1-2.6-.3L5.5 19l.9-3.1C4.9 14.7 4 13 4 10.8 4 7.3 7.6 4.5 12 4.5z M8.6 10.8h.01 M12 10.8h.01 M15.4 10.8h.01',
+  clip:'M9 3.5h6v3H9z M9 5H7a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 17 5h-2 M8.8 13.5l2.3 2.3 4.4-4.6',
+  cpu:'M7 7h10v10H7z M10 10h4v4h-4z M10 3.5V7 M14 3.5V7 M10 17v3.5 M14 17v3.5 M3.5 10H7 M3.5 14H7 M17 10h3.5 M17 14h3.5',
+  docs:'M9 3.5h6.5L19 7v10.5H9z M15.5 3.5V7H19 M6 7v13.5h9.5',
+  gauge:'M3.5 16.5a8.5 8.5 0 0 1 17 0 M12 16.5l3.6-4.6 M6.2 12.3l1.2.8 M12 8v1.4 M17.8 12.3l-1.2.8 M3.5 19.5h17',
+  cal:'M4 5.5h16v15H4z M4 10h16 M8 3v4.5 M16 3v4.5 M15 13.2a2.7 2.7 0 1 0 0 4.6 M9.2 14.8h4 M9.2 16.3h4',
+  recompute:'M19.5 12a7.5 7.5 0 0 1-13.3 4.8 M4.5 12a7.5 7.5 0 0 1 13.3-4.8 M18 3.5v4h-4 M6 20.5v-4h4',
+  search:'M10.5 17a6.5 6.5 0 1 0 0-13a6.5 6.5 0 1 0 0 13z M15.3 15.3L20.5 20.5',
+  doc:'M6.5 3h7.5l4.5 4.5V21h-12z M14 3v4.5h4.5 M9 12h6 M9 15.5h6 M9 8.5h2.5',
+  tree:'M9.5 3h5v4.5h-5z M12 7.5v4 M5 11.5h14 M5 11.5v4 M12 11.5v4 M19 11.5v4 M3 15.5h4v5H3z M10 15.5h4v5h-4z M17 15.5h4v5h-4z',
+  sign:'M12 3v18 M8.5 21h7 M12 5h6.5l2 2.5-2 2.5H12 M12 12.5H5.5l-2 2.5 2 2.5H12',
+  bed:'M3 5v15 M3 15.5h18 M21 20v-6.5a2.5 2.5 0 0 0-2.5-2.5H11v4.5 M7 13.2a1.7 1.7 0 1 0 0-3.4a1.7 1.7 0 1 0 0 3.4z',
+  hotel:'M5 21V3.5h10V21 M15 9h4.5V21 M3 21h18 M8 7h1.2 M10.8 7H12 M8 10.5h1.2 M10.8 10.5H12 M8 14h1.2 M10.8 14H12 M9 21v-3.5h2V21',
+  plate:'M13 18a5.5 5.5 0 1 0 0-11a5.5 5.5 0 1 0 0 11z M3.5 3.5V8a1.5 1.5 0 0 0 3 0V3.5 M5 9.5v11 M21 3.5c-1.4 1-2 3-2 5.5v3h2v8.5',
+  mail:'M3.5 6h17v12.5h-17z M3.5 6.5l8.5 6.5 8.5-6.5',
+  people:'M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7z M2.5 20.5a6.5 6.5 0 0 1 13 0 M15.5 4.3a3.5 3.5 0 0 1 0 6.4 M17.5 14.3a6.5 6.5 0 0 1 4 6.2',
+  person:'M12 11.5a4 4 0 1 0 0-8a4 4 0 1 0 0 8z M4.5 21a7.5 7.5 0 0 1 15 0',
+  plane:'M12 2.8c.8 0 1.4.7 1.4 1.5v5.4l7.1 4.1v2l-7.1-2.1v4.4l2 1.5v1.6L12 20.3l-3.4 1v-1.6l2-1.5v-4.4l-7.1 2.1v-2l7.1-4.1V4.3c0-.8.6-1.5 1.4-1.5z',
+  train:'M6.5 3h11a2.5 2.5 0 0 1 2.5 2.5V15a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5.5A2.5 2.5 0 0 1 6.5 3z M4 10.5h16 M8 14.3h.01 M16 14.3h.01 M7.5 18l-2 3 M16.5 18l2 3',
+  shield:'M12 3l7.5 3v5.6c0 4.4-3.1 8.1-7.5 9.4-4.4-1.3-7.5-5-7.5-9.4V6z M14.7 9.6a3 3 0 1 0 0 4.8 M8.7 11.2h4 M8.7 12.8h4',
+  wallet:'M4 7.5v11a2 2 0 0 0 2 2h14v-11H6a2 2 0 0 1-2-2a2 2 0 0 1 2-2h11.5v4 M16.5 15h.01',
+  card:'M3 6h18v12.5H3z M3 10h18 M6.5 15h4',
+  monitor:'M3.5 4.5h17v11h-17z M8.5 20h7 M12 15.5V20 M9 10l2 2 4-4',
+  globe:'M12 21a9 9 0 1 0 0-18a9 9 0 1 0 0 18z M3 12h18 M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z',
+  at:'M15.5 12a3.5 3.5 0 1 1-7 0a3.5 3.5 0 1 1 7 0z M15.5 12v1.3a2.6 2.6 0 0 0 5.2 0V12a8.7 8.7 0 1 0-3.4 6.9',
+  door:'M6.5 21V3.5h11V21 M4 21h16 M14.3 12.5h.01',
+  book:'M5.5 3.5h13v17h-13z M8.5 3.5v17 M11.5 8h4.5 M11.5 11.5h4.5 M11.5 15h3',
+  tick:'M6 12.5l4 4 8.5-9',
+  cross:'M7.5 7.5l9 9 M16.5 7.5l-9 9',
+  dots:'M7.5 12h.01 M12 12h.01 M16.5 12h.01',
+};
+function ico(name, size, col, px){
+  const sw = px || (size>=34?2.5:size>=26?2.2:1.9);
+  return `<g transform="scale(${r1(size/24*100)/100})"><path d="${ICONS[name]}" fill="none" stroke="${col}" stroke-width="${r1(sw*24/size*100)/100}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+}
+
+/* =====================================================================================
+   Colour: one hue per meaning. Blue = AI work (steps, agents), violet = checks, green = good,
+   amber = warning / on hold, red = bad, charcoal = humans and doors, ochre = the shared plan.
+   "Receded" = unchanged since the previous slide: white, hairline, grey ink.
+   ===================================================================================== */
+const COL = { blue:'#2a5fa8', blueF:'#edf3fb', violet:'#6142b4', violetF:'#f3effc', green:'#1b7a4b', greenF:'#e7f4ec',
+  amber:'#b06200', amberF:'#fff1dc', red:'#c7372c', redF:'#fdebe9', ochre:'#946f0e', ochreF:'#fbf5e4',
+  char:'#27323d', charF:'#eceff2', slate:'#4a5865', slateF:'#e8ecf0' };
+const KS = {
+  step:  {f:COL.blueF, s:COL.blue, sw:2.4, i:COL.blue, t:INK, u:'#36424e'},
+  agent: {f:COL.blueF, s:COL.blue, sw:2.4, i:COL.blue, t:INK, u:'#36424e'},
+  lead:  {f:COL.blueF, s:COL.blue, sw:2.4, i:COL.blue, t:INK, u:'#36424e'},
+  think: {f:'#f4f7fc', s:'#7f99c9', sw:1.7, i:'#3f62a3', t:'#284a80', u:'#284a80', dash:'5 4'},
+  exact: {f:COL.greenF, s:COL.green, sw:3.4, i:COL.green, t:INK, u:'#155f39'},
+  io:    {f:COL.slateF, s:COL.slate, sw:2.2, i:COL.slate, t:INK, u:'#36424e'},
+  check: {f:COL.violetF, s:COL.violet, sw:2.6, i:COL.violet, t:COL.violet, u:'#4a3a86'},
+  verify:{f:COL.violetF, s:COL.violet, sw:2.4, i:COL.violet, t:INK, u:'#45376f'},
+  test:  {f:'#ffffff', s:'#b4a3e6', sw:1.8, i:COL.violet, t:INK, u:INK},
+  board: {f:COL.ochreF, s:COL.ochre, sw:2.4, i:COL.ochre, t:INK, u:'#6b510a'},
+  note:  {f:'#ffffff', s:'#dcc78c', sw:1.4, i:COL.ochre, t:'#2a2412', u:'#2a2412'},
+  human: {f:COL.charF, s:COL.char, sw:3, i:COL.char, t:INK, u:'#36424e'},
+  ext:   {f:'#ffffff', s:'#56626e', sw:1.8, i:'#36424e', t:INK, u:INK},
+  world: {f:'#e1e6ec', s:'#e1e6ec', sw:0, i:'#36424e', t:'#27323d', u:'#27323d'},
+  region:{f:'#fbfcfd', s:'#a6b0ba', sw:2, i:'#56626e', t:'#46525e', u:'#46525e', dash:'8 6'},
+  wall:  {f:'#fbfcfd', s:INK, sw:3, i:INK, t:INK, u:INK, dash:''},
+  door:  {f:INK, s:INK, sw:0, i:'#ffffff', t:'#ffffff', u:'#ffffff'},
+  seg:   {f:'#cfd6de', s:'#8b96a1', sw:1.4, i:INK, t:'#232e39', u:'#232e39'},
+  clock: {f:'#ffffff', s:'#56626e', sw:1.8, i:INK, t:INK, u:INK},
+  text:  {f:'#000000', s:'#000000', sw:0, i:INK, t:INK, u:INK},
+  power: {f:'#000000', s:'#000000', sw:0, i:INK, t:INK, u:INK},
+};
+const ST = { good:{f:COL.greenF, s:COL.green, i:COL.green, u:'#155f39'}, warn:{f:COL.amberF, s:COL.amber, i:COL.amber, u:'#8a4b00'},
+             bad:{f:COL.redF, s:COL.red, i:COL.red, u:'#a5271e'} };
+const REC = {f:'#ffffff', s:'#c5cdd5', sw:1.7, i:'#9aa5b0', t:'#505b66', u:'#646f7a'};
+const REC_K = {
+  region:{f:'#fafbfc', s:'#c3cbd3', sw:2, i:'#8d98a3', t:'#5f6a75', u:'#5f6a75', dash:'8 6'},
+  think:{f:'#fafbfc', s:'#d3d9df', sw:1.5, i:'#a3adb7', t:'#66707b', u:'#66707b', dash:'5 4'},
+  world:{f:'#eceff2', s:'#eceff2', sw:0, t:'#55606b', u:'#55606b'},
+  seg:{f:'#e2e6ea', s:'#c3cad1', sw:1.2, t:'#4f5a65', u:'#4f5a65'},
+  note:{f:'#ffffff', s:'#e0e4e8', sw:1.2, i:'#c9cfd5', t:'#4f5a65', u:'#4f5a65'},
+  text:{t:'#5d6873', u:'#5d6873'}, power:{t:'#5d6873', u:'#5d6873'},
+};
+const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const css = c => `rgb(${Math.round(c[0])},${Math.round(c[1])},${Math.round(c[2])})`;
+const mixC = (a,b,t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
+const pcol = p => p>=0.85 ? COL.green : p>=0.6 ? COL.amber : COL.red;
+const pct = p => Math.round(p*100)+'%';
+// Everything a box needs to be drawn in one state; two of these are mixed during a transition.
+function look(e){
+  const base = {...(KS[e.k]||KS.step), ...(e.wall?KS.wall:{}), ...(e.s&&ST[e.s]?ST[e.s]:{})};
+  const rec = {...REC, ...(REC_K[e.k]||{})};
+  const r = e.news ? 0 : 1, ru = e.subNews ? 0 : r, rb = e.bnews!=null ? (e.bnews?0:1) : r;
+  const L = {};
+  for(const k of ['f','s','i','t']) L[k] = mixC(hex(base[k]||rec[k]), hex(rec[k]||base[k]), r);
+  L.u = mixC(hex(base.u), hex(rec.u), ru);
+  L.tc = e.col ? mixC(hex(e.col), hex(rec.t), r) : L.t;                          // free text colour
+  L.sw = (base.sw??2) + ((rec.sw??2)-(base.sw??2))*r;
+  L.dash = r<0.5 ? (base.dash||'') : (rec.dash||'');
+  const bc = hex(e.s==='warn' ? COL.amber : e.s==='bad' ? COL.red : pcol(e.p??1));
+  L.bf = mixC(bc, hex('#ffffff'), rb); L.bt = mixC(hex('#ffffff'), hex('#66717c'), rb); L.bs = mixC(bc, hex('#cdd4da'), rb);
+  const kc = hex(base.s);
+  L.cf = mixC(kc, hex('#e4e8ec'), r); L.ct = mixC(hex('#ffffff'), hex('#55606b'), r);
+  L.ub = e.subNews ? 1 : 0;
+  return L;
+}
+function mixLook(A,B,t){
+  if(A===B || t<=0) return A; if(t>=1) return B;
+  const L = {};
+  for(const k in B){ const a=A[k], b=B[k];
+    if(Array.isArray(b)) L[k] = mixC(a,b,t); else if(typeof b==='number') L[k] = a+(b-a)*t; else L[k] = t<0.5 ? a : b; }
+  return L;
+}
+// Arrows: news arrows are dark, receded ones pale; red = what the check caught, ink = through a door.
+const AK = { solid:{s:'#46525e', sw:2.4}, bad:{s:COL.red, sw:3.4}, door:{s:INK, sw:2.8}, check:{s:COL.violet, sw:2.6} };
+const AREC = {s:'#b4bdc6', sw:2.2};
+function alook(e){
+  const k = AK[e.st||'solid'], r = e.news ? 0 : 1;
+  return { s:mixC(hex(k.s), hex(AREC.s), r), sw:k.sw+(AREC.sw-k.sw)*r };
+}
+
+/* =====================================================================================
+   Drawing one box: a shell (geometry + colours) and named parts (icon, title, sub, badges).
+   Parts with the same name and the same markup glide; parts that differ cross-fade.
+   ===================================================================================== */
+const P = (key,x,y,html) => ({key,x,y,html});
+const rect = (g,rx,L,extra='') => `<rect x="${r1(g.x)}" y="${r1(g.y)}" width="${r1(Math.max(0,g.w))}" height="${r1(Math.max(0,g.h))}" rx="${rx}" fill="${css(L.f)}" stroke="${css(L.s)}" stroke-width="${r1(L.sw)}"${L.dash?` stroke-dasharray="${L.dash}"`:''}${extra}/>`;
+
+function badgeParts(e,g,L,out){
+  if(e.p!=null){
+    const t = pct(e.p), bw = Math.max(62, tw(t,19,700)+28), h = 32;
+    out.push(P('badge', g.x+g.w-8-bw, g.y-h/2, `<rect width="${r1(bw)}" height="${h}" rx="16" fill="${css(L.bf)}" stroke="${css(L.bs)}" stroke-width="2"/><text x="${r1(bw/2)}" y="22.5" font-family="${FD}" font-size="19" font-weight="700" text-anchor="middle" fill="${css(L.bt)}">${t}</text>`));
+  }
+  if(e.count){
+    const cw = tw(e.count,16,700)+18, h = 22;
+    out.push(P('count', g.x+g.w-8-cw, g.y-h/2, `<rect class="pill" width="${r1(cw)}" height="${h}" rx="11" fill="${css(L.cf)}"/><text x="${r1(cw/2)}" y="16.5" font-family="${FD}" font-size="16" font-weight="700" text-anchor="middle" fill="${css(L.ct)}">${esc(e.count)}</text>`));
+  }
+  if(e.tag){
+    const cw = tw(e.tag,15,700)+e.tag.length*0.9+20, h = 24;
+    out.push(P('tag', g.x+10, g.y-h/2, `<rect width="${r1(cw)}" height="${h}" rx="12" fill="${css(L.cf)}"/><text x="${r1(cw/2)}" y="17.5" font-family="${FD}" font-size="15" font-weight="700" letter-spacing="0.9" text-anchor="middle" fill="${css(L.ct)}">${esc(e.tag)}</text>`));
+  }
+  if(e.mark){   // a verdict on a test: solid tick, solid cross, or pending dots
+    const c = e.mark==='good'?COL.green:e.mark==='bad'?COL.red:null, R = 16;
+    const html = c ? `<circle cx="0" cy="0" r="${R}" fill="${c}"/><g transform="translate(-12,-12)">${ico(e.mark==='good'?'tick':'cross',24,'#ffffff',3.2)}</g>`
+                   : `<circle cx="0" cy="0" r="${R}" fill="#ffffff" stroke="${COL.violet}" stroke-width="2" stroke-dasharray="4 3"/><g transform="translate(-12,-12)">${ico('dots',24,COL.violet,3.4)}</g>`;
+    out.push(P('mark', g.x+g.w-20, g.y, html));
+  }
+}
+// Icon on top, then the title, then the sub lines; the block is centred in the box.
+function cardParts(e,g,L){
+  const out = [], cx = g.x+g.w/2, is = e.is||36, ts = e.ts||22, ss = e.ss||16, pad = e.pad||12;
+  const T = wrap(e.label,ts,600,e.w-2*pad);
+  const S = e.sub ? wrap(e.sub,ss,500,e.w-2*pad-(e.subIcon?ss+6:0)) : [];
+  const lhT = Math.round(ts*1.12), lhS = Math.round(ss*1.28);
+  const hB = (e.icon?is+10:0) + T.length*lhT + (S.length?8+S.length*lhS:0);
+  let y = g.y + (g.h-hB)/2 + (e.dy0||0);
+  if(e.icon){ out.push(P('icon', cx-is/2, y, ico(e.icon,is,css(L.i)))); y += is+10; }
+  out.push(P('title', cx, y, textLines(T,ts,600,css(L.t),'middle',lhT)));
+  y += T.length*lhT + 8;
+  if(S.length) out.push(P('sub', cx, y, subHtml(e,S,ss,lhS,L)));
+  badgeParts(e,g,L,out);
+  return out;
+}
+function subHtml(e,S,ss,lhS,L){
+  const w8 = L.ub ? 700 : 500;
+  if(e.subIcon && S.length===1){
+    const w = ss+6+tw(S[0].t,ss,w8), x0 = -w/2;
+    return `<g transform="translate(${r1(x0)},${r1(ss*0.08)})">${ico(e.subIcon,ss,css(L.u),1.8)}</g><g transform="translate(${r1(x0+ss+6)},0)">${textLines(S,ss,w8,css(L.u),'start',lhS,FD,css(L.t))}</g>`;
+  }
+  return textLines(S,ss,w8,css(L.u),'middle',lhS,FD,css(L.t));
+}
+// Icon left of the title (one header unit, centred), sub lines centred below.
+function rowParts(e,g,L){
+  const out = [], is = e.is||22, ts = e.ts||20, ss = e.ss||16, pad = e.pad||9, gap = 7;
+  const T = wrap(e.label,ts,600,e.w-2*pad-is-gap);
+  const S = e.sub ? wrap(e.sub,ss,500,e.w-2*pad) : [];
+  if(T.length > String(e.label).split('\n').length){   // the title would break mid-phrase: put the icon on top if it fits
+    const T2 = wrap(e.label,ts,600,e.w-2*pad), hC = 26+10+T2.length*Math.round(ts*1.12)+(S.length?8+S.length*Math.round(ss*1.28):0);
+    if(T2.length < T.length && hC <= e.h-16) return cardParts({...e, is:26, ts, ss, pad}, g, L);
+  }
+  const lhT = Math.round(ts*1.1), lhS = Math.round(ss*1.26);
+  const tW = Math.max(...T.map(l=>tw(l.t,ts,600)));
+  const hT = Math.max(is, T.length*lhT), hB = hT + (S.length?6+S.length*lhS:0);
+  const rt = e.count ? 13 : 0, rb = e.count ? 3 : 0;   // band kept clear for the count pill straddling the top border
+  const y = g.y + rt + (g.h-rt-rb-hB)/2, cx = g.x+g.w/2, hx = cx-(is+gap+tW)/2;
+  out.push(P('icon', hx, y+(hT-is)/2, ico(e.icon,is,css(L.i))));
+  out.push(P('title', hx+is+gap, y+(hT-T.length*lhT)/2, textLines(T,ts,600,css(L.t),'start',lhT)));
+  if(S.length) out.push(P('sub', cx, y+hT+6, subHtml(e,S,ss,lhS,L)));
+  badgeParts(e,g,L,out);
+  return out;
+}
+function drawBox(e,g,L){
+  const k = e.k; let shell = '', parts = [];
+  switch(k){
+    case 'region': {
+      shell = rect(g,18,L);
+      if(e.label){ const pw = 18+8+tw(e.label,17,600)+26;
+        parts.push(P('tab', g.x+22, g.y-15, `<rect width="${r1(pw)}" height="30" rx="15" fill="${STAGE}" stroke="${css(L.s)}" stroke-width="1.6"/><g transform="translate(12,6)">${ico(e.icon,18,css(L.i))}</g><text x="38" y="21" font-family="${FD}" font-size="17" font-weight="600" fill="${css(L.t)}">${esc(e.label)}</text>`)); }
+      break; }
+    case 'world': {
+      shell = rect(g,16,L);
+      parts.push(P('label', g.x+20, g.y+g.h/2-13, `${ico(e.icon,26,css(L.i))}<text x="34" y="20" font-family="${FD}" font-size="19" font-weight="600" fill="${css(L.t)}">${esc(e.label)}</text>`));
+      break; }
+    case 'door': {   // an opening in the wall: two jambs, the gap between them, and a label
+      const cy = g.y+g.h/2, pw = 24+6+tw(e.label,15,700)+e.label.length*0.9+22;
+      shell = `<rect x="${r1(g.x)}" y="${r1(cy-5)}" width="${r1(g.w)}" height="10" fill="#f7f8fa"/>`+
+        `<rect x="${r1(g.x-4)}" y="${r1(g.y)}" width="8" height="${r1(g.h)}" rx="2.5" fill="${INK}"/><rect x="${r1(g.x+g.w-4)}" y="${r1(g.y)}" width="8" height="${r1(g.h)}" rx="2.5" fill="${INK}"/>`;
+      parts.push(P('label', g.x-14-pw, cy-14, `<rect width="${r1(pw)}" height="28" rx="14" fill="${INK}"/><g transform="translate(10,3)">${ico('door',22,'#ffffff',2)}</g><text x="38" y="19.5" font-family="${FD}" font-size="15" font-weight="700" letter-spacing="0.9" fill="#ffffff">${esc(e.label)}</text>`));
+      break; }
+    case 'check': {   // the check panel: tests sit on it as their own elements; its title cell is on the right
+      shell = rect(g,16,L);
+      const cx = g.x+g.w-12-89, top = g.y+(g.h-86)/2;
+      parts.push(P('icon', cx-22, top, ico('clip',44,css(L.i))));
+      parts.push(P('title', cx, top+52, textLines([{t:e.label}],28,700,css(L.t),'middle',30)));
+      break; }
+    case 'test': {
+      shell = rect(g,12,L);
+      const cx = g.x+g.w/2, T = wrap(e.label,20,600,e.w-20), top = g.y+(g.h-(34+9+T.length*22))/2;
+      parts.push(P('icon', cx-17, top, ico(e.icon,34,css(L.i))));
+      parts.push(P('title', cx, top+43, textLines(T,20,600,css(L.t),'middle',22)));
+      badgeParts(e,g,L,parts);
+      break; }
+    case 'think': {
+      shell = rect(g,g.h/2,L);
+      const w = 22+6+tw(e.label,18,600);
+      parts.push(P('label', g.x+(g.w-w)/2, g.y+(g.h-22)/2, `${ico(e.icon,22,css(L.i))}<text x="28" y="17" font-family="${FD}" font-size="18" font-weight="600" fill="${css(L.t)}">${esc(e.label)}</text>`));
+      break; }
+    case 'clock': {
+      shell = rect(g,g.h/2,L);
+      const w = 26+8+tw(e.label,24,600);
+      parts.push(P('label', g.x+(g.w-w)/2, g.y+(g.h-26)/2, `${ico('stopwatch',26,css(L.i))}<text x="34" y="21" font-family="${FD}" font-size="24" font-weight="600" fill="${css(L.t)}">${esc(e.label)}</text>`));
+      break; }
+    case 'board': {
+      shell = rect(g,14,L);
+      const w = 24+8+tw(e.label,21,700);
+      parts.push(P('title', g.x+(g.w-w)/2, g.y+24, `${ico(e.icon,24,css(L.i))}<text x="32" y="19.5" font-family="${FD}" font-size="21" font-weight="700" fill="${css(L.t)}">${esc(e.label)}</text>`));
+      badgeParts(e,g,L,parts);
+      break; }
+    case 'note': {
+      shell = rect(g,8,L) + `<rect x="${r1(g.x)}" y="${r1(g.y)}" width="5" height="${r1(g.h)}" rx="2" fill="${css(L.s)}"/>`;
+      const T = wrap(e.label,16,500,e.w-24), lh = 19;
+      parts.push(P('text', g.x+14, g.y+(g.h-T.length*lh)/2, textLines(T,16,500,css(L.t),'start',lh)));
+      break; }
+    case 'seg': {
+      shell = rect(g,5,L);
+      const ts = g.ts||15;
+      if(e.label) parts.push(P('label', g.x+g.w/2, g.y+(g.h-ts)/2-1, textLines([{t:e.label}],ts,600,css(L.t),'middle',ts)));
+      break; }
+    case 'text': {
+      const sz = g.size||e.size, fam = e.fam==='t'?FT:FD;
+      const L2 = String(e.label).split('\n').map(t=>({t}));
+      parts.push(P('txt', g.x, g.y-sz*0.8, textLines(L2,sz,e.weight||500,css(L.tc),e.anchor||'start',sz*1.2,fam)));
+      break; }
+    case 'power': {
+      const sz = 36, bw = 210, bx = -bw/2, c = pcol(e.val);
+      const cc = css(mixC(hex(c), hex('#c9d0d6'), e.news?0:1));
+      parts.push(P('txt', g.x, g.y-sz*0.8, textLines([{t:e.label}],sz,600,css(L.t),'middle',sz)+
+        `<rect x="${bx}" y="${sz+10}" width="${bw}" height="10" rx="5" fill="#e1e6eb"/><rect x="${bx}" y="${sz+10}" width="${r1(Math.max(10*(e.val>0.005),bw*e.val))}" height="10" rx="5" fill="${cc}"/>`));
+      break; }
+    case 'io': case 'step': case 'exact': case 'lead': {
+      shell = rect(g,14,L);
+      parts = cardParts(e,g,L);
+      break; }
+    default: {   // agent, verify, human, ext
+      shell = rect(g,12,L);
+      parts = rowParts(e,g,L);
+    }
+  }
+  return {shell, parts};
+}
+
+/* =====================================================================================
+   Arrows: orthogonal routes with rounded corners, recomputed from the boxes every frame,
+   so they stay attached while things move.
+   ===================================================================================== */
+const clamp = (v,a,b) => v<a?a:v>b?b:v;
+function sidePt(g,s,f){ switch(s){ case 'l': return [g.x, g.y+g.h*f]; case 'r': return [g.x+g.w, g.y+g.h*f];
+  case 't': return [g.x+g.w*f, g.y]; default: return [g.x+g.w*f, g.y+g.h]; } }
+function route(ga,gb,e){
+  const fs = e.fs||'r', ts = e.ts||'l', fh = fs==='l'||fs==='r', th = ts==='l'||ts==='r';
+  const p1 = sidePt(ga,fs,e.fa??0.5), p2 = sidePt(gb,ts,e.ta??0.5);
+  if(fh&&th){
+    if(e.align==='t') p1[1] = clamp(p2[1], ga.y+10, ga.y+ga.h-10); else if(e.align==='f') p2[1] = clamp(p1[1], gb.y+10, gb.y+gb.h-10);
+    if(Math.abs(p1[1]-p2[1])<0.5) return [p1,p2];
+    const mx = e.mx ?? (p1[0]+p2[0])/2; return [p1,[mx,p1[1]],[mx,p2[1]],p2];
+  }
+  if(!fh&&!th){
+    if(e.align==='t') p1[0] = clamp(p2[0], ga.x+10, ga.x+ga.w-10); else if(e.align==='f') p2[0] = clamp(p1[0], gb.x+10, gb.x+gb.w-10);
+    if(Math.abs(p1[0]-p2[0])<0.5) return [p1,p2];
+    const my = e.my ?? (p1[1]+p2[1])/2; return [p1,[p1[0],my],[p2[0],my],p2];
+  }
+  if(fh&&!th) return [p1,[p2[0],p1[1]],p2];
+  return [p1,[p1[0],p2[1]],p2];
+}
+function pathD(pts, rad, cut){
+  const n = pts.length, Q = pts.map(p=>[p[0],p[1]]);
+  const a = Q[n-2], b = Q[n-1], L = Math.hypot(b[0]-a[0], b[1]-a[1]);
+  if(L>0){ const k = Math.min(cut, L-0.5)/L; b[0] -= (b[0]-a[0])*k; b[1] -= (b[1]-a[1])*k; }
+  let d = `M${r1(Q[0][0])},${r1(Q[0][1])}`;
+  for(let i=1;i<n-1;i++){
+    const p = pts[i], q = pts[i-1], s = pts[i+1];
+    const l1 = Math.hypot(p[0]-q[0],p[1]-q[1]), l2 = Math.hypot(s[0]-p[0],s[1]-p[1]);
+    if(l1<0.01||l2<0.01) continue;
+    const rr = Math.min(rad, l1/2, l2/2), u1 = [(p[0]-q[0])/l1,(p[1]-q[1])/l1], u2 = [(s[0]-p[0])/l2,(s[1]-p[1])/l2];
+    d += ` L${r1(p[0]-u1[0]*rr)},${r1(p[1]-u1[1]*rr)} Q${r1(p[0])},${r1(p[1])} ${r1(p[0]+u2[0]*rr)},${r1(p[1]+u2[1]*rr)}`;
+  }
+  return d + ` L${r1(Q[n-1][0])},${r1(Q[n-1][1])}`;
+}
+function drawArrow(e, ga, gb, L, prog, o, labelO){
+  const pts = route(ga,gb,e), n = pts.length, end = pts[n-1], pre = pts[n-2];
+  const len = Math.hypot(end[0]-pre[0], end[1]-pre[1]) || 1, u = [(end[0]-pre[0])/len, (end[1]-pre[1])/len], v = [-u[1], u[0]];
+  const hl = e.st==='bad'?15:13, hw = e.st==='bad'?7.5:6.5;
+  const base = [end[0]-u[0]*hl, end[1]-u[1]*hl];
+  let s = `<g opacity="${r1(o*100)/100}">`;
+  s += `<path d="${pathD(pts,12,hl-2)}" fill="none" stroke="${css(L.s)}" stroke-width="${r1(L.sw)}" stroke-linecap="round" stroke-linejoin="round"${prog<1?` pathLength="1" stroke-dasharray="${r1(prog*1000)/1000} 1"`:''}/>`;
+  const ho = prog<1 ? clamp((prog-0.86)/0.14,0,1) : 1;
+  if(ho>0) s += `<path d="M${r1(end[0])},${r1(end[1])} L${r1(base[0]+v[0]*hw)},${r1(base[1]+v[1]*hw)} L${r1(base[0]-v[0]*hw)},${r1(base[1]-v[1]*hw)}z" fill="${css(L.s)}" opacity="${r1(ho*100)/100}"/>`;
+  if(e.label && labelO>0){
+    const seg = e.lab?.seg ?? Math.floor((n-1)/2), A = pts[seg], B = pts[seg+1];
+    const mx = (A[0]+B[0])/2 + (e.lab?.dx||0), my = (A[1]+B[1])/2 + (e.lab?.dy||0), side = e.lab?.side||'a';
+    const fs = e.lab?.size||20, lw = tw(e.label,fs,700) + (e.licon?fs+8:0);
+    let x0 = side==='l' ? mx-14-lw : side==='r' ? mx+14 : mx-lw/2;
+    const y0 = side==='a' ? my-12-fs*0.8 : my-fs*0.5;
+    const halo = e.halo||'#fbfcfd';
+    let h = '';
+    if(e.licon) h += `<circle cx="${r1(x0+fs/2)}" cy="${r1(y0+fs*0.42)}" r="${r1(fs/2+1)}" fill="${css(L.s)}"/><g transform="translate(${r1(x0+1)},${r1(y0+fs*0.42-fs/2+1)})">${ico(e.licon,fs-2,'#ffffff',2.8)}</g>`;
+    h += `<text x="${r1(x0+(e.licon?fs+8:0))}" y="${r1(y0+fs*0.8)}" font-family="${FD}" font-size="${fs}" font-weight="700" fill="${css(L.s)}" stroke="${halo}" stroke-width="6" stroke-linejoin="round" paint-order="stroke">${esc(e.label)}</text>`;
+    s += `<g opacity="${r1(labelO*100)/100}">${h}</g>`;
+  }
+  return s + '</g>';
+}
+
+/* =====================================================================================
+   Morph: interpolate state A into state B at linear progress t (easing is applied inside).
+   - persistent elements: geometry glides (cubic in-out), colours mix (news <-> receded), changed parts cross-fade
+   - new elements: staggered, rise or slide in from a named origin; new arrows draw on after their ends exist
+   - removed elements: fade out early
+   ===================================================================================== */
+const win = (t,a,b) => clamp((t-a)/(b-a),0,1);
+const eio = t => t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+const eout = t => 1-Math.pow(1-t,3);
+const lerp = (a,b,t) => a+(b-a)*t;
+const NUMS = ['x','y','w','h','size','ts'];
+const LAYER = {region:0, world:0, door:0.6, check:1.5, note:3, test:3, text:5, power:5};
+function layerOf(e){ if(e.k==='arrow') return e.st==='bad'?3.6:e.st==='door'?0.8:1; return LAYER[e.k] ?? 2; }
+function geoOf(e){ const g = {}; for(const k of NUMS) if(typeof e[k]==='number') g[k] = e[k]; g.w = g.w||0; g.h = g.h||0; return g; }
+
+function compose(A, B, t, opt={}){
+  const slide = !!opt.slide;
+  const GEO = slide ? [0.04,0.7] : [0,0.58], CHG = slide ? [0.1,0.62] : [0.04,0.5];
+  const mA = new Map((A||[]).map(e=>[e.id,e])), mB = new Map(B.map(e=>[e.id,e]));
+  // stagger order for new elements without their own timing: left to right, then top to bottom
+  const ent = B.filter(e=>e.k!=='arrow' && !mA.has(e.id) && !(e.in&&e.in.at!=null)).sort((p,q)=>(p.x-q.x)||(p.y-q.y));
+  const rank = new Map(ent.map((e,i)=>[e.id,i])), nE = ent.length;
+  const E0 = slide?0.34:0.22, ESPAN = slide?0.34:0.3, ED = slide?0.3:0.34;
+  const enterWin = e => { if(e.in&&e.in.at!=null) return [e.in.at, e.in.at+(e.in.d||ED)];
+    const i = rank.get(e.id)||0, s = E0 + (nE>1 ? ESPAN*i/(nE-1) : 0); return [s, s+ED]; };
+  const res = new Map(), items = [];
+  let ord = 0;
+  const emit = (e, html) => items.push({l:layerOf(e), o:ord++, html});
+  function partsOut(parts, o){ return parts.map(p=>`<g transform="translate(${r1(p.x)},${r1(p.y)})"${o<1?` opacity="${r1(o*1000)/1000}"`:''}>${p.html}</g>`).join(''); }
+
+  for(const b of B){ if(b.k==='arrow') continue;
+    const a = mA.get(b.id);
+    if(a){   // persistent
+      const mv = b.mv||GEO, tg = eio(win(t,mv[0],mv[1]));
+      const cw = b.chg||CHG, tl = win(t,cw[0],cw[1]), tc = eio(tl);
+      const ga = geoOf(a), gb = geoOf(b), g = {};
+      for(const k in gb) g[k] = ga[k]!=null ? lerp(ga[k],gb[k],tg) : gb[k];
+      const L = mixLook(look(a), look(b), tc);
+      const da = drawBox(tl<0.5?{...b,k:a.k,wall:a.wall}:b, g, L), pa = drawBox(a,g,L).parts, pb = drawBox(b,g,L).parts;
+      const ka = new Map(pa.map(p=>[p.key,p])), kb = new Map(pb.map(p=>[p.key,p]));
+      let html = da.shell;
+      const oOut = 1-eio(win(tl,0,0.55)), oIn = eio(win(tl,0.45,1));
+      for(const p of pa){ const q = kb.get(p.key);
+        if(q && q.html===p.html) html += partsOut([{...q, x:lerp(p.x,q.x,tg), y:lerp(p.y,q.y,tg)}],1);
+        else if(oOut>0) html += partsOut([p],oOut); }
+      for(const q of pb){ const p = ka.get(q.key); if(p && p.html===q.html) continue; if(oIn>0) html += partsOut([q],oIn); }
+      res.set(b.id, {...g, o:1, end:0});
+      emit(b, html);
+    } else {   // entering
+      const [s0,s1] = enterWin(b), pe = win(t,s0,s1), pee = eout(pe);
+      let g = geoOf(b), o = pee;
+      if(b.in && b.in.from){ const src = res.get(b.in.from) || (mB.get(b.in.from) && geoOf(mB.get(b.in.from)));
+        if(src){ const k = eio(pe); g = {...g, x:lerp(src.x,g.x,k), y:lerp(src.y,g.y,k), w:lerp(src.w,g.w,k), h:lerp(src.h,g.h,k)}; o = clamp(pe*2.5,0,1); } }
+      else { const dy = b.in&&b.in.dy!=null ? b.in.dy : 14, dx = b.in&&b.in.dx||0; g.x += dx*(1-pee); g.y += dy*(1-pee); }
+      res.set(b.id, {...g, o, end:s1});
+      if(o>0.001){ const d = drawBox(b,g,look(b)); emit(b, `<g opacity="${r1(o*1000)/1000}">${d.shell}${partsOut(d.parts,1)}</g>`); }
+    }
+  }
+  for(const a of (A||[])){ if(a.k==='arrow' || mB.has(a.id)) continue;   // leaving
+    const te = eio(win(t,0,slide?0.3:0.26)), g = geoOf(a), o = 1-te;
+    g.y += (a.out?.dy ?? 8)*te; g.x += (a.out?.dx ?? 0)*te;
+    res.set(a.id, {...g, o, end:0});
+    if(o>0.001){ const d = drawBox(a,g,look(a)); emit(a, `<g opacity="${r1(o*1000)/1000}">${d.shell}${partsOut(d.parts,1)}</g>`); }
+  }
+  for(const b of B){ if(b.k!=='arrow') continue;
+    const ga = res.get(b.from), gb = res.get(b.to); if(!ga||!gb) continue;
+    const a = mA.get(b.id);
+    if(a){ const cw = b.chg||CHG, tc = eio(win(t,cw[0],cw[1]));
+      const La = alook(a), Lb = alook(b), L = {s:mixC(La.s,Lb.s,tc), sw:lerp(La.sw,Lb.sw,tc)};
+      const lo = (a.label===b.label) ? 1 : (tc<0.5 ? 1-tc*2 : (tc-0.5)*2);
+      emit(b, drawArrow(tc<0.5?{...b,label:a.label}:b, ga, gb, L, 1, Math.min(ga.o,gb.o), lo));
+    } else {
+      const s0 = b.in&&b.in.at!=null ? b.in.at : Math.max(ga.end, gb.end, slide?0.42:0.3) + 0.04, d = b.in&&b.in.d || 0.26;
+      const pr = eio(win(t,s0,s0+d)); if(pr<=0) continue;
+      emit(b, drawArrow(b, ga, gb, alook(b), pr, Math.min(ga.o,gb.o,1), win(t,s0+d*0.5,s0+d)));
+    }
+  }
+  for(const a of (A||[])){ if(a.k!=='arrow' || mB.has(a.id)) continue;
+    const ga = res.get(a.from), gb = res.get(a.to); if(!ga||!gb) continue;
+    const o = 1-eio(win(t,0,slide?0.26:0.22)); if(o<=0.001) continue;
+    emit(a, drawArrow(a, ga, gb, alook(a), 1, o, 1));
+  }
+  items.sort((p,q)=>p.l-q.l || p.o-q.o);
+  return `<rect width="1600" height="900" fill="${STAGE}"/>` + items.map(i=>i.html).join('');
+}
+const renderState = S => compose(S, S, 1);
+
+/* =====================================================================================
+   Content (text exactly as in frames.json; ✓ ✗ ⏱ are drawn as icons)
+   ===================================================================================== */
+const ASK_COST = 'Which is cheaper from\nRuse to Sofia — driving\nor taking the train?';
+const ASK_THINK = ASK_COST + '\n**Think hard and**\n**describe the answer**\n**step by step.**';
+const STEP_L = ['Search\nroad distance','Search\nfuel price','Search\ntrain fares','Calculate\nboth costs','Compare\n& answer'];
+const STEP_I = ['road','fuel','ticket','calc','scales'];
+const CHECKS = ['sources agree','sensible range','date & currency','recompute'], CHECK_I = ['docs','gauge','cal','recompute'];
+const CAP = {
+  F4:'98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.',
+  F5a:'In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.',
+  N1:'A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.',
+  N2:'Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.' };
+const TITLE = { F4:'Thinking before each step', F5a:'Tools and a check', N1:'A real-scale job: 100 people to this conference', N2:'Acting in the world, through two doors' };
+const NOTE = {
+  F4:'Reasoning models think before each step, a skill trained with reinforcement learning on problems with checkable answers. At 98% per step the chain climbs to 90%. The longer the task, the more every point per step matters.',
+  F5a:"Some steps can go to an exact tool: the calculator is simply right. The rest still involve judgement, so we add a check. In programming that's obvious: run the tests and read the error. For our trip it is four independent checks: do two sources agree, is the number in a sensible range, is the page current and in the right currency, does the arithmetic recompute. And here it catches a real trap: the train fare came from a 2025 page, in leva, and the euro arrived in January.",
+  N1:"Now a real-scale version of our problem: bring 100 people from 15 countries to this conference by the 23rd, for under 30,000 euros. A lead splits the job into three groups. The teams don't call each other: they write into one living plan and read what the others wrote.",
+  N2:"Now the system acts, and it touches the outside world through only two doors. Correspondence is the only group that writes to people: attendees, hotels, carriers. Payments is the only group that can pay, and every payment passes the budget guard; anything over 500 euros waits for the organiser." };
+
+function head(f, clock, clockNews){
+  const cw = 20+26+8+tw(clock,24,600)+20;
+  return [
+    {id:'ttl', k:'text', x:64, y:92, label:TITLE[f], size:44, weight:700, fam:'t', col:INK, news:true},
+    {id:'cap', k:'text', x:64, y:856, label:CAP[f], size:21, weight:500, fam:'t', col:'#3c4752', news:true},
+    {id:'clock', k:'clock', x:1536-cw, y:52, w:cw, h:48, label:clock, news:clockNews} ];
+}
+
+/* ---------- F4 and F5a: one question, a chain of five steps ---------- */
+const SX = [300,512,724,936,1148], SW = 178, SH = 190;
+// stage: 'F4', or the F5a build step 1 (calculator exact) / 2 (the check appears) / 3 (it catches the fare)
+function Fst(stage){
+  const f4 = stage==='F4', b = f4 ? 0 : stage;
+  const sy = f4 ? 305 : b===1 ? 362 : 486, cy = sy+SH/2;
+  const els = head(f4?'F4':'F5a', f4?'~1 min':'~5 min', true);
+  const top = b>=2 ? 156 : sy-44, bot = sy+SH+14+44+22;
+  els.push({id:'ai', k:'region', x:270, y:top, w:1086, h:bot-top, label:'AI model', icon:'cpu', news:false});
+  const qh = f4 ? 262 : 190;
+  els.push({id:'q', k:'io', x:64, y:cy-qh/2, w:184, h:qh, label:'Question', icon:'question', sub:f4?ASK_THINK:ASK_COST, ss:17, news:f4});
+  for(let i=0;i<5;i++){
+    const exact = !f4 && i===3, bad = b===3 && i===2;
+    const e = {id:'s'+(i+1), k:exact?'exact':'step', x:SX[i], y:sy, w:SW, h:SH, label:STEP_L[i], icon:STEP_I[i], is:38,
+               p:exact?1:0.98, news:exact||bad, bnews:f4||exact};
+    if(!f4){ e.sub = i<3 ? 'web search' : exact ? 'calculator · exact' : ''; if(i<3) e.subIcon = 'search'; }
+    if(exact) e.chg = [0.5,0.86];
+    if(bad){ e.s = 'bad'; e.sub = '2025 page · 23 лв'; e.subIcon = null; e.chg = [0.6,0.86]; }
+    els.push(e);
+    if(f4 || i!==3) els.push({id:'th'+(i+1), k:'think', x:SX[i]+14, y:sy+SH+14, w:150, h:44, label:'thinking…', icon:'thought', news:f4});
+  }
+  els.push({id:'ans', k:'io', x:1378, y:cy-95, w:158, h:190, label:'Answer', icon:b===3?'pause':'flag', is:36,
+            p:f4?0.9039207968:0.92236816, s:b===3?'warn':undefined, sub:b===3?'on hold':'', ss:19, subNews:b===3, news:true,
+            chg:b===3?[0.7,0.96]:f4?undefined:[0.58,0.88]});
+  const ch = ['q','s1','s2','s3','s4','s5'];
+  for(let i=0;i<5;i++) els.push({id:`a:${ch[i]}>${ch[i+1]}`, k:'arrow', from:ch[i], to:ch[i+1], news:false});
+  if(b<2) els.push({id:'a:s5>ans', k:'arrow', from:'s5', to:'ans', news:false});
+  if(b>=2){
+    els.push({id:'v', k:'check', x:288, y:188, w:1050, h:162, label:'Check', news:true, in:{at:0.26, d:0.34, dy:-26}});
+    for(let i=0;i<4;i++){ const verdict = b===3 ? (i===2?'bad':'good') : 'pending';
+      els.push({id:'ck'+(i+1), k:'test', x:SX[i], y:213, w:SW, h:112, label:CHECKS[i], icon:CHECK_I[i], mark:verdict,
+                s:b===3?verdict:undefined, news:true, in:{at:0.4+i*0.07, d:0.3, dy:-16},
+                chg:b===3?[[0,0.24],[0.08,0.32],[0.24,0.5],[0.16,0.4]][i]:undefined}); }
+    els.push({id:'a:s5>v', k:'arrow', from:'s5', to:'v', fs:'t', ts:'b', fa:0.3, align:'f', news:true, in:{at:0.7, d:0.2}});
+    els.push({id:'a:v>ans', k:'arrow', from:'v', to:'ans', fs:'r', ts:'t', ta:0.3, news:true, in:{at:0.78, d:0.2}});
+  }
+  if(b===3) els.push({id:'back', k:'arrow', from:'ck3', to:'s3', fs:'b', ts:'t', ta:0.3, align:'t', st:'bad', news:true,
+                      label:'fare from a 2025 page, in leva', licon:'cross', lab:{side:'l'}, in:{at:0.4, d:0.26}});
+  if(f4){
+    const PW = [['0.98⁵ ≈ 90%',0.9039],['0.98¹⁰ ≈ 82%',0.817],['0.98¹⁰⁰ ≈ 13%',0.1326],['0.98¹⁰⁰⁰ ≈ 0%',0]];
+    PW.forEach(([l,v],i)=>els.push({id:'pow'+i, k:'power', x:270+1086*(2*i+1)/8, y:678, label:l, val:v, news:true}));
+  }
+  return els;
+}
+
+/* ---------- N1 and N2: the conference system ---------- */
+const TASK = 'get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000';
+const RESULT = 'every attendee:\nan itinerary, a bed\nand lunches';
+const NOTES = ['Flights: 12 land\nafter 22:00','Hotels: holding 12\nlate check-ins','Attendee 37:\nneeds a step-free room','Catering: 9 vegetarian\nlunches','Trains & buses: coach\nfrom Bucharest 15:30'];
+// stage: 'N1', or the N2 build step 1 (outside world, two doors) / 2 (budget guard + organiser) / 3 (payments)
+function Nst(stage){
+  const n1 = stage==='N1', b = n1 ? 0 : stage, old = n1;
+  const els = head(n1?'N1':'N2', '~1 day', n1);
+  els.push({id:'ail', k:'text', x:236, y:134, label:b===3?'~127 agents · a lead, three groups, five teams, two payment agents':'~125 agents · a lead, three groups, five teams',
+            size:17, weight:600, col:'#3c4752', news:n1||b===3, chg:b===3?[0.12,0.5]:undefined});
+  els.push({id:'ai', k:'region', x:222, y:146, w:1164, h:(n1?606:612)-146, label:'', news:!n1, wall:!n1, chg:n1?undefined:[0.3,0.62]});
+  els.push({id:'q', k:'io', x:40, y:277, w:156, h:200, label:'Task', icon:'doc', is:34, sub:TASK, news:old});
+  els.push({id:'ans', k:'io', x:1408, y:291, w:152, h:170, label:'Result', icon:'flag', is:34, sub:RESULT, news:old});
+  els.push({id:'lead', k:'lead', x:232, y:164, w:132, h:426, pad:10, label:'Lead', tag:'COORDINATE', icon:'tree', is:36, sub:'splits the job,\nwatches progress', news:old});
+  const door = !n1;
+  els.push({id:'gt', k:'agent', x:388, y:164, w:176, h:150, label:'Transport', icon:'sign', sub:door?'posts requests\nin the plan':'long and\nshort distance', news:old, subNews:door});
+  els.push({id:'ga', k:'agent', x:388, y:326, w:176, h:154, label:'Accommodation', icon:'bed', sub:door?'posts requests\nin the plan':'beds and lunches', news:old, subNews:door});
+  els.push({id:'gc', k:'agent', x:388, y:492, w:176, h:98, label:'Correspondence', icon:'mail', sub:door?'the only agents that\nwrite to people':'speaks for\neach attendee', news:old||door, chg:door?[0.5,0.8]:undefined});
+  const T = [['s_fl',164,68,'Flights','×8','long distance','plane'],['s_tr',246,68,'Trains & buses','×6','short distance','train'],
+             ['s_ho',326,70,'Hotels','×4','rooms in Ruse','hotel'],['s_ca',410,70,'Catering','×3','lunches during the stay','plate'],
+             ['s_co',492,98,'Attendee workers','×100','one per attendee','people']];
+  for(const [id,y,h,l,c,s,ic] of T) els.push({id, k:'agent', x:590, y, w:186, h, label:l, count:c, sub:s, icon:ic, news:old||(door&&id==='s_co'), chg:door&&id==='s_co'?[0.5,0.8]:undefined});
+  els.push({id:'c_t', k:'verify', x:802, y:164, w:136, h:150, label:'Verifier', icon:'clip', sub:'connections\n≥ 60 min;\nlands by the 23rd', news:old});
+  els.push({id:'c_a', k:'verify', x:802, y:326, w:136, h:154, label:'Room & meal\ncheck', icon:'clip', sub:'a bed and a lunch\nfor everyone', news:old});
+  els.push({id:'c_c', k:'verify', x:802, y:492, w:136, h:98, label:'Fact check', icon:'clip', sub:'names, dates, visas', news:old});
+  els.push({id:'plan', k:'board', x:964, y:164, w:208, h:426, label:'Living plan', tag:'MEMORY', icon:'book', news:old});
+  NOTES.forEach((l,i)=>els.push({id:'pn'+i, k:'note', x:976, y:212+i*66, w:184, h:56, label:l, news:old}));
+  els.push({id:'planfoot', k:'text', x:1068, y:568, label:'every team writes and reads', size:16, weight:600, anchor:'middle', col:'#6b510a', news:old});
+  const A = (from,to,o={}) => els.push({id:'a:'+from+'>'+to, k:'arrow', from, to, news:old, ...o});
+  A('q','lead',{align:'f'});
+  A('lead','gt',{align:'t'}); A('lead','ga',{align:'t'}); A('lead','gc',{align:'t'});
+  A('gt','s_fl',{align:'t'}); A('gt','s_tr',{align:'t'}); A('ga','s_ho',{align:'t'}); A('ga','s_ca',{align:'t'}); A('gc','s_co',{align:'t'});
+  A('s_fl','c_t',{align:'f'}); A('s_tr','c_t',{align:'f'}); A('s_ho','c_a',{align:'f'}); A('s_ca','c_a',{align:'f'}); A('s_co','c_c',{align:'f'});
+  A('c_t','plan',{align:'f'}); A('c_a','plan',{align:'f'}); A('c_c','plan',{align:'f'});
+  if(b<2){
+    els.push({id:'org', k:'human', x:1200, y:314, w:172, h:124, label:'Budget guard\n+ organiser', icon:'person', sub:'stays under €30k;\nfinal sign-off', news:old});
+    A('plan','org',{align:'t'}); A('org','ans');
+  } else {
+    els.push({id:'guard', k:'verify', x:1200, y:164, w:172, h:100, label:'Budget guard', icon:'shield', is:24, sub:'stays under €30k;\n> €500 → organiser', news:true, in:{from:'org', at:0.1, d:0.5}});
+    els.push({id:'org', k:'human', x:1200, y:314, w:172, h:124, label:'Organiser', tag:'APPROVE', icon:'person', is:24, sub:'approves big payments;\nfinal sign-off', news:true, chg:[0.02,0.4]});
+    A('plan','guard',{align:'t', news:true, in:{at:0.58, d:0.22}});
+    A('guard','org',{fs:'b', ts:'t', st:'check', news:true, label:'> €500', lab:{side:'r', size:20}, halo:'#fbfcfd', in:{at:0.68, d:0.24}});
+    A('org','ans');
+  }
+  if(b===3){
+    els.push({id:'pay', k:'agent', x:1200, y:492, w:172, h:98, label:'Payments', count:'×2', icon:'wallet', sub:'the only agents\nthat can pay', news:true, in:{at:0.02, d:0.42, dy:70}});
+    A('org','pay',{fs:'b', ts:'t', news:true, in:{at:0.42, d:0.2}});
+    A('pay','w_card',{fs:'b', ts:'t', fa:0.66, align:'f', st:'door', news:true, in:{at:0.56, d:0.22}});
+    A('pay','w_book',{fs:'b', ts:'t', fa:0.36, my:638, st:'door', news:true, in:{at:0.64, d:0.26}});
+  }
+  if(n1){
+    els.push({id:'tl', k:'text', x:40, y:707, label:'time →', size:20, weight:600, col:'#3c4752', news:true});
+    els.push({id:'g_h', k:'seg', x:160, y:682, w:1226, h:36, ts:18, label:'a human team: ~3 weeks of work', news:true});
+    els.push({id:'g_a', k:'seg', s:'good', x:160, y:728, w:60, h:36, label:'', news:true});
+    els.push({id:'ga_t', k:'text', x:234, y:753, label:'agents: ~1 day of work (plus waiting for replies and approvals)', size:19, weight:600, col:COL.green, news:true});
+  } else {
+    els.push({id:'tl', k:'text', x:40, y:775, label:'time →', size:17, weight:600, col:'#3c4752', news:false});
+    els.push({id:'g_h', k:'seg', x:160, y:756, w:1226, h:26, ts:15, label:'a human team: ~3 weeks of work', news:false});
+    els.push({id:'g_a', k:'seg', s:'good', x:160, y:790, w:60, h:26, label:'', news:false});
+    els.push({id:'ga_t', k:'text', x:234, y:809, label:'agents: ~1 day of work (plus waiting for replies and approvals)', size:16, weight:600, col:COL.green, news:false});
+    // the outside world, and the only two openings in the wall
+    els.push({id:'world', k:'world', x:222, y:652, w:1164, h:78, label:'outside world', icon:'globe', news:true, in:{at:0.3, d:0.36, dy:44}});
+    els.push({id:'w_people', k:'ext', x:590, y:664, w:186, h:54, label:'attendees, hotels,\ncarriers · email', icon:'at', ts:17, is:20, news:true, in:{at:0.44, d:0.3, dy:18}});
+    els.push({id:'w_book', k:'ext', x:964, y:664, w:208, h:54, label:'booking systems', icon:'monitor', ts:17, is:20, news:true, in:{at:0.5, d:0.3, dy:18}});
+    els.push({id:'w_card', k:'ext', x:1200, y:664, w:172, h:54, label:'payment card', icon:'card', ts:17, is:20, news:true, in:{at:0.56, d:0.3, dy:18}});
+    els.push({id:'door1', k:'door', x:643, y:597, w:80, h:30, label:'DOOR 1', news:true, in:{at:0.6, d:0.26, dy:0}});
+    els.push({id:'door2', k:'door', x:1246, y:597, w:80, h:30, label:'DOOR 2', news:true, in:{at:0.66, d:0.26, dy:0}});
+    A('s_co','w_people',{fs:'b', ts:'t', fa:0.42, align:'f', st:'door', news:true, in:{at:0.74, d:0.2}});
+    A('w_people','s_co',{fs:'t', ts:'b', fa:0.58, align:'f', st:'door', news:true, in:{at:0.8, d:0.2}});
+  }
+  return els;
+}
+
+/* =====================================================================================
+   Sequence, review hooks, live navigation
+   ===================================================================================== */
+const FRAMES = ['F4','F5a','N1','N2'], BEATS = {F4:0, F5a:3, N1:0, N2:3};
+const SEQ = []; FRAMES.forEach(f=>{ if(BEATS[f]) for(let b=1;b<=BEATS[f];b++) SEQ.push([f,b]); else SEQ.push([f,0]); });
+const SC = new Map();
+function stateOf(f,b){ const k = f+'.'+b; if(!SC.has(k)) SC.set(k, f==='F4'?Fst('F4'):f==='F5a'?Fst(b||3):f==='N1'?Nst('N1'):Nst(b||3)); return SC.get(k); }
+const idxOf = (f,b) => SEQ.findIndex(s=>s[0]===f && s[1]===b);
+const root = document.getElementById('root'), svg = document.getElementById('svg');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+function paint(html, f){ root.innerHTML = html; svg.setAttribute('aria-label', TITLE[f]); }
+// Reduced motion: nothing moves. The old slide fades out over the first half, the new one in over the second,
+// so the two never show at once.
+function crossfadeHtml(A, B, t){
+  const oA = 1-eio(win(t,0,0.5)), oB = eio(win(t,0.5,1));
+  return `<rect width="1600" height="900" fill="${STAGE}"/>` + (oA>0.001?`<g opacity="${r1(oA*1000)/1000}">${renderState(A)}</g>`:'') + (oB>0.001?`<g opacity="${r1(oB*1000)/1000}">${renderState(B)}</g>`:''); }
+function frameHtml(A, B, t, slide){ return reduced.matches ? crossfadeHtml(A,B,t) : compose(A,B,t,{slide}); }
+
+const QS = new URLSearchParams(location.search);
+const REVIEW = QS.has('frame');
+let cur = 0, anim = 0;
+
+function review(){
+  document.body.classList.add('review');
+  const f = FRAMES.includes(QS.get('frame')) ? QS.get('frame') : 'F4';
+  const beatQ = QS.get('beat'), from = QS.get('from'), tQ = QS.get('t');
+  const bmax = BEATS[f];
+  const t = tQ!=null ? clamp(parseFloat(tQ)||0,0,1) : null;
+  if(from && FRAMES.includes(from)){
+    // a slide transition lands on the first build step (that is what → does live), unless &beat= says otherwise
+    const bB = beatQ!=null ? clamp(+beatQ,bmax?1:0,bmax) : (bmax?1:0);
+    const fb = QS.get('fromBeat'), bA = fb!=null ? +fb : BEATS[from];
+    const A = stateOf(from,bA), B = stateOf(f,bB);
+    paint(frameHtml(A, B, t??1, from!==f), f);
+  } else if(t!=null && beatQ!=null && bmax){
+    const bB = clamp(+beatQ,1,bmax), i = idxOf(f,bB), [pf,pb] = SEQ[Math.max(0,i-1)];
+    paint(frameHtml(stateOf(pf,pb), stateOf(f,bB), t, pf!==f), f);
+  } else {
+    const bB = beatQ!=null ? clamp(+beatQ,bmax?1:0,bmax) : bmax;
+    paint(renderState(stateOf(f,bB)), f);
+  }
+}
+
+function play(Ai, Bi, reverse){
+  cancelAnimationFrame(anim);
+  const [fa,ba] = Ai<0 ? [null,0] : SEQ[Ai], [fb,bb] = SEQ[Bi], A = Ai<0 ? null : stateOf(fa,ba), B = stateOf(fb,bb);
+  const slide = !A || fa!==fb, D = reduced.matches ? 400 : slide ? 1100 : 820, t0 = performance.now();
+  const shown = reverse ? fa : fb;
+  const step = now => { const t = Math.min(1,(now-t0)/D), tt = reverse ? 1-t : t;
+    paint(A ? frameHtml(A,B,tt,slide) : (reduced.matches ? `<g opacity="${tt}">${renderState(B)}</g>` : compose(null,B,tt,{slide:true})), shown);
+    if(t<1) anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+}
+function go(i){
+  i = clamp(i,0,SEQ.length-1); if(i===cur) return;
+  const from = cur; cur = i; ui();
+  if(i===from+1) play(from, i, false);
+  else if(i===from-1) play(i, from, true);
+  else play(from, i, false);
+}
+function replay(){ if(cur>0) play(cur-1, cur, false); else play(-1, 0, false); }
+
+const framesEl = document.getElementById('frames'), posEl = document.getElementById('pos');
+function ui(){
+  const [f,b] = SEQ[cur];
+  framesEl.innerHTML = FRAMES.map(F=>{ const on = F===f;
+    const pips = BEATS[F] ? `<span class="pips" aria-hidden="true">${Array.from({length:BEATS[F]},(_,k)=>`<span class="pip${on&&k<b?' on':''}"></span>`).join('')}</span>` : '';
+    return `<button data-f="${F}" aria-current="${on}" title="${esc(TITLE[F])}">${F}${pips}</button>`; }).join('');
+  posEl.textContent = `${TITLE[f]}${BEATS[f]?` · build ${b} of ${BEATS[f]}`:''} · ${cur+1}/${SEQ.length}`;
+  try{ history.replaceState(null,'','#'+f+(b?'.'+b:'')); }catch(e){}
+}
+function live(){
+  const m = /^#(F4|F5a|N1|N2)(?:\.(\d))?$/.exec(location.hash);
+  if(m){ const k = idxOf(m[1], m[2]?+m[2]:(BEATS[m[1]]?1:0)); if(k>=0) cur = k; }
+  ui(); paint(renderState(stateOf(...SEQ[cur])), SEQ[cur][0]);
+  framesEl.addEventListener('click', e=>{ const btn = e.target.closest('button[data-f]'); if(btn) go(idxOf(btn.dataset.f, BEATS[btn.dataset.f]?1:0)); });
+  document.getElementById('prev').onclick = () => go(cur-1);
+  document.getElementById('next').onclick = () => go(cur+1);
+  document.getElementById('replay').onclick = replay;
+  document.getElementById('stage').addEventListener('click', ()=>go(cur+1));
+  addEventListener('keydown', e=>{
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    if(['ArrowRight','PageDown',' ','Spacebar'].includes(e.key)){ e.preventDefault(); go(cur+1); }
+    else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); go(cur-1); }
+    else if(e.key==='Home') go(0); else if(e.key==='End') go(SEQ.length-1);
+    else if(e.key==='r'||e.key==='R') replay();
+  });
+}
+
+const fontLoads = ['600 20px','500 16px','700 20px'].map(s=>`${s} "Barlow Semi Condensed"`).concat(['700 44px "Barlow"','500 21px "Barlow"','500 16px "Roboto Condensed"']);
+Promise.race([Promise.all(fontLoads.map(f=>document.fonts.load(f,'Aлв').catch(()=>null))).then(()=>document.fonts.ready), new Promise(r=>setTimeout(r,3500))])
+  .then(()=>{ MW.clear(); WR.clear(); if(REVIEW) review(); else live(); document.body.dataset.ready = '1'; });
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<title>Hi-fi Slide Directions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* A review sheet: one column of variant cards, each pairing the two showcase slides with what to take from it. */
+  :root {
+    --bg: #f3f4f2; --surface: #ffffff; --ink: #1b2228; --muted: #5a656e; --line: #d9ddd8;
+    --accent: #2f6f6a; --accent-soft: #e2efed; --exp: #8a4b14; --exp-soft: #f6eadf;
+    --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #14191d; --surface: #1c2328; --ink: #e8ecef; --muted: #a2adb5; --line: #2f383f;
+    --accent: #7cc4bc; --accent-soft: #1f3533; --exp: #f0b37a; --exp-soft: #3a2a1c; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #14191d; --surface: #1c2328; --ink: #e8ecef; --muted: #a2adb5; --line: #2f383f;
+    --accent: #7cc4bc; --accent-soft: #1f3533; --exp: #f0b37a; --exp-soft: #3a2a1c; color-scheme: dark }
+  [hidden] { display: none !important; }
+  body { background: var(--bg); color: var(--ink); font: 17px/1.5 var(--body); }
+  .page { max-width: 1180px; margin: 0 auto; padding-block: 40px 72px;
+          padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+          display: grid; gap: 40px; }
+  header { display: grid; gap: 10px; max-width: 760px; }
+  h1 { font: 800 clamp(30px, 4vw, 44px)/1.1 var(--display); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); }
+  .keys { font: 500 13px/1.6 var(--mono); color: var(--muted); }
+  section { display: grid; gap: 18px; }
+  h2 { font: 700 15px/1.2 var(--display); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px;
+          display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; }
+  .vid { font: 500 13px var(--mono); color: var(--muted); }
+  h3 { font: 700 24px/1.2 var(--display); margin: 0; }
+  .kind { font: 600 12px var(--body); text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px;
+          background: var(--accent-soft); color: var(--accent); }
+  .kind.exp { background: var(--exp-soft); color: var(--exp); }
+  .open { margin-left: auto; font: 600 15px var(--body); color: var(--surface); background: var(--ink); text-decoration: none;
+          padding: 8px 16px; border-radius: 8px; }
+  .open:focus-visible, .thumbs a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .idea { margin: 0; max-width: 70ch; }
+  .thumbs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .thumbs figure { margin: 0; display: grid; gap: 6px; }
+  .thumbs img { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); }
+  .thumbs figcaption { font: 500 13px var(--mono); color: var(--muted); }
+  .details { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px 28px; }
+  .details h4 { font: 700 14px var(--display); margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .details ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+  .details p { margin: 0; }
+  @media (max-width: 720px) { .thumbs, .details { grid-template-columns: minmax(0, 1fr); } .open { margin-left: 0; } }
+</style>
+
+<div class="page">
+  <header>
+    <h1>Hi-fi slide directions</h1>
+    <p>Five ways to take the lofi storyboard to finished slides, each shown on F5a "Tools and a check" and N2 "Acting in the world, through two doors". Open a variant to step through F4 → F5a → N1 → N2 and see its transitions; the previous slides are there so you can watch the morph into each showcase slide.</p>
+    <p class="keys">→ / Space / click: next · ←: back · each page has frame buttons and "Replay transition"</p>
+  </header>
+  <section aria-labelledby="ref"><h2 id="ref">Refinements: same structure, finished</h2><div id="refined" class="list"></div></section>
+  <section aria-labelledby="exp"><h2 id="exp">Experiments: for inspiration</h2><div id="experimental" class="list"></div></section>
+</div>
+
+<script>
+// One entry per variant; thumbnails are the final F5a and N2 frames rendered by each page's own ?frame= hook.
+const VARIANTS = [];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function card(v) {
+  return `<article class="card">
+    <div class="card-head"><span class="vid">${esc(v.id)}</span><h3>${esc(v.name)}</h3>
+      <span class="kind ${v.kind === 'Experiment' ? 'exp' : ''}">${esc(v.kind)}</span>
+      <a class="open" href="${esc(v.file)}">Open ${esc(v.id)} →</a></div>
+    <p class="idea">${esc(v.idea)}</p>
+    <div class="thumbs">
+      <figure><a href="${esc(v.file)}"><img src="thumbs/${esc(v.slug)}-F5a.png" alt="${esc(v.name)}: F5a, Tools and a check" loading="lazy"></a><figcaption>F5a · Tools and a check</figcaption></figure>
+      <figure><a href="${esc(v.file)}"><img src="thumbs/${esc(v.slug)}-N2.png" alt="${esc(v.name)}: N2, Acting in the world through two doors" loading="lazy"></a><figcaption>N2 · Through two doors</figcaption></figure>
+    </div>
+    <div class="details">
+      <div><h4>Worth taking</h4><ul>${v.take.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
+      <div><h4>Motion</h4><p>${esc(v.motion)}</p></div>
+    </div>
+  </article>`;
+}
+for (const [box, kind] of [['refined', 'Refinement'], ['experimental', 'Experiment']])
+  document.getElementById(box).innerHTML = VARIANTS.filter(v => v.kind === kind).map(card).join('');
+document.querySelectorAll('.list').forEach(l => { l.style.display = 'grid'; l.style.gap = '18px'; });
+</script>

@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projector Dark Slides</title>
+<meta name="description" content="V2 hi-fi direction: the F4 → F5a and N1 → N2 showcase slides designed for a dark room and a projector.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Fira Sans: a humanist sans drawn for small, poor screens. Open apertures, a large x-height and plain zeros
+     survive projector blur; it covers the Cyrillic in "23 лв". The second sheet adds the ≈ → ≥ glyphs, which
+     Google's default subsets leave out. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700;800&text=%E2%89%88%E2%86%92%E2%89%A5&display=swap">
+<style>
+  :root {
+    --page:#06080b; --stage:#0e1318; --bar:#090c10; --bar-edge:#1b232c;
+    --ink:#f3f6f8; --ink2:#bcc7d1; --btn:#151c24; --btn-edge:#2a3541; --btn-on:#f3f6f8; --focus:#6cc2f2;
+    --sans:'Fira Sans', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; }
+  body { background:var(--page); color:var(--ink); font:14px/1.3 var(--sans);
+         display:grid; grid-template-rows:minmax(0,1fr) auto; overflow:hidden; }
+  #wrap { position:relative; min-height:0; min-width:0; cursor:pointer; }
+  #stage { position:absolute; inset:0; width:100%; height:100%; display:block; font-family:var(--sans); }
+  #bar { display:flex; align-items:center; gap:6px; padding:5px max(12px, env(safe-area-inset-right)) 5px max(12px, env(safe-area-inset-left));
+         min-height:38px; background:var(--bar); border-top:1px solid var(--bar-edge); white-space:nowrap; overflow-x:auto; }
+  #bar .name { color:var(--ink2); margin-right:8px; font-weight:600; letter-spacing:.02em; }
+  #bar button { font:600 13px/1 var(--sans); color:var(--ink); background:var(--btn); border:1px solid var(--btn-edge);
+                border-radius:7px; padding:6px 11px; cursor:pointer; }
+  #bar button:hover { border-color:#4a5868; }
+  #bar button[aria-current="true"] { background:var(--btn-on); color:var(--stage); border-color:var(--btn-on); }
+  #bar button:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+  #bar .sep { flex:1; }
+  #bar .hint { color:#7f8c99; font-size:12px; }
+  body.review { grid-template-rows:minmax(0,1fr); }
+  body.review #bar { display:none; }
+  body.review #wrap { cursor:default; }
+  @media (max-width:640px) { #bar .hint, #bar .name { display:none; } }
+</style>
+</head>
+<body>
+<main id="wrap"><svg id="stage" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Slide"></svg></main>
+<nav id="bar" aria-label="Slides">
+  <span class="name">V2 · Projector dark</span>
+  <span id="frames"></span>
+  <button id="replay" type="button">Replay transition</button>
+  <span class="sep"></span>
+  <span class="hint">→ / Space / click: next · ←: back</span>
+</nav>
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   Tokens. One hue per meaning, tuned for a projector: mid-light accents
+   that survive a washed-out image, never neon; neutrals stepped wide
+   enough that cards still separate from the ground when projected.
+   ===================================================================== */
+const C = {
+  bg:'#0e1318', panel:'#141b23', panelEdge:'#27323e', card:'#1c2530', card2:'#26313d', edge:'#3d4a58', edge2:'#4f5d6c',
+  ink:'#f3f6f8', ink2:'#bdc8d2', ink3:'#97a4b1', dark:'#0e1318', arrow:'#93a2b1',
+  good:'#62d29a', warn:'#f5b544', bad:'#ff6e64', check:'#b9a7ff', sky:'#6cc2f2', sand:'#e3c98e', human:'#f6eedf',
+  goodT:'#132a1f', warnT:'#33280f', badT:'#3d1a1b', checkT:'#1f1c38', skyT:'#0f2232', sandT:'#28231a', humanT:'#272620',
+  badSub:'#ffbab3', exact:'#eaeff4', exactSub:'#33404d', think:'#2a3542', note:'#221e16', noteInk:'#efe8d6',
+  world:'#0c1a25', worldEdge:'#1f3c52', seg:'#2b3542', pill:'#334150', wall:'#8796a5', doorway:'#1d4763'
+};
+const FN = "'Fira Sans', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
+
+/* ---------- small maths ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const win = (t, w) => w[1] <= w[0] ? (t >= w[1] ? 1 : 0) : clamp((t - w[0]) / (w[1] - w[0]));
+const easeIO = u => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;   // cubic in-out: glides
+const easeOut = u => 1 - Math.pow(1 - u, 3);                                  // entries settle
+const easeIn = u => u * u * u;                                                // exits accelerate away
+const sine = u => -(Math.cos(Math.PI * u) - 1) / 2;                           // arrows draw on
+const smooth = u => u * u * (3 - 2 * u);
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, u) => {
+  if (a === b || u <= 0) return a; if (u >= 1) return b;
+  if (!/^#[0-9a-f]{6}$/i.test(a) || !/^#[0-9a-f]{6}$/i.test(b)) return u < 0.5 ? a : b;
+  const A = hex(a), B = hex(b);
+  return '#' + A.map((v, i) => Math.round(lerp(v, B[i], u)).toString(16).padStart(2, '0')).join('');
+};
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const f1 = v => (Math.round(v * 10) / 10);
+const pct = v => Math.round(v * 100) + '%';
+const pcol = v => v >= 0.85 ? C.good : v >= 0.6 ? C.warn : C.bad;
+
+/* ---------- text: measuring, superscripts, rich runs ---------- */
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+function splitSup(s) {
+  const out = []; let cur = '', sup = false;
+  for (const ch of String(s)) {
+    const i = SUP.indexOf(ch), isS = i >= 0, c = isS ? String(i) : ch;
+    if (isS !== sup && cur) { out.push({ s: cur, sup }); cur = ''; }
+    sup = isS; cur += c;
+  }
+  if (cur) out.push({ s: cur, sup });
+  return out;
+}
+const mctx = document.createElement('canvas').getContext('2d');
+let mcache = new Map();
+function tw(t, size, wt = 400, mono = false) {
+  const parts = Array.isArray(t) ? t : [{ t }]; let w = 0;
+  for (const p of parts) for (const r of splitSup(p.t)) {
+    const sz = r.sup ? size * 0.62 : size, ww = p.wt || wt, k = `${ww}|${sz}|${mono}|${r.s}`;
+    let v = mcache.get(k);
+    if (v == null) { mctx.font = `${ww} ${sz}px ${FN}`; v = mctx.measureText(r.s).width * (mono ? 1.04 : 1); mcache.set(k, v); }
+    w += v;
+  }
+  return w;
+}
+
+/* ---------- icons (drawn, never emoji) ---------- */
+function iconSVG(p) {
+  const { name, cx, cy, s } = p, col = p.color, sw = f1(p.sw || Math.max(2, s / 11)), op = p.op ?? 1;
+  const P = (x, y) => `${f1(cx + x * s)},${f1(cy + y * s)}`;
+  const st = `fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"`;
+  let g = '';
+  switch (name) {
+    case 'vdisc': case 'xdisc': {
+      g = `<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(s / 2)}" fill="${col}"/>`;
+      const m = `fill="none" stroke="${p.mark || C.dark}" stroke-width="${f1(s / 8)}" stroke-linecap="round" stroke-linejoin="round"`;
+      g += name === 'vdisc' ? `<path d="M${P(-0.24, 0.02)} L${P(-0.06, 0.2)} L${P(0.25, -0.17)}" ${m}/>`
+                            : `<path d="M${P(-0.17, -0.17)} L${P(0.17, 0.17)} M${P(0.17, -0.17)} L${P(-0.17, 0.17)}" ${m}/>`;
+      break;
+    }
+    case 'cross': g = `<path d="M${P(-0.3, -0.3)} L${P(0.3, 0.3)} M${P(0.3, -0.3)} L${P(-0.3, 0.3)}" ${st}/>`; break;
+    case 'stopwatch':
+      g = `<circle cx="${f1(cx)}" cy="${f1(cy + 0.08 * s)}" r="${f1(0.38 * s)}" ${st}/>` +
+          `<path d="M${P(0, -0.3)} L${P(0, -0.46)} M${P(-0.12, -0.47)} L${P(0.12, -0.47)} M${P(0.3, -0.24)} L${P(0.38, -0.32)} M${P(0, 0.08)} L${P(0.13, -0.1)}" ${st}/>`;
+      break;
+    case 'shield':
+      g = `<path d="M${P(0, -0.5)} L${P(0.42, -0.34)} L${P(0.42, 0.02)} Q${P(0.42, 0.34)} ${P(0, 0.52)} Q${P(-0.42, 0.34)} ${P(-0.42, 0.02)} L${P(-0.42, -0.34)} Z" ${st}/>` +
+          `<path d="M${P(-0.18, 0.0)} L${P(-0.04, 0.15)} L${P(0.2, -0.13)}" ${st}/>`;
+      break;
+    case 'person':
+      g = `<circle cx="${f1(cx)}" cy="${f1(cy - 0.2 * s)}" r="${f1(0.19 * s)}" ${st}/>` +
+          `<path d="M${P(-0.36, 0.46)} Q${P(-0.36, 0.06)} ${P(0, 0.06)} Q${P(0.36, 0.06)} ${P(0.36, 0.46)}" ${st}/>`;
+      break;
+  }
+  return `<g opacity="${f1(op * 1000) / 1000}">${g}</g>`;
+}
+
+/* =====================================================================
+   Frames. Same ids as frames.json (so persistent elements keep their
+   identity across a transition), re-laid out to fill the 1600×900 stage.
+   ===================================================================== */
+const chrome = (title, cap, clock) => [
+  { id: 'ttl', k: 'text', x: 48, y: 92, label: title, size: 52, wt: 700, fill: 'ink' },
+  { id: 'cap', k: 'text', x: 48, y: 852, label: cap, size: 24, wt: 400, fill: 'ink2' },
+  { id: 'clock', k: 'clock', x: 1384, y: 44, w: 168, h: 52, label: clock },
+];
+const A = (id, from, to, o = {}) => ({ id, k: 'arrow', from, to, r: 'h', ...o });
+const STEP_L = ['Search\nroad distance', 'Search\nfuel price', 'Search\ntrain fares', 'Calculate\nboth costs', 'Compare\n& answer'];
+const SX = i => 70 + i * 258;            // five 228-wide steps fill the model region edge to edge
+const ASK = 'Which is cheaper from Ruse to Sofia — driving or taking the train?';
+const chainArrows = () => [0, 1, 2, 3].map(i => A(`a:s${i + 1}>s${i + 2}`, 's' + (i + 1), 's' + (i + 2)));
+
+function F4() {
+  const sy = 296, sh = 204;
+  return [
+    ...chrome('Thinking before each step', '98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.', '⏱ ~1 min'),
+    { id: 'ai', k: 'region', x: 48, y: 250, w: 1304, h: 280, label: 'AI model' },
+    { id: 'q', k: 'prompt', x: 48, y: 120, w: 1504, h: 100, label: 'Question', sub: ASK + '\n**Think hard and describe the answer step by step.**' },
+    ...STEP_L.map((l, i) => ({ id: 's' + (i + 1), k: 'step', x: SX(i), y: sy, w: 228, h: sh, label: l, p: 0.98, padB: 58 })),
+    ...STEP_L.map((l, i) => ({ id: 'th' + (i + 1), k: 'think', x: SX(i) + 34, y: sy + sh - 56, w: 160, h: 40, label: 'thinking…' })),
+    { id: 'ans', k: 'io', x: 1382, y: 318, w: 170, h: 160, label: 'Answer', p: 0.9039207967999999 },
+    A('a:q>s1', 'q', 's1', { r: 'v', xa: 'to' }), ...chainArrows(), A('a:s5>ans', 's5', 'ans'),
+    ...[[5, '90%', 0.9039], [10, '82%', 0.8171], [100, '13%', 0.1326], [1000, '0%', 0]].map(([n, r, v], i) => ({
+      id: 'pow' + i, k: 'tile', x: 48 + i * 382, y: 584, w: 358, h: 186,
+      label: `0.98${String(n).replace(/\d/g, d => SUP[d])} ≈ ${r}`, v })),
+  ];
+}
+
+function F5a() {
+  const sy = 262, sh = 216;
+  const sub = ['web search', 'web search', '2025 page · 23 лв', 'calculator · exact', ''];
+  return [
+    ...chrome('Tools and a check', 'In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.', '⏱ ~5 min'),
+    { id: 'ai', k: 'region', x: 48, y: 214, w: 1304, h: 560, label: 'AI model' },
+    { id: 'q', k: 'prompt', x: 48, y: 120, w: 1504, h: 70, label: 'Question', sub: ASK },
+    ...STEP_L.map((l, i) => ({ id: 's' + (i + 1), k: i === 3 ? 'exact' : 'step', x: SX(i), y: sy, w: 228, h: sh, label: l,
+      p: i === 3 ? 1 : 0.98, sub: sub[i], s: i === 2 ? 'bad' : undefined, padB: i === 3 ? 0 : 58 })),
+    ...[0, 1, 2, 4].map(i => ({ id: 'th' + (i + 1), k: 'think', x: SX(i) + 34, y: sy + sh - 56, w: 160, h: 40, label: 'thinking…' })),
+    { id: 'v', k: 'band', x: 70, y: 570, w: 1260, h: 180, label: 'Check', hx: SX(4), hw: 228 },
+    ...['sources agree ✓', 'sensible range ✓', 'date & currency ✗', 'recompute ✓'].map((l, i) => ({
+      id: 'ck' + (i + 1), k: 'chip', x: SX(i) + 11, y: 624, w: 206, h: 72, label: l, s: i === 2 ? 'bad' : 'good' })),
+    { id: 'ans', k: 'io', x: 1382, y: 580, w: 170, h: 160, label: 'Answer', sub: 'on hold', s: 'warn', p: 0.9223681599999999 },
+    A('a:q>s1', 'q', 's1', { r: 'v', xa: 'to' }), ...chainArrows(),
+    A('a:s5>v', 's5', 'v', { r: 'v' }), A('a:v>ans', 'v', 'ans', { ya: 'to' }),
+    // the check's verdict goes back from the failing test to the step it caught
+    A('back', 'ck3', 's3', { r: 'v', ak: 'bad', label: '✗ fare from a 2025 page, in leva', lp: 'right', lyo: -27 }),
+  ];
+}
+
+/* N1 / N2 share one grid: lead | groups | teams | checks | living plan | guard·organiser·payments, then the result. */
+const NX = { lead: 64, grp: 228, team: 434, chk: 722, plan: 908, right: 1144, res: 1376 };
+const NW = { lead: 140, grp: 180, team: 262, chk: 160, plan: 214, right: 190, res: 176 };
+const TASK = 'get 100 attendees from 15 countries to Ruse by the 23rd, under €30,000';
+const NOTES = ['Flights: 12 land\nafter 22:00', 'Hotels: holding 12\nlate check-ins', 'Attendee 37:\nneeds a step-free room',
+  'Catering: 9 vegetarian\nlunches', 'Trains & buses: coach\nfrom Bucharest 15:30'];
+
+function conf(doors) {
+  // row geometry: N1 spreads over a tall region; N2 compresses it to make room for the outside world
+  const R = doors
+    ? { reg: 396, fl: [232, 60], tr: [298, 60], ho: [374, 60], ca: [440, 60], co: [516, 80], gt: [232, 126], ga: [374, 126], gc: [516, 80],
+        plan: [232, 364], note0: 280, noteStep: 56, noteH: 48, foot: 580, lead: 354, ans: 355 }
+    : { reg: 484, fl: [232, 68], tr: [308, 68], ho: [414, 68], ca: [490, 68], co: [596, 88], gt: [232, 144], ga: [414, 144], gc: [596, 88],
+        plan: [232, 452], note0: 288, noteStep: 72, noteH: 54, foot: 668, lead: 398, ans: 383 };
+  const box = (id, k, col, row, label, o = {}) => ({ id, k, x: NX[col], y: row[0], w: NW[col], h: row[1], label, ...o });
+  const els = [
+    ...chrome(doors ? 'Acting in the world, through two doors' : 'A real-scale job: 100 people to this conference',
+      doors ? 'Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.'
+            : 'A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.', '⏱ ~1 day'),
+    { id: 'ai', k: 'region', x: 48, y: 216, w: 1304, h: R.reg, label: '', wall: doors },
+    { id: 'ail', k: 'text', x: NX.grp, y: 205, size: 17, wt: 600, fill: 'ink2',
+      label: doors ? '~127 agents · a lead, three groups, five teams, two payment agents' : '~125 agents · a lead, three groups, five teams' },
+    { id: 'q', k: 'prompt', x: 48, y: 118, w: 1504, h: 62, label: 'Task', sub: TASK },
+    { id: 'lead', k: 'lead', x: NX.lead, y: R.lead, w: NW.lead, h: 120, label: 'Lead', nl: 'COORDINATE', sub: 'splits the job,\nwatches progress' },
+    box('gt', 'agent', 'grp', R.gt, 'Transport', { sub: doors ? 'posts requests\nin the plan' : 'long and\nshort distance' }),
+    box('ga', 'agent', 'grp', R.ga, 'Accommodation', { sub: doors ? 'posts requests\nin the plan' : 'beds and lunches' }),
+    box('gc', 'agent', 'grp', R.gc, 'Correspondence', { sub: doors ? 'the only agents that\nwrite to people' : 'speaks for\neach attendee', door: doors }),
+    box('s_fl', 'agent', 'team', R.fl, 'Flights', { nl: '×8', sub: 'long distance' }),
+    box('s_tr', 'agent', 'team', R.tr, 'Trains & buses', { nl: '×6', sub: 'short distance' }),
+    box('s_ho', 'agent', 'team', R.ho, 'Hotels', { nl: '×4', sub: 'rooms in Ruse' }),
+    box('s_ca', 'agent', 'team', R.ca, 'Catering', { nl: '×3', sub: 'lunches during the stay' }),
+    box('s_co', 'agent', 'team', R.co, 'Attendee workers', { nl: '×100', sub: 'one per attendee', door: doors }),
+    box('c_t', 'verify', 'chk', R.gt, 'Verifier', { sub: 'connections\n≥ 60 min;\nlands by the 23rd' }),
+    box('c_a', 'verify', 'chk', R.ga, 'Room & meal\ncheck', { sub: 'a bed and a lunch\nfor everyone' }),
+    box('c_c', 'verify', 'chk', R.gc, 'Fact check', { sub: 'names, dates, visas' }),
+    box('plan', 'board', 'plan', R.plan, 'Living plan', { nl: 'MEMORY' }),
+    { id: 'planfoot', k: 'text', x: NX.plan + NW.plan / 2, y: R.foot, size: 15, wt: 600, fill: 'sand', anchor: 'middle', label: 'every team writes and reads' },
+    ...NOTES.map((l, i) => ({ id: 'pn' + i, k: 'note', x: NX.plan + 10, y: R.note0 + i * R.noteStep, w: NW.plan - 20, h: R.noteH, label: l })),
+    { id: 'ans', k: 'io', x: NX.res, y: R.ans, w: NW.res, h: 150, label: 'Result', sub: 'every attendee:\nan itinerary, a bed\nand lunches' },
+    A('a:q>lead', 'q', 'lead', { r: 'v', xa: 'to', tdy: -14 }),
+    ...['gt', 'ga', 'gc'].map(g => A('a:lead>' + g, 'lead', g, { r: 'hvh', mx: 216 })),
+    A('a:gt>s_fl', 'gt', 's_fl', { ya: 'to' }), A('a:gt>s_tr', 'gt', 's_tr', { ya: 'to' }),
+    A('a:ga>s_ho', 'ga', 's_ho', { ya: 'to' }), A('a:ga>s_ca', 'ga', 's_ca', { ya: 'to' }), A('a:gc>s_co', 'gc', 's_co', { ya: 'to' }),
+    A('a:s_fl>c_t', 's_fl', 'c_t'), A('a:s_tr>c_t', 's_tr', 'c_t'), A('a:s_ho>c_a', 's_ho', 'c_a'),
+    A('a:s_ca>c_a', 's_ca', 'c_a'), A('a:s_co>c_c', 's_co', 'c_c'),
+    A('a:c_t>plan', 'c_t', 'plan'), A('a:c_a>plan', 'c_a', 'plan'), A('a:c_c>plan', 'c_c', 'plan'),
+    { id: 'tl', k: 'text', x: 48, y: 743, size: 20, wt: 500, fill: 'ink2', label: 'time →' },
+    { id: 'g_h', k: 'seg', x: 150, y: 722, w: 1202, h: 28, label: 'a human team: ~3 weeks of work' },
+    { id: 'g_a', k: 'seg', x: 150, y: 758, w: 57, h: 28, label: '', s: 'good' },
+    { id: 'ga_t', k: 'text', x: 220, y: 779, size: 17, wt: 600, fill: 'good', label: 'agents: ~1 day of work (plus waiting for replies and approvals)' },
+  ];
+  if (!doors) {
+    els.push({ id: 'org', k: 'human', x: NX.right, y: 388, w: NW.right, h: 140, label: 'Budget guard\n+ organiser', sub: 'stays under €30k;\nfinal sign-off' },
+      A('a:plan>org', 'plan', 'org', { ya: 'to' }), A('a:org>ans', 'org', 'ans'));
+  } else {
+    els.push(
+      { id: 'guard', k: 'verify', x: NX.right, y: 232, w: NW.right, h: 80, label: 'Budget guard', sub: 'stays under €30k;\n> €500 → organiser' },
+      { id: 'org', k: 'human', x: NX.right, y: 384, w: NW.right, h: 100, label: 'Organiser', nl: 'APPROVE', sub: 'approves big payments;\nfinal sign-off' },
+      { id: 'pay', k: 'agent', x: NX.right, y: 516, w: NW.right, h: 80, label: 'Payments', nl: '×2', sub: 'the only agents\nthat can pay', door: true },
+      A('a:plan>guard', 'plan', 'guard', { ya: 'to' }),
+      A('a:guard>org', 'guard', 'org', { r: 'v', dx: 152, label: '> €500', lk: 'gate' }),
+      A('a:org>pay', 'org', 'pay', { r: 'v', dx: 152 }), A('a:org>ans', 'org', 'ans'),
+      { id: 'world', k: 'world', x: 48, y: 628, w: 1504, h: 74, label: 'outside world' },
+      { id: 'w_people', k: 'ext', x: NX.team, y: 641, w: NW.team, h: 48, label: 'attendees, hotels,\ncarriers · email' },
+      { id: 'w_book', k: 'ext', x: 1050, y: 641, w: 168, h: 48, label: 'booking systems' },
+      { id: 'w_card', k: 'ext', x: 1236, y: 641, w: 168, h: 48, label: 'payment card' },
+      // the two doors: the only openings in the system's wall
+      { id: 'door1', k: 'door', x: 520, y: 606, w: 80, h: 28, n: '1' },
+      { id: 'door2', k: 'door', x: 1134, y: 606, w: 192, h: 28, n: '2' },
+      A('a:s_co>w_people', 's_co', 'w_people', { r: 'v', dx: 110, ak: 'door' }),
+      A('a:w_people>s_co', 'w_people', 's_co', { r: 'v', dx: 142, ak: 'door' }),
+      A('a:pay>w_book', 'pay', 'w_book', { r: 'line', fdx: 58, ak: 'door' }),
+      A('a:pay>w_card', 'pay', 'w_card', { r: 'line', fdx: 126, ak: 'door' }));
+  }
+  return els;
+}
+
+const FR = {
+  F4:  { id: 'F4',  title: 'Thinking before each step', els: F4(), news: [] },
+  F5a: { id: 'F5a', title: 'Tools and a check', els: F5a(), news: ['s3', 'ck3', 'ans'] },
+  N1:  { id: 'N1',  title: 'A real-scale job: 100 people to this conference', els: conf(false), news: [] },
+  N2:  { id: 'N2',  title: 'Acting in the world, through two doors', els: conf(true), news: ['door1', 'door2', 'org'] },
+};
+const SEQ = ['F4', 'F5a', 'N1', 'N2'];
+
+/* =====================================================================
+   Choreography for the two showcase transitions (linear t in [0,1]).
+   g = geometry glide, c = content/state change, n = number count,
+   i = entry window, x = exit window, from = element it grows out of.
+   Anything unlisted gets the defaults below.
+   ===================================================================== */
+const DEF = { g: [0.06, 0.66], x: [0, 0.26] };
+const PULSE = [0.8, 1];
+const SCHED = {
+  'F4>F5a': {
+    ttl: { c: [0, 0.3] }, cap: { c: [0.04, 0.4] }, clock: { c: [0.04, 0.36] },
+    s1: { c: [0.18, 0.5] }, s2: { c: [0.22, 0.54] }, s5: { c: [0.26, 0.58] },
+    s4: { c: [0.2, 0.52], n: [0.2, 0.52] },                    // the calculator turns exact; 98% counts to 100%
+    ans: { n: [0.24, 0.56], c: [0.76, 0.92] },                 // glides down; 90% → 92%; then goes on hold
+    s3: { c: [0.72, 0.88] },                                   // turns red as the back arrow reaches it
+    th4: { x: [0.08, 0.3] }, 'a:s5>ans': { x: [0, 0.16] },
+    pow0: { x: [0, 0.22] }, pow1: { x: [0.03, 0.25] }, pow2: { x: [0.06, 0.28] }, pow3: { x: [0.09, 0.31] },
+    v: { i: [0.34, 0.58], dy: -18 },
+    ck1: { i: [0.44, 0.62], sc: 0.9, dy: 0 }, ck2: { i: [0.48, 0.66], sc: 0.9, dy: 0 },
+    ck3: { i: [0.52, 0.7], sc: 0.9, dy: 0 }, ck4: { i: [0.56, 0.74], sc: 0.9, dy: 0 },
+    'a:s5>v': { i: [0.4, 0.54] }, 'a:v>ans': { i: [0.58, 0.7] }, back: { i: [0.66, 0.84] },
+  },
+  'N1>N2': {
+    ttl: { c: [0, 0.3] }, cap: { c: [0.04, 0.4] }, ail: { c: [0.06, 0.4] },
+    gt: { c: [0.18, 0.46] }, ga: { c: [0.22, 0.5] }, gc: { c: [0.62, 0.8] }, s_co: { c: [0.62, 0.8] },
+    org: { c: [0.24, 0.56] }, 'a:plan>org': { x: [0, 0.18] }, ai: { c: [0.58, 0.78] },
+    guard: { i: [0.28, 0.56], from: 'org' }, pay: { i: [0.4, 0.64], dy: -30 },
+    'a:plan>guard': { i: [0.44, 0.56] }, 'a:guard>org': { i: [0.5, 0.62] }, 'a:org>pay': { i: [0.56, 0.68] },
+    world: { i: [0.44, 0.68], dy: 30 },
+    w_people: { i: [0.56, 0.74], dy: 14 }, w_book: { i: [0.6, 0.78], dy: 14 }, w_card: { i: [0.64, 0.82], dy: 14 },
+    door1: { i: [0.64, 0.78], sc: 0.5, dy: 0 }, door2: { i: [0.68, 0.82], sc: 0.5, dy: 0 },
+    'a:s_co>w_people': { i: [0.7, 0.84] }, 'a:w_people>s_co': { i: [0.74, 0.88] },
+    'a:pay>w_book': { i: [0.72, 0.86] }, 'a:pay>w_card': { i: [0.76, 0.9] },
+  },
+};
+
+/* =====================================================================
+   Layout: each element becomes a list of keyed primitives.
+   R rect · T text · B badge · I icon. Keys are stable within an element,
+   so a transition can match a line that survives and glide it, and fade
+   the ones that change.
+   ===================================================================== */
+const Z = { region: 0, world: 0.5, door: 1, step: 3, exact: 3, io: 3, prompt: 3, agent: 3, lead: 3, verify: 3, board: 3, human: 3,
+  ext: 3, seg: 3, tile: 3, clock: 3, band: 3, think: 3.5, chip: 3.5, note: 3.5, text: 5 };
+const colorOf = v => (v && C[v]) || v;
+
+function layout(e) {
+  const P = []; const z = Z[e.k] ?? 3; const box = [e.x, e.y, e.w, e.h];
+  const add = p => { p.z = p.z ?? z; p.i = P.length; P.push(p); return p; };
+  const rect = (key, x, y, w, h, o) => add({ pt: 'R', key, x, y, w, h, rx: 10, fill: C.card, stroke: C.edge, sw: 0, ...o });
+  const text = (key, x, y, t, size, o) => add({ pt: 'T', key, x, y, t, size, wt: 400, fill: C.ink, anchor: 'start', ...o });
+  // a vertical stack of line groups centred on cy; returns the baseline of each line
+  const stack = (x, cy, groups, anchor, cont) => {
+    const gs = groups.filter(g => g.lines.length);
+    let total = 0; gs.forEach((g, i) => { total += g.lines.length * g.size * g.lh + (i ? g.gap : 0); });
+    let y = cy - total / 2; const out = [];
+    gs.forEach((g, gi) => {
+      if (gi) y += g.gap;
+      g.lines.forEach((ln, li) => {
+        const b = /^\*\*(.*)\*\*$/.exec(ln), t = b ? b[1] : ln;
+        const base = y + g.size * g.lh / 2 + g.size * 0.36;
+        text(`${g.key}${li}:${t}`, x, base, t, g.size, { wt: b ? 700 : g.wt, fill: b ? C.ink : g.fill, anchor, cont, mono: g.mono });
+        out.push({ key: g.key, base, size: g.size }); y += g.size * g.lh;
+      });
+    });
+    return out;
+  };
+  const lines = s => (s ? String(s).split('\n').filter(l => l.length) : []);
+  const badge = () => { if (e.p == null) return;
+    add({ pt: 'B', key: 'badge', xr: e.x + e.w - 14, y: e.y - 17, v: e.p, ex: e.k === 'exact' ? 1 : 0, z: z + 0.2 }); };
+  const edgePill = (txt, fill, ink) => {             // COORDINATE / MEMORY / APPROVE sit on the top edge
+    const w = tw(txt, 15, 700, true) + 15 * 0.06 * txt.length + 20;
+    rect('nl', e.x + 14, e.y - 14, w, 28, { rx: 14, fill, sw: 0 });
+    text('nlt:' + txt, e.x + 14 + w / 2, e.y + 5.5, txt, 15, { wt: 700, fill: ink, anchor: 'middle', mono: true, ls: 0.06 });
+  };
+
+  switch (e.k) {
+    case 'text': {
+      lines(e.label).forEach((l, i) => text(`L${i}:${l}`, e.x, e.y + i * e.size * 1.25, l, e.size,
+        { wt: e.wt || 400, fill: colorOf(e.fill) || C.ink, anchor: e.anchor || 'start', ls: e.size >= 40 ? -0.01 : 0 }));
+      break;
+    }
+    case 'clock': {
+      const t = e.label.replace(/^⏱\s*/, ''), w = 30 + 12 + tw(t, 24, 600), x0 = e.x + (e.w - w) / 2;
+      rect('shape', e.x, e.y, e.w, e.h, { rx: e.h / 2, fill: C.card, stroke: C.edge, sw: 2 });
+      add({ pt: 'I', key: 'ic', name: 'stopwatch', cx: x0 + 14, cy: e.y + e.h / 2, s: 28, color: C.ink2, sw: 2.6 });
+      text('L:' + t, x0 + 42, e.y + e.h / 2 + 8.5, t, 24, { wt: 600 });
+      break;
+    }
+    case 'region': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 22, fill: C.panel, stroke: C.panelEdge, sw: 2 });
+      if (e.label) text('L:' + e.label, e.x + 22, e.y + 30, e.label, 18, { wt: 600, fill: C.ink3, ls: 0.02 });
+      // N2: the system's boundary becomes a wall; the doors are the only openings in it
+      if (e.wall) rect('wall', e.x + 22, e.y + e.h - 3, e.w - 44, 6, { rx: 3, fill: C.wall, sw: 0 });
+      break;
+    }
+    case 'world': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 18, fill: C.world, stroke: C.worldEdge, sw: 2 });
+      text('L:' + e.label, e.x + 22, e.y + e.h / 2 + 7, e.label, 20, { wt: 600, fill: C.sky });
+      break;
+    }
+    case 'prompt': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 16, fill: C.card2, stroke: C.edge2, sw: 2 });
+      const L = lines(e.sub), lh = 36, cy = e.y + e.h / 2, first = cy - (L.length - 1) * lh / 2;
+      const tagW = tw(e.label, 17, 700) + 30;
+      rect('tag', e.x + 16, first - 17, tagW, 34, { rx: 17, fill: C.pill, sw: 0 });
+      text('tag:' + e.label, e.x + 16 + tagW / 2, first + 6, e.label, 17, { wt: 700, fill: C.ink2, anchor: 'middle' });
+      L.forEach((l, i) => { const b = /^\*\*(.*)\*\*$/.exec(l), t = b ? b[1] : l;
+        text(`L${i}:${t}`, e.x + 16 + tagW + 18, first + i * lh + 8.5, t, 24, { wt: b ? 700 : 400, fill: C.ink, cont: box }); });
+      break;
+    }
+    case 'io': {
+      const warn = e.s === 'warn';
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 16, fill: warn ? C.warnT : C.card2, stroke: warn ? C.warn : C.edge2, sw: warn ? 3 : 2 });
+      const cx = e.x + e.w / 2, cy = e.y + e.h / 2 + (e.p != null ? 4 : 0);
+      if (warn) {
+        const pw = tw(e.sub, 18, 700) + 28;
+        text('L0:' + e.label, cx, cy - 12, e.label, 25, { wt: 700, anchor: 'middle', cont: box });
+        rect('hold', cx - pw / 2, cy + 6, pw, 34, { rx: 17, fill: C.warn, sw: 0 });
+        text('hold:' + e.sub, cx, cy + 29, e.sub, 18, { wt: 700, fill: C.dark, anchor: 'middle' });
+      } else {
+        stack(cx, cy, [{ key: 'L', lines: lines(e.label), size: 25, wt: 700, fill: C.ink, lh: 1.15, gap: 0 },
+          { key: 'S', lines: lines(e.sub), size: 17, wt: 400, fill: C.ink2, lh: 1.25, gap: 8 }], 'middle', box);
+      }
+      badge();
+      break;
+    }
+    case 'step': case 'exact': {
+      const exact = e.k === 'exact', bad = e.s === 'bad';
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 14, fill: exact ? C.exact : bad ? C.badT : C.card,
+        stroke: exact ? C.exact : bad ? C.bad : C.edge, sw: exact ? 2 : bad ? 3.5 : 2 });
+      const cy = e.y + (e.h - (e.padB || 0)) / 2 + (e.padB ? 6 : 0);
+      stack(e.x + e.w / 2, cy, [{ key: 'L', lines: lines(e.label), size: 25, wt: 600, fill: exact ? C.dark : C.ink, lh: 1.16, gap: 0 },
+        { key: 'S', lines: lines(e.sub), size: 18, wt: exact || bad ? 600 : 500, fill: exact ? C.exactSub : bad ? C.badSub : C.ink2, lh: 1.2, gap: 10 }], 'middle', box);
+      badge();
+      break;
+    }
+    case 'think': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: e.h / 2, fill: C.think, sw: 0 });
+      text('L:' + e.label, e.x + e.w / 2, e.y + e.h / 2 + 6, e.label, 17, { wt: 500, fill: C.ink2, anchor: 'middle', cont: box });
+      break;
+    }
+    case 'band': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 18, fill: C.checkT, stroke: C.check, sw: 2.5 });
+      const hx = e.hx + e.hw / 2, cy = e.y + e.h / 2;
+      add({ pt: 'I', key: 'ic', name: 'shield', cx: hx, cy: cy - 20, s: 44, color: C.check, sw: 3 });
+      text('L:' + e.label, hx, cy + 38, e.label, 27, { wt: 700, fill: C.check, anchor: 'middle' });
+      break;
+    }
+    case 'chip': {
+      const bad = e.s === 'bad', col = bad ? C.bad : C.good, t = e.label.replace(/\s*[✓✗]\s*$/, '');
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 14, fill: bad ? C.badT : '#111820', stroke: col, sw: bad ? 3.5 : 2.5 });
+      const w = 28 + 10 + tw(t, 20, 600), x0 = e.x + (e.w - w) / 2, cy = e.y + e.h / 2;
+      add({ pt: 'I', key: 'ic', name: bad ? 'xdisc' : 'vdisc', cx: x0 + 14, cy, s: 28, color: col });
+      text('L:' + t, x0 + 38, cy + 7, t, 20, { wt: 600, cont: box });
+      break;
+    }
+    case 'agent': case 'verify': {
+      const ver = e.k === 'verify';
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 12, fill: ver ? C.checkT : C.card, stroke: ver ? C.check : C.edge, sw: ver ? 2.5 : 2 });
+      if (e.door) rect('door', e.x + 6, e.y + 8, 5, e.h - 16, { rx: 2.5, fill: C.sky, sw: 0 });
+      const px = e.x + (e.door ? 19 : 13);
+      const ls = stack(px, e.y + e.h / 2, [{ key: 'L', lines: lines(e.label), size: 20, wt: 600, fill: C.ink, lh: 1.18, gap: 0 },
+        { key: 'S', lines: lines(e.sub), size: 16, wt: 400, fill: C.ink2, lh: 1.2, gap: 5 }], 'start', box);
+      if (e.nl) {
+        const w = tw(e.nl, 16, 700, true) + 18, ly = ls[0].base - 7;
+        rect('nl', e.x + e.w - 12 - w, ly - 13, w, 26, { rx: 13, fill: C.pill, sw: 0 });
+        text('nlt:' + e.nl, e.x + e.w - 12 - w / 2, ly + 5.5, e.nl, 16, { wt: 700, anchor: 'middle', mono: true });
+      }
+      break;
+    }
+    case 'lead': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 14, fill: C.card2, stroke: C.edge2, sw: 2 });
+      edgePill(e.nl, C.ink, C.dark);
+      stack(e.x + e.w / 2, e.y + e.h / 2 + 6, [{ key: 'L', lines: lines(e.label), size: 22, wt: 700, fill: C.ink, lh: 1.15, gap: 0 },
+        { key: 'S', lines: lines(e.sub), size: 16, wt: 400, fill: C.ink2, lh: 1.2, gap: 6 }], 'middle', box);
+      break;
+    }
+    case 'board': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 16, fill: C.sandT, stroke: C.sand, sw: 2.5 });
+      edgePill(e.nl, C.sand, C.dark);
+      text('L:' + e.label, e.x + 16, e.y + 38, e.label, 22, { wt: 700, cont: box });
+      break;
+    }
+    case 'note': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 8, fill: C.note, sw: 0 });
+      rect('bar', e.x, e.y + 6, 4, e.h - 12, { rx: 2, fill: C.sand, sw: 0 });
+      stack(e.x + 14, e.y + e.h / 2, [{ key: 'L', lines: lines(e.label), size: 16, wt: 500, fill: C.noteInk, lh: 1.18, gap: 0 }], 'start', box);
+      break;
+    }
+    case 'human': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 14, fill: C.humanT, stroke: C.human, sw: 3 });
+      if (e.nl) edgePill(e.nl, C.human, C.dark);
+      stack(e.x + e.w / 2, e.y + e.h / 2 + (e.nl ? 5 : 0), [{ key: 'L', lines: lines(e.label), size: 21, wt: 700, fill: C.ink, lh: 1.15, gap: 0 },
+        { key: 'S', lines: lines(e.sub), size: 16, wt: 400, fill: C.ink2, lh: 1.2, gap: 6 }], 'middle', box);
+      break;
+    }
+    case 'ext': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 10, fill: C.skyT, stroke: C.sky, sw: 2 });
+      stack(e.x + e.w / 2, e.y + e.h / 2, [{ key: 'L', lines: lines(e.label), size: 17, wt: 600, fill: C.ink, lh: 1.12, gap: 0 }], 'middle', box);
+      break;
+    }
+    case 'door': {
+      const cy = e.y + e.h / 2;
+      // a lit opening through the wall: threshold bridging into the outside world, framed by two posts
+      rect('cut', e.x, e.y, e.w, e.h, { rx: 0, fill: C.doorway, sw: 0 });
+      rect('jl', e.x - 3, e.y - 8, 6, 28, { rx: 3, fill: C.sky, sw: 0 });
+      rect('jr', e.x + e.w - 3, e.y - 8, 6, 28, { rx: 3, fill: C.sky, sw: 0 });
+      rect('nb', e.x - 38, cy - 14, 28, 28, { rx: 14, fill: C.sky, sw: 0 });
+      text('n:' + e.n, e.x - 24, cy + 6.5, e.n, 18, { wt: 800, fill: C.dark, anchor: 'middle', mono: true });
+      break;
+    }
+    case 'seg': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 7, fill: e.s === 'good' ? C.good : C.seg, sw: 0 });
+      if (e.label) text('L:' + e.label, e.x + e.w / 2, e.y + e.h / 2 + 6, e.label, 16, { wt: 500, fill: C.ink2, anchor: 'middle', cont: box });
+      break;
+    }
+    case 'tile': {
+      rect('shape', e.x, e.y, e.w, e.h, { rx: 18, fill: C.panel, stroke: C.panelEdge, sw: 2 });
+      const [lhs, rhs] = e.label.split('≈ ');
+      text('L:' + e.label, e.x + e.w / 2, e.y + 92, [{ t: lhs + '≈ ' }, { t: rhs, fill: pcol(e.v) }], 46, { wt: 600, anchor: 'middle', cont: box });
+      const bx = e.x + 44, bw = e.w - 88, by = e.y + 128;
+      rect('track', bx, by, bw, 12, { rx: 6, fill: C.card2, sw: 0 });
+      if (e.v > 0.004) rect('fill', bx, by, Math.max(12, bw * e.v), 12, { rx: 6, fill: pcol(e.v), sw: 0 });
+      else rect('zero', bx, by - 4, 4, 20, { rx: 2, fill: C.bad, sw: 0 });
+      break;
+    }
+  }
+  return P;
+}
+
+/* ---------- arrows ---------- */
+const AST = { solid: { c: C.arrow, sw: 3, hl: 15, hw: 14 }, bad: { c: C.bad, sw: 4.5, hl: 19, hw: 18 }, door: { c: C.sky, sw: 3.5, hl: 16, hw: 15 } };
+const ctr = b => [b.x + b.w / 2, b.y + b.h / 2];
+function route(s, a, b) {
+  const [ax, ay] = ctr(a), [bx, by] = ctr(b);
+  switch (s.r) {
+    case 'v': {
+      const x = s.dx != null ? a.x + s.dx : s.xa === 'to' ? bx : ax, down = by > ay;
+      return [[x, down ? a.y + a.h : a.y], [x, (down ? b.y : b.y + b.h) + (s.tdy || 0)]];
+    }
+    case 'hvh': {
+      const x1 = a.x + a.w, x2 = b.x, mx = s.mx ?? (x1 + x2) / 2;
+      return Math.abs(ay - by) < 1 ? [[x1, ay], [x2, by]] : [[x1, ay], [mx, ay], [mx, by], [x2, by]];
+    }
+    case 'line': return [[a.x + (s.fdx ?? a.w / 2), a.y + a.h], [bx, b.y]];
+    default: {
+      const y = s.ya === 'to' ? by : ay, fwd = bx > ax;
+      return [[fwd ? a.x + a.w : a.x, y], [fwd ? b.x : b.x + b.w, y]];
+    }
+  }
+}
+function truncate(pts, d) {
+  const seg = []; let L = 0;
+  for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); L += l; }
+  let rem = L * clamp(d); const out = [pts[0]];
+  for (let i = 1; i < pts.length; i++) {
+    if (rem >= seg[i - 1]) { out.push(pts[i]); rem -= seg[i - 1]; continue; }
+    const u = seg[i - 1] ? rem / seg[i - 1] : 0;
+    out.push([lerp(pts[i - 1][0], pts[i][0], u), lerp(pts[i - 1][1], pts[i][1], u)]); break;
+  }
+  return { pts: out, len: L * clamp(d) };
+}
+function pathD(pts, r = 10) {
+  let d = `M${f1(pts[0][0])},${f1(pts[0][1])}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [px, py] = pts[i - 1], [x, y] = pts[i], [nx, ny] = pts[i + 1];
+    const l1 = Math.hypot(x - px, y - py) || 1, l2 = Math.hypot(nx - x, ny - y) || 1, rr = Math.min(r, l1 / 2, l2 / 2);
+    d += ` L${f1(x + (px - x) / l1 * rr)},${f1(y + (py - y) / l1 * rr)} Q${f1(x)},${f1(y)} ${f1(x + (nx - x) / l2 * rr)},${f1(y + (ny - y) / l2 * rr)}`;
+  }
+  const l = pts[pts.length - 1];
+  return d + ` L${f1(l[0])},${f1(l[1])}`;
+}
+function arrowSVG(p) {
+  const st = AST[p.kind] || AST.solid, op = p.op ?? 1;
+  if (op <= 0.003 || p.draw <= 0.001) return '';
+  const { pts, len } = truncate(p.pts, p.draw);
+  if (pts.length < 2 || len < 1) return '';
+  const [tx, ty] = pts[pts.length - 1], [sx, sy] = pts[pts.length - 2];
+  const dl = Math.hypot(tx - sx, ty - sy) || 1, ux = (tx - sx) / dl, uy = (ty - sy) / dl;
+  const k = clamp(len / (st.hl * 1.4)), hl = st.hl * k, hw = st.hw * k;
+  const line = pts.slice(); line[line.length - 1] = [tx - ux * hl * 0.6, ty - uy * hl * 0.6];
+  const bx = tx - ux * hl, by = ty - uy * hl;
+  return `<g opacity="${f1(op * 1000) / 1000}"><path d="${pathD(line)}" fill="none" stroke="${st.c}" stroke-width="${st.sw}" stroke-linejoin="round"/>` +
+    `<path d="M${f1(tx)},${f1(ty)} L${f1(bx - uy * hw / 2)},${f1(by + ux * hw / 2)} L${f1(bx + uy * hw / 2)},${f1(by - ux * hw / 2)} Z" fill="${st.c}" stroke="${st.c}" stroke-width="1.5" stroke-linejoin="round"/></g>`;
+}
+function arrowPrims(s, G, draw, op, order) {
+  const a = G.get(s.from), b = G.get(s.to); if (!a || !b) return [];
+  const pts = route(s, a, b), kind = s.ak || 'solid';
+  const out = [{ pt: 'P', key: 'arrow', pts, kind, draw, op, z: kind === 'bad' ? 4 : 2, i: 0, eo: order, el: s.id }];
+  if (s.label) {
+    const lo = op * smooth(clamp((draw - 0.55) / 0.4));
+    const [x1, y1] = pts[0], [x2, y2] = pts[pts.length - 1], mx = (x1 + x2) / 2, my = (y1 + y2) / 2 + (s.lyo || 0);
+    if (s.lk === 'gate') {                        // a threshold the arrow has to pass through
+      const w = tw(s.label, 19, 700) + 24;
+      out.push({ pt: 'R', key: 'lp', x: mx - w / 2, y: my - 15, w, h: 30, rx: 15, fill: C.warnT, stroke: C.warn, sw: 2.5, op: lo, z: 4.5, i: 1, eo: order, el: s.id });
+      out.push({ pt: 'T', key: 'lt', x: mx, y: my + 6.5, t: s.label, size: 19, wt: 700, fill: C.warn, anchor: 'middle', op: lo, z: 4.6, i: 2, eo: order, el: s.id });
+    } else {
+      const t = s.label.replace(/^✗\s*/, ''), x0 = mx + 22;
+      out.push({ pt: 'I', key: 'li', name: 'cross', cx: x0 + 9, cy: my - 1, s: 20, color: C.bad, sw: 3.4, op: lo, z: 4.5, i: 1, eo: order, el: s.id });
+      out.push({ pt: 'T', key: 'lt', x: x0 + 28, y: my + 7.5, t, size: 22, wt: 700, fill: C.bad, anchor: 'start', op: lo, z: 4.6, i: 2, eo: order, el: s.id });
+    }
+  }
+  return out;
+}
+
+/* ---------- primitive rendering ---------- */
+function textSVG(p) {
+  const parts = Array.isArray(p.t) ? p.t : [{ t: p.t }];
+  let inner = '', lift = 0;
+  for (const part of parts) {
+    const fill = part.fill ? ` fill="${part.fill}"` : '', wt = part.wt ? ` font-weight="${part.wt}"` : '';
+    for (const r of splitSup(part.t)) {
+      if (r.sup) { const rise = p.size * 0.38; inner += `<tspan font-size="${f1(p.size * 0.62)}" dy="${f1(-rise + lift)}"${fill}${wt}>${esc(r.s)}</tspan>`; lift = rise; }
+      else { inner += `<tspan${lift ? ` dy="${f1(lift)}"` : ''}${fill}${wt}>${esc(r.s)}</tspan>`; lift = 0; }
+    }
+  }
+  const attrs = [`x="${f1(p.x)}"`, `y="${f1(p.y)}"`, `font-size="${f1(p.size)}"`, `font-weight="${Math.round(p.wt)}"`, `fill="${p.fill}"`];
+  if (p.anchor && p.anchor !== 'start') attrs.push(`text-anchor="${p.anchor}"`);
+  if (p.mono) attrs.push('style="font-variant-numeric:tabular-nums"');
+  if (p.ls) attrs.push(`letter-spacing="${p.ls}em"`);
+  if ((p.op ?? 1) < 0.999) attrs.push(`opacity="${f1((p.op ?? 1) * 1000) / 1000}"`);
+  if (p.cont) attrs.push(`data-c="${p.cont.map(f1).join(',')}"`);
+  if (p.el) attrs.push(`data-e="${esc(p.el)}"`);
+  return `<text ${attrs.join(' ')}>${inner}</text>`;
+}
+function badgeSVG(p) {
+  const t = pct(p.v), col = pcol(p.v), w = tw(t, 20, 700, true) + 26, h = 34, x = p.xr - w, op = p.op ?? 1;
+  const fill = mix(C.bg, C.good, p.ex), stroke = mix(col, C.good, p.ex), ink = mix(col, C.dark, p.ex);
+  return `<g opacity="${f1(op * 1000) / 1000}"><rect x="${f1(x)}" y="${f1(p.y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="${fill}" stroke="${stroke}" stroke-width="2.5"/>` +
+    `<text x="${f1(x + w / 2)}" y="${f1(p.y + 24)}" font-size="20" font-weight="700" text-anchor="middle" fill="${ink}" style="font-variant-numeric:tabular-nums"${p.el ? ` data-e="${esc(p.el)}"` : ''}>${t}</text></g>`;
+}
+function primSVG(p) {
+  const op = p.op ?? 1; if (op <= 0.003) return '';
+  switch (p.pt) {
+    case 'R': {
+      if (p.w <= 0 || p.h <= 0) return '';
+      const sw = p.sw || 0, st = sw > 0 ? ` stroke="${p.stroke}" stroke-width="${f1(sw)}"` : '';
+      return `<rect x="${f1(p.x)}" y="${f1(p.y)}" width="${f1(p.w)}" height="${f1(p.h)}" rx="${f1(Math.min(p.rx || 0, p.w / 2, p.h / 2))}" fill="${p.fill}"${st}${p.dash ? ` stroke-dasharray="${p.dash}"` : ''}${op < 0.999 ? ` opacity="${f1(op * 1000) / 1000}"` : ''}${p.el && p.key === 'shape' ? ` data-b="${esc(p.el)}"` : ''}/>`;
+    }
+    case 'T': return textSVG(p);
+    case 'B': return badgeSVG(p);
+    case 'I': return iconSVG(p);
+    case 'P': return arrowSVG(p);
+  }
+  return '';
+}
+
+/* ---------- interpolation of matched primitives ---------- */
+const NUMK = ['x', 'y', 'w', 'h', 'rx', 'sw', 'size', 'wt', 'cx', 'cy', 's', 'v', 'ex', 'xr', 'op'];
+const COLK = ['fill', 'stroke', 'color'];
+function lerpPrim(a, b, u) {
+  const r = { ...b };
+  for (const k of NUMK) if (typeof a[k] === 'number' && typeof b[k] === 'number') r[k] = lerp(a[k], b[k], u);
+  for (const k of COLK) if (typeof a[k] === 'string' && typeof b[k] === 'string') r[k] = mix(a[k], b[k], u);
+  if ((a.sw || 0) > 0 && !(b.sw > 0)) r.stroke = a.stroke;
+  return r;
+}
+// A persistent element: surviving keys glide, the rest fade out (first half) and in (second half), never overlapping.
+function blend(pa, pb, u) {
+  const ma = new Map(pa.map(p => [p.key, p])), mb = new Map(pb.map(p => [p.key, p])), out = [];
+  const ue = easeIO(u), fo = 1 - smooth(clamp(u / 0.5)), fi = smooth(clamp((u - 0.5) / 0.5));
+  for (const p of pa) if (!mb.has(p.key)) out.push({ ...p, op: (p.op ?? 1) * fo });
+  for (const p of pb) { const q = ma.get(p.key); out.push(q ? lerpPrim(q, p, ue) : { ...p, op: (p.op ?? 1) * fi }); }
+  return out;
+}
+// Move / scale / fade every primitive of an element (entries and exits).
+function xform(prims, { dx = 0, dy = 0, sc = 1, ox = 0, oy = 0, op = 1 }) {
+  return prims.map(p => {
+    const q = { ...p, op: (p.op ?? 1) * op };
+    const X = v => ox + (v - ox) * sc + dx, Y = v => oy + (v - oy) * sc + dy;
+    if ('x' in q && typeof q.x === 'number') q.x = X(q.x);
+    if ('y' in q && typeof q.y === 'number') q.y = Y(q.y);
+    if (typeof q.xr === 'number') q.xr = X(q.xr);
+    if (typeof q.cx === 'number') q.cx = X(q.cx);
+    if (typeof q.cy === 'number') q.cy = Y(q.cy);
+    if (typeof q.w === 'number') q.w *= sc;
+    if (typeof q.h === 'number') q.h *= sc;
+    if (typeof q.size === 'number') q.size *= sc;
+    if (typeof q.s === 'number') q.s *= sc;
+    return q;
+  });
+}
+
+/* =====================================================================
+   Scene: the frame `to` reached from `from` at linear progress t.
+   Pure function of (from, to, t): no clock, no randomness.
+   ===================================================================== */
+function scene(fromId, toId, t) {
+  const A0 = fromId ? FR[fromId].els : [], B0 = FR[toId].els;
+  const S = (fromId && fromId !== toId && SCHED[fromId + '>' + toId]) || {};
+  const live = fromId !== toId;
+  const mA = new Map(A0.map(e => [e.id, e])), mB = new Map(B0.map(e => [e.id, e]));
+  const G = new Map(), prims = [], enterWin = new Map();
+  const tag = (ps, el, eo) => ps.map(p => ({ ...p, el, eo }));
+
+  // default entry windows: new boxes arrive left to right
+  const ent = B0.filter(e => e.k !== 'arrow' && !mA.has(e.id));
+  const xs = ent.map(e => e.x), x0 = Math.min(...xs), x1 = Math.max(...xs);
+  ent.forEach(e => {
+    const s = S[e.id] || {};
+    const st = 0.3 + 0.3 * (x1 > x0 ? (e.x - x0) / (x1 - x0) : 0);
+    enterWin.set(e.id, s.i || [st, st + 0.28]);
+  });
+
+  B0.forEach((b, order) => {
+    if (b.k === 'arrow') return;
+    const a = mA.get(b.id), s = S[b.id] || {};
+    if (a) {
+      const gw = s.g || DEF.g, cw = s.c || gw, nw = s.n || gw;
+      const ug = easeIO(win(t, gw)), uc = win(t, cw), un = easeIO(win(t, nw));
+      const g = {};
+      for (const k of ['x', 'y', 'w', 'h', 'size']) if (typeof a[k] === 'number' && typeof b[k] === 'number') g[k] = lerp(a[k], b[k], ug);
+      if (a.p != null && b.p != null) g.p = lerp(a.p, b.p, un);
+      G.set(b.id, { x: g.x, y: g.y, w: g.w, h: g.h });
+      prims.push(...tag(blend(layout({ ...a, ...g }), layout({ ...b, ...g }), uc), b.id, order));
+    } else {
+      const u = win(t, enterWin.get(b.id)), ue = easeOut(u);
+      let e = b;
+      if (s.from && mA.has(s.from)) {           // grows out of an element that was already there
+        const o = mA.get(s.from), ug = easeIO(u);
+        e = { ...b, x: lerp(o.x, b.x, ug), y: lerp(o.y, b.y, ug), w: lerp(o.w, b.w, ug), h: lerp(o.h, b.h, ug) };
+      }
+      const isText = b.k === 'text';
+      const dy = (s.dy ?? (isText ? 10 : 18)) * (1 - ue), dx = (s.dx ?? 0) * (1 - ue);
+      const sc = s.sc != null ? lerp(s.sc, 1, ue) : 1;
+      const ox = (e.x ?? 0) + (e.w || 0) / 2, oy = (e.y ?? 0) + (e.h || 0) / 2;
+      const op = s.from ? smooth(clamp(u * 1.5)) : ue;
+      if (e.w != null) G.set(b.id, { x: ox + (e.x - ox) * sc + dx, y: oy + (e.y - oy) * sc + dy, w: e.w * sc, h: e.h * sc, enter: true });
+      prims.push(...tag(xform(layout(e), { dx, dy, sc, ox, oy, op }), b.id, order));
+    }
+  });
+  A0.forEach((a, order) => {
+    if (a.k === 'arrow' || mB.has(a.id)) return;
+    const s = S[a.id] || {}, u = easeIn(win(t, s.x || DEF.x));
+    if (a.w != null) G.set(a.id, { x: a.x, y: a.y + 16 * u, w: a.w, h: a.h, exit: true });
+    prims.push(...tag(xform(layout(a), { dy: (s.dy ?? 16) * u, op: 1 - u }), a.id, -1 - order));
+  });
+
+  // arrows follow the geometry of this instant
+  B0.forEach((b, order) => {
+    if (b.k !== 'arrow') return;
+    const s = S[b.id] || {};
+    if (mA.has(b.id)) { prims.push(...arrowPrims(b, G, 1, 1, order)); return; }
+    let w = s.i;
+    if (!w) {
+      let st = 0.42;
+      for (const id of [b.from, b.to]) if (enterWin.has(id)) st = Math.max(st, enterWin.get(id)[1] - 0.06);
+      st = Math.min(st, 0.8); w = [st, st + 0.16];
+    }
+    prims.push(...arrowPrims(b, G, sine(win(t, w)), 1, order));
+  });
+  A0.forEach((a, order) => {
+    if (a.k !== 'arrow' || mB.has(a.id)) return;
+    const s = S[a.id] || {};
+    prims.push(...arrowPrims(a, G, 1, 1 - win(t, s.x || [0, 0.22]), -1 - order));
+  });
+
+  // one subtle pulse on the slide's news as the transition lands
+  if (live && fromId) {
+    const u = win(t, PULSE);
+    if (u > 0 && u < 1) for (const id of FR[toId].news) {
+      const g = G.get(id), e = mB.get(id); if (!g || !e) continue;
+      const col = e.k === 'door' ? C.sky : e.k === 'human' ? C.human : e.s === 'bad' ? C.bad : e.s === 'warn' ? C.warn : C.check;
+      const d = 4 + (e.k === 'door' ? 9 : 18) * easeOut(u), pad = e.k === 'door' ? 6 : 0;
+      prims.push({ pt: 'R', key: 'pulse', x: g.x - d - pad, y: g.y - d, w: g.w + 2 * (d + pad), h: g.h + 2 * d, rx: 16 + d, fill: 'none',
+        stroke: col, sw: 3, op: 0.75 * Math.pow(1 - u, 1.6) * smooth(clamp(u * 6)), z: 6, i: 0, eo: 0, el: 'pulse:' + id });
+    }
+  }
+
+  prims.sort((p, q) => (p.z - q.z) || (p.eo - q.eo) || (p.i - q.i));
+  return prims;
+}
+
+function svgFor(prims) {
+  return `<rect width="1600" height="900" fill="${C.bg}"/>` + prims.map(p => {
+    const s = primSVG(p);
+    return p.pt === 'R' && p.fill === 'none' ? s.replace('fill="none"', 'fill="none" pointer-events="none"') : s;
+  }).join('');
+}
+
+/* =====================================================================
+   Stage, navigation and review hooks
+   ===================================================================== */
+const stage = document.getElementById('stage');
+const qs = new URLSearchParams(location.search);
+const review = qs.has('frame');
+const reduce = qs.get('motion') === 'reduce' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const D = reduce ? 320 : 1200;
+let cur = SEQ.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'F4';
+let anim = 0, last = null;
+
+function draw(fromId, toId, t) {
+  if (reduce && fromId && fromId !== toId && t < 1) {        // reduced motion: a short crossfade, nothing moves
+    const u = smooth(clamp(t));
+    stage.innerHTML = svgFor(scene(toId, toId, 1)) + `<g opacity="${f1((1 - u) * 1000) / 1000}">${svgFor(scene(fromId, fromId, 1))}</g>`;
+  } else stage.innerHTML = svgFor(scene(fromId, toId, t));
+  stage.setAttribute('aria-label', FR[toId].title);
+  last = [fromId, toId, t];
+}
+function play(fromId, toId) {
+  cancelAnimationFrame(anim);
+  const t0 = performance.now();
+  const step = now => { const t = clamp((now - t0) / D); draw(fromId, toId, t); if (t < 1) anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+}
+function go(id, animate = true) {
+  if (!FR[id]) return;
+  const prev = cur; cur = id;
+  history.replaceState(null, '', location.pathname + location.search + '#' + id);
+  updateBar();
+  if (animate && prev !== id) play(prev, id); else { cancelAnimationFrame(anim); draw(id, id, 1); }
+}
+const step = d => go(SEQ[clamp(SEQ.indexOf(cur) + d, 0, SEQ.length - 1)]);
+
+const framesEl = document.getElementById('frames');
+function updateBar() {
+  framesEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', String(b.dataset.id === cur)));
+}
+
+if (review) {
+  document.body.classList.add('review');
+  const to = FR[qs.get('frame')] ? qs.get('frame') : 'F4';
+  const from = FR[qs.get('from')] ? qs.get('from') : null;
+  const t = qs.has('t') ? clamp(parseFloat(qs.get('t')) || 0) : 1;
+  const render = () => draw(from && from !== to ? from : to, to, from ? t : 1);
+  render();
+  const done = () => { mcache = new Map(); render(); document.documentElement.dataset.ready = '1'; };
+  Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 3000))]).then(done);
+} else {
+  framesEl.innerHTML = SEQ.map(id => `<button type="button" data-id="${id}" title="${esc(FR[id].title)}">${id}</button>`).join(' ');
+  // after a mouse click, hand focus back to the page so Space / arrows keep driving the slides
+  framesEl.addEventListener('click', ev => { const b = ev.target.closest('button'); if (b) { ev.stopPropagation(); if (ev.detail) b.blur(); go(b.dataset.id); } });
+  document.getElementById('replay').addEventListener('click', ev => {
+    ev.stopPropagation(); if (ev.detail) ev.currentTarget.blur(); const i = SEQ.indexOf(cur); play(i > 0 ? SEQ[i - 1] : null, cur);
+  });
+  document.getElementById('bar').addEventListener('click', ev => ev.stopPropagation());
+  document.getElementById('wrap').addEventListener('click', () => step(1));
+  window.addEventListener('keydown', ev => {
+    if (ev.target.closest && ev.target.closest('button') && (ev.key === ' ' || ev.key === 'Enter')) return;
+    if (['ArrowRight', ' ', 'PageDown', 'ArrowDown'].includes(ev.key)) { ev.preventDefault(); step(1); }
+    else if (['ArrowLeft', 'PageUp', 'ArrowUp'].includes(ev.key)) { ev.preventDefault(); step(-1); }
+    else if (ev.key === 'Home') { ev.preventDefault(); go(SEQ[0]); }
+    else if (ev.key === 'End') { ev.preventDefault(); go(SEQ[SEQ.length - 1]); }
+  });
+  updateBar(); draw(cur, cur, 1);
+  document.fonts.ready.then(() => { mcache = new Map(); if (last) draw(...last); document.documentElement.dataset.ready = '1'; });
+}
+
+// Self-check used by the review scripts: text outside its box, text colliding with other text, arrows through text.
+window.__audit = () => {
+  const out = [], T = [...stage.querySelectorAll('text')].filter(n => +(n.getAttribute('opacity') ?? 1) > 0.5);
+  const bb = n => { const b = n.getBBox(); return { x: b.x, y: b.y + b.height * 0.12, w: b.width, h: b.height * 0.76, n }; };
+  const boxes = T.map(bb);
+  boxes.forEach(b => {
+    const c = b.n.dataset.c; if (!c) return;
+    const [x, y, w, h] = c.split(',').map(Number);
+    if (b.x < x + 6 || b.x + b.w > x + w - 6 || b.y < y + 2 || b.y + b.h > y + h - 2)
+      out.push(`clip: "${b.n.textContent}" [${f1(b.x)},${f1(b.y)} ${f1(b.w)}×${f1(b.h)}] in box [${c}]`);
+  });
+  for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+    const a = boxes[i], b = boxes[j];
+    if (a.x < b.x + b.w - 1 && b.x < a.x + a.w - 1 && a.y < b.y + b.h - 1 && b.y < a.y + a.h - 1)
+      out.push(`overlap: "${a.n.textContent}" × "${b.n.textContent}"`);
+  }
+  return out;
+};
+window.__scene = scene;
+})();
+</script>
+</body>
+</html>

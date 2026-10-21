@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transit Map Slides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Overpass: an open interpretation of Highway Gothic, the US road-sign face. Latin + Cyrillic (for "лв"). -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
+<!-- The default subsets leave out → ≈ ≥ and superscript digits; this text-only subset adds them from the same face. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&text=%E2%86%92%E2%89%88%E2%89%A5%E2%81%B5%C2%B9%E2%81%B0&display=swap">
+<style>
+  :root {
+    --page: #0f1419;          /* letterbox around the slide */
+    --bar: #161c22; --bar-ink: #d9e0e6; --bar-dim: #8d99a4; --bar-line: #2a333c; --bar-on: #f4f6f7;
+    --bar-h: 44px;
+    --font: Overpass, "Highway Gothic", Barlow, "DIN Alternate", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--page); overflow: hidden; }
+  body { font-family: var(--font); color: var(--bar-ink); }
+  #stageBox { position: fixed; left: 0; right: 0; top: 0; bottom: var(--bar-h); display: flex; align-items: center; justify-content: center; }
+  #stage { display: block; cursor: pointer; font-family: var(--font); user-select: none; -webkit-user-select: none; }
+  #bar { position: fixed; left: 0; right: 0; bottom: 0; height: var(--bar-h); display: flex; align-items: center; gap: 6px;
+         padding: 0 12px; background: var(--bar); border-top: 1px solid var(--bar-line); font: 600 14px/1 var(--font); white-space: nowrap; overflow: hidden; }
+  #bar button { font: 700 14px/1 var(--font); color: var(--bar-ink); background: transparent; border: 1px solid var(--bar-line);
+                border-radius: 999px; padding: 7px 12px 6px; cursor: pointer; }
+  #bar button:hover { border-color: var(--bar-dim); }
+  #bar button[aria-pressed="true"] { background: var(--bar-on); color: #141d26; border-color: var(--bar-on); }
+  #bar button:focus-visible { outline: 2px solid #6fa3ff; outline-offset: 2px; }
+  #bar .sep { width: 1px; height: 22px; background: var(--bar-line); margin: 0 6px; flex: none; }
+  #bar #where { color: var(--bar-dim); font-weight: 600; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  #bar .hint { margin-left: auto; color: var(--bar-dim); font-weight: 500; flex: none; }
+  @media (max-width: 1100px) { #bar .hint { display: none; } }
+  @media (max-width: 820px), (max-height: 520px) { :root { --bar-h: 34px; } #bar #where { display: none; } #bar { gap: 4px; padding: 0 8px; }
+    #bar button { font-size: 12px; padding: 5px 9px 4px; } #bar .sep { height: 16px; margin: 0 3px; } }
+  html.review { --bar-h: 0px; }
+  html.review #bar { display: none; }
+  html.review #stage { cursor: default; }
+</style>
+</head>
+<body>
+<div id="stageBox">
+  <svg id="stage" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Slide">
+    <defs>
+      <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="12" height="12" fill="#e7ebee"/><rect width="4" height="12" fill="#d7dde2"/>
+      </pattern>
+    </defs>
+    <rect width="1600" height="900" fill="#f4f6f7"/>
+    <g id="scene"></g>
+  </svg>
+</div>
+<nav id="bar" aria-label="Slides">
+  <button type="button" data-f="F4">F4</button>
+  <button type="button" data-f="F5a">F5a</button>
+  <button type="button" data-f="N1">N1</button>
+  <button type="button" data-f="N2">N2</button>
+  <span class="sep"></span>
+  <button type="button" id="replay">Replay transition</button>
+  <span class="sep"></span>
+  <span id="where"></span>
+  <span class="hint">→ / Space / click: next · ←: back</span>
+</nav>
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   Palette. One colour per meaning: good, warn, bad, check.
+   Line colours (blue, brown, teal, ink) never carry a meaning.
+   ===================================================================== */
+const C = {
+  paper: '#f4f6f7', ink: '#141d26', ink2: '#2e3b47', muted: '#536170', faint: '#8693a0',
+  zone: '#e5eaf0', zoneEdge: '#b3bfca', zoneInk: '#5f6d7a',
+  blue: '#1f5fbf', brown: '#8b5a2b', teal: '#00838c', pay: '#141d26', grey: '#8a96a2',
+  good: '#1b7f46', goodInk: '#176a3b', goodBg: '#e1f1e7',
+  warn: '#e8a500', warnInk: '#7d5600', warnBg: '#fff3d0',
+  bad: '#d1322b', badInk: '#b3261f', badBg: '#fde4e1',
+  check: '#6a3db5', checkInk: '#5a2fa3', checkBg: '#efe8fb',
+  think: '#e2e7ec', lampOff: '#3b4652'
+};
+const FONT = getComputedStyle(document.documentElement).getPropertyValue('--font').trim() || 'Overpass, Arial, sans-serif';
+
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const n1 = v => Math.round(v * 10) / 10;
+const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+function hex(c) { const h = c.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); }
+function mix(a, b, k) {
+  if (!k) return a; const A = hex(a), B = hex(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join('');
+}
+let mctx = null;
+function tw(s, size, weight = 400) {
+  if (!mctx) mctx = document.createElement('canvas').getContext('2d');
+  mctx.font = `${weight} ${size}px ${FONT}`;
+  const dots = (s.match(/·/g) || []).length;
+  return mctx.measureText(s).width + dots * size * .28;
+}
+
+/* ---------------- easing ---------------- */
+const E = {
+  io: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,          // cubic in-out: glides
+  out: t => 1 - Math.pow(1 - t, 3),                                            // cubic out: arrivals
+  back: t => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }, // stations pop
+  sine: t => -(Math.cos(Math.PI * t) - 1) / 2,                                  // crossfades
+  train: t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2             // quad in-out: pull away, brake
+};
+const win = (t, a, b) => b <= a ? (t >= b ? 1 : 0) : clamp01((t - a) / (b - a));
+
+/* =====================================================================
+   Geometry: polylines with rounded 45°/90° corners, sampled so lines can
+   be drawn in partially and a train can ride them.
+   ===================================================================== */
+function sample(pts, r = 22, closed = false) {
+  const n = pts.length; if (n < 2) return pts.slice();
+  const out = [], get = i => pts[(i + n) % n];
+  if (!closed) out.push(pts[0]);
+  for (let i = closed ? 0 : 1; i < (closed ? n : n - 1); i++) {
+    const p = get(i), a = get(i - 1), b = get(i + 1);
+    const da = Math.hypot(a[0] - p[0], a[1] - p[1]), db = Math.hypot(b[0] - p[0], b[1] - p[1]);
+    const cr = (p[0] - a[0]) * (b[1] - p[1]) - (p[1] - a[1]) * (b[0] - p[0]);
+    if (da < .01 || db < .01 || Math.abs(cr) < 1e-6) { out.push(p); continue; }
+    const d = Math.min(r, da / 2, db / 2);
+    const p1 = [p[0] + (a[0] - p[0]) / da * d, p[1] + (a[1] - p[1]) / da * d];
+    const p2 = [p[0] + (b[0] - p[0]) / db * d, p[1] + (b[1] - p[1]) / db * d];
+    for (let k = 0; k <= 10; k++) { const t = k / 10, u = 1 - t;
+      out.push([u * u * p1[0] + 2 * u * t * p[0] + t * t * p2[0], u * u * p1[1] + 2 * u * t * p[1] + t * t * p2[1]]); }
+  }
+  if (!closed) out.push(pts[n - 1]);
+  return out;
+}
+function plen(s) { let L = 0; for (let i = 1; i < s.length; i++) L += Math.hypot(s[i][0] - s[i - 1][0], s[i][1] - s[i - 1][1]); return L; }
+function cutAt(s, len) {           // the polyline up to arc length len
+  const out = [s[0]]; let acc = 0;
+  for (let i = 1; i < s.length; i++) {
+    const seg = Math.hypot(s[i][0] - s[i - 1][0], s[i][1] - s[i - 1][1]);
+    if (acc + seg >= len) { const t = seg ? (len - acc) / seg : 0; out.push([s[i - 1][0] + (s[i][0] - s[i - 1][0]) * t, s[i - 1][1] + (s[i][1] - s[i - 1][1]) * t]); return out; }
+    acc += seg; out.push(s[i]);
+  }
+  return out;
+}
+function pointAt(s, len) {
+  const c = cutAt(s, Math.max(.01, len)), e = c[c.length - 1], p = c[c.length - 2] || s[0];
+  let a = Math.atan2(e[1] - p[1], e[0] - p[0]) * 180 / Math.PI;
+  if (c.length < 2 || (e[0] === p[0] && e[1] === p[1])) { const q = s[1] || s[0]; a = Math.atan2(q[1] - s[0][1], q[0] - s[0][0]) * 180 / Math.PI; }
+  return { x: e[0], y: e[1], a };
+}
+const pathD = (s, close) => 'M' + s.map(p => n1(p[0]) + ' ' + n1(p[1])).join('L') + (close ? 'Z' : '');
+
+/* =====================================================================
+   Small SVG builders
+   ===================================================================== */
+function tx(x, y, t, size, weight, fill, anchor = 'start', extra = '') {
+  // Overpass gives U+00B7 (·) a zero advance, so that one glyph comes from a fallback face.
+  const body = esc(t).split('·').join('<tspan font-family="Arial, Helvetica, sans-serif">·</tspan>');
+  return `<text x="${n1(x)}" y="${n1(y)}" font-size="${size}" font-weight="${weight}" fill="${fill}" text-anchor="${anchor}" ${extra}>${body}</text>`;
+}
+function tick(x, y, s, col, sw) { return `<path d="M${n1(x - 5 * s)} ${n1(y + .2 * s)}L${n1(x - 1.4 * s)} ${n1(y + 3.8 * s)}L${n1(x + 5.6 * s)} ${n1(y - 4 * s)}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`; }
+function cross(x, y, s, col, sw) { return `<path d="M${n1(x - 4 * s)} ${n1(y - 4 * s)}L${n1(x + 4 * s)} ${n1(y + 4 * s)}M${n1(x + 4 * s)} ${n1(y - 4 * s)}L${n1(x - 4 * s)} ${n1(y + 4 * s)}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round"/>`; }
+function badgeIcon(kind, x, y, r) {   // ✓ / ✗ / hold, in a solid disc
+  const col = kind === 'good' ? C.good : kind === 'bad' ? C.bad : C.warn;
+  let s = `<circle cx="${n1(x)}" cy="${n1(y)}" r="${r}" fill="${col}"/>`;
+  if (kind === 'good') s += tick(x, y, r / 11, '#fff', r / 4.2);
+  else if (kind === 'bad') s += cross(x, y, r / 11, '#fff', r / 4.2);
+  else s += `<rect x="${n1(x - r * .36)}" y="${n1(y - r * .42)}" width="${n1(r * .24)}" height="${n1(r * .84)}" rx="1.5" fill="${C.ink}"/><rect x="${n1(x + r * .12)}" y="${n1(y - r * .42)}" width="${n1(r * .24)}" height="${n1(r * .84)}" rx="1.5" fill="${C.ink}"/>`;
+  return s;
+}
+function stopwatch(x, y, s, col) {
+  return `<g fill="none" stroke="${col}" stroke-width="${2.4 * s}" stroke-linecap="round"><circle cx="${x}" cy="${y + 1.5 * s}" r="${8.5 * s}"/>` +
+    `<path d="M${x} ${y + 1.5 * s}V${y - 3.5 * s}M${x - 3 * s} ${y - 10.5 * s}H${x + 3 * s}M${x} ${y - 10.5 * s}V${y - 7 * s}M${x + 6.8 * s} ${y - 6 * s}l${1.8 * s} ${-1.8 * s}"/></g>`;
+}
+
+/* =====================================================================
+   Renderers. Each returns an SVG string for one item at full opacity;
+   the composer wraps it with opacity / transform.
+   ===================================================================== */
+const R = {};
+
+R.text = it => {
+  const dim = it.dim || 0; let y = it.y, s = '';
+  for (const L of it.lines) {
+    const size = L.s || it.s || 20, w = L.w || it.w || 600, col = mix(L.c || it.c || C.ink, C.paper, dim);
+    const halo = it.halo ? `stroke="${it.halo}" stroke-width="6" stroke-linejoin="round" paint-order="stroke"` : '';
+    const ls = it.ls ? `letter-spacing="${it.ls}"` : '';
+    s += tx(it.x, y, L.t, size, w, col, it.anchor || 'start', `${halo} ${ls} ${L.i ? 'font-style="italic"' : ''}`);
+    y += L.lh || it.lh || size * 1.22;
+  }
+  return s;
+};
+
+R.zone = it => {   // fare-zone style tint with a tab label
+  const s = sample(it.pts, 18, true);
+  let g = `<path d="${pathD(s, true)}" fill="${C.zone}" stroke="${C.zoneEdge}" stroke-width="2" stroke-dasharray="10 7"/>`;
+  if (it.label) {
+    const w = tw(it.label, 17, 800) + 26, x = it.pts[0][0] + 22, y = it.pts[0][1] - 15;
+    g += `<rect x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="30" rx="15" fill="${C.paper}" stroke="${C.zoneEdge}" stroke-width="2"/>` +
+      tx(x + w / 2, y + 21, it.label, 17, 800, C.zoneInk, 'middle', 'letter-spacing="0.04em"');
+  }
+  return g;
+};
+
+R.wall = it => {   // system boundary; doors are gaps in the bottom edge, `open` ∈ [0,1]
+  const { x, y, w, h } = it, r = 22, yb = y + h;
+  const gaps = (it.doors || []).map(d => [d - it.gw / 2 * (it.open || 0), d + it.gw / 2 * (it.open || 0)]).sort((a, b) => b[0] - a[0]);
+  let d = `M${x + w - r} ${yb}`;
+  for (const [a, b] of gaps) { if (b - a > .5) d += `H${n1(b)}M${n1(a)} ${yb}`; }
+  d += `H${x + r}Q${x} ${yb} ${x} ${yb - r}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + w - r}Q${x + w} ${y} ${x + w} ${y + r}V${yb - r}Q${x + w} ${yb} ${x + w - r} ${yb}`;
+  return it.solid
+    ? `<path d="${d}" fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="butt"/>`
+    : `<path d="${d}" fill="none" stroke="${C.zoneEdge}" stroke-width="3" stroke-dasharray="10 8"/>`;
+};
+
+R.world = it => {
+  const { x, y, w, h } = it;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="16" fill="url(#hatch)"/>` +
+    tx(x + 20, y + h / 2 + 7, it.label, 21, 800, C.zoneInk, 'start', 'letter-spacing="0.05em"');
+};
+
+R.line = (it, draw = 1) => {
+  let s = sample(it.pts, it.r ?? 22);
+  const L = plen(s); if (draw <= .002 || L < .5) return '';
+  const aLen = it.w * 2.1 + 6;
+  let tip = null, tail = null;
+  if (it.arrow) tip = pointAt(s, L * draw);
+  if (it.arrow2 && draw > .5) { const q = pointAt(s, aLen * .85); tail = { x: s[0][0], y: s[0][1], a: q.a + 180 }; }
+  let body = cutAt(s, Math.max(0, L * draw - (it.arrow ? aLen * .85 : 0)));
+  if (tail) { const L2 = plen(body), rev = cutAt(body.slice().reverse(), Math.max(0, L2 - aLen * .85)); body = rev.reverse(); }
+  const col = mix(it.c, C.paper, it.dim || 0), d = pathD(body);
+  let g = '';
+  if (body.length > 1 && plen(body) > .5) {
+    if (it.casing !== false) g += `<path d="${d}" fill="none" stroke="${it.casingC || C.paper}" stroke-width="${it.w + 7}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    g += `<path d="${d}" fill="none" stroke="${col}" stroke-width="${it.w}" stroke-linecap="${it.cap || 'round'}" stroke-linejoin="round"${it.dash ? ` stroke-dasharray="${it.dash}"` : ''}/>`;
+    if (it.core) g += `<path d="${d}" fill="none" stroke="${it.core}" stroke-width="${it.coreW || 5}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  for (const tp of [tip, tail]) {
+    if (!tp) continue;
+    const a = tp.a * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), hw = it.w * 1.25 + 3;
+    const bx = tp.x - ca * aLen, by = tp.y - sa * aLen;
+    g += `<path d="M${n1(tp.x)} ${n1(tp.y)}L${n1(bx - sa * hw)} ${n1(by + ca * hw)}L${n1(bx + sa * hw)} ${n1(by - ca * hw)}Z" fill="${col}" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+  }
+  return g;
+};
+
+R.stn = it => {
+  const { x, y } = it, dim = it.dim || 0, col = mix(it.c || C.ink, C.paper, dim);
+  switch (it.kind) {
+    case 'stop': { const r = it.r || 13; return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${col}" stroke-width="${r > 11 ? 6 : 5}"/>`; }
+    case 'origin': return `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="${C.ink}" stroke-width="5"/>`;
+    case 'bad': return `<circle cx="${x}" cy="${y}" r="19" fill="${C.bad}" stroke="#fff" stroke-width="3"/>` + cross(x, y, 1.25, '#fff', 4.2);
+    case 'tool': return `<rect x="${x - 19}" y="${y - 19}" width="38" height="38" rx="8" fill="${C.good}" stroke="#fff" stroke-width="3"/>` +
+      `<rect x="${x - 8}" y="${y - 11}" width="16" height="22" rx="2.5" fill="none" stroke="#fff" stroke-width="2.4"/>` +
+      `<rect x="${x - 4.5}" y="${y - 7.5}" width="9" height="4.5" rx="1" fill="#fff"/>` +
+      [[-4, 1], [1.5, 1], [-4, 6], [1.5, 6]].map(([a, b]) => `<rect x="${x + a}" y="${y + b}" width="3" height="3" fill="#fff"/>`).join('');
+    case 'diamond': { const s = it.r || 15; return `<path d="M${x} ${y - s - 3}L${x + s + 3} ${y}L${x} ${y + s + 3}L${x - s - 3} ${y}Z" fill="${mix(C.check, C.paper, dim)}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>` + tick(x, y, .95, '#fff', 3.2); }
+    case 'capsule': { const w = it.w, h = it.h; return `<rect x="${n1(x - w / 2)}" y="${n1(y - h / 2)}" width="${w}" height="${n1(h)}" rx="${w / 2}" fill="#fff" stroke="${col}" stroke-width="${it.sw || 6}"/>`; }
+    case 'control': return `<circle cx="${x}" cy="${y}" r="20" fill="${C.ink}" stroke="#fff" stroke-width="3"/>` +
+      `<circle cx="${x}" cy="${y - 5.5}" r="5.2" fill="#fff"/><path d="M${x - 10} ${y + 11}Q${x - 9} ${y + 1} ${x} ${y + 1}Q${x + 9} ${y + 1} ${x + 10} ${y + 11}Z" fill="#fff"/>`;
+  }
+  return '';
+};
+
+R.gate = it => {   // toll-gate barrier across a vertical line: the budget guard
+  const { x, y } = it;
+  let g = `<rect x="${x - 34}" y="${y - 9}" width="68" height="18" rx="4" fill="${C.check}" stroke="#fff" stroke-width="2.5"/>`;
+  for (let i = 0; i < 4; i++) g += `<path d="M${x - 26 + i * 16} ${y + 7}l9 -14" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/>`;
+  g += `<circle cx="${x - 34}" cy="${y}" r="10" fill="${C.check}" stroke="#fff" stroke-width="2.5"/><circle cx="${x - 34}" cy="${y}" r="3.5" fill="#fff"/>`;
+  return g;
+};
+
+R.door = it => {   // a door in the wall: two jambs and an exit plate standing on the line that passes through
+  const { x, y } = it, h = it.gw / 2, S = 46, px = x - S / 2, py = y - S / 2;
+  let g = `<rect x="${x - h - 6}" y="${y - 18}" width="12" height="36" rx="3" fill="${C.ink}"/><rect x="${x + h - 6}" y="${y - 18}" width="12" height="36" rx="3" fill="${C.ink}"/>`;
+  g += `<rect x="${px - 4}" y="${py - 4}" width="${S + 8}" height="${S + 8}" rx="12" fill="${C.paper}"/>` +
+    `<rect x="${px}" y="${py}" width="${S}" height="${S}" rx="9" fill="${C.ink}"/>` +
+    `<path d="M${px + 11} ${py + 36}V${py + 10}H${px + 26}V${py + 36}" fill="none" stroke="#fff" stroke-width="2.8" stroke-linejoin="round"/>` +
+    `<path d="M${px + 11} ${py + 10}L${px + 20} ${py + 14}V${py + 40}L${px + 11} ${py + 36}Z" fill="#fff"/>` +
+    `<path d="M${px + 27} ${py + 23}H${px + 37}M${px + 33} ${py + 19}L${px + 37} ${py + 23}L${px + 33} ${py + 27}" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return g;
+};
+
+R.signal = it => {
+  const { x, y } = it, top = y - 118;
+  const lit = it.state === 'red' ? C.bad : C.warn, litY = it.state === 'red' ? top + 15 : top + 37;
+  return `<path d="M${x} ${y - 8}V${top + 50}" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>` +
+    `<path d="M${x - 9} ${y - 8}H${x + 9}" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>` +
+    `<circle cx="${x}" cy="${litY}" r="17" fill="${lit}" opacity="0.28"/>` +
+    `<rect x="${x - 13}" y="${top}" width="26" height="52" rx="9" fill="${C.ink}"/>` +
+    `<circle cx="${x}" cy="${top + 15}" r="7.5" fill="${it.state === 'red' ? C.bad : C.lampOff}"/>` +
+    `<circle cx="${x}" cy="${top + 37}" r="7.5" fill="${it.state === 'red' ? C.lampOff : C.warn}"/>`;
+};
+
+R.train = it => {   // a two-car unit seen from above; nose points along +x before rotation
+  const s = it.s || 1;
+  let g = `<g transform="translate(${n1(it.x)} ${n1(it.y)}) rotate(${n1(it.a || 0)}) scale(${s})">`;
+  g += `<rect x="-35" y="-12.5" width="70" height="25" rx="7" fill="#fff" stroke="${C.ink}" stroke-width="3"/>`;
+  g += `<path d="M22 -12.5H26Q36 -12.5 38 0Q36 12.5 26 12.5H22Z" fill="${C.ink}"/>`;
+  g += `<path d="M-1 -12.5V12.5" stroke="${C.ink}" stroke-width="2.5"/>`;
+  for (const wx of [-29, -18, 5, 13]) g += `<rect x="${wx}" y="-6" width="7" height="12" rx="2" fill="${C.ink}"/>`;
+  g += `<circle cx="33" cy="-6" r="2.2" fill="#ffd34d"/><circle cx="33" cy="6" r="2.2" fill="#ffd34d"/>`;
+  return g + '</g>';
+};
+
+R.pill = it => {
+  const h = it.h || 30, w = it.w || (tw(it.text, it.size, it.weight || 800) + (it.padX || 13) * 2);
+  const x = it.align === 'c' ? it.x - w / 2 : it.align === 'r' ? it.x - w : it.x, y = it.y - h / 2;
+  const dim = it.dim || 0, fill = it.fill ? mix(it.fill, C.paper, it.fill === '#fff' ? 0 : dim) : '#fff';
+  return `<rect x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${h}" rx="${h / 2}" fill="${fill}"${it.stroke ? ` stroke="${it.stroke}" stroke-width="2.5"` : ''}/>` +
+    tx(x + w / 2, y + h / 2 + it.size * .36, it.text, it.size, it.weight || 800, it.color || C.ink, 'middle', it.ls ? `letter-spacing="${it.ls}"` : '');
+};
+
+R.think = it => {   // "thinking…" dwell tag under a station
+  const w = tw(it.text, 17, 500) + 30, h = 30;
+  return `<rect x="${n1(it.x - w / 2)}" y="${it.y - h / 2}" width="${n1(w)}" height="${h}" rx="${h / 2}" fill="${C.think}"/>` +
+    tx(it.x, it.y + 6, it.text, 17, 500, C.muted, 'middle', 'font-style="italic"');
+};
+
+R.clock = it => {
+  const { x, y, w, h } = it;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="#fff" stroke="${C.ink}" stroke-width="2.5"/>` + stopwatch(it.ix, y + h / 2, 1, C.ink);
+};
+function clockItems(text) {   // "⏱ ~5 min": a drawn stopwatch, then the time
+  const x = 1374, y = 34, w = 188, h = 50, gx = x + (w - tw(text, 24, 800) - 34) / 2;
+  return [{ id: 'clock', type: 'clock', x, y, w, h, ix: gx + 11 }, Tx('clock.t', gx + 34, y + h / 2 + 8.5, text, { s: 24, w: 800 })];
+}
+
+R.board = it => {   // io sign: origin (Question / Task) or terminus (Answer / Result)
+  const { x, y, w, h } = it, hh = it.hh || 40, st = it.state === 'warn';
+  const head = st ? C.warn : C.ink, headInk = st ? C.ink : '#fff', edge = st ? C.warn : C.ink;
+  let g = `<rect x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" rx="10" fill="#fff" stroke="${edge}" stroke-width="${st ? 4 : 3}"/>`;
+  g += `<path d="M${n1(x)} ${n1(y + hh)}V${n1(y + 10)}Q${n1(x)} ${n1(y)} ${n1(x + 10)} ${n1(y)}H${n1(x + w - 10)}Q${n1(x + w)} ${n1(y)} ${n1(x + w)} ${n1(y + 10)}V${n1(y + hh)}Z" fill="${head}"/>`;
+  // pictogram: an origin ring or a terminus bar, so the board reads as the end of a line
+  const ix = x + 22, iy = y + hh / 2;
+  g += it.end === 'term'
+    ? `<path d="M${n1(ix - 8)} ${n1(iy)}H${n1(ix + 4)}M${n1(ix + 6)} ${n1(iy - 9)}V${n1(iy + 9)}" stroke="${headInk}" stroke-width="4" stroke-linecap="round"/>`
+    : `<circle cx="${n1(ix)}" cy="${n1(iy)}" r="7" fill="none" stroke="${headInk}" stroke-width="3.5"/>`;
+  g += tx(x + 40, y + hh / 2 + 7.5, it.head, 21, 800, headInk);
+  if (it.body) it.body.forEach((l, i) => { g += tx(x + 12, y + hh + 23 + i * (it.blh || 20), l, it.bs || 16, 500, C.ink2); });
+  return g;
+};
+
+R.cboard = it => {   // the check's inspection panel
+  const { x, y, w, h } = it, hh = 42;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${n1(h)}" rx="10" fill="#fff" stroke="${C.check}" stroke-width="3"/>` +
+    `<path d="M${x} ${y + hh}V${y + 10}Q${x} ${y} ${x + 10} ${y}H${x + w - 10}Q${x + w} ${y} ${x + w} ${y + 10}V${y + hh}Z" fill="${C.check}"/>` +
+    tick(x + 24, y + hh / 2, 1.1, '#fff', 3.6) + tx(x + 44, y + hh / 2 + 8, it.head, 22, 800, '#fff');
+};
+
+R.row = it => {   // one test of the check
+  const { x, y, w, h } = it, bad = it.state === 'bad';
+  return (bad ? `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" fill="${C.badBg}" stroke="${C.bad}" stroke-width="2.5"/>` : '') +
+    badgeIcon(it.state, x + 21, y + h / 2, 12) + tx(x + 42, y + h / 2 + 7, it.label, 20, 700, bad ? C.badInk : C.ink);
+};
+
+R.plan = it => {   // the living plan: the central interchange
+  const { x, y, w, h } = it;
+  let g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="#fff" stroke="${C.ink}" stroke-width="4.5"/>`;
+  g += tx(x + w / 2, y + 42, it.head, 23, 800, C.ink, 'middle');
+  const pw = tw(it.nl, 15, 800) + 26;
+  g += `<rect x="${x + 16}" y="${y - 15}" width="${n1(pw)}" height="30" rx="15" fill="${C.ink}"/>` + tx(x + 16 + pw / 2, y + 5.5, it.nl, 15, 800, '#fff', 'middle', 'letter-spacing="0.06em"');
+  return g;
+};
+
+R.note = it => {
+  const { x, y, w, h } = it;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" fill="#fff" stroke="#c4ccd4" stroke-width="1.5"/>` +
+    `<rect x="${x}" y="${y}" width="7" height="${h}" rx="3" fill="${it.c}"/>` +
+    it.lines.map((l, i) => tx(x + 17, y + 23 + i * 19, l, 15, 600, C.ink)).join('');
+};
+
+R.bar = it => {
+  const { x, y, w, h } = it;
+  return `<rect x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" rx="${n1(h / 2)}" fill="${it.fill}"/>` +
+    (it.label ? tx(x + 16, y + h / 2 + it.ls * .36, it.label, it.ls, 700, C.ink2) : '');
+};
+
+R.mini = it => {   // a short route with n stops: how long a chain is
+  const { x, y, w, n } = it;
+  let g = `<path d="M${x} ${y}H${x + w}" stroke="${C.blue}" stroke-width="7" stroke-linecap="round"/>`;
+  if (n <= 10) for (let i = 0; i < n; i++) g += `<circle cx="${n1(x + 6 + i * (w - 12) / (n - 1))}" cy="${y}" r="${n <= 5 ? 7 : 5.5}" fill="#fff" stroke="${C.blue}" stroke-width="3"/>`;
+  else if (n <= 100) for (let i = 0; i < n; i++) g += `<rect x="${n1(x + i * w / n)}" y="${y - 9}" width="1.4" height="18" fill="${C.blue}"/>`;
+  else g += `<rect x="${x}" y="${y - 9}" width="${w}" height="18" rx="3" fill="${C.blue}"/>`;
+  return g;
+};
+
+R.key = it => {   // map key: symbols drawn with the same renderers as the map
+  let x = it.x, g = '';
+  const y = it.y;
+  for (const [sym, label] of it.entries) {
+    if (sym === 'stop') g += `<path d="M${x} ${y}H${x + 34}" stroke="${C.blue}" stroke-width="9" stroke-linecap="round"/>` + R.stn({ kind: 'stop', x: x + 17, y, c: C.blue, r: 9 });
+    if (sym === 'tool') g += `<path d="M${x} ${y}H${x + 34}" stroke="${C.blue}" stroke-width="9" stroke-linecap="round"/><path d="M${x} ${y}H${x + 34}" stroke="#fff" stroke-width="3"/>` +
+      `<g transform="translate(${x + 17} ${y}) scale(.6) translate(${-x - 17} ${-y})">${R.stn({ kind: 'tool', x: x + 17, y })}</g>`;
+    if (sym === 'check') g += `<path d="M${x} ${y}H${x + 34}" stroke="${C.blue}" stroke-width="9" stroke-linecap="round"/>` + R.stn({ kind: 'capsule', x: x + 17, y, w: 18, h: 30, c: C.check, sw: 4 });
+    if (sym === 'red' || sym === 'amber') g += `<rect x="${x}" y="${y - 17}" width="18" height="34" rx="6" fill="${C.ink}"/>` +
+      `<circle cx="${x + 9}" cy="${y - 7}" r="5" fill="${sym === 'red' ? C.bad : C.lampOff}"/><circle cx="${x + 9}" cy="${y + 7}" r="5" fill="${sym === 'red' ? C.lampOff : C.warn}"/>`;
+    if (sym === 'back') g += `<path d="M${x + 30} ${y + 6}V${y - 6}Q${x + 30} ${y - 12} ${x + 24} ${y - 12}H${x + 9}Q${x + 4} ${y - 12} ${x + 4} ${y - 6}V${y}" fill="none" stroke="${C.bad}" stroke-width="5"/><path d="M${x - 2} ${y - 1}L${x + 10} ${y - 1}L${x + 4} ${y + 9}Z" fill="${C.bad}"/>`;
+    x += (sym === 'red' || sym === 'amber' ? 18 : 34) + 10;
+    g += tx(x, y + 6, label, 17, 600, C.muted);
+    x += tw(label, 17, 600) + 30;
+  }
+  return g;
+};
+
+R.xlabel = it => {   // a label led by an icon (the return loop's reason)
+  const w = tw(it.text, it.s, 800) + 34, x0 = it.x - w / 2;
+  return badgeIcon(it.icon, x0 + 12, it.y - it.s * .34, 13) + tx(x0 + 34, it.y, it.text, it.s, 800, it.c);
+};
+
+/* =====================================================================
+   Frames. Items keep their ids across frames so they can glide.
+   ===================================================================== */
+const Tx = (id, x, y, lines, o = {}) => ({ id, type: 'text', x, y, lines: (Array.isArray(lines) ? lines : [lines]).map(l => typeof l === 'string' ? { t: l } : l), ...o });
+const Z = { zone: 0, world: 0, wall: 1, bar: 1, mini: 2, key: 2, line: 2, board: 3, cboard: 3, plan: 3, note: 4, row: 4, stn: 5, gate: 5, door: 5, signal: 5, think: 6, pill: 6, clock: 6, text: 7, xlabel: 7, train: 8 };
+
+const LY = 500;   // the main line of the journey slides
+const XF4 = { s1: 372, s2: 572, s3: 772, s4: 972, s5: 1172 };
+const XF5 = { s1: 372, s2: 547, s3: 722, s4: 897, s5: 1072 };
+const STEPS = [['s1', ['Search', 'road distance'], 'web search'], ['s2', ['Search', 'fuel price'], 'web search'],
+  ['s3', ['Search', 'train fares'], '2025 page · 23 лв'], ['s4', ['Calculate', 'both costs'], 'calculator · exact'], ['s5', ['Compare', '& answer'], '']];
+
+function buildF(f5) {
+  const X = f5 ? XF5 : XF4, I = [];
+  I.push(Tx('ttl', 64, 90, f5 ? 'Tools and a check' : 'Thinking before each step', { s: 44, w: 800 }));
+  I.push(...clockItems(f5 ? '~5 min' : '~1 min'));
+  I.push(Tx('cap', 64, 866, f5 ? 'In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.'
+    : '98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.', { s: 21, w: 500, c: C.muted }));
+  // the AI model as a fare zone; on F5a it steps down to hold the check's panel
+  I.push({ id: 'ai', type: 'zone', label: 'AI model', pts: f5
+    ? [[290, 344], [1376, 344], [1376, 808], [1126, 808], [1126, 718], [290, 718]]
+    : [[290, 344], [1292, 344], [1292, 694], [1126, 694], [1126, 694], [290, 694]] });
+  // origin: the question board
+  const qh = f5 ? 132 : 166;
+  I.push({ id: 'q', type: 'board', x: 44, y: 122, w: 572, h: qh, head: 'Question' });
+  I.push(Tx('q.l1', 62, 196, 'Which is cheaper from Ruse to Sofia — driving', { s: 23, w: 500, c: C.ink2 }));
+  I.push(Tx('q.l2', 62, 225, 'or taking the train?', { s: 23, w: 500, c: C.ink2 }));
+  if (!f5) I.push(Tx('q.l3', 62, 264, 'Think hard and describe the answer step by step.', { s: 23, w: 800 }));
+  I.push({ id: 'main', type: 'line', pts: [[150, 122 + qh], [150, LY - 60], [210, LY], [1404, LY]], c: C.blue, w: 16, r: 28 });
+  I.push({ id: 'org0', type: 'stn', kind: 'origin', x: 150, y: 122 + qh + 2 });
+  // stations
+  for (const [k, name, sub] of STEPS) {
+    const x = X[k], n = k.slice(1);
+    const tool = f5 && k === 's4', bad = f5 && k === 's3';
+    I.push({ id: k, type: 'stn', kind: tool ? 'tool' : bad ? 'bad' : 'stop', x, y: LY, c: C.blue, r: 14 });
+    I.push(Tx(k + '.n', x, LY + 48, name, { s: 24, w: 800, anchor: 'middle', lh: 28 }));
+    I.push({ id: k + '.p', type: 'pill', x: x + 18, y: LY - 50, h: 32, text: tool ? '100%' : '98%', size: 19, align: 'l',
+      fill: tool ? C.good : '#fff', color: tool ? '#fff' : C.ink, stroke: tool ? null : C.ink });
+    if (f5 && sub) I.push(Tx(k + '.sub', x, LY + 108, sub, { s: 18, w: tool || bad ? 800 : 600, c: tool ? C.goodInk : bad ? C.badInk : C.muted, anchor: 'middle' }));
+    if (!tool) I.push({ id: 'th' + n, type: 'think', x, y: LY + 144, text: 'thinking…' });
+  }
+  // terminus
+  I.push({ id: 'ans', type: 'board', x: 1404, y: LY - 86, w: 162, h: 172, head: 'Answer', end: 'term', state: f5 ? 'warn' : null });
+  I.push(Tx('ans.p', 1485, f5 ? LY + 11 : LY + 24, f5 ? '92%' : '90%', { s: 50, w: 800, anchor: 'middle' }));
+  if (f5) {
+    I.push({ id: 'ans.h', type: 'xlabel', icon: 'warn', x: 1485, y: LY + 57, text: 'on hold', s: 21, c: C.warnInk });
+    I.push({ id: 'exp', type: 'line', pts: [[X.s3 + 34, LY], [X.s5 - 34, LY]], c: '#fff', w: 5, casing: false, cap: 'round' });
+    I.push({ id: 'v', type: 'stn', kind: 'capsule', x: 1250, y: LY, w: 46, h: 90, c: C.check, sw: 7 });
+    I.push({ id: 'v.c', type: 'line', pts: [[1250, LY + 45], [1250, LY + 74]], c: C.check, w: 6, casing: false });
+    I.push({ id: 'v.b', type: 'cboard', x: 1138, y: LY + 70, w: 226, h: 222, head: 'Check' });
+    [['ck1', 'sources agree', 'good'], ['ck2', 'sensible range', 'good'], ['ck3', 'date & currency', 'bad'], ['ck4', 'recompute', 'good']]
+      .forEach(([id, label, state], i) => I.push({ id, type: 'row', x: 1148, y: LY + 120 + i * 42, w: 206, h: 38, label, state }));
+    I.push({ id: 'back', type: 'line', pts: [[1250, LY - 46], [1250, 196], [X.s3, 196], [X.s3, LY - 20]], c: C.bad, w: 11, r: 34, arrow: true });
+    I.push({ id: 'back.l', type: 'xlabel', icon: 'bad', x: 986, y: 254, text: 'fare from a 2025 page, in leva', s: 25, c: C.badInk });
+    I.push({ id: 'sig3', type: 'signal', x: X.s3 - 46, y: LY, state: 'red' });
+    I.push({ id: 'sigA', type: 'signal', x: 1336, y: LY, state: 'amber' });
+    I.push({ id: 'train', type: 'train', x: 1178, y: LY, a: 0 });
+    I.push({ id: 'key', type: 'key', x: 72, y: 778, entries: [['stop', 'a step, thought through'], ['tool', 'express: an exact tool'], ['check', 'a check'],
+      ['red', 'caught'], ['back', 'sent back'], ['amber', 'on hold']] });
+  } else {
+    ['0.98⁵ ≈ 90%', '0.98¹⁰ ≈ 82%', '0.98¹⁰⁰ ≈ 13%', '0.98¹⁰⁰⁰ ≈ 0%'].forEach((t, i) => {
+      const cx = 232 + i * 378;
+      I.push(Tx('pow' + i, cx, 762, t, { s: 34, w: 800, anchor: 'middle' }));
+      I.push({ id: 'pow' + i + '.m', type: 'mini', x: cx - 130, y: 800, w: 260, n: [5, 10, 100, 1000][i] });
+    });
+  }
+  return I;
+}
+
+/* ---- the conference system as a network map ---- */
+const NY = { T: 236, A: 396, C: 512, fl: 196, tr: 276, ho: 356, ca: 436 };
+const NX = { lead: 240, badge: 340, fork: 426, team: 486, merge: 734, chk: 786, plan: 958, trunk: 1236, loop: 1278 };
+const WALL = 648;
+
+function buildN(n2) {
+  const I = [], dimTA = n2 ? .55 : 0, dimTxt = n2 ? .3 : 0, dimSub = n2 ? .15 : 0;
+  I.push(Tx('ttl', 64, 90, n2 ? 'Acting in the world, through two doors' : 'A real-scale job: 100 people to this conference', { s: 44, w: 800 }));
+  I.push(...clockItems('~1 day'));
+  I.push(Tx('cap', 64, 866, n2 ? 'Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.'
+    : 'A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.', { s: 21, w: 500, c: C.muted }));
+  I.push(Tx('ail', 40, 134, n2 ? '~127 agents · a lead, three groups, five teams, two payment agents' : '~125 agents · a lead, three groups, five teams', { s: 17, w: 700, c: C.muted }));
+  I.push({ id: 'sys', type: 'wall', x: 20, y: 148, w: 1560, h: WALL - 148, doors: [NX.team, NX.trunk], gw: 78, open: n2 ? 1 : 0, solid: !!n2 });
+  // origin and terminus
+  I.push({ id: 'q', type: 'board', x: 32, y: 326, w: 166, h: 140, head: 'Task', body: ['get 100 attendees', 'from 15 countries', 'to Ruse by the 23rd,', 'under €30,000'], bs: 15, blh: 19 });
+  I.push({ id: 'ans', type: 'board', x: 1420, y: 160, w: 148, h: 118, hh: 38, end: 'term', head: 'Result', body: ['every attendee:', 'an itinerary,', 'a bed and lunches'], bs: 15, blh: 19 });
+  // the lead: an interchange where the three lines start
+  I.push({ id: 'l.task', type: 'line', pts: [[198, NY.A], [NX.lead - 14, NY.A]], c: C.grey, w: 10 });
+  I.push({ id: 'lead', type: 'stn', kind: 'capsule', x: NX.lead, y: 374, w: 32, h: 324, c: C.ink, sw: 5 });
+  I.push({ id: 'lead.nl', type: 'pill', x: 218, y: 198, h: 28, text: 'COORDINATE', size: 15, align: 'r', fill: C.ink, color: '#fff', ls: '0.06em' });
+  I.push(Tx('lead.n', 218, 250, 'Lead', { s: 24, w: 800, anchor: 'end' }));
+  I.push(Tx('lead.s', 218, 274, ['splits the job,', 'watches progress'], { s: 16, w: 500, c: C.muted, anchor: 'end', lh: 19 }));
+  // three coloured lines with branches that merge at their check
+  const grp = [
+    { g: 'gt', name: 'Transport', y: NY.T, c: C.blue, dim: dimTA, sub: n2 ? ['posts requests', 'in the plan'] : ['long and', 'short distance'],
+      br: [['s_fl', 'Flights', '×8', 'long distance', NY.fl], ['s_tr', 'Trains & buses', '×6', 'short distance', NY.tr]],
+      chk: ['c_t', ['Verifier'], ['connections', '≥ 60 min;', 'lands by the 23rd']] },
+    { g: 'ga', name: 'Accommodation', y: NY.A, c: C.brown, dim: dimTA, sub: n2 ? ['posts requests', 'in the plan'] : ['beds and lunches'],
+      br: [['s_ho', 'Hotels', '×4', 'rooms in Ruse', NY.ho], ['s_ca', 'Catering', '×3', 'lunches during the stay', NY.ca]],
+      chk: ['c_a', ['Room & meal', 'check'], ['a bed and a lunch', 'for everyone']] },
+    { g: 'gc', name: 'Correspondence', y: NY.C, c: C.teal, dim: 0, sub: n2 ? ['the only agents that', 'write to people'] : ['speaks for', 'each attendee'],
+      br: [['s_co', 'Attendee workers', '×100', 'one per attendee', NY.C]],
+      chk: ['c_c', ['Fact check'], ['names, dates, visas']] }
+  ];
+  for (const G of grp) {
+    const dt = G.dim ? dimTxt : 0, ds = G.dim ? dimSub : 0;
+    if (G.br.length === 2) {
+      I.push({ id: 'l.' + G.g, type: 'line', pts: [[NX.lead + 16, G.y], [NX.fork, G.y]], c: G.c, w: 12, dim: G.dim, r: 16 });
+      G.br.forEach(b => I.push({ id: 'l.' + b[0], type: 'line', pts: [[NX.fork, G.y], [NX.fork + 40, b[4]], [NX.merge, b[4]], [NX.merge + 40, G.y]], c: G.c, w: 12, dim: G.dim, r: 16 }));
+      I.push({ id: 'l.' + G.chk[0], type: 'line', pts: [[NX.merge + 40, G.y], [NX.plan, G.y]], c: G.c, w: 12, dim: G.dim });
+    } else {
+      I.push({ id: 'l.' + G.g, type: 'line', pts: [[NX.lead + 16, G.y], [NX.plan, G.y]], c: G.c, w: 12, dim: G.dim });
+    }
+    I.push({ id: G.g, type: 'pill', x: NX.badge, y: G.y, h: 34, text: G.name, size: 18, align: 'c', fill: G.c, color: '#fff' });
+    I.push(Tx(G.g + '.s', NX.badge, G.y + 38, G.sub, { s: 16, w: 500, c: C.muted, anchor: 'middle', lh: 19, dim: ds }));
+    for (const [id, name, cnt, sub, y] of G.br) {
+      I.push({ id, type: 'stn', kind: 'stop', x: NX.team, y, c: G.c, r: 11, dim: G.dim });
+      I.push(Tx(id + '.n', NX.team + 16, y - 15, name, { s: 20, w: 800, dim: dt }));
+      I.push({ id: id + '.nl', type: 'pill', x: NX.team + 24 + tw(name, 20, 800), y: y - 22, h: 24, text: cnt, size: 15, align: 'l', padX: 8, fill: G.c, color: '#fff' });
+      I.push(Tx(id + '.s', NX.team + 16, y + 28, sub, { s: 16, w: 500, c: C.muted, dim: ds }));
+    }
+    const [cid, cname, csub] = G.chk, ny = G.y - 14 - (cname.length - 1) * 22;
+    I.push({ id: cid, type: 'stn', kind: 'diamond', x: NX.chk, y: G.y, dim: G.dim * .7 });
+    I.push(Tx(cid + '.n', NX.chk + 24, ny, cname, { s: 20, w: 800, lh: 22, dim: dt }));
+    I.push(Tx(cid + '.s', NX.chk + 24, G.y + 28, csub, { s: 16, w: 500, c: C.muted, lh: 18, dim: ds }));
+  }
+  // the living plan: central interchange, notes colour-coded by the line that wrote them
+  I.push({ id: 'plan', type: 'plan', x: NX.plan, y: 166, w: 216, h: 456, head: 'Living plan', nl: 'MEMORY' });
+  [[['Flights: 12 land', 'after 22:00'], C.blue], [['Hotels: holding 12', 'late check-ins'], C.brown], [['Attendee 37:', 'needs a step-free room'], C.teal],
+   [['Catering: 9 vegetarian', 'lunches'], C.brown], [['Trains & buses: coach', 'from Bucharest 15:30'], C.blue]]
+    .forEach(([lines, c], i) => I.push({ id: 'pn' + i, type: 'note', x: NX.plan + 13, y: 222 + i * 64, w: 190, h: 56, lines, c }));
+  I.push(Tx('planfoot', NX.plan + 108, 572, ['every team', 'writes and reads'], { s: 16, w: 700, c: C.ink2, anchor: 'middle', lh: 20 }));
+  // organiser (control point) and the sign-off line to the result
+  const OY = 482;
+  I.push({ id: 'l.sign', type: 'line', pts: [[NX.loop + 18, OY], [1540, OY], [1540, 278]], c: C.grey, w: 10, r: 22 });
+  I.push({ id: 'org', type: 'stn', kind: 'control', x: NX.loop, y: OY });
+  if (n2) {
+    I.push(Tx('org.n', NX.loop + 30, OY - 15, 'Organiser', { s: 21, w: 800 }));
+    I.push({ id: 'org.nl', type: 'pill', x: NX.loop + 38 + tw('Organiser', 21, 800), y: OY - 22, h: 26, text: 'APPROVE', size: 15, align: 'l', padX: 10, fill: C.ink, color: '#fff', ls: '0.06em' });
+    I.push(Tx('org.s', NX.loop + 30, OY + 27, ['approves big payments;', 'final sign-off'], { s: 16, w: 500, c: C.muted, lh: 19 }));
+  } else {
+    I.push({ id: 'l.porg', type: 'line', pts: [[NX.plan + 216, OY], [NX.loop - 18, OY]], c: C.grey, w: 10 });
+    I.push(Tx('org.n', NX.loop + 30, OY - 37, ['Budget guard', '+ organiser'], { s: 21, w: 800, lh: 22 }));
+    I.push(Tx('org.s', NX.loop + 30, OY + 27, ['stays under €30k;', 'final sign-off'], { s: 16, w: 500, c: C.muted, lh: 19 }));
+  }
+  // time
+  const tp = n2 ? { y: 774, h: 22, ls: 16, ty: 797, ts: 20 } : { y: 690, h: 34, ls: 19, ty: 722, ts: 24 };
+  I.push(Tx('tl', 40, tp.ty, 'time →', { s: tp.ts, w: 700, c: C.muted }));
+  I.push({ id: 'g_h', type: 'bar', x: 152, y: tp.y, w: 1236, h: tp.h, fill: '#d3dae0', label: 'a human team: ~3 weeks of work', ls: tp.ls });
+  I.push({ id: 'g_a', type: 'bar', x: 152, y: tp.y + tp.h + 8, w: 60, h: tp.h, fill: C.good });
+  I.push(Tx('ga_t', 226, tp.y + tp.h + 8 + tp.h / 2 + tp.ls * .36, 'agents: ~1 day of work (plus waiting for replies and approvals)', { s: tp.ls, w: 700, c: C.goodInk }));
+  if (n2) {
+    // payments: plan → budget guard → (> €500 via the organiser) → Payments → door 2
+    const T = NX.trunk, L = NX.loop;
+    I.push({ id: 'l.pay', type: 'line', pts: [[NX.plan + 216, NY.T], [T, NY.T], [T, 690]], c: C.pay, w: 12, r: 24 });
+    I.push({ id: 'l.loop', type: 'line', pts: [[T, 338], [L, 380], [L, 524], [T, 566]], c: C.pay, w: 12, r: 14 });
+    I.push({ id: 'guard', type: 'gate', x: T, y: 284 });
+    I.push(Tx('guard.n', T + 46, 282, 'Budget guard', { s: 20, w: 800 }));
+    I.push(Tx('guard.s', T + 46, 304, ['stays under €30k;', '> €500 → organiser'], { s: 16, w: 500, c: C.muted, lh: 19 }));
+    I.push({ id: 'gate>org', type: 'pill', x: L + 24, y: 362, h: 30, text: '> €500', size: 18, align: 'l', fill: '#fff', color: C.ink, stroke: C.ink });
+    I.push({ id: 'pay', type: 'stn', kind: 'stop', x: T, y: 596, c: C.pay, r: 12 });
+    I.push(Tx('pay.n', T + 26, 583, 'Payments', { s: 21, w: 800 }));
+    I.push({ id: 'pay.nl', type: 'pill', x: T + 34 + tw('Payments', 21, 800), y: 576, h: 24, text: '×2', size: 15, align: 'l', padX: 8, fill: C.pay, color: '#fff' });
+    I.push(Tx('pay.s', T + 26, 608, ['the only agents', 'that can pay'], { s: 16, w: 500, c: C.muted, lh: 19 }));
+    I.push({ id: 'l.book', type: 'line', pts: [[T, 688], [T - 28, 716], [1134, 716]], c: C.pay, w: 9, r: 14, arrow: true });
+    I.push({ id: 'l.card', type: 'line', pts: [[T, 688], [T + 28, 716], [1346, 716]], c: C.pay, w: 9, r: 14, arrow: true });
+    // correspondence: the other door, both ways
+    I.push({ id: 'l.x1', type: 'line', pts: [[NX.team, NY.C + 14], [NX.team, 722]], c: C.teal, w: 8, arrow: true, arrow2: true });
+    I.push({ id: 'world', type: 'world', x: 20, y: 668, w: 1560, h: 92, label: 'outside world' });
+    I.push(Tx('w_people', NX.team + 24, 709, ['attendees, hotels,', 'carriers · email'], { s: 18, w: 700, lh: 21 }));
+    I.push(Tx('w_book', 1122, 723, 'booking systems', { s: 19, w: 800, anchor: 'end' }));
+    I.push(Tx('w_card', 1358, 723, 'payment card', { s: 19, w: 800 }));
+    I.push({ id: 'd1', type: 'door', x: NX.team, y: WALL, gw: 78 });
+    I.push({ id: 'd2', type: 'door', x: T, y: WALL, gw: 78 });
+    I.push({ id: 'train', type: 'train', x: L, y: 426, a: 90, s: .92 });
+  }
+  return I;
+}
+
+const FRAMES = {};
+const SEQ = ['F4', 'F5a', 'N1', 'N2'];
+const TITLES = { F4: 'Thinking before each step', F5a: 'Tools and a check', N1: 'A real-scale job: 100 people to this conference', N2: 'Acting in the world, through two doors' };
+function buildAll() {
+  FRAMES.F4 = buildF(false); FRAMES.F5a = buildF(true); FRAMES.N1 = buildN(false); FRAMES.N2 = buildN(true);
+  for (const k in FRAMES) FRAMES[k].forEach((it, i) => { it.z = it.z ?? (Z[it.type] ?? 5) + (it.type === 'line' && it.c === C.bad ? .5 : 0); it.ord = i; });
+}
+
+/* =====================================================================
+   Choreography. Windows are fractions of the transition (linear t),
+   eased inside. Unlisted items use the defaults.
+   ===================================================================== */
+const CH = {
+  'F4>F5a': {
+    move: [0, .5], chg: [.14, .44], out: [0, .26],
+    items: {
+      'pow0': { out: [0, .18] }, 'pow0.m': { out: [0, .18] }, 'pow1': { out: [.03, .21] }, 'pow1.m': { out: [.03, .21] },
+      'pow2': { out: [.06, .24] }, 'pow2.m': { out: [.06, .24] }, 'pow3': { out: [.09, .27] }, 'pow3.m': { out: [.09, .27] },
+      'q.l3': { out: [.02, .2] }, 'th4': { out: [.26, .38] }, 'ai': { move: [.08, .58] },
+      's1.sub': { in: [.3, .44] }, 's2.sub': { in: [.34, .48] },
+      's4': { chg: [.36, .48] }, 's4.p': { chg: [.38, .5] }, 's4.sub': { in: [.4, .54] }, 'exp': { in: [.36, .54] },
+      'v': { in: [.5, .62] }, 'v.c': { in: [.57, .63] }, 'v.b': { in: [.6, .7] },
+      'ck1': { in: [.63, .71] }, 'ck2': { in: [.66, .74] }, 'ck3': { in: [.69, .77] }, 'ck4': { in: [.72, .8] },
+      'back': { in: [.74, .91] }, 'back.l': { in: [.85, 1] },
+      's3': { chg: [.86, .94] }, 's3.sub': { in: [.86, .98] }, 'sig3': { in: [.84, .96] },
+      'ans': { chg: [.86, 1] }, 'ans.p': { chg: [.86, 1] }, 'ans.h': { in: [.88, 1] }, 'sigA': { in: [.88, 1] },
+      'key': { in: [.3, .62] }
+    },
+    train: { pts: [[150, 290], [150, LY - 60], [210, LY], [1178, LY]], r: 28, win: [.05, .7], fadeIn: [.03, .09] }
+  },
+  'N1>N2': {
+    move: [0, .45], chg: [.08, .4], out: [0, .26],
+    items: {
+      'l.porg': { out: [0, .22] }, 'sys': { move: [.5, .7], chg: [.2, .42] },
+      'tl': { move: [0, .3] }, 'g_h': { move: [0, .3] }, 'g_a': { move: [0, .3] }, 'ga_t': { move: [0, .3] },
+      'world': { in: [.28, .5] },
+      'l.pay': { in: [.22, .62] }, 'guard': { in: [.28, .4] }, 'guard.n': { in: [.31, .44] }, 'guard.s': { in: [.34, .47] },
+      'l.loop': { in: [.36, .54] }, 'gate>org': { in: [.42, .54] }, 'org.n': { chg: [.2, .44] }, 'org.s': { chg: [.24, .48] }, 'org.nl': { in: [.44, .56] },
+      'pay': { in: [.56, .66] }, 'pay.n': { in: [.58, .68] }, 'pay.nl': { in: [.6, .7] }, 'pay.s': { in: [.6, .72] },
+      'd1': { in: [.52, .64] }, 'd2': { in: [.62, .74] },
+      'l.x1': { in: [.5, .72] }, 'w_people': { in: [.66, .8] },
+      'l.book': { in: [.66, .8] }, 'l.card': { in: [.68, .82] }, 'w_book': { in: [.76, .9] }, 'w_card': { in: [.78, .92] }
+    },
+    train: { pts: [[NX.plan + 216, NY.T], [NX.trunk, NY.T], [NX.trunk, 338], [NX.loop, 380], [NX.loop, 426]], r: 24, win: [.3, .88], fadeIn: [.3, .36], follow: 'l.pay' }
+  }
+};
+const GENERIC = { move: [.05, .6], chg: [.25, .6], out: [0, .32], items: {} };
+function enterWin(it) {   // default entrance: left to right, like a line being drawn across the map
+  const x = it.pts ? Math.min(...it.pts.map(p => p[0])) : (it.x ?? 800);
+  const s = .3 + .42 * clamp01(x / 1600);
+  return [s, s + (it.type === 'line' ? .3 : .22)];
+}
+
+/* =====================================================================
+   Composer: the scene at linear progress t from frame A to frame B.
+   ===================================================================== */
+const GEO = ['x', 'y', 'w', 'h', 'r', 'open', 'a', 'dim', 's', 'gw', 'ls', 'ix', 'hh'];
+const OPAQUE = new Set(['board', 'cboard', 'plan', 'note', 'row', 'stn', 'pill', 'clock', 'think', 'gate', 'door', 'signal', 'bar', 'zone', 'world', 'train', 'mini']);
+const visualKey = it => { const o = {}; for (const k in it) if (!GEO.includes(k) && k !== 'pts' && k !== 'id' && k !== 'z' && k !== 'ord') o[k] = it[k]; return JSON.stringify(o); };
+function lerpGeo(a, b, k) {
+  const o = { ...b };
+  for (const g of GEO) if (typeof a[g] === 'number' && typeof b[g] === 'number') o[g] = a[g] + (b[g] - a[g]) * k;
+  if (a.pts && b.pts && a.pts.length === b.pts.length) o.pts = a.pts.map((p, i) => [p[0] + (b.pts[i][0] - p[0]) * k, p[1] + (b.pts[i][1] - p[1]) * k]);
+  return o;
+}
+function center(it) {
+  if (it.type === 'pill') { const w = tw(it.text, it.size, 800) + 26; return [it.align === 'c' ? it.x : it.align === 'r' ? it.x - w / 2 : it.x + w / 2, it.y]; }
+  if (it.type === 'signal') return [it.x, it.y - 60];
+  if (it.w != null && it.h != null && it.type !== 'stn') return [it.x + it.w / 2, it.y + it.h / 2];
+  return [it.x ?? 800, it.y ?? 450];
+}
+function wrap(it, body, op, tf) {
+  if (!body || op <= .004) return '';
+  return `<g${op < .999 ? ` opacity="${op.toFixed(3)}"` : ''}${tf ? ` transform="${tf}"` : ''}>${body}</g>`;
+}
+function drawItem(it, op, k, mode, tf) {   // k: entrance progress (1 = settled); mode: how it arrives / leaves
+  if (it.type === 'line') return wrap(it, R.line(it, mode === 'draw' ? k : 1), mode === 'draw' ? 1 : op);
+  if (k >= .999 || mode === 'none') return wrap(it, R[it.type](it), op, tf);
+  const [cx, cy] = center(it);
+  if (mode === 'pop') { const s = .35 + .65 * E.back(k); return wrap(it, R[it.type](it), op * clamp01(k * 2.2), `translate(${n1(cx)} ${n1(cy)}) scale(${s.toFixed(3)}) translate(${n1(-cx)} ${n1(-cy)})`); }
+  if (mode === 'rise') return wrap(it, R[it.type](it), op * E.out(k), `translate(0 ${n1((1 - E.out(k)) * 12)})`);
+  if (mode === 'drop') return wrap(it, R[it.type](it), op * E.out(k), `translate(0 ${n1(-(1 - E.out(k)) * 16)})`);
+  if (mode === 'up') return wrap(it, R[it.type](it), op * E.out(k), `translate(0 ${n1((1 - E.out(k)) * 46)})`);
+  if (mode === 'sink') return wrap(it, R[it.type](it), op * k, `translate(0 ${n1((1 - k) * 22)})`);
+  return wrap(it, R[it.type](it), op * k);
+}
+const enterMode = it => it.type === 'line' ? 'draw' : ['stn', 'pill', 'signal', 'gate', 'door', 'think', 'train'].includes(it.type) ? 'pop'
+  : ['text', 'xlabel', 'mini'].includes(it.type) ? 'rise' : it.type === 'world' ? 'up' : ['board', 'cboard', 'row', 'note', 'plan'].includes(it.type) ? 'drop' : 'fade';
+
+function compose(A, B, t, ch, reduced) {
+  const ma = new Map(A.map(i => [i.id, i])), mb = new Map(B.map(i => [i.id, i])), parts = [];
+  const cfg = id => ch.items[id] || {};
+  const push = (it, html) => { if (html) parts.push([it.z, it.ord, html]); };
+  if (reduced) {   // a short crossfade, nothing moves
+    const k = E.sine(t);
+    for (const b of B) { const a = ma.get(b.id); if (a && visualKey(a) === visualKey(b) && JSON.stringify(a.pts) === JSON.stringify(b.pts) && GEO.every(g => a[g] === b[g])) push(b, wrap(b, R[b.type](b), 1)); else push(b, drawItem(b, k, 1, 'none')); }
+    for (const a of A) { const b = mb.get(a.id); if (!(b && visualKey(a) === visualKey(b) && JSON.stringify(a.pts) === JSON.stringify(b.pts) && GEO.every(g => a[g] === b[g]))) push(a, drawItem(a, 1 - k, 1, 'none')); }
+    return parts.sort((p, q) => p[0] - q[0] || p[1] - q[1]).map(p => p[2]).join('');
+  }
+  const trainRoute = ch.train ? sample(ch.train.pts, ch.train.r) : null;
+  for (const b of B) {
+    const a = ma.get(b.id), c = cfg(b.id);
+    if (b.type === 'train' && trainRoute) {   // the train runs the route, then parks
+      const [s, e] = ch.train.win, L = plen(trainRoute);
+      let u = E.train(win(t, s, e)) * L;
+      if (ch.train.follow) {   // never run ahead of a line that is still being drawn in
+        const li = mb.get(ch.train.follow), lw = (cfg(ch.train.follow).in) || enterWin(li);
+        const drawn = E.io(win(t, lw[0], lw[1])) * plen(sample(li.pts, li.r ?? 22));
+        u = Math.min(u, Math.max(0, drawn - 40));
+      }
+      const p = pointAt(trainRoute, u), fi = ch.train.fadeIn ? win(t, ch.train.fadeIn[0], ch.train.fadeIn[1]) : 1;
+      const it = { ...b, x: p.x, y: p.y, a: p.a };
+      push(b, a ? wrap(it, R.train(it), 1) : drawItem(it, 1, fi, 'pop'));
+      continue;
+    }
+    if (!a || a.type !== b.type) {
+      const [s, e] = c.in || enterWin(b);
+      push(b, drawItem(b, 1, win(t, s, e), c.mode || enterMode(b)));
+      continue;
+    }
+    const [ms, me] = c.move || ch.move;
+    const g = lerpGeo(a, b, E.io(win(t, ms, me)));
+    if (visualKey(a) === visualKey(b)) { push(b, drawItem(g, 1, 1, 'none')); continue; }
+    const [cs, ce] = c.chg || ch.chg, ck = E.sine(win(t, cs, ce));
+    const ga = { ...a }; for (const k of GEO) if (k in g) ga[k] = g[k]; if (g.pts) ga.pts = g.pts;
+    if (b.type === 'pill' || b.type === 'stn') {   // a marker that changes meaning is swapped: the old one shrinks away, the new one pops in
+      const ko = clamp01(ck / .5), ki = clamp01((ck - .5) / .5), [cx, cy] = center(ga), sc = 1 - .4 * ko;
+      push(b, drawItem(ga, 1 - ko, 1, 'none', `translate(${n1(cx)} ${n1(cy)}) scale(${sc.toFixed(3)}) translate(${n1(-cx)} ${n1(-cy)})`) + drawItem(g, 1, ki, 'pop'));
+    } else if (OPAQUE.has(b.type)) push(b, drawItem(ga, 1, 1, 'none') + drawItem(g, ck, 1, 'none'));   // new state laid over the old
+    else if (b.type === 'text' || b.type === 'xlabel') {   // like a departure board: the old line rolls up and out, then the new one rolls in
+      const ko = clamp01(ck / .55), ki = clamp01((ck - .45) / .55);
+      push(b, drawItem(ga, 1 - ko, 1, 'none', `translate(0 ${n1(-10 * ko)})`) + drawItem(g, ki, 1, 'none', `translate(0 ${n1(10 * (1 - ki))})`));
+    } else push(b, drawItem(ga, 1 - ck, 1, 'none') + drawItem(g, ck, 1, 'none'));
+  }
+  for (const a of A) {
+    const b = mb.get(a.id); if (b && b.type === a.type) continue;
+    const c = cfg(a.id), [s, e] = c.out || ch.out, k = 1 - E.io(win(t, s, e));
+    if (a.type === 'line') push(a, wrap(a, R.line(a, 1), k));
+    else push(a, drawItem(a, 1, k, a.id.startsWith('pow') ? 'sink' : 'fade'));
+  }
+  return parts.sort((p, q) => p[0] - q[0] || p[1] - q[1]).map(p => p[2]).join('');
+}
+
+/* =====================================================================
+   Stage, navigation and review hooks
+   ===================================================================== */
+const scene = document.getElementById('scene'), svg = document.getElementById('stage');
+const params = new URLSearchParams(location.search);
+const REVIEW = params.has('frame');
+if (REVIEW) document.documentElement.classList.add('review');
+const reducedQ = matchMedia('(prefers-reduced-motion: reduce)');
+const DUR = 1200, DUR_RM = 260;
+
+function fit() {
+  const barH = REVIEW ? 0 : document.getElementById('bar').offsetHeight;
+  const W = innerWidth, H = innerHeight - barH, s = Math.min(W / 1600, H / 900);
+  svg.setAttribute('width', Math.floor(1600 * s)); svg.setAttribute('height', Math.floor(900 * s));
+}
+addEventListener('resize', fit);
+
+function pair(from, to) {   // the curated transition between two frames, and whether it runs backwards
+  if (CH[from + '>' + to]) return { A: from, B: to, ch: CH[from + '>' + to], rev: false };
+  if (CH[to + '>' + from]) return { A: to, B: from, ch: CH[to + '>' + from], rev: true };
+  return { A: from, B: to, ch: GENERIC, rev: false };
+}
+function sceneAt(from, to, t, reduced) {
+  const p = pair(from, to);   // going back plays the forward transition in reverse
+  return compose(FRAMES[p.A], FRAMES[p.B], p.rev ? 1 - t : t, p.ch, reduced);
+}
+function showFinal(id) { scene.innerHTML = compose([], FRAMES[id], 1, GENERIC, false); }
+
+let cur = 0, anim = 0;
+function setUi() {
+  document.querySelectorAll('#bar [data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === SEQ[cur])));
+  document.getElementById('where').textContent = SEQ[cur] + ' · ' + TITLES[SEQ[cur]];
+  svg.setAttribute('aria-label', TITLES[SEQ[cur]]);
+  try { history.replaceState(null, '', '#' + SEQ[cur]); } catch (e) {}
+}
+function play(fromId, toId) {
+  cancelAnimationFrame(anim);
+  const reduced = reducedQ.matches, D = reduced ? DUR_RM : DUR, t0 = performance.now();
+  const step = now => {
+    const t = Math.min(1, (now - t0) / D);
+    scene.innerHTML = fromId === null ? compose([], FRAMES[toId], t, GENERIC, reduced) : sceneAt(fromId, toId, t, reduced);
+    if (t < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+function go(i) {
+  i = Math.max(0, Math.min(SEQ.length - 1, i)); if (i === cur) return;
+  const from = SEQ[cur]; cur = i; setUi(); play(from, SEQ[cur]);
+}
+function replay() { play(cur > 0 ? SEQ[cur - 1] : null, SEQ[cur]); }
+
+function start() {
+  buildAll(); fit();
+  if (REVIEW) {
+    const to = params.get('frame'), from = params.get('from'), t = parseFloat(params.get('t'));
+    if (!FRAMES[to]) { scene.innerHTML = ''; }
+    else if (from && FRAMES[from] && !isNaN(t)) scene.innerHTML = sceneAt(from, to, clamp01(t), reducedQ.matches);
+    else showFinal(to);
+  } else {
+    const h = location.hash.slice(1); cur = Math.max(0, SEQ.indexOf(h)); setUi(); showFinal(SEQ[cur]);
+    addEventListener('keydown', e => {
+      if (e.target.closest && e.target.closest('#bar button') && (e.key === ' ' || e.key === 'Enter')) return;
+      if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+      else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    });
+    svg.addEventListener('click', () => go(cur + 1));
+    document.querySelectorAll('#bar [data-f]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); go(SEQ.indexOf(b.dataset.f)); b.blur(); }));
+    document.getElementById('replay').addEventListener('click', e => { e.stopPropagation(); replay(); e.currentTarget.blur(); });
+  }
+  fit();
+  document.documentElement.dataset.ready = '1';
+}
+// Layout measures text, so wait for the face (but never hang on a slow network).
+const fontsReady = Promise.all([400, 500, 600, 700, 800].map(w => document.fonts.load(`${w} 20px Overpass`, 'Aa лв →≈≥⁵'))).then(() => document.fonts.ready);
+Promise.race([fontsReady, new Promise(r => setTimeout(r, 2500))]).then(start, start);
+})();
+</script>
+</body>
+</html>
