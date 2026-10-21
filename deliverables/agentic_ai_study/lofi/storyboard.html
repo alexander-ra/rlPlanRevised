@@ -142,6 +142,8 @@ const mod=(els,id,props)=>els.map(e=>e.id===id?{...e,...props}:e);
 // F2 asks the everyday question; F3–F5 narrow it to the one a chain of steps can answer.
 const ASK_EVERYDAY='Should I drive or take\nthe train to Sofia?';
 const ASK_COST='Which is cheaper from\nRuse to Sofia — driving\nor taking the train?';
+// F4 adds the instruction that asks for reasoning; **…** marks a sub line drawn bold.
+const ASK_THINK=ASK_COST+'\n**Think hard and**\n**describe the answer**\n**step by step.**';
 const Q=(x,y,w,h,sub=ASK_COST)=>B('q',x,y,w,h,'Question',{k:'io',sub});
 const Q2=(x,y,w,h)=>B('q',x,y,w,h,'Question',{k:'io',sub:'Cheapest way\nRuse → Sofia,\narriving within 24 h?'});
 
@@ -150,7 +152,7 @@ const STEP_L=['Search\nroad distance','Search\nfuel price','Search\ntrain fares'
 const xs5=[300,520,740,960,1180];
 
 function chain(p,think){
-  const els=[R('ai',280,350,1110,think?250:200,'AI model'),Q(60,390,200,120)];
+  const els=[R('ai',280,350,1110,think?250:200,'AI model'),think?Q(60,365,200,170,ASK_THINK):Q(60,390,200,120)];
   xs5.forEach((x,i)=>{
     els.push(B('s'+(i+1),x,390,190,120,STEP_L[i],{p}));
     if(think) els.push(B('th'+(i+1),x+20,525,150,40,'thinking…',{k:'think',fs:17}));
@@ -707,7 +709,8 @@ function lines(x,cy,label,sub,fs,color,sfs){
   const total=L.length*lh+(S.length?S.length*lh2+6:0);
   const top=cy-total/2, subTop=top+L.length*lh+(L.length?6:0); let out='';
   L.forEach((l,i)=>{out+=`<text x="${x}" y="${top+fs*0.85+i*lh}" font-size="${fs}" text-anchor="middle" fill="${color}" font-weight="600">${esc(l)}</text>`;});
-  S.forEach((l,i)=>{out+=`<text x="${x}" y="${subTop+fs2*0.85+i*lh2}" font-size="${fs2}" text-anchor="middle" fill="#55606a">${esc(l)}</text>`;});
+  S.forEach((l,i)=>{const b=/^\*\*(.*)\*\*$/.exec(l);   // **line** = bold, in ink
+    out+=`<text x="${x}" y="${subTop+fs2*0.85+i*lh2}" font-size="${fs2}" text-anchor="middle" fill="${b?'#1f2a33':'#55606a'}"${b?' font-weight="700"':''}>${esc(b?b[1]:l)}</text>`;});
   return out;
 }
 
