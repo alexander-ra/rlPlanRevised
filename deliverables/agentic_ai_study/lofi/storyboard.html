@@ -246,58 +246,64 @@ const jobLegend=(y,items)=>items.map(([k,l],i)=>B('lg'+i,250+i*175,y,160,32,l,{k
 const taskQ=(sub)=>B('q',40,390,180,120,'Task',{k:'io',sub});
 const resultA=(sub)=>B('ans',1420,390,150,120,'Result',{k:'io',sub});
 
-/* ---------- N1–N4: our own complex system (the trip problem at conference scale) ---------- */
-// stage 1 hierarchy · 2 teams message each other · 3 acting in the world under permissions · 4 the world changes (day 9)
-const CONF_ROWS=[156,272,388,504];
+/* ---------- N1–N3: our own complex system (the trip problem at conference scale) ---------- */
+// stage 1: lead → three groups → five teams; teams coordinate by writing into one living plan
+// stage 2: acting in the world through two doors (Correspondence writes to people; Payments pays, after the budget guard)
+// stage 3: day 9, an airline cancels a flight with 10 of our attendees; the change ripples through the plan
+const PLAN_NOTES={
+  calm:[['Flights: 12 land\nafter 22:00'],['Hotels: holding 12\nlate check-ins'],['Attendee 37:\nneeds a step-free room'],
+        ['Catering: 9 vegetarian\nlunches'],['Trains & buses: coach\nfrom Bucharest 15:30']],
+  cancel:[['Correspondence: flight\ncancelled · 10 of ours','bad'],['Flights: re-booking\nthe 10 via Vienna','warn'],
+        ['Trains & buses: their\ncoach moves to 19:40','warn'],['Hotels: 2 extra nights','warn'],['Payments: +€1,850\n→ organiser','warn']]};
 function confSystem(stage){
-  const perm=stage>=3, ev=stage>=4;
-  const TEAMS=[
-    ['Flights &\ntrains','×300',perm?'may book seats\nup to €400':'one worker\nper attendee'],
-    ['Hotels','×8',perm?'may hold rooms;\nno payments':'rooms in Ruse,\ngroup rates'],
-    ['Attendees','×30',perm?'may email\nattendees':'emails, visa\nletters, needs'],
-    ['Shuttles','×12',perm?'may negotiate;\npaying needs approval':'coaches from\nBucharest & Sofia']];
-  const CHECKS=[['Verifier','connections ≥ 60 min;\nlands by the 23rd'],['Room check','a bed for everyone\nevery night'],
-    ['Fact check','names, dates,\nvisa letters'],['Capacity check','a seat for everyone\non every coach']];
-  const r=[R('ai',240,140,1150,480,''),T('ail',254,128,'~350 agents · one lead · four teams, each with its own lead and many workers',{size:16,color:'#55606a',weight:600}),
-    taskQ('get 300 attendees\nfrom 40 countries\nto Ruse by the 23rd,\nunder €90,000'),
-    resultA(ev?'297 of 300\non time; 3 handed\nto a human':'every attendee:\nan itinerary,\na bed, a shuttle'),
-    B('lead',255,395,125,110,'Lead',{k:'fn_coord',fs:18,nl:'COORDINATE',sub:'splits the work,\nwatches progress'}),
-    B('plan',1025,156,120,444,'Living\nplan',{k:'board',fs:18,nl:'MEMORY',sub:'every booking,\nevery person;\nread and written\nby all teams'}),
-    B('gate',1165,385,215,130,'Budget guard\n+ organiser',{k:'human',fs:17,nl:perm?'APPROVE':undefined,
-      sub:ev?'stays under €90k;\napproves +€2,400 ✓':'stays under €90k;\npayments > €1,000\nneed a human'}),
-    A('q','lead'),A('plan','gate'),A('gate','ans'),
-    T('tl',40,762,'time →',{size:20,color:'#55606a'}),
-    B('g_h',160,748,1230,18,'a human team: ~6 weeks of work',{k:'seg',fs:12}),
-    B('g_a',160,774,60,18,'',{k:'seg',s:'good'}),
-    T('ga_t',232,788,'agents: ~2 days of work (plus waiting for replies and approvals)',{size:14,color:'#2e7d4f',weight:600})];
-  TEAMS.forEach(([l,n,sub],i)=>{ const y=CONF_ROWS[i];
-    r.push(B('t'+i,420,y,175,96,l,{k:'agent',fs:17,stack:2,nl:n,sub,s:ev&&i===3?'warn':undefined}),
-      B('c'+i,875,y,130,96,CHECKS[i][0],{k:'verify',fs:15,sub:CHECKS[i][1]}),
-      A('lead','t'+i),A('t'+i,'c'+i),A('c'+i,'plan'));
-  });
-  if(stage>=2){
-    // messages travel team-to-team through the talk column, not via the lead
-    const M=[
-      ['m01',232,ev?'Flights → Hotels:\n54 now arrive a day early':'Flights → Hotels:\n38 land after 22:00, hold rooms','t0','t1',true],
-      ['m12',348,ev?'Attendees → Hotels:\n54 agree to come early':'Attendees → Hotels:\n12 need step-free rooms','t2','t1',false],
-      ['m23',464,ev?'Shuttles → Attendees:\nextra coach from Sofia, 21st':'Shuttles → Attendees:\nBucharest coach 15:30, gate B','t3','t2',false]];
-    M.forEach(([id,y,l,from,to,down])=>{
-      r.push(B(id,615,y,240,60,l,{k:'msg',fs:13,s:ev?'warn':undefined}));
-      r.push(down?A(from,id,{fs:'r',ts:'t',k:'talk'}):A(from,id,{fs:'r',ts:'b',k:'talk'}));
-      r.push(down?A(id,to,{fs:'b',ts:'r',k:'talk'}):A(id,to,{fs:'t',ts:'r',k:'talk'}));
-    });
-  }
-  if(perm){
-    r.push(R('world',240,648,1150,74,'outside world'),
-      B('w0',400,662,180,50,ev?'rail strike\non the 22nd':'airlines\n& rail',{k:'ext',fs:14,s:ev?'bad':undefined,nl:ev?'DAY 9':undefined}),
-      B('w1',595,662,180,50,'bus company’s\nsales AI',{k:'ext',fs:14,nl:'AI'}),
-      B('w2',790,662,180,50,'hotels',{k:'ext',fs:14}),
-      B('w3',985,662,180,50,'300 attendees\n(email)',{k:'ext',fs:14}),
-      B('w4',1180,662,180,50,'payment card',{k:'ext',fs:14}),
-      B('mout',615,604,240,42,ev?'Bus AI → Shuttles:\nextra coach, €1,100':'Bus AI → Shuttles:\n€2,900 if you confirm today',{k:'msg',fs:12,s:ev?'warn':undefined}),
-      A('w1','mout',{fs:'t',ts:'b',k:'talk'}),A('mout','t3',{fs:'l',ts:'b',k:'talk'}),
-      A('gate','w4',{fs:'b',ts:'t',label:'pay, after approval'}));
-    if(ev) r.push(A('w0','t3',{fs:'t',ts:'b',k:'bad'}));
+  const doors=stage>=2, ev=stage>=3;
+  const r=[R('ai',240,140,1150,500,''),
+    T('ail',254,128,doors?'~127 agents · a lead, three groups, five teams, two payment agents':'~125 agents · a lead, three groups, five teams',{size:16,color:'#55606a',weight:600}),
+    taskQ('get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000'),
+    resultA(ev?'100 of 100 arrive;\n1 a day late,\ncalled by a human':'every attendee:\nan itinerary, a bed\nand lunches'),
+    B('lead',255,395,125,110,'Lead',{k:'fn_coord',fs:18,nl:'COORDINATE',sub:'splits the job,\nwatches progress'}),
+    // three groups, each with its own lead; the next layer is a team per kind of work
+    B('gt',420,156,150,140,'Transport',{k:'agent',fs:17,sub:doors?'posts requests\nin the plan':'long and\nshort distance'}),
+    B('ga',420,312,150,140,'Accommodation',{k:'agent',fs:17,sub:doors?'posts requests\nin the plan':'beds and lunches'}),
+    B('gc',420,468,150,74,'Correspondence',{k:'agent',fs:16,sub:doors?'the only agents that\nwrite to people':'speaks for\neach attendee'}),
+    B('s_fl',590,156,190,66,'Flights',{k:'agent',fs:16,nl:'×8',sub:'long distance',s:ev?'warn':undefined}),
+    B('s_tr',590,230,190,66,'Trains & buses',{k:'agent',fs:16,nl:'×6',sub:'short distance',s:ev?'warn':undefined}),
+    B('s_ho',590,312,190,66,'Hotels',{k:'agent',fs:16,nl:'×4',sub:'rooms in Ruse',s:ev?'warn':undefined}),
+    B('s_ca',590,386,190,66,'Catering',{k:'agent',fs:16,nl:'×3',sub:'lunches during the stay'}),
+    B('s_co',590,468,190,74,'Attendee workers',{k:'agent',fs:16,nl:'×100',sub:'one per attendee',s:ev?'warn':undefined}),
+    B('c_t',800,156,130,140,'Verifier',{k:'verify',fs:16,sub:'connections\n≥ 60 min;\nlands by the 23rd'}),
+    B('c_a',800,312,130,140,'Room & meal\ncheck',{k:'verify',fs:15,sub:'a bed and a lunch\nfor everyone'}),
+    B('c_c',800,468,130,74,'Fact check',{k:'verify',fs:15,sub:'names, dates, visas'}),
+    // the living plan is how the teams talk: each writes notes, every team reads them
+    B('plan',950,156,230,386,'Living plan',{k:'board',fs:18,nl:'MEMORY',ltop:true}),
+    T('planfoot',1065,528,'every team writes and reads',{size:13,anchor:'middle',color:'#7a5c00',weight:600}),
+    A('q','lead'),
+    A('lead','gt'),A('lead','ga'),A('lead','gc'),
+    A('gt','s_fl'),A('gt','s_tr'),A('ga','s_ho'),A('ga','s_ca'),A('gc','s_co'),
+    A('s_fl','c_t'),A('s_tr','c_t'),A('s_ho','c_a'),A('s_ca','c_a'),A('s_co','c_c'),
+    A('c_t','plan'),A('c_a','plan'),A('c_c','plan'),
+    T('tl',40,754,'time →',{size:20,color:'#55606a'}),
+    B('g_h',160,740,1230,18,'a human team: ~3 weeks of work',{k:'seg',fs:12}),
+    B('g_a',160,766,60,18,'',{k:'seg',s:'good'}),
+    T('ga_t',232,780,'agents: ~1 day of work (plus waiting for replies and approvals)',{size:14,color:'#2e7d4f',weight:600})];
+  (ev?PLAN_NOTES.cancel:PLAN_NOTES.calm).forEach(([l,st],i)=>r.push(B('pn'+i,962,200+i*62,206,50,l,{k:'chip',fs:13,s:st})));
+  if(!doors){
+    r.push(B('org',1200,390,185,120,'Budget guard\n+ organiser',{k:'human',fs:17,sub:'stays under €30k;\nfinal sign-off'}),
+      A('plan','org'),A('org','ans'));
+  } else {
+    // two doors to the outside world: Correspondence (people) and Payments (money)
+    r.push(B('guard',1200,156,185,110,'Budget guard',{k:'verify',fs:17,sub:'stays under €30k;\n> €500 → organiser'}),
+      B('org',1200,390,185,120,'Organiser',{k:'human',fs:18,nl:'APPROVE',sub:ev?'approves +€1,850 ✓;\nfinal sign-off':'approves big payments;\nfinal sign-off'}),
+      B('pay',1200,540,185,84,'Payments',{k:'agent',fs:17,nl:'×2',sub:'the only agents\nthat can pay',s:ev?'warn':undefined}),
+      A('plan','guard',{fs:'r',ts:'l'}),A('guard','org',{fs:'b',ts:'t',label:'> €500'}),A('org','pay',{fs:'b',ts:'t'}),A('org','ans'),
+      R('world',240,652,1150,70,'outside world'),
+      B('w_people',590,666,190,46,'attendees, hotels,\ncarriers · email',{k:'ext',fs:13}),
+      B('w_book',995,666,185,46,'booking systems',{k:'ext',fs:14}),
+      B('w_card',1200,666,185,46,'payment card',{k:'ext',fs:14}),
+      A('s_co','w_people',{fs:'b',ts:'t',cx:-24}),A('w_people','s_co',{fs:'t',ts:'b',cx:24}),
+      A('pay','w_book',{fs:'l',ts:'t'}),A('pay','w_card',{fs:'b',ts:'t'}));
+    if(ev) r.push(B('w_air',380,666,190,46,'Airline: flight\ncancelled · 10 of ours',{k:'ext',fs:13,s:'bad',nl:'DAY 9'}),
+      A('w_air','s_co',{fs:'t',ts:'b',k:'bad'}));
   }
   return r;
 }
@@ -452,22 +458,18 @@ const FR=[
        ...mini('r',40,'Web research',['source A','source B','source C','source D'],'report',undefined,'Independent parts →\nbig speed-up',{states:['good','good','good','good']}),
        ...mini('c',555,'Programming',['fix bug 1','fix bug 2','feature: part 1','feature: part 2'],'build','warn','Separate fixes ✓\none shared feature: copies must agree ✗',{states:['good','good','warn','warn'],links:[[2,3,'must agree']]}),
        ...mini('n',1070,'Writing a novel',['chapter 1','chapter 2','chapter 3','chapter 4'],'plot\ncontradicts','bad','Worse than one writer:\nno one holds the whole plot',{states:['warn','warn','warn','warn']})]},
- {id:'N1',m:'M8+',secs:35,title:'A real-scale job: 300 people to this conference',
-  say:"Now a real-scale version of our problem: get 300 people from 40 countries to this conference, on time and under budget. By hand, that is weeks of an organiser's work. The system has a lead, four teams with their own leads, and a worker per attendee: about 350 agents. Each team's work is checked, everything goes into one living plan, and a budget guard sits in front of the result.",
-  src:[['Illustrative system. Its pieces follow published designs: hierarchical planners and workers (Cursor 2026), an orchestrator with parallel subagents (Hadfield et al. 2025)',1]],
-  els:[...head('A real-scale job: 300 people to this conference','A lead, four teams, a worker per attendee: ~350 agents. A human team would need about six weeks.','⏱ ~2 days'),...confSystem(1)]},
- {id:'N2',m:'M8+',secs:35,title:'Teams talk to each other directly',
-  say:"Here is what we haven't shown yet: the teams talk to each other directly. Flights tells Hotels that 38 people land after ten at night. Attendees tells Hotels that 12 need step-free rooms. Shuttles tells Attendees where the coach waits. Not every message goes through the lead. That is what makes the system fast, and, as we will see, what makes it fragile.",
-  src:[['Peer-to-peer messaging between agents: The Station (Chung, Du & Wesley 2026) and agent teams that coordinate through shared files (Carlini 2026)',1]],
-  els:[...head('Teams talk to each other directly','Not everything goes through the lead: teams message each other, and everyone reads and writes the living plan.','⏱ ~2 days'),...confSystem(2)]},
- {id:'N3',m:'M8+',secs:35,title:'Acting in the world, under permissions',
-  say:"Now the system acts: it books, pays and emails. Each team has limits. Flights may book seats up to 400 euros; Hotels may hold rooms but not pay; anything over a thousand euros waits for the organiser. And some counterparts are AIs themselves: the bus company's sales agent negotiates directly with our Shuttles team.",
-  src:[['Illustrative. Agents acting through booking, payment and email tools, with per-agent permissions and human approval for large payments',1]],
-  els:[...head('Acting in the world, under permissions','Each team has limits; payments over €1,000 wait for a human. Some counterparts are other companies’ AIs.','⏱ ~2 days'),...confSystem(3)]},
- {id:'N4',m:'M8+',secs:35,title:'Day 9: the world changes',
-  say:"On day nine the world changes: a rail strike is announced for the 22nd. Shuttles hears first and updates the plan, and the change ripples through as messages. 54 people now travel a day early, Hotels books an extra night, Attendees tells everyone, and the bus company's AI offers an extra coach. The organiser approves 2,400 euros more. Within hours, 297 of 300 are re-routed, and three cases go to a human.",
+ {id:'N1',m:'M8+',secs:60,title:'A real-scale job: 100 people to this conference',
+  say:"Now a real-scale version of our problem: bring 100 people from 15 countries to this conference by the 23rd, for under 30,000 euros. By hand, that is weeks of an organiser's work. A lead splits the job into three groups. Transport has two teams: flights for the long distances, trains and buses for the short ones. Accommodation has hotels, and catering for the lunches. Correspondence has one worker per attendee, who speaks for that person. Each team's work is checked. And the teams don't call each other: they write into one living plan and read what the others wrote. Flights notes that twelve people land after ten at night; Hotels reads it and holds late check-ins; attendee 37 needs a step-free room. The plan is how they talk.",
+  src:[['Illustrative system. Its pieces follow published designs: a lead with groups of workers (Cursor 2026; Hadfield et al. 2025) and agents coordinating through shared state (Carlini 2026; Chung, Du & Wesley 2026)',1]],
+  els:[...head('A real-scale job: 100 people to this conference','A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.','⏱ ~1 day'),...confSystem(1)]},
+ {id:'N2',m:'M8+',secs:40,title:'Acting in the world, through two doors',
+  say:"Now the system acts, and it touches the outside world through only two doors. Correspondence is the only group that writes to people: attendees, hotels, carriers. Payments is the only group that can pay, and every payment passes the budget guard; anything over 500 euros waits for the organiser. The other teams only post requests in the plan. And some of the companies on the other side may well run AIs of their own.",
+  src:[['Illustrative. Agents act through email, booking and payment tools; only two groups hold those tools; human approval above a threshold',1]],
+  els:[...head('Acting in the world, through two doors','Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.','⏱ ~1 day'),...confSystem(2)]},
+ {id:'N3',m:'M8+',secs:40,title:'Day 9: a flight is cancelled',
+  say:"On day nine the airline emails: a flight is cancelled, and ten of our people are on it. Correspondence posts it to the plan. Flights re-books the ten through Vienna, Trains and buses move their coach, Hotels adds two nights, and Payments asks the organiser to approve 1,850 euros. Within hours everyone has a new route. One person will arrive a day late, and a human calls them.",
   src:[['Illustrative scenario; numbers are invented for teaching',1]],
-  els:[...head('Day 9: the world changes','A strike ripples through the teams as messages; they re-plan in hours. Three cases go to a human.','⏱ ~2 days'),...confSystem(4)]},
+  els:[...head('Day 9: a flight is cancelled','One email from the airline ripples through the plan; ten people are re-booked within hours.','⏱ ~1 day'),...confSystem(3)]},
  {id:'F9',m:'M8',secs:50,title:'Real systems, real results',
   say:"How does this look in real systems? Read across: how many agents, how much a human did, what was claimed, how long it took, and what it cost. Five agents in Stanford's Virtual Lab designed nanobodies in days that, by the PI's own estimate, would have taken his team weeks or months. Sixteen Claude copies built a C compiler that boots Linux for about twenty thousand dollars. Kosmos runs about two hundred agent runs for two hundred dollars and does, its users say, six months of a researcher's work. At the top end, OpenAI reports ten thousand agents on Navier–Stokes and hundreds of maths papers, with very little human input. The pattern: fewer human hours per result, and the results still need checking. The last row matters most for what comes next: Anthropic's Glasswing finds software vulnerabilities faster than anyone can patch them, and the same skill in the wrong hands is an attack.",
   src:[['Swanson et al. 2025, Nature (Virtual Lab); time estimate and “<1%” from Zou’s interviews',1],
