@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lofi Storyboard</title>
 <style>
-  :root { --bg:#f4f4f1; --ink:#1f2a33; --muted:#5b6670; --card:#fff; --line:#d9dcd8; --ok:#2e7d4f; --warn:#b5651d; }
+  :root { --bg:#f4f4f1; --ink:#1f2a33; --muted:#5b6670; --card:#fff; --line:#d9dcd8; --ok:#2e7d4f; --warn:#b5651d;
+          --rec:#d64535; --series:#2f7d74; --bar-ink:#e8ecef; --bar-muted:#aab3ba; --bar-late:#f0a35e; }
+  [hidden] { display:none !important; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui, Arial, sans-serif; }
   header { position:sticky; top:0; z-index:5; background:var(--bg); border-bottom:1px solid var(--line);
@@ -34,6 +36,45 @@
   #notes { display:none; background:#1d2124; color:#d8dde1; padding:0 16px 12px; font-size:15px; }
   #notes.on { display:block; }
   #notes .src li { color:#aab3ba; } #notes .src li.bad { color:#f0a35e; }
+  button:focus-visible { outline:2px solid var(--series); outline-offset:2px; }
+  /* rehearsal: the recording strip in the play bar, and the timings sheet */
+  #rec { display:flex; align-items:center; gap:8px; font-variant-numeric:tabular-nums; }
+  #rec .dot { width:10px; height:10px; border-radius:50%; background:var(--rec); animation:blink 1.4s steps(2,start) infinite; }
+  @keyframes blink { to { visibility:hidden; } }
+  @media (prefers-reduced-motion: reduce) { #rec .dot { animation:none; } }
+  #rec .late { color:var(--bar-late); }
+  #rec .note { color:var(--bar-muted); font-size:13px; }
+  #bar #btnFinish { border-color:var(--rec); }
+  #runs { position:fixed; inset:0; z-index:20; overflow:auto; background:var(--bg); color:var(--ink); padding-block:20px 48px;
+          padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+  #runs .wrap { max-width:1040px; margin:0 auto; }
+  #runs .wrap, #runView { display:grid; grid-template-columns:minmax(0,1fr); gap:18px; }   /* minmax(0,…) lets wide tables scroll inside .tw */
+  #runs .top { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline; }
+  #runs h2 { margin:0; font-size:22px; text-wrap:balance; }
+  #runs h3 { margin:0 0 8px; font-size:15px; }
+  #runs .top button { margin-left:auto; }
+  #runList { display:flex; flex-wrap:wrap; gap:8px; }
+  #runList button[aria-pressed="true"] { background:var(--ink); color:var(--card); border-color:var(--ink); }
+  .stats { display:flex; flex-wrap:wrap; gap:12px 32px; }
+  .stat .k { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  .stat .v { font-size:26px; font-weight:700; }
+  .stat .d { font-size:13px; color:var(--muted); }
+  .tw { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .tw table { border-collapse:collapse; width:100%; min-width:680px; font-variant-numeric:tabular-nums; }
+  .tw th, .tw td { text-align:left; padding:7px 12px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:middle; }
+  .tw th { font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  .tw .num { text-align:right; white-space:nowrap; }
+  .tw tr:last-child td { border-bottom:0; }
+  .over { color:var(--warn); font-weight:600; } .under { color:var(--ok); font-weight:600; } .even { color:var(--muted); }
+  .track { position:relative; height:14px; min-width:180px; }
+  .track .bar { position:absolute; left:0; top:3px; height:8px; border-radius:0 4px 4px 0; background:var(--series); }
+  .track .plan { position:absolute; top:0; width:2px; height:14px; background:var(--ink); }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; color:var(--muted); align-items:center; }
+  .legend i { display:inline-block; vertical-align:middle; margin-right:6px; }
+  .legend .lb { width:18px; height:8px; background:var(--series); border-radius:0 4px 4px 0; }
+  .legend .lp { width:2px; height:14px; background:var(--ink); }
+  .actions { display:flex; flex-wrap:wrap; gap:8px; }
+  #runJson { width:100%; height:140px; font:12px/1.4 ui-monospace, Menlo, Consolas, monospace; }
 </style>
 </head>
 <body>
@@ -54,6 +95,8 @@
   <h1 id="setTitle">Lofi storyboard · Multi-agent talk (musts only)</h1>
   <span class="meta" id="total"></span>
   <button id="btnPlay">▶ Play (morph)</button>
+  <button id="btnRehearse">● Rehearse (timed)</button>
+  <button id="btnRuns">Rehearsals</button>
   <span class="meta">Click a frame to play from it · ← → step · N notes · Esc back · ✅ in our sources · ⚠ unconfirmed</span>
 </header>
 <main id="grid"></main>
@@ -63,11 +106,23 @@
   <div id="bar">
     <button id="prev">←</button><button id="next">→</button>
     <span id="pos"></span>
+    <span id="rec" hidden><span class="dot" aria-hidden="true"></span>REC <b id="recTotal">0:00</b> · this frame
+      <b id="recFrame">0:00</b> of <span id="recPlan">0:00</span> <span class="note" id="recNote"></span></span>
     <button id="btnNotes">Notes</button>
+    <button id="btnFull">Full screen</button>
+    <button id="btnFinish" hidden>■ Finish</button>
     <button id="btnGrid">Storyboard</button>
   </div>
   <div id="notes"></div>
 </div>
+
+<section id="runs" hidden aria-label="Rehearsal timings">
+  <div class="wrap">
+    <div class="top"><h2>Rehearsal timings</h2><span class="meta" id="runsWhere"></span><button id="btnRunsClose">Back to storyboard</button></div>
+    <div id="runList"></div>
+    <div id="runView"></div>
+  </div>
+</section>
 
 <script>
 /* ---------- element builders ---------- */
@@ -761,7 +816,8 @@ const ease=t=>t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 /* ---------- UI ---------- */
 const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 let cum=0; FR.forEach(f=>{f.start=cum; cum+=f.secs;});
-document.getElementById('total').textContent=`${FR.length} frames · ${fmt(cum)} spoken (budget for musts: 11:00)`;
+const BUDGET=660;   // seconds budgeted for the musts
+document.getElementById('total').textContent=`${FR.length} frames · ${fmt(cum)} spoken (budget for musts: ${fmt(BUDGET)})`;
 const srcList=l=>'<ul class="src">'+l.map(([t,ok])=>`<li class="${ok?'':'bad'}">${ok?'✅':'⚠'} ${esc(t)}</li>`).join('')+'</ul>';
 const srcHtml=f=>(f.src.length?srcList(f.src):'')+(f.also?'<p class="also">Also worth a spoken mention:</p>'+srcList(f.also):'');
 
@@ -774,8 +830,10 @@ grid.addEventListener('click',e=>{const s=e.target.closest('svg[data-i]'); if(s)
 
 const play=document.getElementById('play'), stage=document.getElementById('stage'), pos=document.getElementById('pos'), notes=document.getElementById('notes');
 let cur=0, anim=null;
+const REH={run:null,timer:0,wake:null,saved:'',runs:[],sel:''};   // rehearsal state; run is the one being recorded
 function show(i,animate){
   const prev=cur; cur=Math.max(0,Math.min(FR.length-1,i));
+  if(REH.run&&cur!==prev) logFrame();
   const f=FR[cur];
   pos.textContent=`${f.id} · ${f.m} · ${f.title} · ${f.secs} s · at ${fmt(f.start)} of ${fmt(cum)}`;
   notes.innerHTML=`<p>${esc(f.say)}</p>${srcHtml(f)}`;
@@ -788,23 +846,178 @@ function show(i,animate){
 }
 function openPlay(i){ play.classList.add('on'); cur=i; show(i,false); }
 function closePlay(){ play.classList.remove('on'); history.replaceState(null,'',location.pathname); }
+// While rehearsing, "next" on the last frame ends the run, and Esc does not leave the talk.
+function advance(d){ if(d>0&&REH.run&&cur===FR.length-1) return finishRehearsal(); show(cur+d,true); }
 document.getElementById('btnPlay').onclick=()=>openPlay(0);
-document.getElementById('prev').onclick=()=>show(cur-1,true);
-document.getElementById('next').onclick=()=>show(cur+1,true);
+document.getElementById('prev').onclick=()=>advance(-1);
+document.getElementById('next').onclick=()=>advance(1);
 document.getElementById('btnGrid').onclick=closePlay;
 document.getElementById('btnNotes').onclick=()=>notes.classList.toggle('on');
-stage.addEventListener('click',()=>show(cur+1,true));
+stage.addEventListener('click',()=>advance(1));
 document.addEventListener('keydown',e=>{
   if(!play.classList.contains('on')) return;
-  if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(cur+1,true);}
-  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(cur-1,true);}
-  else if(e.key==='Escape') closePlay();
+  if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();advance(1);}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();advance(-1);}
+  else if(e.key==='Escape'){ if(!REH.run) closePlay(); }
   else if(e.key.toLowerCase()==='n') notes.classList.toggle('on');
 });
-const m=location.hash.match(/^#play\/(\d+)/); if(m) openPlay(+m[1]);
+const btnFull=document.getElementById('btnFull');
+btnFull.hidden=!document.fullscreenEnabled;
+btnFull.onclick=()=>{ try{ const p=document.fullscreenElement?document.exitFullscreen():play.requestFullscreen(); if(p) p.catch(()=>{}); }catch(e){} };
+
+/* ---------- rehearsal timing ---------- */
+// "Rehearse" plays from F1 and records the moment each frame comes on screen. Each run is one document in
+// the artifact's db (collection "runs", id = start time) so Claude can read it back; a copy of the page
+// without db (opened locally) keeps its runs in this browser and offers them as JSON.
+const LS_KEY='lofi-storyboard-runs', $=id=>document.getElementById(id);
+let dbPromise=null;
+const getDb=()=>dbPromise||(dbPromise=(window.claude&&window.claude.use?window.claude.use('db'):Promise.resolve(null)).catch(()=>null));
+const since=run=>Math.round((Date.now()-run.startMs)/100)/10;   // seconds, to 0.1 s
+const fmtS=s=>fmt(Math.max(0,Math.round(s)));
+const fmtD=d=>(d<0?'−':'+')+fmt(Math.abs(Math.round(d)));
+
+function startRehearsal(){
+  const at=new Date();
+  REH.run={id:'run-'+at.toISOString().replace(/[:.]/g,'-'),startedAt:at.toISOString(),startMs:at.getTime(),endedAt:null,
+    status:'recording',plannedTotal:cum,budget:BUDGET,frames:FR.map(f=>({id:f.id,m:f.m,title:f.title,planned:f.secs})),
+    events:[{i:0,id:FR[0].id,t:0}]};
+  openPlay(0); recUi(true); saveRun();
+  try{ navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>{REH.wake=l;},()=>{}); }catch(e){}
+}
+function logFrame(){ const r=REH.run; r.events.push({i:cur,id:FR[cur].id,t:since(r)}); saveRun(); }
+function finishRehearsal(){
+  const r=REH.run; if(!r) return;
+  r.events.push({end:true,t:since(r)}); r.status='finished'; r.endedAt=new Date().toISOString();
+  const a=analyse(r); r.spoken=a.spoken; r.frames=a.rows;   // per-frame actuals ride along for whoever reads the run
+  REH.run=null; recUi(false); saveRun(r);
+  try{ REH.wake&&REH.wake.release(); }catch(e){} REH.wake=null;
+  try{ if(document.fullscreenElement) document.exitFullscreen().catch(()=>{}); }catch(e){}
+  closePlay(); openRuns(r.id);
+}
+function recUi(on){
+  $('rec').hidden=!on; $('btnFinish').hidden=!on; $('btnGrid').hidden=on;
+  clearInterval(REH.timer); REH.timer=on?setInterval(tick,250):0; if(on) tick();
+}
+function tick(){
+  const r=REH.run; if(!r) return;
+  const t=since(r), ft=t-r.events[r.events.length-1].t, plan=FR[cur].secs;
+  $('recTotal').textContent=fmtS(t); $('recFrame').textContent=fmtS(ft); $('recFrame').className=ft>plan?'late':'';
+  $('recPlan').textContent=fmtS(plan); $('recNote').textContent=REH.saved==='browser'?'saving in this browser only':'';
+}
+$('btnRehearse').onclick=startRehearsal;
+$('btnFinish').onclick=finishRehearsal;
+
+// Saving: the browser copy is written at once; db writes go one at a time, and a burst collapses into the latest state.
+function localAll(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function localPut(run){ try{ const all=localAll(); all[run.id]=run;
+  const keep=Object.values(all).sort((a,b)=>(b.startMs||0)-(a.startMs||0)).slice(0,30);
+  localStorage.setItem(LS_KEY,JSON.stringify(Object.fromEntries(keep.map(x=>[x.id,x])))); }catch(e){} }
+function localDel(id){ try{ const all=localAll(); delete all[id]; localStorage.setItem(LS_KEY,JSON.stringify(all)); }catch(e){} }
+let saving=null, queued=null;
+function saveRun(run=REH.run){
+  if(!run) return; localPut(run); queued=JSON.parse(JSON.stringify(run));
+  if(!saving) saving=(async()=>{ while(queued){ const body=queued; queued=null; await dbPut(body); } saving=null; })();
+}
+async function dbPut(body){
+  const db=await getDb(); if(!db){ REH.saved='browser'; return; }
+  for(let k=0;k<2;k++){
+    try{ await db.collection('runs').doc(body.id).set(body); REH.saved='page'; return; }
+    catch(e){ if(e&&e.code==='unavailable'&&k===0){ await new Promise(r=>setTimeout(r,300+Math.random()*700)); continue; }
+      REH.saved='browser'; return; }
+  }
+}
+// The fuller of two copies wins: finished beats recording, then more events.
+const fuller=(a,b)=>!a?b:!b?a:(b.status==='finished')!==(a.status==='finished')?(b.status==='finished'?b:a):((b.events||[]).length>(a.events||[]).length?b:a);
+async function listRuns(){
+  const all=localAll(), db=await getDb();
+  if(db){ try{ (await db.collection('runs').orderBy('startedAt','desc').limit(100).get()).docs
+    .forEach(d=>{ all[d.id]=fuller(all[d.id],{...d.data(),id:d.id}); }); }catch(e){} }
+  return Object.values(all).filter(r=>r&&r.events).sort((a,b)=>(b.startMs||0)-(a.startMs||0));
+}
+async function deleteRun(id){
+  localDel(id); const db=await getDb();
+  if(db){ try{ await db.collection('runs').doc(id).delete(); }catch(e){} }
+  REH.runs=REH.runs.filter(r=>r.id!==id); renderRuns('');
+}
+
+// Analysis: a frame's time runs from the moment it came on screen to the next change; going back adds to it.
+// An unfinished run (the page closed mid-talk) leaves its last frame untimed.
+function analyse(run){
+  const ev=run.events||[], end=ev.find(e=>e.end), act={}, visits={};
+  ev.forEach((e,k)=>{ const nx=ev[k+1]; if(e.end||!nx) return;
+    act[e.id]=(act[e.id]||0)+(nx.t-e.t); visits[e.id]=(visits[e.id]||0)+1; });
+  const rows=(run.frames||[]).map(({id,m,title,planned})=>({id,m,title,planned,actual:Math.round((act[id]||0)*10)/10,visits:visits[id]||0}));
+  return {rows,finished:!!end,spoken:end?end.t:(ev.length?ev[ev.length-1].t:0)};
+}
+const tol=p=>Math.max(5,p*0.15);   // within ±15 % (at least 5 s) of plan counts as on plan
+function deltaCell(r){
+  if(!r.visits) return '<span class="even">not shown</span>';
+  const d=r.actual-r.planned;
+  return d>tol(r.planned)?`<span class="over">▲ ${fmtD(d)}</span>`:d<-tol(r.planned)?`<span class="under">▼ ${fmtD(d)}</span>`:`<span class="even">${fmtD(d)}</span>`;
+}
+const when=r=>{ try{ return new Date(r.startedAt).toLocaleString([], {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return r.id; } };
+function runHtml(run){
+  const a=analyse(run), planned=run.plannedTotal||a.rows.reduce((s,r)=>s+r.planned,0), budget=run.budget||BUDGET;
+  const max=Math.max(1,...a.rows.map(r=>Math.max(r.planned,r.actual)));
+  const over=a.rows.filter(r=>r.visits&&r.actual-r.planned>tol(r.planned)).sort((x,y)=>(y.actual-y.planned)-(x.actual-x.planned));
+  const secs=[]; a.rows.forEach(r=>{ let s=secs.find(x=>x.m===r.m); if(!s) secs.push(s={m:r.m,ids:[],planned:0,actual:0,visits:0});
+    s.ids.push(r.id); s.planned+=r.planned; s.actual+=r.actual; s.visits+=r.visits; });
+  const bar=r=>`<div class="track" title="${esc(r.id)}: ${fmtS(r.actual)} spoken, ${fmtS(r.planned)} planned">`+
+    `<div class="bar" style="width:${(r.actual/max*100).toFixed(1)}%"></div><div class="plan" style="left:calc(${(r.planned/max*100).toFixed(1)}% - 1px)"></div></div>`;
+  return `<div class="stats">
+    <div class="stat"><div class="k">Spoken</div><div class="v">${fmtS(a.spoken)}</div><div class="d">${a.finished?'finished':'unfinished: the last frame is not timed'}</div></div>
+    <div class="stat"><div class="k">Against the plan</div><div class="v">${fmtD(a.spoken-planned)}</div><div class="d">planned ${fmtS(planned)}</div></div>
+    <div class="stat"><div class="k">Against the budget</div><div class="v">${fmtD(a.spoken-budget)}</div><div class="d">budget ${fmtS(budget)}</div></div>
+    <div class="stat"><div class="k">Frames over plan</div><div class="v">${over.length}</div><div class="d">${over.slice(0,3).map(r=>`${esc(r.id)} ${fmtD(r.actual-r.planned)}`).join(' · ')||'none'}</div></div>
+  </div>
+  <div><h3>Per frame</h3><div class="legend"><span><i class="lb"></i>spoken</span><span><i class="lp"></i>planned</span><span>▲ over / ▼ under plan by more than 15 % (at least 5 s)</span></div></div>
+  <div class="tw"><table><thead><tr><th>Frame</th><th>Title</th><th class="num">Planned</th><th class="num">Spoken</th><th class="num">Difference</th><th>Spoken against planned</th></tr></thead><tbody>
+  ${a.rows.map(r=>`<tr><td><b>${esc(r.id)}</b></td><td>${esc(r.title)}</td><td class="num">${fmtS(r.planned)}</td><td class="num">${r.visits?fmtS(r.actual):'–'}</td><td class="num">${deltaCell(r)}</td><td>${bar(r)}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div><h3>Per section</h3></div>
+  <div class="tw"><table><thead><tr><th>Section</th><th>Frames</th><th class="num">Planned</th><th class="num">Spoken</th><th class="num">Difference</th><th>Spoken against planned</th></tr></thead><tbody>
+  ${secs.map(s=>`<tr><td><b>${esc(s.m)}</b></td><td>${esc(s.ids.join(', '))}</td><td class="num">${fmtS(s.planned)}</td><td class="num">${s.visits?fmtS(s.actual):'–'}</td><td class="num">${deltaCell(s)}</td><td>${bar({...s,id:s.m})}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="actions"><button data-act="copy">Copy as JSON</button><button data-act="del">Delete this run</button></div>
+  <textarea id="runJson" readonly hidden aria-label="This run as JSON"></textarea>`;
+}
+function renderRuns(sel){
+  const runs=REH.runs;
+  if(!runs.length){ $('runList').innerHTML=''; $('runView').innerHTML='<p>No rehearsals yet. Press <b>● Rehearse (timed)</b>, present the talk as you will on the day, and press → after the last frame (or <b>■ Finish</b>) to end. Each frame’s time shows up here.</p>'; return; }
+  const run=runs.find(r=>r.id===sel)||runs[0]; REH.sel=run.id;
+  $('runList').innerHTML=runs.map(r=>`<button data-run="${esc(r.id)}" aria-pressed="${r.id===run.id}">${esc(when(r))} · ${fmtS(analyse(r).spoken)}${r.status==='finished'?'':' · unfinished'}</button>`).join('');
+  $('runView').innerHTML=runHtml(run);
+}
+async function openRuns(sel){
+  $('runs').hidden=false;
+  $('runsWhere').textContent='Loading…';
+  const db=await getDb();
+  $('runsWhere').textContent=db?'Each run is saved with this page, so Claude can read it.':'Runs are kept in this browser only. Use “Copy as JSON” to share one.';
+  REH.runs=await listRuns(); renderRuns(sel);
+}
+$('btnRuns').onclick=()=>openRuns(REH.sel);
+$('btnRunsClose').onclick=()=>{ $('runs').hidden=true; };
+$('runs').addEventListener('click',e=>{
+  const pick=e.target.closest('[data-run]'); if(pick) return renderRuns(pick.dataset.run);
+  const btn=e.target.closest('[data-act]'); if(!btn) return;
+  const run=REH.runs.find(r=>r.id===REH.sel); if(!run) return;
+  if(btn.dataset.act==='copy'){
+    const text=JSON.stringify(run,null,1), box=$('runJson');
+    const fallback=()=>{ box.hidden=false; box.value=text; box.focus(); box.select(); btn.textContent='Select all and copy'; };
+    try{ navigator.clipboard.writeText(text).then(()=>{ btn.textContent='Copied'; },fallback); }catch(err){ fallback(); }
+  } else if(btn.dataset.act==='del'){
+    if(btn.dataset.armed) deleteRun(run.id); else { btn.dataset.armed='1'; btn.textContent='Delete it for good'; }
+  }
+});
+// A republish while rehearsing reloads the page: carry the run across so the recording continues.
+try{ window.claude&&window.claude.hot&&window.claude.hot.snapshot&&window.claude.hot.snapshot(()=>({run:REH.run,cur})); }catch(e){}
+const resume=data=>{ const r=data&&data.run; if(r&&r.status==='recording'){ REH.run=r; openPlay(Math.min(data.cur||0,FR.length-1)); recUi(true); } };
+try{ const hot=window.claude&&window.claude.hot; hot&&hot.ready?hot.ready(resume):resume((hot&&hot.data)||{}); }catch(e){}
+
+const m=location.hash.match(/^#play\/(\d+)/); if(m&&!REH.run) openPlay(+m[1]);
 // ?shot=N renders one frame alone at 1600x900; ?shot=N&t=0.5 renders the morph from frame N-1 at that point
 const qs=new URLSearchParams(location.search), shot=qs.get('shot');
-if(shot!==null){ document.querySelectorAll('header,main,#play').forEach(n=>n.remove()); document.body.style.margin='0';
+if(shot!==null){ document.querySelectorAll('header,main,#play,#runs').forEach(n=>n.remove()); document.body.style.margin='0';
   const i=+shot, t=qs.get('t'), els=t!==null&&i>0?lerpEls(FR[i-1].els,FR[i].els,ease(+t)):FR[i].els;
   document.body.insertAdjacentHTML('beforeend',`<svg viewBox="0 0 1600 900" width="1600" height="900">${render(els)}</svg>`); }
 </script>
