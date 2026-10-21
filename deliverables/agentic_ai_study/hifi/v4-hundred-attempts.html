@@ -381,7 +381,7 @@ const AK = {
 function rArrow(e, m) {
   const o = e.o ?? 1; if (o <= .005) return '';
   const P = arrowPts(e, m); if (!P) return '';
-  const k = AK[e.k || 'solid'], len = polyLen(P), dr = e.dr ?? 1;
+  const k = AK[e.k || 'solid'], len = polyLen(P), dr = e.dr ?? 1; if (dr < .01) return '';
   let s = `<path d="${polyD(P)}" fill="none" stroke="${k.c}" stroke-width="${k.w}"${dr < 1 ? ` stroke-dasharray="${f1(len * dr)} ${f1(len + 20)}"` : ''}/>`;
   if (dr > .97) { const a = P[P.length - 2], b = P[P.length - 1]; s += headSVG(b[0], b[1], Math.atan2(b[1] - a[1], b[0] - a[0]), k.c, e.k === 'faint' ? 8 : 10); }
   if (e.label) s += T(e.lx(P), e.ly(P), esc(e.label), { size: 17, w: 800, c: e.lc || C.ink2, a: e.la || 'start', st: 92, halo: C.stage, op: smooth(.6, 1, dr) });
@@ -398,7 +398,7 @@ const qpt = (g, u) => ({ x: (1 - u) * (1 - u) * g.x1 + 2 * (1 - u) * u * g.cx + 
 function rArc(e, m) {
   const o = e.o ?? 1; if (o <= .005) return '';
   const g = arcGeo(e, m); if (!g) return '';
-  const dr = e.dr ?? 1;
+  const dr = e.dr ?? 1; if (dr < .01) return '';
   const len = 1.15 * Math.hypot(g.x2 - g.x1, g.y2 - g.y1) + 2 * Math.abs(g.cy - g.y1) * .6;
   let s = `<path d="M${f1(g.x1)},${f1(g.y1)}Q${f1(g.cx)},${f1(g.cy)} ${f1(g.x2)},${f1(g.y2 - 6)}" fill="none" stroke="${C.bad}" stroke-width="3.6"${dr < 1 ? ` stroke-dasharray="${f1(len * dr)} ${f1(len + 40)}"` : ''} stroke-linecap="round"/>`;
   if (dr > .96) s += headSVG(g.x2, g.y2, Math.atan2(g.y2 - g.cy, g.x2 - g.cx), C.bad, 15);
@@ -487,9 +487,9 @@ function F5a() {
       color: s === 's4' ? C.goodInk : C.badInk, anchor: 'middle', st: 92 });
   }
   // the check: a scanner the stream passes through, two tests above it and two below
-  els.push({ id: 'v', t: 'card', x: 1144, y: 300, w: 196, h: 432, label: 'Check', fs: 24, lc: C.chkInk, va: 'top', pt: 8, fill: C.chkBg, stroke: C.chk, sw: 2.6, lift: 1, en: .44, grow: 'lane' });
+  els.push({ id: 'v', t: 'card', x: 1144, y: 300, w: 196, h: 432, label: 'Check', fs: 24, lc: C.chkInk, va: 'top', pt: 8, fill: C.chkBg, stroke: C.chk, sw: 2.6, lift: 1, en: .38, grow: 'lane' });
   const ck = [['ck1', 'sources agree', true, 352], ['ck2', 'sensible range', true, 402], ['ck3', 'date & currency', false, 612], ['ck4', 'recompute', true, 662]];
-  ck.forEach(([id, l, ok, y], i) => els.push({ id, t: 'chip', x: 1156, y, w: 172, h: 42, label: l, fs: 17, mark: ok, s: ok ? 'good' : 'bad', en: .44 + i * .05 }));
+  ck.forEach(([id, l, ok, y], i) => els.push({ id, t: 'chip', x: 1156, y, w: 172, h: 42, label: l, fs: 17, mark: ok, s: ok ? 'good' : 'bad', en: .56 + i * .04 }));
   els.push({ id: 'lane', t: 'lane', x0: 232, x1: 1380, y: LY, h: LH, x: 232, w: 1148 });
   els.push({ id: 'ans', t: 'card', x: 1380, y: 300, w: 164, h: 410, label: 'Answer', fs: 24, va: 'top', pt: 10, lift: 1 });
   els.push({ id: 'agrid', t: 'grid', x: 1380 + 12, y: LY - 70, p: 14 });
@@ -752,7 +752,7 @@ function streamDots(s, P, clock, full, out, alpha) {   // P: arrow id → sample
   }
 }
 // Payments queue at the guard (one place forward per period); over €500 they wait at the organiser.
-const PAY = { per: 1.0, ph: 2.7, Q: 3, gap: 19, guardH: .35, v: 120, wait: 2.0, orgH: .3, payH: .35 };
+const PAY = { per: 1.0, ph: 2.45, Q: 3, gap: 19, guardH: .35, v: 120, wait: 2.0, orgH: .3, payH: .35 };
 const bigPay = k => (((k % 3) + 3) % 3) === 1;
 function payDots(m, P, clock, full, out, alpha) {
   if (alpha <= .01) return;

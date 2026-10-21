@@ -325,19 +325,20 @@ function clockItems(text) {   // "⏱ ~5 min": a drawn stopwatch, then the time
   return [{ id: 'clock', type: 'clock', x, y, w, h, ix: gx + 11 }, Tx('clock.t', gx + 34, y + h / 2 + 8.5, text, { s: 24, w: 800 })];
 }
 
-R.board = it => {   // io sign: origin (Question / Task) or terminus (Answer / Result)
+R.board = it => R.board.parts(it).join('');
+R.board.parts = it => {   // io sign: origin (Question / Task) or terminus (Answer / Result); [frame, content]
   const { x, y, w, h } = it, hh = it.hh || 40, st = it.state === 'warn';
   const head = st ? C.warn : C.ink, headInk = st ? C.ink : '#fff', edge = st ? C.warn : C.ink;
-  let g = `<rect x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" rx="10" fill="#fff" stroke="${edge}" stroke-width="${st ? 4 : 3}"/>`;
-  g += `<path d="M${n1(x)} ${n1(y + hh)}V${n1(y + 10)}Q${n1(x)} ${n1(y)} ${n1(x + 10)} ${n1(y)}H${n1(x + w - 10)}Q${n1(x + w)} ${n1(y)} ${n1(x + w)} ${n1(y + 10)}V${n1(y + hh)}Z" fill="${head}"/>`;
+  let f = `<rect x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" rx="10" fill="#fff" stroke="${edge}" stroke-width="${st ? 4 : 3}"/>`;
+  f += `<path d="M${n1(x)} ${n1(y + hh)}V${n1(y + 10)}Q${n1(x)} ${n1(y)} ${n1(x + 10)} ${n1(y)}H${n1(x + w - 10)}Q${n1(x + w)} ${n1(y)} ${n1(x + w)} ${n1(y + 10)}V${n1(y + hh)}Z" fill="${head}"/>`;
   // pictogram: an origin ring or a terminus bar, so the board reads as the end of a line
-  const ix = x + 22, iy = y + hh / 2;
+  const ix = x + 22, iy = y + hh / 2; let g = '';
   g += it.end === 'term'
     ? `<path d="M${n1(ix - 8)} ${n1(iy)}H${n1(ix + 4)}M${n1(ix + 6)} ${n1(iy - 9)}V${n1(iy + 9)}" stroke="${headInk}" stroke-width="4" stroke-linecap="round"/>`
     : `<circle cx="${n1(ix)}" cy="${n1(iy)}" r="7" fill="none" stroke="${headInk}" stroke-width="3.5"/>`;
   g += tx(x + 40, y + hh / 2 + 7.5, it.head, 21, 800, headInk);
   if (it.body) it.body.forEach((l, i) => { g += tx(x + 12, y + hh + 23 + i * (it.blh || 20), l, it.bs || 16, 500, C.ink2); });
-  return g;
+  return [f, g];
 };
 
 R.cboard = it => {   // the check's inspection panel
@@ -678,10 +679,10 @@ function compose(A, B, t, ch, reduced) {
   const ma = new Map(A.map(i => [i.id, i])), mb = new Map(B.map(i => [i.id, i])), parts = [];
   const cfg = id => ch.items[id] || {};
   const push = (it, html) => { if (html) parts.push([it.z, it.ord, html]); };
-  if (reduced) {   // a short crossfade, nothing moves
-    const k = E.sine(t);
-    for (const b of B) { const a = ma.get(b.id); if (a && visualKey(a) === visualKey(b) && JSON.stringify(a.pts) === JSON.stringify(b.pts) && GEO.every(g => a[g] === b[g])) push(b, wrap(b, R[b.type](b), 1)); else push(b, drawItem(b, k, 1, 'none')); }
-    for (const a of A) { const b = mb.get(a.id); if (!(b && visualKey(a) === visualKey(b) && JSON.stringify(a.pts) === JSON.stringify(b.pts) && GEO.every(g => a[g] === b[g]))) push(a, drawItem(a, 1 - k, 1, 'none')); }
+  if (reduced) {   // a short crossfade, nothing moves: the old frame fades as the new one comes up
+    const kin = E.sine(win(t, .4, 1)), kout = E.sine(win(t, 0, .6));
+    for (const b of B) { const a = ma.get(b.id); if (a && visualKey(a) === visualKey(b) && JSON.stringify(a.pts) === JSON.stringify(b.pts) && GEO.every(g => a[g] === b[g])) push(b, wrap(b, R[b.type](b), 1)); else push(b, drawItem(b, kin, 1, 'none')); }
+    for (const a of A) { const b = mb.get(a.id); if (!(b && visualKey(a) === visualKey(b) && JSON.stringify(a.pts) === JSON.stringify(b.pts) && GEO.every(g => a[g] === b[g]))) push(a, drawItem(a, 1 - kout, 1, 'none')); }
     return parts.sort((p, q) => p[0] - q[0] || p[1] - q[1]).map(p => p[2]).join('');
   }
   const trainRoute = ch.train ? sample(ch.train.pts, ch.train.r) : null;
@@ -710,7 +711,10 @@ function compose(A, B, t, ch, reduced) {
     if (visualKey(a) === visualKey(b)) { push(b, drawItem(g, 1, 1, 'none')); continue; }
     const [cs, ce] = c.chg || ch.chg, ck = E.sine(win(t, cs, ce));
     const ga = { ...a }; for (const k of GEO) if (k in g) ga[k] = g[k]; if (g.pts) ga.pts = g.pts;
-    if (b.type === 'pill' || b.type === 'stn') {   // a marker that changes meaning is swapped: the old one shrinks away, the new one pops in
+    if (R[b.type].parts) {   // a sign whose words change: the panel recolours in place, its words roll over
+      const [fa, ca] = R[b.type].parts(ga), [fb, cb] = R[b.type].parts(g), ko = clamp01(ck / .55), ki = clamp01((ck - .45) / .55);
+      push(b, (fa === fb ? fb : fa + wrap(b, fb, ck)) + wrap(b, ca, 1 - ko) + wrap(b, cb, ki));
+    } else if (b.type === 'pill' || b.type === 'stn') {   // a marker that changes meaning is swapped: the old one shrinks away, the new one pops in
       const ko = clamp01(ck / .5), ki = clamp01((ck - .5) / .5), [cx, cy] = center(ga), sc = 1 - .4 * ko;
       push(b, drawItem(ga, 1 - ko, 1, 'none', `translate(${n1(cx)} ${n1(cy)}) scale(${sc.toFixed(3)}) translate(${n1(-cx)} ${n1(-cy)})`) + drawItem(g, 1, ki, 'pop'));
     } else if (OPAQUE.has(b.type)) push(b, drawItem(ga, 1, 1, 'none') + drawItem(g, ck, 1, 'none'));   // new state laid over the old
