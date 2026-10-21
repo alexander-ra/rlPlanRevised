@@ -16,8 +16,8 @@ Draft for the author to triage, 18 October 2026, revised after the first storybo
 
 | # | Frame | What the MVP shows | Sec | Source |
 |---|---|---|---:|---|
-| M1 | Title → simple question | Question → AI → answer, with **90%** on the answer box and a clock reading **~2 s** | 60 | Illustrative |
-| M2 | Multistep task | The AI box splits into 5 steps of the running example, each at 0.90; the answer drops to **59%** | 50 | ✅ Author calculation, pⁿ |
+| M1 | Title → simple question | Question → AI → answer, with **60%** on the answer box and a clock reading **~2 s** | 60 | Illustrative |
+| M2 | Multistep task | The AI box splits into 5 steps of the running example, each at 0.95; the chain comes to **77%** | 50 | ✅ Author calculation, pⁿ |
 | M3 | Thinking | A thinking marker under each step; each step goes to 0.98, the answer to **90%**. One line: reasoning is trained with RL on checkable answers | 50 | ✅ OpenAI "Learning to reason" (reading guide); numbers illustrative |
 | M4 | Tools, verification, backtracking (2 frames) | **F5a** the calculator becomes an **exact tool at 100%**. A check at the end lists four independent checks (sources agree · sensible range · date & currency · recompute). It catches a real trap: the train fare came from a **2025 page priced in leva** (the euro arrived January 2026). The step turns red; the answer is on hold at 92%. **F5b** the back arrow carries the *reason* ("old page, leva → find the 2026 fare in €"), so attempt 2 is different, not a repeat. The step turns green; checked steps 98% → **99.9%**; answer **≈99.6%**. A note: max 3 tries, then tell the human it is unsure. Spoken: the coding analogy (tests → error message → fix), and the caveat that the same model asking itself "are you sure?" repeats its mistake | 70 | ✅ Schluntz & Zhang 2024; numbers illustrative (23 лв ≈ €12 matches the F7 table). ⚠ Add an official reference for the euro changeover (ECB / EU Council) |
 | ~~M5~~ | ~~×1000 steps~~ | **Dropped as a frame.** One spoken sentence in M2 (0.999¹⁰⁰⁰ ≈ 37%) and one in M3 | 0 | ✅ Author calculation |
