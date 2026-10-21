@@ -61,7 +61,7 @@
   <button type="button" id="replay">Replay transition</button>
   <span class="sep"></span>
   <span id="where"></span>
-  <span class="hint">→ / Space / click: next · ←: back</span>
+  <span class="hint">→ / Space / click: next &nbsp;|&nbsp; ←: back</span>
 </nav>
 <script>
 (() => {
@@ -285,8 +285,8 @@ R.signal = it => {
   const lit = it.state === 'red' ? C.bad : C.warn, litY = it.state === 'red' ? top + 15 : top + 37;
   return `<path d="M${x} ${y - 8}V${top + 50}" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>` +
     `<path d="M${x - 9} ${y - 8}H${x + 9}" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>` +
-    `<circle cx="${x}" cy="${litY}" r="17" fill="${lit}" opacity="0.28"/>` +
     `<rect x="${x - 13}" y="${top}" width="26" height="52" rx="9" fill="${C.ink}"/>` +
+    `<circle cx="${x}" cy="${litY}" r="10.5" fill="none" stroke="${lit}" stroke-width="2" opacity="0.45"/>` +
     `<circle cx="${x}" cy="${top + 15}" r="7.5" fill="${it.state === 'red' ? C.bad : C.lampOff}"/>` +
     `<circle cx="${x}" cy="${top + 37}" r="7.5" fill="${it.state === 'red' ? C.lampOff : C.warn}"/>`;
 };
@@ -443,7 +443,7 @@ function buildF(f5) {
     const tool = f5 && k === 's4', bad = f5 && k === 's3';
     I.push({ id: k, type: 'stn', kind: tool ? 'tool' : bad ? 'bad' : 'stop', x, y: LY, c: C.blue, r: 14 });
     I.push(Tx(k + '.n', x, LY + 48, name, { s: 24, w: 800, anchor: 'middle', lh: 28 }));
-    I.push({ id: k + '.p', type: 'pill', x: x + 18, y: LY - 50, h: 32, text: tool ? '100%' : '98%', size: 19, align: 'l',
+    I.push({ id: k + '.p', type: 'pill', x: x + 24, y: LY - 50, h: 32, text: tool ? '100%' : '98%', size: 19, align: 'l',
       fill: tool ? C.good : '#fff', color: tool ? '#fff' : C.ink, stroke: tool ? null : C.ink });
     if (f5 && sub) I.push(Tx(k + '.sub', x, LY + 108, sub, { s: 18, w: tool || bad ? 800 : 600, c: tool ? C.goodInk : bad ? C.badInk : C.muted, anchor: 'middle' }));
     if (!tool) I.push({ id: 'th' + n, type: 'think', x, y: LY + 144, text: 'thinking…' });
@@ -566,10 +566,10 @@ function buildN(n2) {
     I.push(Tx('guard.n', T + 46, 282, 'Budget guard', { s: 20, w: 800 }));
     I.push(Tx('guard.s', T + 46, 304, ['stays under €30k;', '> €500 → organiser'], { s: 16, w: 500, c: C.muted, lh: 19 }));
     I.push({ id: 'gate>org', type: 'pill', x: L + 24, y: 362, h: 30, text: '> €500', size: 18, align: 'l', fill: '#fff', color: C.ink, stroke: C.ink });
-    I.push({ id: 'pay', type: 'stn', kind: 'stop', x: T, y: 596, c: C.pay, r: 12 });
-    I.push(Tx('pay.n', T + 26, 583, 'Payments', { s: 21, w: 800 }));
-    I.push({ id: 'pay.nl', type: 'pill', x: T + 34 + tw('Payments', 21, 800), y: 576, h: 24, text: '×2', size: 15, align: 'l', padX: 8, fill: C.pay, color: '#fff' });
-    I.push(Tx('pay.s', T + 26, 608, ['the only agents', 'that can pay'], { s: 16, w: 500, c: C.muted, lh: 19 }));
+    I.push({ id: 'pay', type: 'stn', kind: 'stop', x: T, y: 592, c: C.pay, r: 12 });
+    I.push(Tx('pay.n', T + 26, 578, 'Payments', { s: 21, w: 800 }));
+    I.push({ id: 'pay.nl', type: 'pill', x: T + 34 + tw('Payments', 21, 800), y: 571, h: 24, text: '×2', size: 15, align: 'l', padX: 8, fill: C.pay, color: '#fff' });
+    I.push(Tx('pay.s', T + 30, 602, ['the only agents', 'that can pay'], { s: 16, w: 500, c: C.muted, lh: 19 }));
     I.push({ id: 'l.book', type: 'line', pts: [[T, 688], [T - 28, 716], [1134, 716]], c: C.pay, w: 9, r: 14, arrow: true });
     I.push({ id: 'l.card', type: 'line', pts: [[T, 688], [T + 28, 716], [1346, 716]], c: C.pay, w: 9, r: 14, arrow: true });
     // correspondence: the other door, both ways
@@ -759,7 +759,7 @@ function showFinal(id) { scene.innerHTML = compose([], FRAMES[id], 1, GENERIC, f
 let cur = 0, anim = 0;
 function setUi() {
   document.querySelectorAll('#bar [data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === SEQ[cur])));
-  document.getElementById('where').textContent = SEQ[cur] + ' · ' + TITLES[SEQ[cur]];
+  document.getElementById('where').textContent = SEQ[cur] + ' — ' + TITLES[SEQ[cur]];
   svg.setAttribute('aria-label', TITLES[SEQ[cur]]);
   try { history.replaceState(null, '', '#' + SEQ[cur]); } catch (e) {}
 }

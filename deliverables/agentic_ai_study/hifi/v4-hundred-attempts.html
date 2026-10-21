@@ -16,8 +16,10 @@
   #wrap { flex:1; min-height:0; position:relative; overflow:hidden; }
   #stage, #ghost { position:absolute; left:0; top:0; width:1600px; height:900px; transform-origin:0 0; background:var(--stage); }
   #stage { box-shadow:0 1px 3px rgba(20,32,43,.12), 0 8px 30px rgba(20,32,43,.08); cursor:pointer; }
-  #ghost { pointer-events:none; opacity:1; transition:opacity .34s linear; }
+  #ghost { pointer-events:none; opacity:1; transition:opacity .16s linear; }
   #ghost.out { opacity:0; }
+  #stage.fadein { opacity:0; }
+  #stage.fadein.on { opacity:1; transition:opacity .18s linear .14s; }
   svg.layer, canvas.layer { position:absolute; left:0; top:0; width:1600px; height:900px; display:block; }
   svg text { font-family:Archivo, "Golos Text", "Arial Narrow", "Helvetica Neue", Arial, sans-serif; font-kerning:normal;
              font-variant-numeric:tabular-nums; }
@@ -79,7 +81,7 @@ const C = {
   warn:'#d08700', warnBg:'#fdf1d4', warnInk:'#8a5800',
   bad:'#cf3426', badBg:'#fde8e5', badInk:'#b0261a',
   chk:'#6a49c8', chkBg:'#f2eefc', chkInk:'#4b2fa0', chkDim:'#b9aae6',
-  msg:'#2563b0', plan:'#2f5f8a', world:'#e4e9ed', worldS:'#aeb9c3', dim:'#c5ced6',
+  msg:'#2563b0', plan:'#4a5866', world:'#e4e9ed', worldS:'#aeb9c3', dim:'#c5ced6',
 };
 
 /* ---------- small helpers ---------- */
@@ -758,7 +760,7 @@ function payDots(m, P, clock, full, out, alpha) {
   const sBy = P['a:guard>pay'], sBig = P['a:guard>org'], sOP = P['a:org>pay'], sCard = P['a:pay>w_card'], sBook = P['a:pay>w_book'];
   if (!pl || !gd || !sBy || !sBig || !sOP || !sCard || !sBook) return;
   const qy = gd.y + gd.h / 2, qx0 = gd.x - 12, tQ = PAY.Q * PAY.per, enter = .25, waitS = Math.max(0, sBig.len - 27);
-  const kmax = Math.floor((clock - PAY.ph) / PAY.per), kmin = full ? kmax - 16 : Math.max(0, kmax - 16);
+  const kmax = Math.floor((clock - PAY.ph) / PAY.per), kmin = Math.max(full ? -1e9 : Math.ceil(-PAY.ph / PAY.per), kmax - 16);
   const on = (smp, s, c, r, a) => { const [x, y] = smp.at(s); out.push({ x, y, r, c, a: alpha * a, tail: tailOf(smp, s) }); };
   for (let k = kmin; k <= kmax; k++) {
     let age = clock - (PAY.ph + k * PAY.per); if (age < 0) continue;
@@ -832,10 +834,10 @@ function morph(A, B, t) {
       if (b.t === 'arc' || b.t === 'arrow') { r.dr = 1; r.lo = 1; }
       out.push(r);
     } else {
-      const d = b.en ?? .42, u = clamp((t - d) / Math.min(.4, 1 - d)), g = eout(u);   // every entrance completes by t = 1
+      const d = b.en ?? (.3 + .26 * clamp(((b.x ?? 800) + (b.w || 0) / 2) / 1600)), u = clamp((t - d) / Math.min(.4, 1 - d)), g = eout(u);   // every entrance completes by t = 1
       const r = { ...b, o: (b.o ?? 1) * smooth(0, .55, u), _t: t };
       const split = b.from && b.t === 'card' && ma.get(b.from);
-      const txo = b.t === 'chip' ? 1 : split ? smooth(d + .08, d + .3, t) : smooth(d + .16, d + .42, t);
+      const txo = b.t === 'chip' ? 1 : split ? smooth(d + .08, d + .3, t) : smooth(d + .1, d + .34, t);
       r._txo = b.t === 'chip' ? 1 : r.o > .001 ? clamp(txo / r.o) : 0;
       if (b.t === 'arrow' || b.t === 'arc') { r.dr = eout(clamp((t - d) / .36)); r.o = b.o ?? 1; r._txo = 1; }
       if (b.t === 'wall') { r.o = smooth(0, .3, u); r.open = smooth(.35, 1, u); r.lab = smooth(.6, 1, u); }
@@ -869,7 +871,7 @@ function dynEls(fid, els, info, run, tau) {
     if (e.id === 'acount') return { ...e, n: info.arrived };
     if (!run) return e;
     if (e.id.startsWith('tl:')) return { ...e, o: e.id === 'tl:s4' && fid === 'F5a' ? smooth(0, 6, info.arrived) : smooth(.5, 1, info.lost[e.id.slice(3)] || 0) };
-    if (e.id === 'apill') return { ...e, o: fid === 'F4' ? smooth(0, .3, info.arrived - 89) : smooth(0, 1, info.arrived) };
+    if (e.id === 'apill') return { ...e, o: smooth(0, .3, info.arrived - (fid === 'F4' ? 89 : 91)) };
     if (e.id === 'back') { const u = clamp((tau - info.tc) / .7); return { ...e, dr: eout(u), lo: smooth(.6, 1, u) }; }
     if (e.id === 'rgrid' && fid === 'N1') return { ...e, n: clamp(Math.floor((tau - 1) / .07), 0, 100) };
     return e;
@@ -1026,9 +1028,10 @@ function crossfade(then) {      // reduced motion: snapshot the old slide and fa
   g.innerHTML = `<svg class="layer" viewBox="0 0 1600 900" width="1600" height="900">${lastSVG}</svg>`;
   const c2 = document.createElement('canvas'); c2.className = 'layer'; c2.width = cv.width; c2.height = cv.height; c2.getContext('2d').drawImage(cv, 0, 0); g.appendChild(c2);
   g.style.transform = stage.style.transform; wrap.appendChild(g);
+  stage.classList.remove('on'); stage.classList.add('fadein');
   then();
-  requestAnimationFrame(() => requestAnimationFrame(() => g.classList.add('out')));
-  setTimeout(() => g.remove(), 420);
+  requestAnimationFrame(() => requestAnimationFrame(() => { g.classList.add('out'); stage.classList.add('on'); }));
+  setTimeout(() => { g.remove(); stage.classList.remove('fadein', 'on'); }, 400);
 }
 function go(i, how) {
   i = clamp(i, 0, ORDER.length - 1);
