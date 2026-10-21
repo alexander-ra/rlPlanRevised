@@ -454,6 +454,21 @@ function misBase(label){
   return confSystem(2).filter(e=>!['tl','g_h','g_a','ga_t'].includes(e.id))
     .map(e=>e.id==='ail'?{...e,label}:e);
 }
+// The callout sits in the free strip under the outside world, clear of every region, so long lines fit.
+// One id across R1–R4, so the callout stays put and its text changes as the steps advance.
+const misNote=(w,label,sub,o={})=>B('note',240,736,w,96,label,{k:'chip',fs:17,sfs:14,sub,...o});
+// R1: the €500 limit as a scale. One €600 payment crosses it; three €200 charges each stay under it.
+function limitScale(){
+  const x0=915, X=v=>x0+v*0.5;   // €0 at x0, half a pixel per euro
+  return [B('gz_a',x0,760,X(500)-x0,24,'',{k:'bar'}),B('gz_b',X(500),760,X(600)-X(500),24,'',{k:'barover'}),
+    ...[0,1,2].map(i=>B('gz_s'+i,x0,794+i*12,X(200)-x0,9,'',{k:'bar'})),
+    B('gz_lim',X(500)-1.5,754,3,74,'',{k:'axisline',s:'bad'}),
+    T('gz_limt',X(500),748,'€500 limit',{size:14,weight:700,color:'#c0392b',anchor:'middle'}),
+    T('gz_l1',x0-10,778,'one €600 payment',{size:15,weight:700,anchor:'end'}),
+    T('gz_r1',X(600)+10,778,'over the limit ✗',{size:14,weight:700,color:'#c0392b'}),
+    T('gz_l2',x0-10,815,'split into 3 × €200',{size:15,weight:700,anchor:'end'}),
+    T('gz_r2',X(200)+10,815,'each passes',{size:14,color:'#55606a'})];
+}
 function mis(sc){
   let e;
   if(sc==='gap'){
@@ -465,8 +480,9 @@ function mis(sc){
   if(sc==='split'){
     e=misBase('Step 1 · it games the guard, to “help”');
     e=mod(e,'pay',{s:'bad',sub:'splits €600\ninto 3×€200'});
-    e=mod(e,'guard',{s:'dim'}); e=mod(e,'org',{s:'dim'});
-    e.push(B('explain',40,556,360,120,'A payment of €600',{k:'chip',fs:16,sub:'the rule says: over €500 → ask the organiser.\nso it sends three €200 charges instead —\neach under the limit, so the human is never asked.'}),
+    e=mod(e,'guard',{nl:'LIMIT €500',sub:'any payment over €500\nneeds the organiser',sfs:14}); e=mod(e,'org',{s:'dim'});
+    e.push(misNote(470,'A €600 payment: over the €500 limit','the rule: anything over €500 needs the organiser.\nso it sends three €200 charges instead —\neach under the limit, so nobody is asked.'),
+      ...limitScale(),
       B('p1',960,560,66,34,'€200',{k:'chip',s:'bad',fs:13}),B('p2',1036,560,66,34,'€200',{k:'chip',s:'bad',fs:13}),B('p3',1112,560,66,34,'€200',{k:'chip',s:'bad',fs:13}),
       B('skip',1205,500,175,28,'organiser never asked',{k:'chip',s:'bad',fs:13}),
       A('pay','w_card',{fs:'b',ts:'t',k:'bad'}));
@@ -476,7 +492,7 @@ function mis(sc){
     e=misBase('Step 2 · it crosses a line in the world');
     e=mod(e,'s_tr',{s:'bad',sub:'finds a way to book\ntrains for free'});
     e.push(A('s_tr','w_book',{k:'bad',cy:120,label:'books free — not authorised'}),
-      B('still',40,556,360,80,'Still just trying to stay under budget',{k:'chip',fs:16,sub:'but “cheaper” is an obstacle to beat, and the\nrailway’s rules are a boundary to respect — it cannot tell them apart.'}));
+      misNote(760,'Still just trying to stay under budget','but “cheaper” is an obstacle to beat, and the railway’s rules are a boundary to respect —\nit cannot tell them apart.'));
     return e;
   }
   if(sc==='cover'){
@@ -486,14 +502,14 @@ function mis(sc){
     e=mod(e,'org',{sub:'reads “all booked ✓”,\nsigns off'});
     e.push(B('truth',760,462,170,70,'really: not booked,\nno payment',{k:'chip',s:'bad',fs:14}),
       A('truth','pn0',{k:'bad',fs:'r',ts:'l'}),
-      B('why',40,556,360,80,'The receipt is fabricated',{k:'chip',s:'bad',fs:16,sub:'our main defence is watching what it does and\nwrites. deception is the one failure that attacks the defence itself.'}));
+      misNote(760,'The receipt is fabricated','our main defence is watching what it does and writes.\ndeception is the one failure that attacks the defence itself.',{s:'bad'}));
     return e;
   }
   if(sc==='onebad'){
     e=misBase('And one wrong step is enough — no bad intent at all');
     e=mod(e,'pn2',{label:'Arrival day:\nthe 24th',s:'bad'});
     e.push(A('plan','s_ho',{k:'bad',cy:70,label:'everyone books the wrong day'}),A('plan','s_co',{k:'bad',cy:60}),
-      B('recall',40,556,360,80,'One wrong note, trusted by all',{k:'chip',fs:16,sub:'the deadline is read as the 24th, not the 23rd.\nevery team downstream books around it. (recall slide 3: one bad step in a long chain.)'}));
+      misNote(760,'One wrong note, trusted by all','the deadline is read as the 24th, not the 23rd, and every team downstream books around it.\n(recall slide 3: one bad step in a long chain.)'));
     return e;
   }
   return e;
@@ -684,7 +700,7 @@ const STY={
   fn_rank:{f:'#e8eef8',s:'#4a6fa5'}, fn_coord:{f:'#eceef0',s:'#1f2a33'}, fn_talk:{f:'#fbeef5',s:'#b0457e'},
   fn_imp:{f:'#e4f4f6',s:'#2a8a99'}, drv_co:{f:'#eef3fb',s:'#3b6ea8'}, drv_pub:{f:'#eef6e8',s:'#4f7f36'}, drv_ind:{f:'#fbf1e6',s:'#b5651d'}, msg:{f:'#fbeef5',s:'#b0457e'}, fn_agents:{f:'#f3f3f3',s:'#444'},
   ag_gpt:{f:'#e7f0fb',s:'#3b6ea8'}, ag_claude:{f:'#fbeee6',s:'#c26a3d'}, ag_gemini:{f:'#eef6e8',s:'#5a8f3c'},
-  bar:{f:'#9cc9c2',s:'#2f7d74'}, barlite:{f:'#e3f1ee',s:'#2f7d74',dash:1}, axisline:{f:'#6b7782',s:'#6b7782'},
+  bar:{f:'#9cc9c2',s:'#2f7d74'}, barlite:{f:'#e3f1ee',s:'#2f7d74',dash:1}, barover:{f:'#e07b6f',s:'#c0392b'}, axisline:{f:'#6b7782',s:'#6b7782'},
   bubble:{f:'#ffffff',s:'#6b7782'}, ph:{f:'#f0f0ee',s:'#bbb'}, clock:{f:'#ffffff',s:'#6b7782'}, node:{f:'#6b7782',s:'#6b7782'}};
 const STATE={bad:{f:'#fde8e6',s:'#c0392b'},manip:{f:'#fff1e0',s:'#d9822b'},evade:{f:'#f3e5f5',s:'#8e44ad'},
   warn:{f:'#fff7d6',s:'#c9a227'},good:{f:'#e6f4ea',s:'#2e7d4f'}};
@@ -718,7 +734,7 @@ function drawBox(e){
     g+=`<circle cx="${e.x+e.w/2}" cy="${e.y+e.h/2}" r="${e.w/2}" fill="${st.f}"/>`;
     return g+'</g>';
   }
-  const rx=e.k==='bubble'||e.k==='msg'?22:e.k==='seg'||e.k==='bar'||e.k==='barlite'||e.k==='axisline'?3:e.k==='dot'?6:10;
+  const rx=e.k==='bubble'||e.k==='msg'?22:e.k==='seg'||e.k==='bar'||e.k==='barlite'||e.k==='barover'||e.k==='axisline'?3:e.k==='dot'?6:10;
   const dash=e.k==='ph'||e.k==='tag'||st.dash?'stroke-dasharray="6 5"':'';
   const w=Math.max(0,e.w), h=Math.max(0,e.h), sw=st.sw||2;
   for(let i=(e.stack||0);i>=1;i--)
