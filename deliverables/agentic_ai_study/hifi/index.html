@@ -63,7 +63,28 @@
 
 <script>
 // One entry per variant; thumbnails are the final F5a and N2 frames rendered by each page's own ?frame= hook.
-const VARIANTS = [];
+const VARIANTS = [
+  { id: 'V1', slug: 'v1-refined-light', file: 'v1-refined-light.html', name: 'Refined light', kind: 'Refinement',
+    idea: 'The storyboard as it is, finished: IBM Plex type, cool neutrals, one hue per meaning, and depth only on each slide’s news. Every card has a title, a tool chip and a reliability meter; on N2 the system’s edge becomes a wall with two labelled doors.',
+    take: ['Card anatomy: title, tool chip, percentage with a meter', 'Depth and colour only on the news: the dark exact calculator, the red fare step', 'Changes timed inside one transition: the calculator turns exact, then the check arrives and catches the fare', 'Right-angle arrows with rounded bends'],
+    motion: '1.2 s. Shapes move with cubic in-out, new elements arrive staggered, arrows draw on, and a halo marks the news at the end. Changing text fades out before the new text fades in.' },
+  { id: 'V2', slug: 'v2-projector-dark', file: 'v2-projector-dark.html', name: 'Projector dark', kind: 'Refinement',
+    idea: 'The same diagrams for a dark room and a projector: a graphite ground, bright Fira Sans, thick strokes and one muted colour per meaning. The question or task runs as a band across the top; on F5a each test sits under the step it checks; on N2 the wall has two lit, numbered doors.',
+    take: ['The question or task as a full-width band', 'A check band with each test under its step and a straight red arrow up to the failing one', 'Lit, numbered doors, and a blue mark on the only agents allowed through them', 'Percentages that count to their new values'],
+    motion: '1.2 s. Persistent elements glide (cubic in-out), new ones enter staggered, arrows draw on with the head riding the tip, numbers count, and one subtle pulse marks the news.' },
+  { id: 'V3', slug: 'v3-icons-and-change', file: 'v3-icons-and-change.html', name: 'Icons and the change', kind: 'Refinement',
+    idea: 'Each box gets a line icon from one hand-drawn set, and whatever is unchanged since the previous slide fades back, so the news is the only thing in full colour. Each slide reveals its news in three build steps you click through.',
+    take: ['Fading unchanged parts to point at the news', 'Build steps for the presenter: calculator → check → the catch; doors → guard and organiser → payments', 'A consistent icon set (31 icons on one 24-unit grid)', 'New elements entering from a related one: Payments rises through door 2'],
+    motion: '1.1 s per slide and 0.8 s per build step; cubic in-out moves, cubic-out entrances with a stagger; arrows re-route every frame so they stay attached.' },
+  { id: 'V4', slug: 'v4-hundred-attempts', file: 'v4-hundred-attempts.html', name: 'A hundred attempts', kind: 'Experiment',
+    idea: 'Probability made visible: 100 attempts flow as threads from the question to the answer. Two drop off at each step and none at the exact calculator; the check sends the fare error back, and 92 of 100 arrive, amber, on hold. On N2 the dots are messages and payments, leaving only through the two doors.',
+    take: ['Showing 98% as two lost attempts out of 100', 'The answer as a 10 × 10 grid of arrivals', 'Threads that leave a trace, so the still slide shows the flow', 'In F4 → F5a the calculator’s two saved attempts travel on to the answer (90 → 92)'],
+    motion: '1.1 s; geometry in cubic in-out, text swaps out then in, staggered entrances. The flow is a function of time, so it freezes cleanly at any point.' },
+  { id: 'V5', slug: 'v5-transit-map', file: 'v5-transit-map.html', name: 'Transit map', kind: 'Experiment',
+    idea: 'The talk’s journey made literal: each step is a station on one line from the Question board to the Answer terminus, the calculator an express stretch, the check an interchange, the fare error a red signal with a loop back. On N2 the groups are coloured lines feeding the living-plan interchange, and the wall’s only two gaps lead to the outside world.',
+    take: ['Signals for “caught” (red) and “on hold” (amber)', 'Doors drawn as the only gaps in the wall', 'A train that rides the route during transitions', 'Labels that roll over like a departure board, and the map key on F5a'],
+    motion: '1.2 s; glides in cubic in-out, stations pop with a slight overshoot, the train eases along the route, and ← plays the transition in reverse.' },
+];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function card(v) {
   return `<article class="card">

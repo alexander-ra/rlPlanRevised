@@ -293,7 +293,7 @@ const DEF = { g: [0.06, 0.66], x: [0, 0.26] };
 const PULSE = [0.8, 1];
 const SCHED = {
   'F4>F5a': {
-    ttl: { c: [0, 0.3] }, cap: { c: [0.04, 0.4] }, clock: { c: [0.04, 0.36] },
+    ttl: { c: [0, 0.3] }, cap: { c: [0.04, 0.4] }, clock: { c: [0.04, 0.36] }, ai: { gx: [0.3, 0.58] },
     s1: { c: [0.18, 0.5] }, s2: { c: [0.22, 0.54] }, s5: { c: [0.26, 0.58] },
     s4: { c: [0.2, 0.52], n: [0.2, 0.52] },                    // the calculator turns exact; 98% counts to 100%
     ans: { n: [0.24, 0.56], c: [0.76, 0.92] },                 // glides down; 90% → 92%; then goes on hold
@@ -714,6 +714,7 @@ function scene(fromId, toId, t) {
       const g = {};
       for (const k of ['x', 'y', 'w', 'h', 'size']) if (typeof a[k] === 'number' && typeof b[k] === 'number') g[k] = lerp(a[k], b[k], ug);
       if (a.p != null && b.p != null) g.p = lerp(a.p, b.p, un);
+      if (typeof a.ext === 'number' && typeof b.ext === 'number') g.ext = lerp(a.ext, b.ext, easeIO(win(t, s.gx || gw)));   // region extension
       G.set(b.id, { x: g.x, y: g.y, w: g.w, h: g.h });
       prims.push(...tag(blend(layout({ ...a, ...g }), layout({ ...b, ...g }), uc), b.id, order));
     } else {
