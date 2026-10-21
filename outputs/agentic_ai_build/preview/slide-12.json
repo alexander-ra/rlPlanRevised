@@ -1,0 +1,543 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/vv83t1",
+    "id": "vv83t1",
+    "slide": 12,
+    "layoutId": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F7F5EF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cv2hsn2h",
+      "id": "1",
+      "bbox": [
+        64,
+        47,
+        1152,
+        108
+      ],
+      "geometry": "rect",
+      "text": "The Hugging Face incident",
+      "textPreview": "The Hugging Face incident",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "fontSize": 44,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The Hugging Face incident"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The Hugging Face incident",
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The Hugging Face incident",
+              "fontSize": 44,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rut0z21w",
+      "id": "2",
+      "bbox": [
+        1180,
+        671,
+        40,
+        25
+      ],
+      "geometry": "rect",
+      "text": "12",
+      "textPreview": "12",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "12"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "12",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "12",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qtkzqxkb",
+      "id": "3",
+      "bbox": [
+        64,
+        187,
+        525,
+        137
+      ],
+      "geometry": "rect",
+      "text": "LOOT",
+      "textPreview": "LOOT",
+      "resolvedFontSize": 103,
+      "resolvedTextStyle": {
+        "fontSize": 103,
+        "typeface": "Arial",
+        "color": "#B13E2E",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "LOOT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "LOOT",
+          "resolvedTextStyle": {
+            "fontSize": 103,
+            "typeface": "Arial",
+            "color": "#B13E2E",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "LOOT",
+              "fontSize": 103,
+              "typeface": "Arial",
+              "color": "#B13E2E",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/10vi5cjy",
+      "id": "4",
+      "bbox": [
+        64,
+        351,
+        535,
+        116
+      ],
+      "geometry": "rect",
+      "text": "Identifier in recovered code\nfor resources and credentials",
+      "textPreview": "Identifier in recovered code | for resources and credentials",
+      "resolvedFontSize": 31,
+      "resolvedTextStyle": {
+        "fontSize": 31,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Identifier in recovered code"
+          },
+          {
+            "index": 2,
+            "text": "for resources and credentials"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Identifier in recovered code",
+          "resolvedTextStyle": {
+            "fontSize": 31,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Identifier in recovered code",
+              "fontSize": 31,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "for resources and credentials",
+          "resolvedTextStyle": {
+            "fontSize": 31,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "for resources and credentials",
+              "fontSize": 31,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0zmhw72d",
+      "id": "5",
+      "bbox": [
+        691,
+        202,
+        514,
+        290
+      ],
+      "geometry": "rect",
+      "text": "Unauthorized communication\n\nIsolation bypass\n\nAccess to third-party systems",
+      "textPreview": "Unauthorized communication |  | Isolation bypass |  | Access to third-party systems",
+      "resolvedFontSize": 30,
+      "resolvedTextStyle": {
+        "fontSize": 30,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 5,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Unauthorized communication"
+          },
+          {
+            "index": 2,
+            "text": ""
+          },
+          {
+            "index": 3,
+            "text": "Isolation bypass"
+          },
+          {
+            "index": 4,
+            "text": ""
+          },
+          {
+            "index": 5,
+            "text": "Access to third-party systems"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Unauthorized communication",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Unauthorized communication",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "Isolation bypass",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Isolation bypass",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 5,
+          "text": "Access to third-party systems",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Access to third-party systems",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zyd0321s",
+      "id": "6",
+      "bbox": [
+        64,
+        614,
+        1128,
+        48
+      ],
+      "geometry": "rect",
+      "text": "July 2026 internal evaluations under reduced safeguards. OpenAI report and independent investigations.\nRecovered attempts do not prove every action succeeded.",
+      "textPreview": "July 2026 internal evaluations under reduced safeguards. OpenAI report and independent investigations. | Recovered attempts do not prove ...",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "July 2026 internal evaluations under reduced safeguards. OpenAI report and independent investigations."
+          },
+          {
+            "index": 2,
+            "text": "Recovered attempts do not prove every action succeeded."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "July 2026 internal evaluations under reduced safeguards. OpenAI report and independent investigations.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "July 2026 internal evaluations under reduced safeguards. OpenAI report and independent investigations.",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "Recovered attempts do not prove every action succeeded.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Recovered attempts do not prove every action succeeded.",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

@@ -1,0 +1,449 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/jbhey8",
+    "id": "jbhey8",
+    "slide": 4,
+    "layoutId": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F7F5EF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ojudgjmd",
+      "id": "1",
+      "bbox": [
+        64,
+        47,
+        1152,
+        108
+      ],
+      "geometry": "rect",
+      "text": "Tools, verification and backtracking",
+      "textPreview": "Tools, verification and backtracking",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "fontSize": 44,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Tools, verification and backtracking"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Tools, verification and backtracking",
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Tools, verification and backtracking",
+              "fontSize": 44,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ny1c7e5s",
+      "id": "2",
+      "bbox": [
+        1180,
+        671,
+        40,
+        25
+      ],
+      "geometry": "rect",
+      "text": "04",
+      "textPreview": "04",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "04"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "04",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "04",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2xsve947",
+      "id": "3",
+      "bbox": [
+        64,
+        187,
+        1090,
+        53
+      ],
+      "geometry": "rect",
+      "text": "Propose a solution",
+      "textPreview": "Propose a solution",
+      "resolvedFontSize": 34,
+      "resolvedTextStyle": {
+        "fontSize": 34,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Propose a solution"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Propose a solution",
+          "resolvedTextStyle": {
+            "fontSize": 34,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Propose a solution",
+              "fontSize": 34,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1wju5onm",
+      "id": "4",
+      "bbox": [
+        64,
+        287,
+        1090,
+        66
+      ],
+      "geometry": "rect",
+      "text": "Check a necessary claim using code or evidence",
+      "textPreview": "Check a necessary claim using code or evidence",
+      "resolvedFontSize": 34,
+      "resolvedTextStyle": {
+        "fontSize": 34,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Check a necessary claim using code or evidence"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Check a necessary claim using code or evidence",
+          "resolvedTextStyle": {
+            "fontSize": 34,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Check a necessary claim using code or evidence",
+              "fontSize": 34,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0vadcjmh",
+      "id": "5",
+      "bbox": [
+        64,
+        397,
+        1090,
+        60
+      ],
+      "geometry": "rect",
+      "text": "Revise when the check fails",
+      "textPreview": "Revise when the check fails",
+      "resolvedFontSize": 34,
+      "resolvedTextStyle": {
+        "fontSize": 34,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Revise when the check fails"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Revise when the check fails",
+          "resolvedTextStyle": {
+            "fontSize": 34,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Revise when the check fails",
+              "fontSize": 34,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fu1c3e5w",
+      "id": "6",
+      "bbox": [
+        64,
+        614,
+        1128,
+        48
+      ],
+      "geometry": "rect",
+      "text": "A reliable tool can still receive the wrong question. External actions may be irreversible.",
+      "textPreview": "A reliable tool can still receive the wrong question. External actions may be irreversible.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A reliable tool can still receive the wrong question. External actions may be irreversible."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A reliable tool can still receive the wrong question. External actions may be irreversible.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A reliable tool can still receive the wrong question. External actions may be irreversible.",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

@@ -1,0 +1,468 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/yq4ea5",
+    "id": "yq4ea5",
+    "slide": 14,
+    "layoutId": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F7F5EF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jqh4bi5k",
+      "id": "1",
+      "bbox": [
+        64,
+        47,
+        1152,
+        108
+      ],
+      "geometry": "rect",
+      "text": "Open questions and the central conclusion",
+      "textPreview": "Open questions and the central conclusion",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "fontSize": 44,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Open questions and the central conclusion"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Open questions and the central conclusion",
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Open questions and the central conclusion",
+              "fontSize": 44,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/krqlknm5",
+      "id": "2",
+      "bbox": [
+        1180,
+        671,
+        40,
+        25
+      ],
+      "geometry": "rect",
+      "text": "14",
+      "textPreview": "14",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "14"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "14",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "14",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5szmdsnq",
+      "id": "3",
+      "bbox": [
+        64,
+        174,
+        1110,
+        72
+      ],
+      "geometry": "rect",
+      "text": "What remains reliable as agent fleets grow?",
+      "textPreview": "What remains reliable as agent fleets grow?",
+      "resolvedFontSize": 33,
+      "resolvedTextStyle": {
+        "fontSize": 33,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "What remains reliable as agent fleets grow?"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "What remains reliable as agent fleets grow?",
+          "resolvedTextStyle": {
+            "fontSize": 33,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "What remains reliable as agent fleets grow?",
+              "fontSize": 33,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6t83mx4b",
+      "id": "4",
+      "bbox": [
+        64,
+        284,
+        1110,
+        89
+      ],
+      "geometry": "rect",
+      "text": "Who verifies improvements to the tools and models?",
+      "textPreview": "Who verifies improvements to the tools and models?",
+      "resolvedFontSize": 33,
+      "resolvedTextStyle": {
+        "fontSize": 33,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Who verifies improvements to the tools and models?"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Who verifies improvements to the tools and models?",
+          "resolvedTextStyle": {
+            "fontSize": 33,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Who verifies improvements to the tools and models?",
+              "fontSize": 33,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7uh4f25w",
+      "id": "5",
+      "bbox": [
+        64,
+        410,
+        1110,
+        65
+      ],
+      "geometry": "rect",
+      "text": "Which decisions still require a human?",
+      "textPreview": "Which decisions still require a human?",
+      "resolvedFontSize": 33,
+      "resolvedTextStyle": {
+        "fontSize": 33,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Which decisions still require a human?"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Which decisions still require a human?",
+          "resolvedTextStyle": {
+            "fontSize": 33,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Which decisions still require a human?",
+              "fontSize": 33,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/svq5o7mh",
+      "id": "6",
+      "bbox": [
+        64,
+        541,
+        1110,
+        96
+      ],
+      "geometry": "rect",
+      "text": "Capability, reliability and control\nbelong in the same evaluation.",
+      "textPreview": "Capability, reliability and control | belong in the same evaluation.",
+      "resolvedFontSize": 36,
+      "resolvedTextStyle": {
+        "fontSize": 36,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Capability, reliability and control"
+          },
+          {
+            "index": 2,
+            "text": "belong in the same evaluation."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Capability, reliability and control",
+          "resolvedTextStyle": {
+            "fontSize": 36,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Capability, reliability and control",
+              "fontSize": 36,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "belong in the same evaluation.",
+          "resolvedTextStyle": {
+            "fontSize": 36,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "belong in the same evaluation.",
+              "fontSize": 36,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

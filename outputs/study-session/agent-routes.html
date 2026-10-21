@@ -1,0 +1,192 @@
+<div id="agent-routes-study">
+  <style>
+    #agent-routes-study { color: var(--foreground); }
+    #agent-routes-study .route-stage { width: 100%; margin-block: 12px; }
+    #agent-routes-study .route-stage svg { display: block; width: 100%; }
+    #agent-routes-study .route-grid-cell { fill: var(--muted); stroke: var(--background); stroke-width: 2; }
+    #agent-routes-study .route-wall { fill: color-mix(in srgb, var(--foreground) 17%, var(--background)); }
+    #agent-routes-study .route-line { fill: none; stroke: var(--viz-series-1); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+    #agent-routes-study .route-chat { fill: none; stroke: var(--muted-foreground); stroke-width: 2; stroke-dasharray: 5 5; }
+    #agent-routes-study .route-agent { fill: var(--background); stroke: var(--viz-series-1); stroke-width: 3; }
+    #agent-routes-study .route-goal { fill: var(--background); stroke: var(--foreground); stroke-width: 2; }
+    #agent-routes-study .route-gate { fill: var(--background); stroke: var(--viz-series-2); stroke-width: 3; }
+    #agent-routes-study .route-token { fill: var(--background); stroke: var(--viz-series-3); stroke-width: 3; }
+    #agent-routes-study .route-mark { fill: var(--foreground); font-weight: 500; text-anchor: middle; dominant-baseline: central; }
+    #agent-routes-study .route-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+    #agent-routes-study .route-status { margin-block: 12px 6px; }
+  </style>
+  <h3>Routes and information between agents</h3>
+  <div class="viz-controls">
+    <label class="form-label" for="agent-route-scene">Scene
+      <select class="form-select" id="agent-route-scene">
+        <option value="0">1 · Direct route</option>
+        <option value="1">2 · An ordinary obstacle</option>
+        <option value="2">3 · An approval gate with a bypass</option>
+        <option value="3">4 · Every crossing requires approval</option>
+        <option value="4">5 · Chat off, shared token visible</option>
+        <option value="5">6 · Chat off, shared token hidden</option>
+      </select>
+    </label>
+  </div>
+  <div class="route-stage"></div>
+  <div class="route-legend text-small"></div>
+  <div class="route-status tabular-nums" aria-live="polite"></div>
+  <div class="text-small text-muted">Teaching illustration · Route search and scripted signals · No RL training</div>
+  <script>
+  (() => {
+    const root = document.getElementById('agent-routes-study');
+    const select = root.querySelector('select');
+    const stage = root.querySelector('.route-stage');
+    const legend = root.querySelector('.route-legend');
+    const status = root.querySelector('.route-status');
+    const ns = 'http://www.w3.org/2000/svg';
+    const cols = 7;
+    const rows = 5;
+    const source = [0, 2];
+    const target = [6, 2];
+    const gateKey = '3,2';
+    let scene = 0;
+
+    function savedScene(state) {
+      const value = state?.modelContent?.scene;
+      return Number.isInteger(value) && value >= 0 && value <= 5 ? value : 0;
+    }
+
+    // Exact search in a small, fully known toy world, not reinforcement learning.
+    function route(blocked, gateDelay) {
+      const distances = new Map([['0,2', 0]]);
+      const previous = new Map();
+      const pending = [{ pos: source, cost: 0 }];
+      while (pending.length) {
+        pending.sort((a, b) => a.cost - b.cost);
+        const current = pending.shift();
+        const key = current.pos.join(',');
+        if (current.cost !== distances.get(key)) continue;
+        if (key === target.join(',')) {
+          const points = [];
+          let cursor = key;
+          while (cursor) {
+            points.unshift(cursor.split(',').map(Number));
+            cursor = previous.get(cursor);
+          }
+          return { points, cost: current.cost };
+        }
+        for (const [dx, dy] of [[1, 0], [0, -1], [0, 1], [-1, 0]]) {
+          const x = current.pos[0] + dx;
+          const y = current.pos[1] + dy;
+          const next = `${x},${y}`;
+          if (x < 0 || x >= cols || y < 0 || y >= rows || blocked.has(next)) continue;
+          const cost = current.cost + 1 + (next === gateKey ? gateDelay : 0);
+          if (cost < (distances.get(next) ?? Infinity)) {
+            distances.set(next, cost);
+            previous.set(next, key);
+            pending.push({ pos: [x, y], cost });
+          }
+        }
+      }
+      return null;
+    }
+
+    function el(tag, attrs = {}, text = '') {
+      const node = document.createElementNS(ns, tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      if (text) node.textContent = text;
+      return node;
+    }
+
+    function draw() {
+      const width = Math.max(stage.clientWidth, 280);
+      const size = width / cols;
+      const height = size * rows;
+      const radius = Math.min(size * 0.3, 24);
+      const communication = scene >= 4;
+      const hasGate = scene === 2 || scene === 3;
+      const blocked = new Set();
+      if (scene === 1) [1, 2, 3].forEach(y => blocked.add(`3,${y}`));
+      if (scene === 2) [1, 3].forEach(y => blocked.add(`3,${y}`));
+      if (scene === 3) [0, 1, 3, 4].forEach(y => blocked.add(`3,${y}`));
+      if (communication) [0, 1, 2, 3, 4].forEach(y => blocked.add(`3,${y}`));
+      if (scene === 4) blocked.delete('3,0');
+      const result = route(blocked, hasGate ? 6 : 0);
+      const svg = el('svg', { viewBox: `0 0 ${width} ${height}`, height, role: 'img', 'aria-labelledby': 'agent-route-title agent-route-description' });
+      svg.append(el('title', { id: 'agent-route-title' }, select.options[scene].textContent));
+      const descriptions = [
+        'A seven by five grid. The direct path from S to G takes six moves.',
+        'A wall blocks the direct route. A legal detour takes ten moves.',
+        'Approval at P adds six waiting units. Going around the wall takes ten moves and scores ninety points without approval; the approved route scores eighty-eight.',
+        'The wall spans the entire board. After six waiting units for approval at P, the six-move route scores eighty-eight points. No crossing is allowed before approval.',
+        'A knows a private target and B must choose it. Chat is blocked, but a shared marker M carries the target through an illustrative scripted signal.',
+        'Chat is blocked and the shared marker is hidden from B. Under these modeled assumptions, no fresh target information reaches B.'
+      ];
+      svg.append(el('desc', { id: 'agent-route-description' }, descriptions[scene]));
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const isWall = blocked.has(`${x},${y}`);
+          svg.append(el('rect', { x: x * size, y: y * size, width: size, height: size, class: `route-grid-cell${isWall ? ' route-wall' : ''}` }));
+          if (isWall) svg.append(el('text', { x: (x + 0.5) * size, y: (y + 0.5) * size, class: 'route-mark' }, '#'));
+        }
+      }
+      const center = p => [(p[0] + 0.5) * size, (p[1] + 0.5) * size];
+      function line(points, className) {
+        svg.append(el('polyline', { points: points.map(p => center(p).join(',')).join(' '), class: className }));
+      }
+      if (communication) {
+        line([[0, 2], [2.7, 2]], 'route-chat');
+        line([[3.3, 2], [6, 2]], 'route-chat');
+        if (scene === 4) line([[0, 2], [0, 0], [6, 0], [6, 2]], 'route-line');
+      } else if (result) line(result.points, 'route-line');
+
+      function marker(pos, label, className, square = false) {
+        const [cx, cy] = center(pos);
+        svg.append(square
+          ? el('rect', { x: cx - radius, y: cy - radius, width: 2 * radius, height: 2 * radius, rx: 3, class: className })
+          : el('circle', { cx, cy, r: radius, class: className }));
+        svg.append(el('text', { x: cx, y: cy, class: 'route-mark' }, label));
+      }
+      if (hasGate) marker([3, 2], 'P', 'route-gate', true);
+      if (scene === 4) marker([3, 0], 'M', 'route-token', true);
+      marker(source, communication ? 'A' : 'S', 'route-agent');
+      marker(target, communication ? 'B' : 'G', 'route-goal', true);
+      stage.replaceChildren(svg);
+
+      const labels = communication
+        ? ['A · knows target', 'B · chooses target', '# · blocked', ...(scene === 4 ? ['M · shared marker'] : []), 'Dashed · chat disabled']
+        : ['S · start', 'G · goal', '# · wall', ...(hasGate ? ['P · approval, 6 waiting units'] : [])];
+      legend.replaceChildren(...labels.map(text => {
+        const span = document.createElement('span');
+        span.textContent = text;
+        return span;
+      }));
+      const details = [
+        result ? `${result.points.length - 1} moves · ${100 - result.cost} points` : '',
+        result ? `${result.points.length - 1} moves · ${100 - result.cost} points · permitted detour` : '',
+        result ? `${result.points.length - 1} moves · ${100 - result.cost} points · approval bypassed (approved route: 88 points)` : '',
+        result ? `${result.points.length - 1} moves + 6 waiting units · ${100 - result.cost} points · approval required` : '',
+        'Zero chat messages · target information passes through the marker',
+        'No modeled information route · 50% expected accuracy on a fresh fair left/right target'
+      ];
+      status.textContent = details[scene];
+    }
+
+    scene = savedScene(window.openai?.widgetState);
+    select.value = String(scene);
+    select.addEventListener('change', () => {
+      scene = Number(select.value);
+      draw();
+      window.openai?.setWidgetState?.({
+        modelContent: { scene, label: select.options[scene].textContent, method: 'Illustration; no RL training' },
+        privateContent: null
+      })?.catch(() => {});
+    });
+    window.addEventListener('openai:set_globals', event => {
+      if (event.detail?.globals && 'widgetState' in event.detail.globals) {
+        scene = savedScene(event.detail.globals.widgetState);
+        select.value = String(scene);
+        draw();
+      }
+    });
+    new ResizeObserver(draw).observe(stage);
+    draw();
+  })();
+  </script>
+</div>

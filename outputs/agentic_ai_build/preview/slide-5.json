@@ -1,0 +1,762 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/togdr8",
+    "id": "togdr8",
+    "slide": 5,
+    "layoutId": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F7F5EF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ep836d8z",
+      "id": "1",
+      "bbox": [
+        64,
+        47,
+        1152,
+        108
+      ],
+      "geometry": "rect",
+      "text": "Horizontal scaling",
+      "textPreview": "Horizontal scaling",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "fontSize": 44,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Horizontal scaling"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Horizontal scaling",
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Horizontal scaling",
+              "fontSize": 44,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1cz2hsrq",
+      "id": "2",
+      "bbox": [
+        1180,
+        671,
+        40,
+        25
+      ],
+      "geometry": "rect",
+      "text": "05",
+      "textPreview": "05",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "05"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "05",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "05",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0bql8nq5",
+      "id": "3",
+      "bbox": [
+        64,
+        180,
+        420,
+        48
+      ],
+      "geometry": "rect",
+      "text": "Multiple attempts",
+      "textPreview": "Multiple attempts",
+      "resolvedFontSize": 30,
+      "resolvedTextStyle": {
+        "fontSize": 30,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Multiple attempts"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Multiple attempts",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Multiple attempts",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nehkj29w",
+      "id": "4",
+      "bbox": [
+        510,
+        180,
+        690,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Explore alternatives and compare answers",
+      "textPreview": "Explore alternatives and compare answers",
+      "resolvedFontSize": 28,
+      "resolvedTextStyle": {
+        "fontSize": 28,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Explore alternatives and compare answers"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Explore alternatives and compare answers",
+          "resolvedTextStyle": {
+            "fontSize": 28,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Explore alternatives and compare answers",
+              "fontSize": 28,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/md83ax8b",
+      "id": "5",
+      "bbox": [
+        64,
+        273,
+        420,
+        48
+      ],
+      "geometry": "rect",
+      "text": "Division of labour",
+      "textPreview": "Division of labour",
+      "resolvedFontSize": 30,
+      "resolvedTextStyle": {
+        "fontSize": 30,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Division of labour"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Division of labour",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Division of labour",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9gj2ls72",
+      "id": "6",
+      "bbox": [
+        510,
+        273,
+        690,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Give agents distinct questions and contexts",
+      "textPreview": "Give agents distinct questions and contexts",
+      "resolvedFontSize": 28,
+      "resolvedTextStyle": {
+        "fontSize": 28,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Give agents distinct questions and contexts"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Give agents distinct questions and contexts",
+          "resolvedTextStyle": {
+            "fontSize": 28,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Give agents distinct questions and contexts",
+              "fontSize": 28,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ofqlc7qh",
+      "id": "7",
+      "bbox": [
+        64,
+        366,
+        420,
+        48
+      ],
+      "geometry": "rect",
+      "text": "Coordination",
+      "textPreview": "Coordination",
+      "resolvedFontSize": 30,
+      "resolvedTextStyle": {
+        "fontSize": 30,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Coordination"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Coordination",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Coordination",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3ixk7y9c",
+      "id": "8",
+      "bbox": [
+        510,
+        366,
+        690,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Share findings and revise the plan",
+      "textPreview": "Share findings and revise the plan",
+      "resolvedFontSize": 28,
+      "resolvedTextStyle": {
+        "fontSize": 28,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Share findings and revise the plan"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Share findings and revise the plan",
+          "resolvedTextStyle": {
+            "fontSize": 28,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Share findings and revise the plan",
+              "fontSize": 28,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2hojyt87",
+      "id": "9",
+      "bbox": [
+        64,
+        459,
+        420,
+        48
+      ],
+      "geometry": "rect",
+      "text": "Trained delegation",
+      "textPreview": "Trained delegation",
+      "resolvedFontSize": 30,
+      "resolvedTextStyle": {
+        "fontSize": 30,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Trained delegation"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Trained delegation",
+          "resolvedTextStyle": {
+            "fontSize": 30,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Trained delegation",
+              "fontSize": 30,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4zix4vml",
+      "id": "10",
+      "bbox": [
+        510,
+        459,
+        690,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Learn when and how to assign work",
+      "textPreview": "Learn when and how to assign work",
+      "resolvedFontSize": 28,
+      "resolvedTextStyle": {
+        "fontSize": 28,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Learn when and how to assign work"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Learn when and how to assign work",
+          "resolvedTextStyle": {
+            "fontSize": 28,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Learn when and how to assign work",
+              "fontSize": 28,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pkryx036",
+      "id": "11",
+      "bbox": [
+        64,
+        614,
+        1128,
+        48
+      ],
+      "geometry": "rect",
+      "text": "More agents can improve coverage while adding cost, dependencies and shared errors.",
+      "textPreview": "More agents can improve coverage while adding cost, dependencies and shared errors.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "More agents can improve coverage while adding cost, dependencies and shared errors."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "More agents can improve coverage while adding cost, dependencies and shared errors.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "More agents can improve coverage while adding cost, dependencies and shared errors.",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

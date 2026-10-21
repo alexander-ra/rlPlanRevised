@@ -1,0 +1,827 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/wipsgh",
+    "id": "wipsgh",
+    "slide": 16,
+    "layoutId": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F7F5EF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "ee9eddca-3054-4d3d-b205-244fa8e57baf",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "e96f30da-8cc4-479e-bcf0-b48f660a95d1",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sbmpsfud",
+      "id": "1",
+      "bbox": [
+        64,
+        47,
+        1152,
+        108
+      ],
+      "geometry": "rect",
+      "text": "Selected references: failures and control",
+      "textPreview": "Selected references: failures and control",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "fontSize": 44,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Selected references: failures and control"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Selected references: failures and control",
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Arial",
+            "color": "#142D3B",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Selected references: failures and control",
+              "fontSize": 44,
+              "typeface": "Arial",
+              "color": "#142D3B",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ratojads",
+      "id": "2",
+      "bbox": [
+        1180,
+        671,
+        40,
+        25
+      ],
+      "geometry": "rect",
+      "text": "16",
+      "textPreview": "16",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#52636D",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "16"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "16",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#52636D"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "16",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#52636D"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/q9k7q5c7",
+      "id": "3",
+      "bbox": [
+        64,
+        177,
+        1110,
+        35
+      ],
+      "geometry": "rect",
+      "text": "Cemri et al. (2025)",
+      "textPreview": "Cemri et al. (2025)",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Cemri et al. (2025)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Cemri et al. (2025)",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Cemri et al. (2025)",
+              "fontSize": 26,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/58b6h0vm",
+      "id": "4",
+      "bbox": [
+        64,
+        215,
+        1110,
+        38
+      ],
+      "geometry": "rect",
+      "text": "Multi-agent failures and verification",
+      "textPreview": "Multi-agent failures and verification",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Multi-agent failures and verification"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Multi-agent failures and verification",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Multi-agent failures and verification",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4725ove1",
+      "id": "5",
+      "bbox": [
+        64,
+        264,
+        1110,
+        35
+      ],
+      "geometry": "rect",
+      "text": "Shen et al. (2024); Russinovich et al. (2025)",
+      "textPreview": "Shen et al. (2024); Russinovich et al. (2025)",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Shen et al. (2024); Russinovich et al. (2025)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Shen et al. (2024); Russinovich et al. (2025)",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Shen et al. (2024); Russinovich et al. (2025)",
+              "fontSize": 26,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/36tofqdg",
+      "id": "6",
+      "bbox": [
+        64,
+        302,
+        1110,
+        38
+      ],
+      "geometry": "rect",
+      "text": "DAN and Crescendo",
+      "textPreview": "DAN and Crescendo",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "DAN and Crescendo"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "DAN and Crescendo",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "DAN and Crescendo",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i5knmlwv",
+      "id": "7",
+      "bbox": [
+        64,
+        351,
+        1110,
+        35
+      ],
+      "geometry": "rect",
+      "text": "Baker et al. (2025)",
+      "textPreview": "Baker et al. (2025)",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Baker et al. (2025)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Baker et al. (2025)",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Baker et al. (2025)",
+              "fontSize": 26,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h4b6d0vq",
+      "id": "8",
+      "bbox": [
+        64,
+        389,
+        1110,
+        38
+      ],
+      "geometry": "rect",
+      "text": "Monitoring and obfuscated reward hacking",
+      "textPreview": "Monitoring and obfuscated reward hacking",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Monitoring and obfuscated reward hacking"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Monitoring and obfuscated reward hacking",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Monitoring and obfuscated reward hacking",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/gj25kve5",
+      "id": "9",
+      "bbox": [
+        64,
+        438,
+        1110,
+        35
+      ],
+      "geometry": "rect",
+      "text": "OpenAI (2026a); METR and Redwood Research (2026)",
+      "textPreview": "OpenAI (2026a); METR and Redwood Research (2026)",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "OpenAI (2026a); METR and Redwood Research (2026)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "OpenAI (2026a); METR and Redwood Research (2026)",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "OpenAI (2026a); METR and Redwood Research (2026)",
+              "fontSize": 26,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ut07ah8z",
+      "id": "10",
+      "bbox": [
+        64,
+        476,
+        1110,
+        38
+      ],
+      "geometry": "rect",
+      "text": "The Hugging Face incident and trajectory investigation",
+      "textPreview": "The Hugging Face incident and trajectory investigation",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The Hugging Face incident and trajectory investigation"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The Hugging Face incident and trajectory investigation",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The Hugging Face incident and trajectory investigation",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/vu98jm9k",
+      "id": "11",
+      "bbox": [
+        64,
+        525,
+        1110,
+        35
+      ],
+      "geometry": "rect",
+      "text": "Forman et al. (2026); Novikov et al. (2025)",
+      "textPreview": "Forman et al. (2026); Novikov et al. (2025)",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "Arial",
+        "color": "#007C78",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Forman et al. (2026); Novikov et al. (2025)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Forman et al. (2026); Novikov et al. (2025)",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "typeface": "Arial",
+            "color": "#007C78",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Forman et al. (2026); Novikov et al. (2025)",
+              "fontSize": 26,
+              "typeface": "Arial",
+              "color": "#007C78",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wvipcrq5",
+      "id": "12",
+      "bbox": [
+        64,
+        563,
+        1110,
+        38
+      ],
+      "geometry": "rect",
+      "text": "Swarm Traces and AlphaEvolve",
+      "textPreview": "Swarm Traces and AlphaEvolve",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#142D3B",
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Swarm Traces and AlphaEvolve"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Swarm Traces and AlphaEvolve",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#142D3B"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Swarm Traces and AlphaEvolve",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#142D3B"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

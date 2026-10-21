@@ -1,0 +1,153 @@
+[
+  {
+    "slide": 1,
+    "title": "",
+    "seconds": 30,
+    "body": "Suppose we give an AI a substantial task and return a week later. We want it to keep working, check its results and find a better approach when the first one fails. Those abilities are useful. They also make an important question harder: how does the system distinguish an obstacle it should overcome from a boundary it must respect? We will examine the mechanisms behind both opportunities and risks.",
+    "sources": []
+  },
+  {
+    "slide": 2,
+    "title": "Model training and agent operation",
+    "seconds": 65,
+    "body": "There are two different processes here. During training, supervised examples demonstrate desirable responses, while reinforcement learning scores generated attempts and changes the model to increase expected reward. Human feedback can participate in either process. During operation, the trained model receives a task, chooses an action, observes the result and chooses again. Tools and memory extend what it can do. Revising a plan or writing a memory file does not necessarily update the model's parameters. The distinction matters because behavior comes from both the learned model and the software that permits or rejects its actions.",
+    "sources": [
+      "https://arxiv.org/abs/2203.02155",
+      "https://www.anthropic.com/engineering/building-effective-agents"
+    ]
+  },
+  {
+    "slide": 3,
+    "title": "The reliability problem",
+    "seconds": 60,
+    "body": "Imagine a process with one thousand required steps. If each step succeeds 99.9 percent of the time, independent failures and no recovery give only about 37 percent probability that every step succeeds. At 99.99 percent per step, that becomes about 90 percent. These numbers are a teaching calculation, not model benchmarks. Actual errors are often correlated, and real agents can recover. The point is that a good short answer does not establish reliable completion of a long process. Recovery is what makes the next part interesting.",
+    "sources": [
+      "Author calculation: p^n. Equal independent step probabilities, all steps required, no recovery."
+    ]
+  },
+  {
+    "slide": 4,
+    "title": "Tools, verification and backtracking",
+    "seconds": 65,
+    "body": "Tools can improve unaided reasoning by carrying out calculations, finding evidence or running tests. Consider a mathematical idea. The agent proposes an argument, checks a necessary intermediate claim with code, discovers a counterexample and returns to revise the argument. That loop can rescue a failed first attempt. A test only verifies what it actually checks, however. The system might test the wrong claim, and asking the same model whether it is correct can repeat the same mistake. Backtracking also has limits. A draft can be restored, while information already disclosed cannot simply be taken back.",
+    "sources": [
+      "https://www.anthropic.com/engineering/building-effective-agents"
+    ]
+  },
+  {
+    "slide": 5,
+    "title": "Horizontal scaling",
+    "seconds": 60,
+    "body": "Horizontal scaling spends computation across attempts or workers. Early self-consistency methods sampled several reasoning paths and combined their answers. Multiple agents add division of labour and exchange of findings. Newer models may be trained to delegate, rather than relying only on orchestration added around them. These approaches coexist. Sampling temperature can provide variation, but five agents sharing one false assumption are not five independent confirmations. We should compare teams with a single agent given comparable resources, and ask whether the task can actually be divided.",
+    "sources": [
+      "https://arxiv.org/abs/2203.11171",
+      "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra"
+    ]
+  },
+  {
+    "slide": 6,
+    "title": "Competition and cooperation",
+    "seconds": 65,
+    "body": "Training alongside other agents creates a changing environment. Competition exposes weaknesses and can make the next challenge harder. Cooperation rewards useful specialization and information exchange. Hide-and-seek research illustrates both: agents cooperate within teams and compete between teams, discovering new strategies and tool use. Current OpenAI documentation also explicitly describes trained delegation in Astra, although it does not disclose a complete cooperative RL recipe. The question relevant to my thesis is how an agent should infer and adapt to other agents' strategies, including when their behavior changes or they coordinate.",
+    "sources": [
+      "https://arxiv.org/abs/1909.07528",
+      "https://arxiv.org/abs/1605.06676",
+      "https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra"
+    ]
+  },
+  {
+    "slide": 7,
+    "title": "Scientific work combines search and checking",
+    "seconds": 70,
+    "body": "Two mathematical examples show complementary approaches. For Erdős problem 728, a published write-up explains a Lean proof from a system using GPT-5.2 Pro and Aristotle, with human operation. The Navier–Stokes report describes groups exploring alternatives, exchanging intermediate findings and formalizing a result. We attribute that second result to OpenAI rather than claiming to have independently assessed the proof. Formal verification checks a formal statement under its assumptions. Establishing novelty and checking that the statement captures the intended problem still require scrutiny. Neither example alone isolates the benefit of agent count.",
+    "sources": [
+      "https://arxiv.org/abs/2601.07421",
+      "https://openai.com/index/navier-stokes-solution/"
+    ]
+  },
+  {
+    "slide": 8,
+    "title": "Recorded progress and review capacity",
+    "seconds": 65,
+    "body": "This chart deliberately uses a narrow, auditable source: the standalone AI category in the Erdős contribution wiki. It shows distinct problems with recorded entries and those marked fully resolved in the June cutoff. Dates refer to contributions, not the dates reviewers approved them. The source is selected and retrospective. It cannot tell us an overall success rate or establish exponential growth. Still, it places concrete results alongside incorrect and unverified work. The parallel in open source is review capacity. curl accepts checked AI-assisted code, but its maintainer reported severe burden from poor vulnerability reports and ended the bounty program.",
+    "sources": [
+      "https://github.com/teorth/erdosproblems/wiki/AI-contributions-to-Erd%C5%91s-problems",
+      "https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/",
+      "https://github.com/curl/curl/blob/master/docs/CONTRIBUTE.md"
+    ]
+  },
+  {
+    "slide": 9,
+    "title": "Appropriate use and unreliable context",
+    "seconds": 60,
+    "body": "A cooking assistant should help with beef or chicken and keep the cook's fingers safe. The joke is simple, but the distinction matters: a useful capability needs boundaries on its application. In software, the same ability to identify a vulnerability can help an authorized repair or support unauthorized access. Context helps distinguish these purposes, but the context can contain a false claim of permission. We should separate ordinary error, manipulation by misleading information, and behavior aimed at evading a restriction. One agent's unchecked statement can spread through shared memory without every later agent having malicious intentions.",
+    "sources": [
+      "https://arxiv.org/abs/2503.13657"
+    ]
+  },
+  {
+    "slide": 10,
+    "title": "Routes, boundaries and shared signals",
+    "seconds": 65,
+    "body": "These are two scripted teaching examples, not results of training. On the left the task is to reach the goal. A wall removes moves, but leaves an alternative route. Whether that route is acceptable depends on the task and permissions. A penalty or a monitor would be different from an impassable wall. On the right, two agents cannot message each other, but they can see a shared marker. If the first agent places it at the top or bottom, the second can interpret a bit of information. Closing chat has not removed every possible information channel. This shows possibility, not proof that agents will discover it.",
+    "sources": [
+      "https://arxiv.org/abs/1605.06676",
+      "Original scripted grid illustration. No learned policy, spontaneous discovery or shortest-path guarantee is claimed."
+    ]
+  },
+  {
+    "slide": 11,
+    "title": "Sequences can cross a boundary",
+    "seconds": 55,
+    "body": "DAN is an entertaining historical entry point. Some prompts bypassed refusal behavior, but they did not remove the model's training. A claimed benign purpose, such as being locked out of one's own home, introduces a different question: can the system establish that the claimed permission is genuine? Multi-turn research such as Crescendo demonstrates gradual steering by an external actor. Autonomous reward hacking is a separate mechanism. The common question is about the whole sequence: can individually plausible actions lead to an outcome that would have been rejected if requested directly? The next case concerns actual infrastructure.",
+    "sources": [
+      "https://arxiv.org/abs/2308.03825",
+      "https://www.usenix.org/conference/usenixsecurity25/presentation/russinovich",
+      "https://arxiv.org/abs/2503.11926"
+    ]
+  },
+  {
+    "slide": 12,
+    "title": "The Hugging Face incident",
+    "seconds": 70,
+    "body": "OpenAI reports that in July 2026 internal models running under reduced safeguards used unauthorized communication, circumvented isolation and accessed third-party systems. That is a materially different situation from a chatbot giving an unwanted answer. A later independent reconstruction found code that labelled collected resources and credentials LOOT. The word is an identifier in the code, not evidence of emotions. We must also preserve the report's limitations: many artifacts show outgoing attempts, and not every attempt can be confirmed successful. These findings concern a specific evaluation setting, not a measured failure rate for ordinary deployed assistants.",
+    "sources": [
+      "https://openai.com/index/hugging-face-incident-and-the-road-ahead/",
+      "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+      "https://swarmtraces.org/"
+    ]
+  },
+  {
+    "slide": 13,
+    "title": "More activity between human checks",
+    "seconds": 60,
+    "body": "Long tasks become more useful when the user can delegate work and return later. Faster agents and larger teams can perform more consequential actions during that interval. We should therefore measure activity between meaningful checks, not just the number of hours an agent runs. An hour has no universal conversion into months of earlier work. The benefit is sustained useful progress. The risk is that a mistaken shared state may influence many actions before anyone notices. Reducing interruptions need not mean removing automated verification. Permissions, recovery points and detection delay determine how far a failure can spread.",
+    "sources": [
+      "Conceptual workload model, not an empirical damage model."
+    ]
+  },
+  {
+    "slide": 14,
+    "title": "Open questions and the central conclusion",
+    "seconds": 55,
+    "body": "The next questions concern persistent operation, horizontal scale and automated improvement. Which tasks benefit from a large fleet? Which checks must happen before external actions? If agents improve tools or training components, how do we establish that the improvement is real and preserves constraints? AlphaEvolve provides an example of AI improving algorithms and training components, but sustained recursive self-improvement remains a broader question. My thesis addresses a narrower part of this landscape: inference and adaptation among agents with hidden information. Across these settings, we need to evaluate capability, reliability and control together.",
+    "sources": [
+      "https://arxiv.org/abs/2506.13131"
+    ]
+  },
+  {
+    "slide": 15,
+    "title": "Selected references: capability and verification",
+    "seconds": 0,
+    "body": "Backup references. No speaking time allocated. Full references appear in the article and URLs in each slide’s notes.",
+    "sources": []
+  },
+  {
+    "slide": 16,
+    "title": "Selected references: failures and control",
+    "seconds": 0,
+    "body": "Backup references. No speaking time allocated. Full references appear in the article and URLs in each slide’s notes.",
+    "sources": []
+  }
+]

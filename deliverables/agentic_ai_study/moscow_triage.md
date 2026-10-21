@@ -1,0 +1,98 @@
+# Presentation triage: must / should / could / won't
+
+Draft for the author to triage, 18 October 2026, revised after the first storyboard review (F1–F9 reworked; rogue frames untouched). It covers the redesign around the morphing central diagram (MVP). Seconds are spoken time per frame. Numbers on the MVP are illustrative teaching values unless marked otherwise.
+
+**Sources:** ✅ = already cited in the article/speaker notes or the Noam Brown reading guide. ⚠ = not yet in our materials, or the specific claim/figure is unconfirmed. Check these before building a frame around them.
+
+**Budget assumption:** a 15-minute talk with questions separate. The musts were budgeted at **11:00**; after this revision they come to **12:15** in [the storyboard](lofi/storyboard.html), deliberately complex first, cuts later. That leaves under 2:00 for shoulds. If questions are inside the 15 minutes, the musts must fall to about 9:00 (see the cut line at the end).
+
+## Running example
+
+**M1–M4:** *"Is it cheaper to drive or take the train from Ruse to Sofia?"* Five steps: search the distance → fuel price → train fares → calculate → compare and answer.
+
+**From M6 on, the question opens up:** *"What is the cheapest way to get from Ruse to Sofia, arriving within 24 hours?"* Options to list, timetables, fares, free seats, rideshare offers and the weather for a bike. That gives 14 sequential steps (~2 h), which is what makes parallel copies worth having. Prices on the slides are illustrative, in euros (Bulgaria's currency since 2026).
+
+## MUST: 11:00
+
+| # | Frame | What the MVP shows | Sec | Source |
+|---|---|---|---:|---|
+| M1 | Title → simple question | Question → AI → answer, with **90%** on the answer box and a clock reading **~2 s** | 60 | Illustrative |
+| M2 | Multistep task | The AI box splits into 5 steps of the running example, each at 0.90; the answer drops to **59%** | 50 | ✅ Author calculation, pⁿ |
+| M3 | Thinking | A thinking marker under each step; each step goes to 0.98, the answer to **90%**. One line: reasoning is trained with RL on checkable answers | 50 | ✅ OpenAI "Learning to reason" (reading guide); numbers illustrative |
+| M4 | Tools, verification, backtracking (2 frames) | **F5a** the calculator becomes an **exact tool at 100%**. A check at the end lists four independent checks (sources agree · sensible range · date & currency · recompute). It catches a real trap: the train fare came from a **2025 page priced in leva** (the euro arrived January 2026). The step turns red; the answer is on hold at 92%. **F5b** the back arrow carries the *reason* ("old page, leva → find the 2026 fare in €"), so attempt 2 is different, not a repeat. The step turns green; checked steps 98% → **99.9%**; answer **≈99.6%**. A note: max 3 tries, then tell the human it is unsure. Spoken: the coding analogy (tests → error message → fix), and the caveat that the same model asking itself "are you sure?" repeats its mistake | 70 | ✅ Schluntz & Zhang 2024; numbers illustrative (23 лв ≈ €12 matches the F7 table). ⚠ Add an official reference for the euro changeover (ECB / EU Council) |
+| ~~M5~~ | ~~×1000 steps~~ | **Dropped as a frame.** One spoken sentence in M2 (0.999¹⁰⁰⁰ ≈ 37%) and one in M3 | 0 | ✅ Author calculation |
+| M6 | Time and horizontal scaling (4 frames) | **F7a** the open question: 14 steps in sequence, a timeline underneath, ~2 h. **F7b** the orchestrator spawns one copy per option (car, train, bus, rideshare, bike); lanes run at once, ~25 min. **F7c** copies adapt: the train copy splits into two helpers, the bike copy stops early (storm), the bus copy finds a full bus; each ends with a result chip. **F7d** the join made visible: the result chips slide into one "gathered results" table, and only then compare → check → answer. No "agent" node anywhere: a copy is the same model with its own working memory | 105 | ✅ Hadfield 2025 (orchestrator + parallel subagents); times and prices illustrative |
+| M7 | Where splitting helps or hurts | Three mini MVPs: **web research** (parallel, big gain), **coding** (separate bug fixes fine; two copies building one feature joined by a "must agree" link), **a novel** (worse than one agent; nobody holds the whole plot). Caption quotes Moonshot: spawning more subtasks only helps if it shortens the critical path | 60 | ✅ Hadfield 2025 ("most coding tasks involve fewer truly parallelizable tasks than research"). ✅ Moonshot AI, Kimi K2.5 blog (critical-path quote; up to 100 sub-agents, up to 4.5× faster, measured as critical steps). ⚠ Brown's subagent-count/speedup figures: check the Dwarkesh transcript around 00:00–00:40. ⚠ Cognition "Don't Build Multi-Agents" (novel/context argument). ⚠ Google "Towards a Science of Scaling Agent Systems" figures. The novel example is illustrative unless one of these supports it |
+| M8a | Our own complex system (4 frames, N1–N4; replaces the real-system showcase) | The trip problem at conference scale: *get 300 attendees from 40 countries to Ruse by the 23rd, under €90,000* (weeks of human work). Same behaviour style as F1–F8 (task/result pinned, time left → right). **N1** hierarchy: lead → four teams (Flights & trains ×300, Hotels ×8, Attendees ×30, Shuttles ×12; ~350 agents) → a check per team → living plan → budget guard + organiser. **N2** teams message each other directly (pink chips: Flights → Hotels, Attendees → Hotels, Shuttles → Attendees), not via the lead. **N3** acting in the world: outside world band (airlines & rail, the bus company's sales AI, hotels, attendees' email, payment card); per-team permissions; payments > €1,000 need approval; the bus AI negotiates with Shuttles. **N4** day 9: a rail strike ripples through as messages; the organiser approves +€2,400; 297 of 300 on time, 3 handed to a human. Sets up the rogue section: messages, outside AIs, permissions and payments are the attack surfaces | 140 | Illustrative scenario; pieces follow Cursor 2026 (hierarchical planners/workers), Hadfield 2025 (orchestrator + subagents), Chung et al. 2026 and Carlini 2026 (agents coordinating directly) |
+| M8 | Real systems, real results (1 frame, F9, after N1–N4) | One comparison table, rows ordered by number of agents; columns: system · agents (number + log bar) · humans in the loop · claimed result (* = not yet independently verified, not emphasised) · time (agents vs. a human estimate where one was published) · cost of the agents. Rows: Stanford Virtual Lab (5; <1% human talk; lab-tested nanobodies; days vs weeks–months), The Station (6; Ramsey cases*), Anthropic C compiler (16; builds Linux; ~$20k), Edison Kosmos (~200 runs; ~12 h vs ~6 months; ~$200/run), Anthropic enzyme search (~950; 21 h; 210M tokens), OpenAI Navier–Stokes (~10,000; “very little human input”; ~$6–10M press estimate), OpenAI maths release (agents not disclosed; ~720 papers*; ~3 h Pro compute per result), Anthropic Glasswing last, red (10,000+ serious bugs in a month; up to $100M credits) with “→ the same skill in the wrong hands”. Notes: compiler and enzyme details, Cursor, Co-Scientist, Aletheia. Replaces the separate results chart and frontier cards | 50 | ✅ Swanson 2025; Chung 2026; Carlini 2026; Anthropic enzyme 2026; OpenAI maths 2026; Glasswing launch + update. ⚠ Kosmos price and “6 months” via press; ⚠ Navier–Stokes cost is a press estimate; Virtual Lab time from Zou’s interviews |
+| M9 | Going rogue | The MVP comes back, with a different colour for each mechanism: **error** (a red step spreads downstream unchecked), **manipulation** (red enters through a tool result), **evasion** (a step routes around the verifier) | 55 | ✅ Cemri 2025 (failure taxonomy) |
+| M10 | DAN → Crescendo | The MVP is hidden. A chat bubble, then a multi-turn ramp: each step looks plausible, but the sequence crosses a line | 35 | ✅ Shen 2024, Russinovich 2025 |
+| M11 | Hugging Face incident | The MVP grows into a swarm with reduced safeguards and red arrows leaving the sandbox. "LOOT" as a code identifier; attempted ≠ confirmed | 70 | ✅ OpenAI 2026a, METR 2026, Swarm Traces |
+| M12 | Close | The full MVP returns with control elements attached: permissions, checkpoints, monitor, recovery points. One line on the thesis link. **"Capability, reliability and control: evaluate them together"** | 45 | ✅ Existing conclusion |
+
+## SHOULD: pick about 3:00
+
+| # | Item | Where it goes | +Sec | Source |
+|---|---|---|---:|---|
+| S1 | **Training strip** under the AI box, one line per stage: pretraining + SFT (M1) → RLHF/RLAIF/DPO (M1–M2) → RL on checkable answers (M3) → harness: Claude Code, Codex, Cursor (M4). Acronyms only in notes | Runs along M1–M4 | +30 | ✅ Ouyang 2022, o1 article. ⚠ DPO (Rafailov 2023) and RLAIF/Constitutional AI (Bai 2022): standard but not yet in refs |
+| S2 | **Competition**: the verifier as an adversary (critic, debate, red vs. blue); self-play and hide-and-seek as a training signal. A 20-second "this is my research" moment. **Now partly covered:** the co-scientist's Elo tournament and the "compete & rank" box in M8 already show competition inside a system | In M4, or attach the thesis moment to M8's "compete & rank" | +40 | ✅ Baker 2020 (hide-and-seek). ⚠ debate (Irving 2018) not in refs |
+| S3 | **Recursive self-improvement as the hinge**: the agent improves its own tools/training, and the human checkpoint slides further away each loop. The last good example and the first risk | Between M8 and M9 | +45 | ✅ Novikov 2025 (AlphaEvolve improving Gemini training). ⚠ any stronger RSI claim |
+| S4 | **Deliberate misuse swarm**: a documented case of attackers orchestrating agents. Balances "the AI went wrong" with "a human aimed it" | After M11 | +40 | ⚠ Anthropic's report on an AI-orchestrated cyber-espionage campaign (Nov 2025): I believe it exists, but it isn't in our refs |
+| S5 | **Abliterated / uncensored models**: refusals removed on purpose, so the "rogue" behaviour is on by default and intent comes from the user | Inside M9 (the evasion colour) | +20 | ⚠ Arditi et al. 2024 (refusal is a single direction) plus a source for the community "abliteration" practice |
+| S6 | **Readable reasoning is a fragile window**: training against a thought monitor produced hidden misbehaviour; the idea may enter pretraining anyway. Framed as an open question, not a recommendation | Inside M12, or between M11 and M12 | +40 | ✅ Baker 2025; Brown interview 01:08:34. ⚠ Korbak et al. 2025 "Chain of Thought Monitorability" not in refs |
+
+S1 + S3 + S6 = 1:55. Adding S2 or S4 brings it to about 2:35. All six = 3:35, which is over budget.
+
+## COULD
+
+| # | Item | Note | Source |
+|---|---|---|---|
+| C1 | Simulated company: agents in roles pursuing a long-term goal | Fits as the M6→M8 bridge. Project Vend failed amusingly, so it also bridges to risk | ⚠ Anthropic Project Vend; ChatDev/MetaGPT not in refs |
+| C2 | curl review burden | The cost of verifying generated work at scale. Could be one line on the M8 chart | ✅ Stenberg 2026, curl CONTRIBUTE |
+| C3 | Cooking-assistant joke | A warm opener for M9, but it costs about 20 s | Illustrative |
+| C4 | Grid illustrations (alternative route, shared marker) | Overlaps M9 and S6. The shared marker is the clearest "no chat ≠ no channel" picture | ✅ Foerster 2016; scripted |
+| C5 | Real task-length data for the M6 clock | Replaces illustrative times with a measured trend | ⚠ METR time-horizon study not in refs |
+| C6 | Trained delegation (GPT-6 Astra) | One line in M6: models trained to delegate, not just wrapped in orchestration | ✅ OpenAI docs |
+| C7 | IMO gold (DeepMind / OpenAI) | An alternative DeepMind card for M8 | ⚠ not in refs |
+| C8 | Erdős chart and per-lab cards (was M8's second frame) | Dropped from the storyboard; M8 now carries the examples through real architectures | ✅ Erdős wiki, Sothanaphan 2026 |
+| C9 | Cursor's failed flat coordination: with shared-file locks, 20 agents slowed to the throughput of 2–3, and agents avoided hard tasks; a planner/worker/judge hierarchy fixed it | A strong one-liner for M7 or M8 on why coordination is hard | ✅ Cursor 2026 |
+
+## WON'T (this talk)
+
+- MAKER (a million-step puzzle with zero errors): a neat callback to the reliability maths, but not worth the time.
+
+- Separate slides for each training method; S1 is a strip, not a lecture.
+- Pluribus, CICERO and the game-AI history: keep them for questions.
+- Thermal or other exotic covert channels.
+- Growth-rate or "exponential" claims from the Erdős chart.
+- The model's self-reported confidence presented as accuracy. Label MVP numbers as illustrative.
+- Exploit payloads or other operational detail from the incident.
+- Recommending RL on thoughts or inter-agent messages (S6 raises it only as a risk or open question).
+- Forecasts of recursive self-improvement timelines.
+
+## Cut line if questions are inside the 15 minutes
+
+If the talk must be about 10 minutes, the musts need to lose about 2:00:
+- drop M5 (×1000) and fold its point into one sentence in M4 (−35)
+- drop M10 (DAN) and keep one sentence in M11 (−35)
+- shorten M8 to the chart plus one card per lab (−20)
+- shorten M7 to two examples (−20)
+
+That gives about 9:10, with room for S1 only.
+
+## Mapping from the current deck
+
+| Current slide | Goes to |
+|---|---|
+| 2 Training vs. operation | S1 strip, plus a line in M3 |
+| 3 Reliability | M2, M5 |
+| 4 Tools and verification | M4 |
+| 5 Horizontal scaling | M6 |
+| 6 Competition and cooperation | S2 |
+| 7–8 Science and Erdős chart | M8 (+ C2) |
+| 9 Appropriate use | M9 (+ C3) |
+| 10 Grids | C4 |
+| 11 DAN / Crescendo | M10 |
+| 12 Hugging Face | M11 |
+| 13 Activity between checks | M6 (clock) and M12 |
+| 14 Open questions | S3, S6, M12 |

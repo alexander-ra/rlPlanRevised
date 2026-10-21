@@ -1,0 +1,76 @@
+{
+  "source": "https://github.com/teorth/erdosproblems/wiki/AI-contributions-to-Erd%C5%91s-problems",
+  "retrieved": "2026-10-05",
+  "sourceCutoff": "2026-06-30",
+  "scope": "Section 1(a), AI standalone only. Unique problem IDs, independently deduplicated per series. Full resolutions use green outcome marker. Dates are contribution dates, NOT verification dates. Outcomes are retrospective at source cutoff. Ranges use end date. Includes incorrect, partial and unverified work in total. Selected observational record, not a benchmark, all submissions, journal approvals, or an exponential-growth estimate.",
+  "sourceSha256": "f74bb04c68431d7426f2546d7b8ae05e5c2191df7b2a1eac4d562ac5a686c988",
+  "rows": 61,
+  "growth": [
+    {
+      "month": "2025-11",
+      "recordedProblems": 1,
+      "fullResolutionProblems": 0
+    },
+    {
+      "month": "2025-12",
+      "recordedProblems": 1,
+      "fullResolutionProblems": 0
+    },
+    {
+      "month": "2026-01",
+      "recordedProblems": 16,
+      "fullResolutionProblems": 2
+    },
+    {
+      "month": "2026-02",
+      "recordedProblems": 22,
+      "fullResolutionProblems": 2
+    },
+    {
+      "month": "2026-03",
+      "recordedProblems": 25,
+      "fullResolutionProblems": 4
+    },
+    {
+      "month": "2026-04",
+      "recordedProblems": 42,
+      "fullResolutionProblems": 15
+    },
+    {
+      "month": "2026-05",
+      "recordedProblems": 46,
+      "fullResolutionProblems": 17
+    },
+    {
+      "month": "2026-06",
+      "recordedProblems": 57,
+      "fullResolutionProblems": 18
+    }
+  ],
+  "reliability": [
+    {
+      "steps": 10,
+      "p99": 90.43820750088044,
+      "p999": 99.00448802097482,
+      "p9999": 99.90004498800211
+    },
+    {
+      "steps": 100,
+      "p99": 36.60323412732292,
+      "p999": 90.47921471137089,
+      "p9999": 99.00493386913719
+    },
+    {
+      "steps": 500,
+      "p99": 0.6570483042414603,
+      "p999": 60.63789448611847,
+      "p9999": 95.12270462715809
+    },
+    {
+      "steps": 1000,
+      "p99": 0.004317124741065786,
+      "p999": 36.76954247709637,
+      "p9999": 90.48328935585562
+    }
+  ]
+}
