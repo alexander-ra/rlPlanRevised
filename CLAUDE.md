@@ -25,6 +25,7 @@ planning/
   rawSteps/                      # Full learning versions (videos, blogs, AI tags)
   cleanSteps/                    # Formal supervisor-facing versions
   discussions/                   # Change proposals, debate trail
+  notes/chapter15_ai_draft/      # AI-written chapter 15, demoted to reading notes: never cite or build on it
   email_instructions.md          # Supervisor communication guidelines
 implementation/
   step01/                        # DQN + PPO (Python/PyTorch)

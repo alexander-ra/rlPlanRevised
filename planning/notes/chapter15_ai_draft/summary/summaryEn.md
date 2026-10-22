@@ -20,8 +20,7 @@ multi-agent dynamics, coalitions, sequence models, real hand histories and the e
 adaptive agents. This chapter turns the toolbox into a research programme. For each of the three
 intended contributions it asks five questions: what already exists, what exactly is still open,
 what the thesis will do, what evidence already shows that it can be done, and what could go
-wrong. The answers become design documents, experiment specifications and a publication plan. The
-chapter is written to be read on its own.
+wrong. The answers become design documents, experiment specifications and a publication plan.
 
 Planning alone would leave the central contribution untested, so the chapter also runs two
 feasibility pilots. The first implements Ganzfried and Sandholm's safe exploitation algorithm
@@ -349,7 +348,7 @@ folder.
 | Experiment | Question | Testbeds | Stage |
 |---|---|---|---|
 | 1.1 | within-match inference, calibrated | Kuhn, Leduc, 3P Kuhn, 3P Leduc | II–III |
-| 1.2 | the same model on real hand histories | public iPoker hands (Playtech if available) | III |
+| 1.2 | the same model on real hand histories | public iPoker hands (Chapter 13) | III |
 | 2.0 | two-player baseline (RWYWE) | Kuhn, Leduc | done (Pilot 1) |
 | 2.1 | N-player bounded exploitation | 3P Kuhn (exact), 3P Leduc (budgeted) | II–III |
 | 2.2 | coalition-aware response to colluders | 3P Kuhn, 3P Leduc | III |
@@ -364,10 +363,9 @@ has little to act on.
 
 The individual study plan asks for an article at the end of each stage. The pipeline maps six papers
 onto Chapters II–IV. The first is the joint evaluation protocol of Chapter 14, with this chapter's
-RWYWE result as the case that requires match-level safety. Four reasons favour it. It is the
+RWYWE result as the case that requires match-level safety. Three reasons favour it. It is the
 yardstick every later paper uses. Its results are exact and complete, with no data-access risk. It
-carries the thesis's framing. And Chapter 13's hand-history paper gains from waiting for the
-Playtech data decision. The target is the IEEE Conference on Games 2027, full papers due
+carries the thesis's framing. The target is the IEEE Conference on Games 2027, full papers due
 1 March 2027. The AAMAS 2027 main track, with papers due 8 October 2026, is a stretch option only if
 a full draft exists by the end of September, since Chapter I is due in the same weeks. The paper
 fits in eight pages: the failure modes of existing evaluation; the protocol and its exact engine;

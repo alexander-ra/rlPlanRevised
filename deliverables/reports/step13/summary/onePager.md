@@ -15,10 +15,9 @@ lang: en
 
 **Problem.** Chapters 2–12 studied games that can be solved. This chapter reads what real players
 did: from raw hand histories, describe a player, predict their decisions, recognize them again, type
-them online, and detect collusion and bots — and measure how often each is right. Playtech data is
-not available yet, so the substitute is 2,032,655 iPoker hands from July 2009 (iPoker was Playtech's
-own network then), plus the 10,000 Pluribus hands as the one sample with a known bot. It is 2009
-data, not Playtech's current data.
+them online, and detect collusion and bots — and measure how often each is right. The data are
+2,032,655 public iPoker hands from July 2009 (the PHH dataset), plus the 10,000 Pluribus hands as
+the one sample with a known bot.
 
 **Approach.** An own replay engine with two validators (itself and pokerkit); tracker statistics
 with measured minimum samples; behavioral cloning on real decisions (6 M to train, 2 M from a later week to test); a player2vec-style
@@ -57,6 +56,6 @@ Chapter 7. The frequency gap to Pluribus (the median regular is 9.3 points off, 
 marks where Chapter 8's safe exploitation would deviate. Collusion detection stays offline here, as
 in the literature; coupling it to the agent's play is the open part of C2 and C3.
 
-**Open questions.** Do the thresholds, the embedding and the collusion null carry over to Playtech's
-current data? Can information-sharing collusion be injected and detected? Do the two bot signals
+**Open questions.** Do the thresholds, the embedding and the collusion null carry over to present-day
+hand histories? Can information-sharing collusion be injected and detected? Do the two bot signals
 hold as pre-registered detectors on data with more than one known bot?

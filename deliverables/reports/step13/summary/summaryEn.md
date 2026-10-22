@@ -26,15 +26,10 @@ reported here were measured** on reproducible runs, with three seeds wherever tr
 is involved; the result files are named in the report. Where a run contradicted what the plan
 predicted, the prediction is kept and reconciled with what happened.
 
-**The data.** The plan assumes hand histories from Playtech, which the candidate does not have
-yet. The substitute is public. The PHH dataset[^kim2024phh] contains 21.6 million anonymized
-no-limit hold'em hands from July 2009, collected from six online rooms by the hand-history vendor
-HandHQ. Its iPoker part includes **2,032,655 hands at $0.50/$1 blinds**, and these are used
-here. iPoker was Playtech's own network at that time: Playtech launched it in 2004, and its 2009
-annual report describes it as "Playtech's exclusive poker network"[^playtech2010]. So this is the
-closest public sample of play on a Playtech network, but it is 2009 data, not Playtech's current
-data, and the Playtech dataset remains the validation this chapter prepares for. The second source
-is the **10,000 released hands of Pluribus**[^brown2019], each played by the program and five
+**The data.** All data used here are public. The PHH dataset[^kim2024phh] contains 21.6 million
+anonymized no-limit hold'em hands from July 2009, collected from six online rooms by the
+hand-history vendor HandHQ. Its iPoker part includes **2,032,655 hands at $0.50/$1 blinds**, and
+these are used here. The second source is the **10,000 released hands of Pluribus**[^brown2019], each played by the program and five
 professionals. It is the one public sample in which a bot is known, which makes it the ground truth
 for bot detection.
 
@@ -375,8 +370,8 @@ action has an entropy of 0.143 nats, the highest of the nine players with enough
 0.059–0.107). An operator sees hole cards, so this signal is available to one. The paper's remark
 that Pluribus donk-bets more often than professionals is also visible (2.1 % of opportunities
 against 0.9 %), but too small to detect with. The size menu and the randomization were found by
-looking at one bot with its label known. They are hypotheses for the Playtech data, not validated
-detectors, and a bot designer who knows them could remove both.
+looking at one bot with its label known. They are hypotheses to be tested on data with more known bots,
+not validated detectors, and a bot designer who knows them could remove both.
 
 ---
 
@@ -399,8 +394,8 @@ accepted, and each has a mechanism the chapter can name.
 records. The negatives of the collusion test are presumed clean, not known to be. The bot test has
 one bot. And the gap is measured against Pluribus's frequencies, not an equilibrium.
 
-**Limitations.** (1) July 2009 on iPoker is not Playtech today: players, stakes and software have
-changed, and every threshold must be re-measured on the Playtech data. (2) The collusion is
+**Limitations.** (1) The data cover one month of one network in 2009: players, stakes and software
+have changed since, and every threshold must be re-measured before it is applied to current play. (2) The collusion is
 synthetic and covers two scripted patterns. Information sharing, the most common form, is not
 modeled and would not show in these signals. (3) The optional Decision Transformer on real data was
 not run. The iPoker outcomes are incomplete, and for the Pluribus games there is no simulator to
@@ -434,14 +429,12 @@ collusion signals inside its decisions (C1, C2), which is the coupling this chap
   dumping are found at 1 % false positives; light collusion is not. Raw help/harm counts fail on
   poker.
 - **A strong bot is not an outlier.** Unsupervised detectors rank Pluribus 10th–14th of 14. Its bet
-  sizes and its randomization separate it, and these are hypotheses for the Playtech data.
+  sizes and its randomization separate it, and these are hypotheses still to be tested on other data.
 
-<!-- Source footnotes. Verified 2026-09-24/25 (arXiv, publisher and proceedings pages, Crossref,
-     the Playtech annual-report PDF); see implementation/step13/targetedReading/summary.md. -->
+<!-- Source footnotes. Verified 2026-09-24/25 (arXiv, publisher and proceedings pages, Crossref);
+     see implementation/step13/targetedReading/summary.md. -->
 
 [^kim2024phh]: Kim, J. (2024). "Recording and Describing Poker Hands." *IEEE Conference on Games (CoG 2024)*, 1–8. DOI 10.1109/CoG60054.2024.10645611; arXiv:2312.11753 — the PHH format. The dataset is github.com/uoftcprg/phh-dataset (MIT licence; HandHQ subset of 21,605,687 no-limit hands, July 2009, six rooms, 5,996,345 of them on the iPoker Network).
-
-[^playtech2010]: Playtech Limited (2010). *Annual Report and Accounts for the year ended 31 December 2009*, pp. 1, 36–37 — "2004: Launch of iPoker network"; "Playtech's exclusive poker network, iPoker"; the network "is designed to protect licensees and players against collusion and fraud".
 
 [^brown2019]: Brown, N. & Sandholm, T. (2019). "Superhuman AI for multiplayer poker." *Science* 365(6456), 885–890. DOI 10.1126/science.aay2400 — 10,000 hands against five of 13 professionals, 100 big blinds per hand; on style: limping is "suboptimal for any player except the 'small blind' player", and Pluribus donk-bets "far more often than professional humans do".
 

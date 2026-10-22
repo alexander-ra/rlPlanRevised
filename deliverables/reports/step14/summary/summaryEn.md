@@ -18,8 +18,7 @@ vars:
 This is a ground-up chapter on how to evaluate game-playing agents that **adapt**: agents that
 watch their opponents and change their play. It builds the standard toolkit — exact
 exploitability, population rankings and variance reduction — validates every piece against an
-independent reference, and then uses it to measure what that toolkit misses. It is written to be
-read on its own. **All experimental numbers were measured** on reproducible runs on three small
+independent reference, and then uses it to measure what that toolkit misses. **All experimental numbers were measured** on reproducible runs on three small
 poker games (two-player Kuhn and Leduc, three-player Kuhn) and on Chapter 11's four-player So
 Long Sucker engine, and wherever the game allows they are *exact* rather than sampled. Where a
 run contradicted what I expected, I keep the expectation and reconcile it with what happened.
@@ -370,18 +369,13 @@ either.
 The policy-exact estimator exists only for bots. The white-box teaching attacker is a strong
 adversary but not the worst adaptive one. The adaptive agents are Chapter 7–8 baselines: the
 protocol *measures* the missing N-player loss bound; it does not provide one. So Long Sucker is
-weak evidence. Chapter 15 adds two notes. BestEq's LP leaves ties to the solver, and against an
-equilibrium-like model it can return a degenerate equilibrium (on Kuhn −0.034 against
-near-equilibrium opponents, where the blueprint earns −0.019); a tie-break toward the blueprint
-would change its small gains slightly. The teaching attacker refreshes every 50 hands, in step
-with these agents' refits; against an agent whose policy changes every hand that understates the
-attack, and Chapter 15 refreshes it every hand.
+weak evidence. The teaching attacker refreshes every 50 hands, in step with these agents' refits;
+against an agent whose policy changes every hand, that understates the attack.
 
 **Connections.** Backward: the engine absorbs Chapter 3's exploitability, Chapter 7's models and
 best responses, Chapter 8's safe responses (now as one LP), Chapter 10's spinning top, Chapter
-11's So Long Sucker and Chapter 12's LLM-extracted strategies. Forward: Chapter 15 maps the
-research programme, and this protocol is the yardstick for its experiments. For Contribution 2 it
-supplies the measurement a safe N-player agent must pass — gain against independent pairs,
+11's So Long Sucker and Chapter 12's LLM-extracted strategies. Forward: for Contribution 2 the
+protocol supplies the measurement a safe N-player agent must pass — gain against independent pairs,
 coalition value, and coalition teaching loss. The one-shot LP removes the scaling obstacle
 Chapter 8 met.
 

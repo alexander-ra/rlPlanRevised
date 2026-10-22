@@ -16,9 +16,7 @@ vars:
 # Chapter 8 — Safe Exploitation in Imperfect-Information Games
 
 This is a ground-up chapter on *safe* opponent exploitation: the problem, the mathematics, the
-family of methods, and a set of controlled experiments run on two small poker games. It is
-written to be read on its own; no prior familiarity with
-the project's code is assumed. All experimental numbers reported here were **measured** on
+family of methods, and a set of controlled experiments run on two small poker games. All experimental numbers reported here were **measured** on
 reproducible runs of the two testbeds (Kuhn Poker and Leduc Hold'em) and are bounded, wherever
 possible, by *exact* analytical references rather than simulated ones. Where a run contradicted
 what theory led me to expect, I say so and reconcile it — those gaps are the most instructive
@@ -78,8 +76,8 @@ optimization problem** with one part swapped out. In words:
 > maximize the hero's expected value against the opponent model, **subject to** a safety floor on
 > the hero's worst-case value.
 
-To make that a *computable* program, represent the hero's strategy in **sequence form**: instead
-of per-situation action probabilities, use the **realization plan** $x$, which assigns a weight
+To make that a *computable* program, represent the hero's strategy in **sequence form**, introduced
+in Section 7.5 for the opponent's strategy: the **realization plan** $x$ assigns a weight
 to each of the hero's action *sequences* (root-to-here chains of their own choices), subject to
 the linear **treeplex** constraints (the empty sequence has weight 1; at each information set the
 children's weights sum to the parent's; all weights are non-negative). The reason to pay this
@@ -143,12 +141,8 @@ the same LP each hand with the floor lowered to $v^* - k_t$, where $k_t$ is the 
 expectation so far, so the strategy moves past equilibrium exactly as far as the opponent's
 mistakes have paid for; BEFFE plays best equilibrium until the banked gifts cover full
 exploitation for the rest of the match. Both are provably safe over the repeated game and can
-exploit more than best equilibrium. Chapter 15 implements RWYWE, the natural two-player baseline
-for Contribution #2, and measures it under Chapter 14's protocol: it gains +0.062 (Kuhn) and
-+0.113 (Leduc) chips per hand over the blueprint, against +0.020 and +0.047 for best equilibrium,
-and none of its 120 matches under teaching attacks ends below the game value. That is only
-14–30 % of the gain of RNR at *p* = 0.5, because few gifts are provable when the opponent's cards
-are seen only at showdown.
+exploit more than best equilibrium; implementing and testing them is future work (RWYWE is the
+natural two-player baseline for Contribution #2).
 
 **(b) Prime-safe / ε-safety (Jeary & Turrini 2023): correct for an imperfect baseline.** Every
 real baseline is an **ε-equilibrium** (from abstraction and finite compute — the subject of
@@ -409,8 +403,7 @@ theirs.[^liu2022][^search2024][^milec2025]
 
 ## At Scale — Kuhn works; Leduc breaks globally, holds locally
 
-Leduc Hold'em adds a second betting round and a shared community card — roughly two orders of
-magnitude more situations than Kuhn, still exactly solvable, but large enough to stress the
+Leduc Hold'em (Section 3.4) is still exactly solvable, but large enough to stress the
 methods. The Leduc run used an iteration-capped configuration (a 40-iteration budget on the
 constraint-generation loop, tolerance $10^{-2}$, and the subgame set to the King-flop), recording
 for each cell whether the solve **converged** or hit the cap. Game value $v^* = -0.086$.
@@ -526,8 +519,8 @@ between — an **exact one-shot dual LP** for the worst-case constraint, or a co
 **local / subgame** safety (SES, OX-Search) as the real-time mechanism; Chapter 14 took the
 first path (full Leduc in 0.02–0.04 s). The first addition is Ganzfried and Sandholm's own
 gift-risking algorithm (RWYWE, § 8.3), the stronger two-player baseline for Contribution #2; it
-needs only the existing LP with a floor that moves with the banked gifts, and Chapter 15
-implements and measures it. Either way, the safety floor is what turns
+needs only the existing LP with a floor that moves with the banked gifts, and implementing it
+is future work. Either way, the safety floor is what turns
 Chapter 7's fragile sensor into a deployable adaptive agent.
 
 <!-- Source footnotes. Definitions may sit anywhere at top level; keeping them

@@ -18,7 +18,7 @@ vars:
 This is a ground-up chapter on training and evaluating **populations** of agents: the evolutionary
 mathematics that says whether a population can settle at all, the transitive/cyclic structure that
 decides whether self-training converges or spins, and a small AlphaStar-style **league** built on a
-solvable poker game. It is written to be read on its own.
+solvable poker game.
 **All experimental numbers reported here were measured** on reproducible runs and, wherever
 possible, are bounded by *exact* references (analytic ESS/Nash for the matrix games; Chapter 7's exact
 best-response exploitability for Leduc). Where a run contradicted what theory led me to expect, I

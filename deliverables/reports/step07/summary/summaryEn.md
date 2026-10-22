@@ -16,9 +16,7 @@ vars:
 # Chapter 7 — Opponent Modeling in Imperfect-Information Games
 
 This is a ground-up chapter on opponent modeling: the problem, the mathematics, the family of
-methods, and a set of controlled experiments run on two small poker games. It is written to be
-read on its own; no prior familiarity with
-the project's code is assumed. All experimental numbers reported here were measured on
+methods, and a set of controlled experiments run on two small poker games. All experimental numbers reported here were measured on
 reproducible runs of the two testbeds (Kuhn Poker and Leduc Hold'em) and are bounded, wherever
 possible, by *exact* analytical references rather than simulated ones.
 
@@ -57,8 +55,7 @@ exploitation-versus-safety tradeoff that runs through everything below.
 
 ### How much is at stake — measured on Kuhn Poker
 
-Kuhn Poker is the smallest non-trivial poker game: a three-card deck (Jack, Queen, King), one
-card each, a single betting round. It is small enough to solve *exactly*, which lets us compute
+Kuhn Poker (Section 2.8) is small enough to solve *exactly*, which lets us compute
 the value of modeling rather than guess at it. For each of several fixed opponent styles we
 computed three exact quantities:
 
@@ -418,8 +415,7 @@ beats uniform play by the predicted margins (+0.500 on Kuhn, +2.087 on Leduc).
 within 0.966 — but it is not one of the recurring types defined above, so it is omitted here for
 consistency.)
 
-**Leduc — the model class starts to matter.** Leduc Hold'em adds a second betting round and a
-shared community card, roughly two orders of magnitude more situations than Kuhn — still exactly
+**Leduc — the model class starts to matter.** Leduc Hold'em (Section 3.4) is still exactly
 solvable, but large enough to separate the models.
 
 | Opponent | ceiling | type-based | continuous |

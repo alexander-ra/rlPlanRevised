@@ -1130,7 +1130,7 @@
  },
  {
   "en": "Build a finer-grained subgame\n(lossless on current round;\n~500 buckets/round later;\n1–6 bet sizes)",
-  "bg": "Изграждане на по-финозърнеста\nподигра (беззагубен за текущия\nкръг; ~500 клъстера/кръг по-късно;\n1–6 размера на залога)",
+  "bg": "Изграждане на по-детайлна\nподигра (беззагубен за текущия\nкръг; ~500 клъстера/кръг по-късно;\n1–6 размера на залога)",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -6462,7 +6462,7 @@
  },
  {
   "en": "Reach round 3 (or a small-\nenough subtree): build a finer\nsubgame, NO card abstraction",
-  "bg": "Обхват кръг 3 (или достатъчно малко\nпод-дърво): изграждане на по-фина\nпод-игра, БЕЗ абстракция на карти",
+  "bg": "Обхват кръг 3 (или достатъчно малко\nпод-дърво): изграждане на по-детайлна\nпод-игра, БЕЗ абстракция на карти",
   "source": "model",
   "glossary_bg": null,
   "occurrences": [
@@ -9862,7 +9862,7 @@
  },
  {
   "en": "Reach round 3 (or a\nsmall-enough subtree):\nbuild a finer subgame,\nNO card abstraction",
-  "bg": "Достигане на кръг 3\n(или на достатъчно\nмалко поддърво):\nпо-фина под-игра БЕЗ\nабстракция на картите",
+  "bg": "Достигане на кръг 3\n(или на достатъчно\nмалко поддърво):\nпо-детайлна под-игра БЕЗ\nабстракция на картите",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [
@@ -9979,7 +9979,7 @@
  },
  {
   "en": "Build a finer-grained\nsubgame (lossless on\ncurrent round; ~500\nbuckets/round later;\n1–6 bet sizes)",
-  "bg": "По-фина под-игра\n(без загуби в текущия\nкръг; ~500 клъстера/\nкръг след това;\n1–6 размера)",
+  "bg": "По-детайлна под-игра\n(без загуби в текущия\nкръг; ~500 клъстера/\nкръг след това;\n1–6 размера)",
   "source": "final-review-2026-09",
   "glossary_bg": null,
   "occurrences": [

@@ -21,6 +21,8 @@
 # type and language, with a PDF outline bookmark per step:
 #   deliverables/bundles/allReports_{en,bg}.pdf
 #   deliverables/bundles/allSummaries_{en,bg}.pdf
+#   deliverables/bundles/allSummariesShort_{en,bg}.pdf   (--type summaryshort --bundle-only;
+#                                                          from summary/summaryShort{En,Bg}.md)
 #   deliverables/bundles/allOnePagers_{en,bg}.pdf
 #
 # REQUIREMENTS:
@@ -502,6 +504,15 @@ BUNDLE_TYPES = {
         lambda step, lang: REPORTS_DIR / step / "summary" /
                            ("onePager.md" if lang == "en" else "onePagerBg.md"),
     ),
+    # Condensed summaries (deliverables/finalReview/CONDENSE_PLAN.md). Bundle
+    # only: there are no per-step PDFs, and the full summaries stay the source
+    # of the per-step summary PDFs and of allSummaries.
+    "summaryshort": (
+        lambda step, lang: SUMMARIES_DIR / f"{step}_short_{lang}.pdf",
+        "allSummariesShort",
+        lambda step, lang: REPORTS_DIR / step / "summary" /
+                           ("summaryShortEn.md" if lang == "en" else "summaryShortBg.md"),
+    ),
 }
 
 BUNDLE_TITLES = {
@@ -511,6 +522,8 @@ BUNDLE_TITLES = {
     ("summary", "bg"):  "Обобщения по глави",
     ("onepager", "en"): "All Chapter One-Pagers",
     ("onepager", "bg"): "Резюмета по глави",
+    ("summaryshort", "en"): "All Chapter Summaries (Condensed)",
+    ("summaryshort", "bg"): "Обобщения по глави (съкратен вариант)",
 }
 CONTENTS_HEADING = {"en": "Contents", "bg": "Съдържание"}
 PREFACE_HEADING = {"en": "Preface", "bg": "Предговор"}
@@ -967,7 +980,7 @@ def assemble_bundle_markdown(build_type: str, lang: str) -> tuple[str, list[str]
     ]
 
     body: list[str] = []
-    if build_type == "summary":
+    if build_type in ("summary", "summaryshort"):
         pre = preface_markdown(lang)
         if pre:
             body += [pre, "", r"\newpage", ""]
@@ -1010,7 +1023,7 @@ def build_bundle_single(build_type: str, lang: str, engine: str,
     md_file = BUNDLES_DIR / f".{stem}_{lang}.md"
     md_file.write_text(markdown, encoding="utf-8")
 
-    opts = {"geometry": "2.0cm"} if build_type == "summary" else {}
+    opts = {"geometry": "2.0cm"} if build_type in ("summary", "summaryshort") else {}
     ok = run_pandoc(
         md_file, output_file, lang, engine, pandoc_bin,
         toc=True, number_sections=True,
@@ -1184,7 +1197,7 @@ def main():
     )
     parser.add_argument(
         "--type",
-        choices=["report", "summary", "onepager", "all", "both"],
+        choices=["report", "summary", "onepager", "summaryshort", "all", "both"],
         default="all",
         help="Which document type(s) to build (default: all; 'both' = report+summary)",
     )
@@ -1228,7 +1241,7 @@ def main():
         }
         for step in args.step:
             print(f"\n[Step {step}]")
-            for build_type in types:
+            for build_type in (t for t in types if t in builders):
                 for lang in langs:
                     results.append(builders[build_type](step, lang, engine, pandoc_bin))
 
