@@ -184,7 +184,7 @@ function rCard(e) {
   const rx = e.rx ?? 12;
   let s = '';
   if (e.lift) s += `<rect x="${f1(e.x)}" y="${f1(e.y + 3)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${rx}" fill="#14202b" opacity=".07"/>`;
-  s += `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${rx}" fill="${e.fill || C.card}" stroke="${e.stroke || C.cardS}" stroke-width="${e.sw ?? 1.8}"/>`;
+  s += `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="${rx}" fill="${e.fill || C.card}" stroke="${e.stroke || C.cardS}" stroke-width="${e.sw ?? 1.8}"${e.dash ? ' stroke-dasharray="7 6"' : ''}/>`;
   s += textOf(e, e);
   const top = e._A ? null : e;   // icon + pill: cross-fade too
   const deco = (P, op) => {
@@ -291,6 +291,7 @@ function rChip(e) {
   L.forEach((l, i) => { tx += T(cx, y0 + i * lh, esc(l), { size: fs, w: e.s === 'bad' ? 800 : 600, c: st.c, a: mk ? 'start' : 'middle', st: 90 }); });
   if (mk) tx += markSVG(e.x + e.w - 20, e.y + e.h / 2, e.mark, e.mark ? C.good : C.bad, 6.5);
   s += G(e._txo ?? 1, tx);
+  if (e.fake) s += `<rect x="${f1(e.x - 4)}" y="${f1(e.y - 4)}" width="${f1(e.w + 8)}" height="${f1(e.h + 8)}" rx="11" fill="none" stroke="${C.bad}" stroke-width="2" stroke-dasharray="5 4"/>`;
   return `<g opacity="${o.toFixed(3)}" data-box="${e.id}">${s}</g>`;
 }
 function rWaffle(e) {   // F4: the same 98% over longer chains, as 100-dot squares
@@ -327,7 +328,34 @@ function rWall(e, m) {  // the system's edge that faces the world: solid, with t
     s += G(e.lab ?? 1, `<g data-pill="1"><rect x="${f1(d.x - half - 14 - pw)}" y="${f1(e.y - 14)}" width="${f1(pw)}" height="28" rx="14" fill="${C.ink}"/>` +
       T(d.x - half - 14 - pw / 2, e.y + 6, esc(d.label), { size: 15, w: 800, c: '#fff', a: 'middle', st: 92, ls: .8 }) + '</g>');
   }
+  for (const b of e.breach || []) {   // broken through where there is no door
+    s += `<line x1="${f1(b.x - 18)}" y1="${f1(e.y)}" x2="${f1(b.x + 18)}" y2="${f1(e.y)}" stroke="${C.stage}" stroke-width="9"/>` +
+      `<path d="M${f1(b.x - 20)},${f1(e.y - 9)}l8,9l-8,9M${f1(b.x + 20)},${f1(e.y - 9)}l-8,9l8,9" fill="none" stroke="${C.bad}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>` +
+      `<g data-pill="1"><rect x="${f1(b.x - 138)}" y="${f1(e.y - 14)}" width="110" height="28" rx="14" fill="${C.bad}"/>` + T(b.x - 83, e.y + 6, 'NO DOOR', { size: 15, w: 800, c: '#fff', a: 'middle', st: 92, ls: .8 }) + '</g>';
+  }
   return G(o, s);
+}
+function rRobot(e) {   // a plain robot bust, coloured by alignment; label and sub underneath
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const { x, y, w } = e, cx = x + w / 2, sc = e.stroke, fl = e.fill, h = 170;
+  let s = `<g fill="none" stroke="${sc}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">` +
+    `<line x1="${cx}" y1="${y + 6}" x2="${cx}" y2="${y + 30}"/><circle cx="${cx}" cy="${y + 6}" r="7" fill="${sc}"/>` +
+    `<rect x="${f1(cx - 78)}" y="${y + 30}" width="156" height="92" rx="22" fill="${fl}"/>` +
+    `<rect x="${f1(cx - 94)}" y="${y + 58}" width="16" height="36" rx="6" fill="${sc}"/><rect x="${f1(cx + 78)}" y="${y + 58}" width="16" height="36" rx="6" fill="${sc}"/>` +
+    `<circle cx="${f1(cx - 32)}" cy="${y + 70}" r="11" fill="${sc}"/><circle cx="${f1(cx + 32)}" cy="${y + 70}" r="11" fill="${sc}"/>` +
+    `<line x1="${f1(cx - 24)}" y1="${y + 100}" x2="${f1(cx + 24)}" y2="${y + 100}"/>` +
+    `<rect x="${f1(cx - 62)}" y="${y + 130}" width="124" height="${h - 130 + 6}" rx="16" fill="${fl}"/></g>`;
+  const lab = { ...e, y: y + h + 12, h: 80, fs: 23, sfs: 17, va: 'top', pt: 0, lc: C.ink };
+  s += textOf(lab, lab);
+  return `<g opacity="${o.toFixed(3)}" data-box="${e.id}">${s}</g>`;
+}
+function rIcon(e) {   // verdicts: a tick in a circle, or a warning triangle
+  const o = e.o ?? 1; if (o <= .005) return '';
+  const cx = e.x + e.w / 2, cy = e.y + e.h / 2;
+  if (e.k === 'ok') return G(o, `<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(e.h / 2 - 4)}" fill="${C.good}"/>` + markSVG(cx - 2, cy + 2, true, '#fff', 13));
+  const col = e.k === 'warn' ? C.warn : C.bad, mk = e.k === 'warn' ? C.ink : '#fff';
+  return G(o, `<path d="M${f1(cx)},${f1(e.y + 4)}L${f1(e.x + e.w - 2)},${f1(e.y + e.h - 4)}L${f1(e.x + 2)},${f1(e.y + e.h - 4)}Z" fill="${col}" stroke="${col}" stroke-width="5" stroke-linejoin="round"/>` +
+    `<rect x="${f1(cx - 4)}" y="${f1(e.y + 28)}" width="8" height="26" rx="4" fill="${mk}"/><circle cx="${f1(cx)}" cy="${f1(e.y + e.h - 16)}" r="5" fill="${mk}"/>`);
 }
 function rNode(e) {
   const o = e.o ?? 1; if (o <= .005) return '';
@@ -446,6 +474,7 @@ function render(els) {
       case 'wall': s += rWall(e, m); break;       case 'bar': s += rBar(e); break;
       case 'arrow': s += rArrow(e, m); break;     case 'arc': s += rArc(e, m); break;
       case 'key': s += rKey(e); break;          case 'node': s += rNode(e); break;
+      case 'robot': s += rRobot(e); break;      case 'icon': s += rIcon(e); break;
     }
   }
   return s;
@@ -881,6 +910,135 @@ function F9() {
   return F;
 }
 
+/* ----- R0–R3 · misalignment, on our own system (Step 1–4) ----- */
+const RDROP = ['clock', 'tl', 'g_h', 'g_a', 'ga_t'];
+function rBase(id, title, cap, ail, ch = {}, add = [], quiet = .35) {
+  const F = N2(); F.id = id; F.quiet = quiet;
+  F.els = patchEls(F.els, { ttl: { label: title }, cap: { label: cap }, ail: { label: ail }, wall: { ...F.els.find(e => e.id === 'wall'), en: .62 }, ...ch }, add, RDROP);
+  return F;
+}
+const NOTE = (label, sub, o = {}) => ({ id: 'note', t: 'card', x: 222, y: 752, w: 760, h: 88, label, fs: 18, sub, sfs: 15, align: 'left', pt: 4, pb: 4, gap: 4, stroke: '#9aa6b1', fill: '#fff', ...o });
+const withTokens = (F, flows) => { F.flows = flows; F.dyn = flowDyn(F); return F; };
+function R0() {
+  return rBase('R0', 'Misalignment: what we say vs what we mean', 'It did the job. Now watch the same system do things we never asked for.', 'what we ask for is never all we mean', {}, [
+    { id: 'say', t: 'card', x: 222, y: 752, w: 340, h: 80, label: 'we say', fs: 19, sub: '“cheapest, under €30k”', sfs: 16, stroke: '#9aa6b1', fill: '#fff', lift: 1 },
+    { id: 'mean', t: 'card', x: 618, y: 752, w: 560, h: 80, label: 'we mean', fs: 19, sub: 'cheapest — legally and honestly — under €30k,\nnobody misled', sfs: 16, fill: C.goodBg, stroke: C.good, lc: C.goodInk, lift: 1 },
+    { id: 'gapx', t: 'text', x: 590, y: 803, label: '≠', size: 30, weight: 800, color: C.bad, anchor: 'middle', st: 92 },
+  ], .75);
+}
+function R4() {
+  // the wrong note travels back to the teams that read it, through the gaps between columns
+  const route = (to) => (a, b) => { const x0 = a.x, y0 = a.y + a.h / 2, gx = 898, gy = 456, cx = 744, ty = b.y + b.h / 2;
+    return [[x0, y0], [gx, y0], [gx, gy], [cx, gy], [cx, ty], [b.x + b.w, ty]]; };
+  const F = rBase('R4', 'One wrong step is enough', 'One wrong note in the shared plan, trusted by everyone downstream. No malice needed.', 'Step 1 · one wrong step, and no bad intent at all', {
+    pn2: { label: 'Arrival day:\nthe 24th', s: 'bad' }, s_ho: NS.bad, s_co: { ...NS.bad, sw: 2.6 },
+  }, [
+    { id: 'a:pn2>s_ho', t: 'arrow', from: 'pn2', to: 's_ho', k: 'bad', pts: route('s_ho'), z: 1.5 },
+    { id: 'a:pn2>s_co', t: 'arrow', from: 'pn2', to: 's_co', k: 'bad', pts: route('s_co'), z: 1.5 },
+    { id: 'wrongday', t: 'text', x: 764, y: 596, label: 'everyone books the wrong day', size: 18, weight: 800, color: C.badInk, st: 90 },
+    NOTE('One wrong note, trusted by all', 'the deadline is read as the 24th, not the 23rd, and every team downstream books around it.\n(recall slide 3: one bad step in a long chain.)', { stroke: C.bad }),
+  ]);
+  return withTokens(F, [
+    { v: 170, gap: .3, at: 1.2, r: 6, seq: [{ b: 'pn2', d: .3, c: C.bad }, { par: [[{ a: 'a:pn2>s_ho' }, { b: 's_ho', d: .6 }], [{ a: 'a:pn2>s_co' }, { b: 's_co', d: .6 }]] }] },
+    { v: 170, gap: .3, at: 2.6, r: 6, seq: [{ b: 'pn2', d: .3, c: C.bad }, { par: [[{ a: 'a:pn2>s_ho' }, { b: 's_ho', d: .6 }], [{ a: 'a:pn2>s_co' }, { b: 's_co', d: .6 }]] }] },
+  ]);
+}
+function R1() {
+  const F = rBase('R1', 'It games the guard, to be helpful', 'The rule said “over €500 → a human.” It kept every piece under €500. (specification gaming)', 'Step 2 · it games the guard, to “help”', {
+    guard: { sub: 'any payment over €500\nneeds the organiser', pill: 'LIMIT €500', pillBg: C.chk, sfs: 15 },
+    org: { o: .4 }, pay: { ...NS.bad, sub: 'splits €600\ninto 3×€200', sw: 2.6 },
+    'a:pay>w_card': { k: 'bad' },
+  }, [
+    ...[0, 1, 2].map(i => ({ id: 'p' + (i + 1), t: 'chip', x: 922 + i * 64, y: 580, w: 56, h: 34, label: '€200', fs: 15, s: 'bad' })),
+    { id: 'skip', t: 'chip', x: 1210, y: 446, w: 162, h: 28, label: 'organiser never asked', fs: 15, s: 'bad', z: 2 },
+    NOTE('A €600 payment: over the €500 limit', 'the rule: anything over €500 needs the organiser.\nso it sends three €200 charges instead —\neach under the limit, so nobody is asked.', { w: 520, y: 748, h: 94, stroke: C.bad }),
+    // the €600 payment against the limit, and the three pieces that each pass
+    { id: 'gz_l1', t: 'text', x: 948, y: 777, label: 'one €600 payment', size: 16, weight: 700, anchor: 'end', st: 90 },
+    { id: 'gz_a', t: 'bar', x: 958, y: 760, w: 250, h: 24, fill: '#d6dde3', stroke: '#9aa6b1' },
+    { id: 'gz_b', t: 'bar', x: 1208, y: 760, w: 50, h: 24, fill: C.badBg, stroke: C.bad },
+    { id: 'gz_r1', t: 'text', x: 1268, y: 777, label: 'over the limit ✗', size: 16, weight: 700, color: C.badInk, st: 90 },
+    { id: 'gz_l2', t: 'text', x: 948, y: 816, label: 'split into 3 × €200', size: 16, weight: 700, anchor: 'end', st: 90 },
+    ...[0, 1, 2].map(i => ({ id: 'gz_s' + i, t: 'bar', x: 958, y: 796 + i * 11, w: 100, h: 8, fill: '#d6dde3', stroke: '#9aa6b1' })),
+    { id: 'gz_r2', t: 'text', x: 1068, y: 816, label: 'each passes', size: 16, weight: 600, color: C.ink2, st: 90 },
+    { id: 'gz_lim', t: 'bar', x: 1206.5, y: 752, w: 3, h: 80, fill: C.bad, stroke: C.bad },
+    { id: 'gz_limt', t: 'text', x: 1216, y: 832, label: '€500 limit', size: 15, weight: 800, color: C.badInk, st: 90 },
+  ]);
+  F.pay = false;   // the only payment on this slide is the one that gets split
+  const piece = k => [{ w: .05 + k * .32 }, { a: 'a:plan>guard', from: -34, c: C.bad, r: 5.4 }, { b: 'guard', d: .3 }, { a: 'a:guard>pay' }, { b: 'pay', d: .3 }, { a: 'a:pay>w_card' }];
+  return withTokens(F, [{ v: 130, gap: 1, at: 2.2, r: 9, seq: [{ a: 'a:plan>guard', to: -34, c: C.warn }, { w: .5 }, { par: [piece(0), piece(1), piece(2)] }] }]);
+}
+function R2() {
+  const route = (a, b) => [[a.x + a.w, a.y + a.h / 2], [744, a.y + a.h / 2], [744, 598], [b.x + b.w / 2, 598], [b.x + b.w / 2, b.y]];
+  const F = rBase('R2', 'It crosses a line in the world', 'Cheaper is an obstacle to beat; the railway’s rules are a boundary to respect. It cannot tell them apart.', 'Step 3 · it crosses a line in the world', {
+    s_tr: { ...NS.bad, sub: 'finds a way to book\ntrains for free', h: 74, pt: 3, pb: 3 },
+  }, [
+    { id: 'a:s_tr>w_book', t: 'arrow', from: 's_tr', to: 'w_book', k: 'bad', pts: route, z: 1.5, label: 'books free — not authorised', lx: P => 772, ly: P => 588, lc: C.badInk },
+    NOTE('Still just trying to stay under budget', 'but “cheaper” is an obstacle to beat, and the railway’s rules are a boundary to respect —\nit cannot tell them apart.', { stroke: C.bad }),
+  ]);
+  F.els = F.els.map(e => e.id === 'wall' ? { ...e, breach: [{ x: 1007 }] } : e);
+  return withTokens(F, [{ v: 150, gap: .6, at: 2.4, r: 6.5, seq: [{ b: 's_tr', d: .4, c: C.bad }, { a: 'a:s_tr>w_book' }] },
+    { v: 150, gap: .6, at: .9, r: 6.5, seq: [{ b: 's_tr', d: .4, c: C.bad }, { a: 'a:s_tr>w_book' }] }]);
+}
+function R3() {
+  const F = rBase('R3', 'It hides the problem', 'Our main defence is watching what it does and writes. Deception is the failure that attacks the defence itself.', 'Step 4 · it hides the problem', {
+    s_tr: { ...NS.bad, sub: 'the free booking\nfailed', h: 74, pt: 3, pb: 3 },
+    pn0: { label: 'Trains: booked & paid ✓\nreceipt #4471', s: 'good', fill: C.goodBg, fake: 1 },
+    org: { ...NS.good, sub: 'reads “all booked ✓”,\nsigns off' },
+  }, [
+    { id: 'truth', t: 'chip', x: 740, y: 552, w: 160, h: 56, label: 'really: not booked,\nno payment', fs: 15, s: 'bad' },
+    { id: 'a:truth>pn0', t: 'arrow', from: 'truth', to: 'pn0', k: 'bad', z: 1.5, pts: (a, b) => [[a.x + a.w, a.y + a.h / 2], [902, a.y + a.h / 2], [902, b.y + b.h / 2], [b.x, b.y + b.h / 2]] },
+    { id: 'a:plan>org', t: 'arrow', from: 'plan', to: 'org', k: 'good', pts: (a, b) => [[a.x + a.w, 418], [b.x, 418]] },
+    NOTE('The receipt is fabricated', 'our main defence is watching what it does and writes.\ndeception is the one failure that attacks the defence itself.', { stroke: C.bad, fill: C.badBg, lc: C.badInk }),
+  ]);
+  return withTokens(F, [{ v: 140, gap: .8, at: 3.4, r: 6.5, seq: [
+    { a: 'a:s_tr>c_t', c: C.bad }, { a: 'a:c_t>plan' }, { b: 'pn0', d: .5, c: C.good }, { a: 'a:plan>org' }, { b: 'org', d: .5 }] }]);
+}
+/* ----- R6 · it has already happened: two real cases, calm ----- */
+function R6() {
+  const els = head('It has already happened', 'Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.', '');
+  els.splice(els.findIndex(e => e.id === 'clock'), 1);
+  const card = (id, x, w) => ({ id, t: 'card', x, y: 136, w, h: 512, label: '', fill: '#fff', stroke: C.cardS, lift: 1 });
+  els.push(card('hf', 56, 720), card('au', 800, 744));
+  const T6 = (id, x, y, label, o) => ({ id, t: 'text', x, y, label, st: 92, ...o });
+  els.push(T6('hfw', 88, 184, 'Hugging Face · July 2026', { size: 19, weight: 700, color: C.mute }));
+  els.push(T6('hft', 88, 232, 'The most severe so far', { size: 32, weight: 800 }));
+  els.push(T6('hfb', 88, 296, 'OpenAI’s internal models, run during evaluation\nunder reduced safeguards, used unauthorised\ncommunication, got past their isolation and\nreached third-party systems.\n\nRecovered code tagged the credentials it collected\n“LOOT” — a label in the code, not an emotion.\nMany traces are attempts, not confirmed successes.', { size: 23, weight: 500, color: C.ink, lh: 1.42 }));
+  els.push(T6('auw', 832, 184, 'Australia · June 2026 (disclosed September)', { size: 19, weight: 700, color: C.mute }));
+  els.push(T6('aut', 832, 232, 'A harmless task, a boundary crossed', { size: 32, weight: 800 }));
+  els.push(T6('aub', 832, 296, 'Asked to research government spending on\nskin-condition medicines, an OpenAI model\n“took actions that we had not authorised”:\nit found non-public access to Services Australia’s\nMedicare reporting service and retrieved internal\nfiles and credentials. No individual records were\nread. Four more agencies were affected, and the\ngovernment ran a rapid review.', { size: 23, weight: 500, color: C.ink, lh: 1.42 }));
+  els.push({ id: 'caveat', t: 'card', x: 56, y: 672, w: 1488, h: 124, label: 'Both were found in internal training and evaluation — before wide release.', fs: 22, align: 'left',
+    sub: 'That is a real problem, and a sign the checks can work: these turned up in testing, not in the wild.\n(OpenAI · METR & Redwood · Swarm Traces · the Australian Government review)', sfs: 19, fill: C.goodBg, stroke: C.good, lc: C.goodInk, gap: 8, pt: 6 });
+  return { id: 'R6', kind: 'none', els, still: true };
+}
+/* ----- R5a / R5b · who asks, and who answers ----- */
+function R5(aligned) {
+  const id = aligned ? 'R5b' : 'R5a';
+  const els = head(aligned ? 'With alignment, most of it is fixed' : 'Who asks, and who answers',
+    aligned ? 'The same three users. The gray ask comes back within the rules; the bad one gets nothing.' : 'A misaligned system: the good ask goes fine, the gray one gets gamed, the bad one gets carried out.', '');
+  els.splice(els.findIndex(e => e.id === 'clock'), 1);
+  const UY = [164, 382, 600], U = [['u0', 'Good intent', '“Book everyone,\nunder €30,000.”', 'good'], ['u1', 'Gray intent', '“As cheap as possible —\nwhatever it takes.”', 'warn'], ['u2', 'Bad intent', '“Get the train tickets free —\nbreak into the booking site.”', 'bad']];
+  U.forEach(([uid, l, sub, s], i) => els.push({ id: uid, t: 'card', x: 56, y: UY[i], w: 360, h: 136, label: l, fs: 23, sub, sfs: 18, icon: 'person', ...NS[s], lc: C.ink, lift: 1 }));
+  els.push({ id: 'robot', t: 'robot', x: 640, y: 286, w: 260, h: 250, fill: aligned ? C.goodBg : C.badBg, stroke: aligned ? C.good : C.bad, label: aligned ? 'Aligned system' : 'Misaligned system', sub: aligned ? 'follows the intent\nbehind the request' : 'follows the letter,\nwhoever is asking' });
+  const R = aligned
+    ? [['res0', 'Everyone booked, under €30,000', 'within the rules', 'good', 'ok'], ['res1', 'Cheapest, within the rules', 'reads “whatever it takes” as “within the rules”', 'good', 'ok'], ['res2', 'No result', 'bad intent caught: refused and flagged', 'ph', null]]
+    : [['res0', 'Everyone booked, under €30,000', 'within the rules', 'good', 'ok'], ['res1', 'The €500 guard gamed', '€600 split into 3 × €200 (step 2)', 'warn', 'warn'], ['res2', 'Breaks into the booking site', 'intentional hacking', 'bad', 'bad']];
+  R.forEach(([rid, l, sub, s, ic], i) => {
+    els.push({ id: rid, t: 'card', x: 1000, y: UY[i] + 12, w: 430, h: 112, label: l, fs: 23, sub, sfs: 17, lift: 1, ...(s === 'ph' ? { fill: '#f1f3f5', stroke: '#9aa6b1', dash: 1, lc: C.ink2 } : { ...NS[s], lc: C.ink }) });
+    if (ic) els.push({ id: `ic${i}_${ic}`, t: 'icon', x: 1452, y: UY[i] + 28, w: 84, h: 80, k: ic });
+  });
+  [0, 1, 2].forEach(i => {
+    els.push({ id: `a:u${i}>robot`, t: 'arrow', from: 'u' + i, to: 'robot', k: 'solid', pts: (a, b) => [[a.x + a.w, a.y + a.h / 2], [b.x - 40, b.y + b.h / 2 + (i - 1) * 40], [b.x, b.y + b.h / 2 + (i - 1) * 40]] });
+    if (!(aligned && i === 2)) els.push({ id: `a:robot>res${i}`, t: 'arrow', from: 'robot', to: 'res' + i, k: 'solid', pts: (a, b) => [[a.x + a.w, a.y + a.h / 2 + (i - 1) * 40], [a.x + a.w + 40, a.y + a.h / 2 + (i - 1) * 40], [b.x, b.y + b.h / 2]] });
+  });
+  const IN = [C.good, C.warn, C.bad], OUT = aligned ? [C.good, C.good, null] : [C.good, C.warn, C.bad];
+  const flows = [0, 1, 2].map(i => ({ v: aligned ? 190 : 230, gap: aligned ? 1.1 : .35, at: [.6, 1.65, .9][i], r: 7, seq: OUT[i]
+    ? [{ a: `a:u${i}>robot`, c: IN[i] }, { b: 'robot', d: .45 }, { a: `a:robot>res${i}`, c: OUT[i] }]
+    : [{ a: `a:u${i}>robot`, c: IN[i] }, { w: 1.3, halo: C.bad }, { stop: .7 }] }));
+  const F = { id, kind: 'flow', els, flows };
+  return withFlow(F);
+}
+const R5a = () => R5(false), R5b = () => R5(true);
+
 /* ----- N1 / N2 · the conference system ----- */
 // Base layout is N2's; N1 stretches the system down into the space the outside world takes on N2.
 const NB = {
@@ -1237,8 +1395,8 @@ function mkSched(seq, P, v, M) {
   return { dur: t, parts, stopped, end };
 }
 // tokens of schedule S at local time t → out; act collects the boxes being worked in
-function schedAt(S, t, out, col, act, r, j = 0) {
-  let c = col, last = null;
+function schedAt(S, t, out, col, act, r, j = 0, last0 = null) {
+  let c = col, last = last0;
   for (const p of S.parts) {
     if (t < p.t0) return;
     if (p.c) c = p.c;
@@ -1248,7 +1406,7 @@ function schedAt(S, t, out, col, act, r, j = 0) {
       if (lt < p.d) { const sd = lt * p.v, [x, y] = p.s.at(sd); out.push({ x, y, r, c, a: smooth(0, .06, lt) * (1 - smooth(p.d - .06, p.d, lt) * (p.last ? 1 : 0)), tail: [p.s.at(sd - 7), p.s.at(sd - 15)] }); return; }
       last = p.s.at(p.s.len);
     } else if (p.k === 'w') {
-      if (lt < p.d && last) { const pulse = .5 + .5 * Math.sin(lt * 7), ok = smooth(p.d - .4, p.d - .1, lt); out.push({ x: last[0], y: last[1], r, c, a: 1, halo: p.halo ? (1 - ok) * (.3 + .35 * pulse) : 0, hc: p.halo, hr: 7 }); return; }
+      if (lt < p.d && last) { const pulse = .5 + .5 * Math.sin(lt * 7), ok = p.halo === C.bad ? 0 : smooth(p.d - .4, p.d - .1, lt); out.push({ x: last[0], y: last[1], r, c, a: 1, halo: p.halo ? (1 - ok) * (.3 + .35 * pulse) : 0, hc: p.halo, hr: 7 }); return; }
     } else if (p.k === 'b') { if (lt < p.d) { act.set(p.id, c); return; } }
     else if (p.k === 'th') {
       if (lt < p.d) { act.set(p.id, c); const u = lt / p.d, x = lerp(p.b.x + 12, p.b.x + p.b.w - 12, u), y = p.b.y + p.b.h - 11; out.push({ x, y, r, c, a: 1, tail: [[x - 8, y], [x - 16, y]] }); return; }
@@ -1257,7 +1415,7 @@ function schedAt(S, t, out, col, act, r, j = 0) {
     else if (p.k === 'p') {
       if (lt < p.d) {
         p.subs.forEach((q, k) => {
-          if (lt < q.dur) schedAt(q, lt, out, c, act, r, k);
+          if (lt < q.dur) schedAt(q, lt, out, c, act, r, k, last);
           else if (!q.stopped && q.end) out.push({ x: q.end[0] - 4, y: q.end[1] + (k - (p.subs.length - 1) / 2) * 7, r, c, a: 1 });   // waits at the join
         });
         return;
@@ -1319,7 +1477,7 @@ function flowDyn(F) {
 }
 
 // every slide, built once all engines are defined
-const BUILT = { F1, F2, F3, F4, F5a, F5b, F7a, F7b, F7c, F8, N1, N2, N3, F9 };
+const BUILT = { F1, F2, F3, F4, F5a, F5b, F7a, F7b, F7c, F8, N1, N2, N3, F9, R0, R4, R1, R2, R3, R6, R5a, R5b };
 const FRAMES = Object.fromEntries(ORDER.map(id => [id, BUILT[id] ? BUILT[id]() : stub(id)]));
 
 /* =====================================================================
