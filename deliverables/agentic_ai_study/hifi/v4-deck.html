@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Hundred Attempts Deck</title>
+<title>Multi-Agent AI for Complex Problem Solving</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Golos+Text:wght@400..700&display=swap">
@@ -345,7 +345,8 @@ function rRobot(e) {   // a plain robot bust, coloured by alignment; label and s
     `<circle cx="${f1(cx - 32)}" cy="${y + 70}" r="11" fill="${sc}"/><circle cx="${f1(cx + 32)}" cy="${y + 70}" r="11" fill="${sc}"/>` +
     `<line x1="${f1(cx - 24)}" y1="${y + 100}" x2="${f1(cx + 24)}" y2="${y + 100}"/>` +
     `<rect x="${f1(cx - 62)}" y="${y + 130}" width="124" height="${h - 130 + 6}" rx="16" fill="${fl}"/></g>`;
-  const lab = { ...e, y: y + h + 12, h: 80, fs: 23, sfs: 17, va: 'top', pt: 0, lc: C.ink };
+  const LB = { fs: 23, sfs: 17, va: 'top', pt: 0, lc: C.ink };
+  const lab = { ...e, y: y + h + 12, h: 80, ...LB, _A: e._A && { ...e._A, ...LB }, _B: e._B && { ...e._B, ...LB } };
   s += textOf(lab, lab);
   return `<g opacity="${o.toFixed(3)}" data-box="${e.id}">${s}</g>`;
 }
@@ -1177,8 +1178,9 @@ function amp(x, geo, s) {   // how widely attempts spread across the lane; an ex
   let a = 1; const S = SEM[s];
   for (const id in geo.gates) {
     const g = geo.gates[id];
-    if (S.exact[id]) a *= smooth(0, 40, Math.max(g.ex0 - x, x - g.ex1, 0));
-    else { const d = x - g.x; a *= 1 - .45 * Math.exp(-d * d / 800); }
+    const w = g.o ?? 1;   // a gate that is leaving (or arriving) squeezes the lane in proportion
+    if (S.exact[id]) a *= 1 - w * (1 - smooth(0, 40, Math.max(g.ex0 - x, x - g.ex1, 0)));
+    else { const d = x - g.x; a *= 1 - w * .45 * Math.exp(-d * d / 800); }
   }
   if (S.check && geo.v) a *= 1 - .3 * (1 - smooth(0, 24, Math.max(geo.v.x - x, x - geo.v.x - geo.v.w, 0)));
   return a;
@@ -1270,7 +1272,8 @@ function streamDefs(id) {
   S.push({ id: 'task', per: n2 ? 1.4 : .8, ph: .2, v: 110, r, c: C.dot, a, segs: [{ a: 'a:q>lead' }] });
   // on N1 the work is the slide: it crosses each box along its bottom edge
   CHAINS.forEach(([s, g, c], i) => S.push({ id: 'ch:' + s, per: n2 ? 2.2 : 1.1, ph: hsh(i, 9) * 2.2, v: n2 ? 120 : 150, r, c: C.dot, a,
-    segs: [{ a: 'a:lead>' + g }, { th: g }, { a: 'a:' + g + '>' + s }, { th: s }, { a: 'a:' + s + '>' + c }, { th: c }, { a: 'a:' + c + '>plan' }] }));
+    segs: n2 ? [{ a: 'a:lead>' + g }, { h: .3 }, { a: 'a:' + g + '>' + s }, { h: .45 }, { a: 'a:' + s + '>' + c }, { h: .3 }, { a: 'a:' + c + '>plan' }]
+      : [{ a: 'a:lead>' + g }, { th: g }, { a: 'a:' + g + '>' + s }, { th: s }, { a: 'a:' + s + '>' + c }, { th: c }, { a: 'a:' + c + '>plan' }] }));
   if (!n2) S.push({ id: 'n1:out', per: .8, ph: .5, v: 120, r: 5.4, c: C.dot, a: .95, segs: [{ a: 'a:plan>org' }, { th: 'org' }, { a: 'a:org>ans' }] });
   if (n2) {
     S.push({ id: 'sign', per: 2.2, ph: .3, v: 90, r: 4.6, c: C.dot, a: .85 * q, segs: [{ a: 'a:org>ans' }] });
