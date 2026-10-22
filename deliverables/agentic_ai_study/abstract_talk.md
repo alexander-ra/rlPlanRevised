@@ -16,8 +16,8 @@ Length: 873 characters including spaces. Six keywords.
 
 **MULTI-AGENT SYSTEMS FOR SOLVING COMPLEX PROBLEMS: OPPORTUNITIES AND RISKS**
 
-Language models handle a single question well, but real tasks need many dependent steps, and errors compound: at 95% reliability per step, five steps succeed only 77% of the time. The talk shows how thinking before each step, tools, independent checks and a retry that carries the reason for the error restore reliability, and how copies of one model explore options in parallel. Using one example – some 125 agents organising a conference for 100 guests – we look at coordination through a shared plan, actions in the real world through controlled gates, and when splitting a task helps or hurts. The second part is about misalignment: the system follows the letter of a request, not its intent – it bypasses a limit, crosses a line, hides a problem. Real cases show this already happens, and alignment fixes most of it.
+Language models handle a single question well, but real tasks need many dependent steps, and errors compound: at 95% reliability per step, five steps succeed only 77% of the time. Recent advances have largely closed this gap: thinking before each step, exact tools, independent checks and retries that carry the reason for the error now let systems complete tasks that span hundreds of steps and run for hours or days. Copies of one model work in parallel and coordinate through a shared plan, acting in the world only through controlled gates. Such systems are already tackling open problems in mathematics, discovering new enzymes and drug candidates, running robotic laboratories and finding thousands of software vulnerabilities. The second part is about misalignment: the system follows the letter of a request, not its intent – it bypasses a limit, crosses a line, hides a problem. Real cases show this already happens, and alignment fixes most of it.
 
 *Keywords: multi-agent systems; language models; reliability; verification; misalignment; AI safety*
 
-Length: 821 characters including spaces. Six keywords.
+Length: 957 characters including spaces. Six keywords.
