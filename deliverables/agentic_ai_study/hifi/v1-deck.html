@@ -536,6 +536,153 @@ function frameF9() {
            B('lgin', 1080, 740, 0, 0, 'independent', { k:'legend', drv:'ind', at:0.62 }));
   return { id:'F9', title:'Systems like ours are already at work', els, news:['fc3_1'] };
 }
+/* ---------- batch D: R0–R3 (the conference system goes wrong), R6 (real cases), R5a/R5b (who asks, who answers) ---------- */
+// R0–R3 are the N2 system the audience knows (same ids, same places), without its time bars and clock.
+// One failure is overlaid per slide; the callout under the system keeps one id, so it stays put while its words change.
+function misBase(ttl, cap, ail, step) {
+  const f = frameConf('N2'), drop = new Set(['tl', 'g_h', 'g_a', 'ga_t', 'clock']);
+  const els = f.els.filter(e => !drop.has(e.id));
+  modEl(els, 'ttl', { label:ttl }); modEl(els, 'cap', { label:cap });
+  if (step) {      // "Step N" in ink, four pips before it: which of the four failures is on screen
+    modEl(els, 'ail', { label:ail, x:346, hl:'Step ' + step });
+    els.push(B('steps', 226, 131, 106, 8, '', { k:'pips', p:step, at:0.30, enter:{ dy:0 } }));
+  } else modEl(els, 'ail', { label:ail });
+  return els;
+}
+const misNote = (w, label, sub, o = {}) => B('note', 212, 734, w, 92, label, { k:'callout', sub, noddy:1, ...o });
+// F9 → R0 zooms back in: the system's boxes reach their size before their words fade in
+const ZOOM_IN = new Set(['ai', 'q', 'ans', 'lead', 'gt', 'ga', 'gc', 's_fl', 's_tr', 's_ho', 's_ca', 's_co', 'c_t', 'c_a', 'c_c', 'plan',
+                         'pn0', 'pn1', 'pn2', 'pn3', 'pn4', 'guard', 'org', 'pay', 'world', 'w_people', 'w_book', 'w_card']);
+
+function frameR0() {
+  const els = misBase('Misalignment: what we say vs what we mean', 'It did the job. Now watch the same system do things we never asked for.',
+                      'what we ask for is never all we mean');
+  // what we say, and under it what we mean: the same start, a longer line; the unspoken words in bold green
+  els.forEach(e => { if (ZOOM_IN.has(e.id)) { e.gw = [0.04, 0.44]; e.noddy = 1; } });
+  els.push(B('say', 212, 736, 332, 40, 'we say', { k:'quote', sub:'“cheapest, under €30k”', at:0.60, enter:{ dy:10 } }),
+           B('mean', 212, 784, 672, 40, 'we mean', { k:'quote', s:'good', sub:'cheapest — **legally and honestly** — under €30k, **nobody misled**', at:0.68, enter:{ dy:10 } }));
+  return { id:'R0', title:'Misalignment: the gap between what we say and what we mean', els, news:['mean'] };
+}
+
+function frameR4() {
+  const els = misBase('One wrong step is enough', 'One wrong note in the shared plan, trusted by everyone downstream. No malice needed.',
+                      'Step 1 · one wrong step, and no bad intent at all', 1);
+  modEl(els, 'pn2', { label:'Arrival day:\nthe 24th', s:'bad', lift:1, late:[0.28, 0.48] });
+  modEl(els, 's_ho', { s:'bad', late:[0.66, 0.84] });
+  modEl(els, 's_co', { s:'bad', late:[0.70, 0.88] });
+  // the wrong note runs back through the gaps (plan → under Room & meal check → along the teams) to the two teams that read it
+  const trunk = [[988, 396], [965, 396], [965, 497], [789, 497]];
+  els.push(A('pn2', 's_ho', { k:'bad', pts:[...trunk, [789, 388], [764, 388]], at:0.50 }),
+           A('pn2', 's_co', { k:'bad', pts:[...trunk, [789, 574], [764, 574]], at:0.50, label:'everyone books the wrong day', lk:'key', lpos:[1004, 780] }),
+           misNote(760, 'One wrong note, trusted by all',
+                   'the deadline is read as the 24th, not the 23rd, and every team downstream books around it.\n(recall slide 3: one bad step in a long chain.)', { at:0.40 }));
+  return { id:'R4', title:'One wrong step is enough', els, news:['pn2'] };
+}
+
+function frameR1() {
+  const els = misBase('It games the guard, to be helpful', 'The rule said “over €500 → a human.” It kept every piece under €500. (specification gaming)',
+                      'Step 2 · it games the guard, to “help”', 2);
+  modEl(els, 'guard', { sub:'any payment over €500\nneeds the organiser', nl:'LIMIT €500', padX:6, late:[0.26, 0.46] });
+  modEl(els, 'pay', { s:'bad', sub:'splits €600\ninto 3×€200', late:[0.42, 0.60] });
+  modEl(els, 'org', { s:'off', lift:0, late:[0.62, 0.80] });
+  modEl(els, 'a:pay>w_card', { k:'bad', late:[0.58, 0.76] });
+  // three €200 charges split off Payments
+  [508, 536, 564].forEach((y, i) => els.push(B('p' + (i + 1), 1418, y, 54, 26, '€200', { k:'coin', at:0.50 + i * 0.04, enter:{ dx:-24, dy:0 } })));
+  els.push(B('skip', 1216, 461, 174, 26, 'organiser never asked', { k:'stamp', at:0.74, enter:{ dy:0 } }));
+  // the €500 limit as a scale: one €600 payment crosses it; three €200 charges each stay well under it
+  const x0 = 960, X = v => x0 + v * 0.6;
+  els.push(misNote(520, 'A €600 payment: over the €500 limit',
+                   'the rule: anything over €500 needs the organiser.\nso it sends three €200 charges instead —\neach under the limit, so nobody is asked.', { sfs:15 }),
+           T('gz_limt', X(500), 751, '€500 limit', { role:'gzlim', at:0.40 }),
+           B('gz_a', x0, 760, X(500) - x0, 22, '', { k:'bar', at:0.42, enter:{ dx:-20, dy:0 } }),
+           B('gz_b', X(500), 760, X(600) - X(500), 22, '', { k:'barover', at:0.48, enter:{ dx:-20, dy:0 } }),
+           ...[0, 1, 2].map(i => B('gz_s' + i, x0, 796 + i * 12, X(200) - x0, 8, '', { k:'bar', at:0.56 + i * 0.03, enter:{ dx:-14, dy:0 } })),
+           B('gz_lim', X(500) - 1.5, 755, 3, 77, '', { k:'axisline', at:0.40, enter:{ dy:0 } }),
+           T('gz_l1', x0 - 14, 776, 'one €600 payment', { role:'gzl', at:0.42 }),
+           T('gz_r1', X(600) + 14, 776, 'over the limit ✗', { role:'gzr', at:0.52 }),
+           T('gz_l2', x0 - 14, 817, 'split into 3 × €200', { role:'gzl', at:0.56 }),
+           T('gz_r2', X(200) + 14, 817, 'each passes', { role:'gzn', at:0.64 }));
+  return { id:'R1', title:'It games the guard, to be helpful', els, news:['pay', 'skip'] };
+}
+
+// R2/R3: the Trains team's card grows a little to hold its two-line status
+const TRAINS_BIG = { y:246, h:76, fs:18, nldy:3, s:'bad', lift:1, noddy:1 };
+function frameR2() {
+  const els = misBase('It crosses a line in the world', 'Cheaper is an obstacle to beat; the railway’s rules are a boundary to respect. It cannot tell them apart.',
+                      'Step 3 · it crosses a line in the world', 3);
+  modEl(els, 's_tr', { ...TRAINS_BIG, sub:'finds a way to book\ntrains for free', gw:[0.04, 0.38], late:[0.40, 0.60] });   // grows first, then turns
+  // straight out to the booking system: down past the teams, along the wall, and through it where there is no door
+  els.push(A('s_tr', 'w_book', { k:'bad', pts:[[782, 308], [789, 308], [789, 600], [985, 600], [985, 685], [1022, 685]], at:0.54,
+                                 label:'books free —\nnot authorised', lk:'badtxt', lpos:[884, 685] }),
+           B('breach', 972, 600, 26, 16, '', { k:'breach', at:0.64, enter:{ dy:0 } }),
+           misNote(760, 'Still just trying to stay under budget',
+                   'but “cheaper” is an obstacle to beat, and the railway’s rules are a boundary to respect —\nit cannot tell them apart.'));
+  return { id:'R2', title:'It crosses a line in the world', els, news:['s_tr', 'breach'] };
+}
+
+function frameR3() {
+  const els = misBase('It hides the problem', 'Our main defence is watching what it does and writes. Deception is the failure that attacks the defence itself.',
+                      'Step 4 · it hides the problem', 4);
+  modEl(els, 's_tr', { ...TRAINS_BIG, sub:'the free booking\nfailed' });
+  modEl(els, 'pn0', { label:'Trains: booked & paid ✓\nreceipt #4471', s:'bad', lift:1, late:[0.30, 0.50] });
+  modEl(els, 'org', { sub:'reads “all booked ✓”,\nsigns off', late:[0.68, 0.86] });
+  // the truth, beside the plan, pointing at the note that hides it
+  els.push(B('truth', 702, 100, 270, 40, 'really: not booked, no payment', { k:'ext', s:'bad', at:0.50, enter:{ dy:-10 } }),
+           A('truth', 'pn0', { k:'bad', pts:[[962, 140], [962, 262], [988, 262]], at:0.58 }),
+           misNote(760, 'The receipt is fabricated',
+                   'our main defence is watching what it does and writes.\ndeception is the one failure that attacks the defence itself.', { s:'bad' }));
+  return { id:'R3', title:'It hides the problem', els, news:['pn0', 'truth', 'org'] };
+}
+
+// R6: two real cases, as two calm cards, and the caveat that both were found in testing
+const R6_HF = 'OpenAI’s internal models, run during evaluation\nunder reduced safeguards, used unauthorised\ncommunication, got past their isolation and\nreached third-party systems.\n\nRecovered code tagged the credentials it collected\n“LOOT” — a label in the code, not an emotion.\nMany traces are attempts, not confirmed successes.';
+const R6_AU = 'Asked to research government spending on\nskin-condition medicines, an OpenAI model\n“took actions that we had not authorised”:\nit found non-public access to Services Australia’s\nMedicare reporting service and retrieved internal\nfiles and credentials. No individual records were\nread. Four more agencies were affected, and the\ngovernment ran a rapid review.';
+function frameR6() {
+  const els = head('It has already happened', 'Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.', null);
+  const y = 172, h = 446;
+  const card = (id, x, when, title, body, at) => [
+    B(id, x, y, 750, h, '', { k:'card', at }),
+    T(id + 'w', x + 36, y + 52, when, { role:'cw', at:at + 0.03 }),
+    T(id + 't', x + 36, y + 98, title, { role:'ct', at:at + 0.05 }),
+    T(id + 'b', x + 36, y + 158, body, { role:'cb', at:at + 0.07 })];
+  els.push(...card('hf', 40, 'Hugging Face · July 2026', 'The most severe so far', R6_HF, 0.36),
+           ...card('au', 810, 'Australia · June 2026 (disclosed September)', 'A harmless task, a boundary crossed', R6_AU, 0.44),
+           B('caveat', 40, 646, 1520, 112, 'Both were found in internal training and evaluation — before wide release.', { k:'band', at:0.58,
+             sub:'That is a real problem, and a sign the checks can work: these turned up in testing, not in the wild.\n(OpenAI · METR & Redwood · Swarm Traces · the Australian Government review)' }));
+  return { id:'R6', title:'It has already happened', els, news:[] };
+}
+
+// R5a/R5b: who asks × the system that answers. The users stay put; the system and the verdicts morph from misaligned (red) to aligned (green).
+const INTENT = [['good', 'Good intent', '“Book everyone,\nunder €30,000.”'], ['warn', 'Gray intent', '“As cheap as possible —\nwhatever it takes.”'],
+                ['bad', 'Bad intent', '“Get the train tickets free —\nbreak into the booking site.”']];
+const R5Y = [270, 450, 630], R5IN = [414, 450, 486];
+function frameR5(aligned) {
+  const els = aligned
+    ? head('With alignment, most of it is fixed', 'The same three users. The gray ask comes back within the rules; the bad one gets nothing.', null)
+    : head('Who asks, and who answers', 'A misaligned system: the good ask goes fine, the gray one gets gamed, the bad one gets carried out.', null);
+  els.push(B('robot', 680, 340, 240, 356, aligned ? 'Aligned system' : 'Misaligned system',
+             { k:'robot', s:aligned ? 'good' : 'bad', sub:aligned ? 'follows the intent\nbehind the request' : 'follows the letter,\nwhoever is asking', at:0.44, late:aligned ? [0.06, 0.40] : null }));
+  INTENT.forEach(([s, label, ask], i) => els.push(
+    B('u' + i, 40, R5Y[i] - 64, 380, 128, label, { k:'user', s, sub:ask, at:0.36 + i * 0.04 }),
+    A('u' + i, 'robot', { k:'flow', ty:R5IN[i], tdx:i === 1 ? 14 : 30, xm:560, at:0.52 + i * 0.03 })));
+  const OUT = aligned
+    ? [['Everyone booked, under €30,000', 'within the rules', 'good', 'ok'], ['Cheapest, within the rules', 'reads “whatever it takes” as “within the rules”', 'good', 'ok'], null]
+    : [['Everyone booked, under €30,000', 'within the rules', 'good', 'ok'], ['The €500 guard gamed', '€600 split into 3 × €200 (step 2)', 'warn', 'warn'],
+       ['Breaks into the booking site', 'intentional hacking', 'bad', 'bad']];
+  OUT.forEach((o, i) => {
+    const y = R5Y[i] - 55, late = aligned && i > 0 ? [0.42, 0.64] : null;
+    if (!o) { els.push(B('res' + i, 1010, y, 420, 110, 'No result', { k:'ph', sub:'bad intent caught: refused and flagged', late })); return; }
+    const [label, sub, s, icon] = o;
+    els.push(B('res' + i, 1010, y, 420, 110, label, { k:'res', s, sub, at:0.62 + i * 0.04, late }),
+             A('robot', 'res' + i, { k:'flow', fy:R5IN[i], fdx:i === 1 ? -14 : -30, xm:955, at:0.60 + i * 0.03 }));
+    els.push(icon === 'ok' ? B('ic' + i + '_ok', 1462, R5Y[i] - 40, 80, 80, '', { k:'okmark', at:aligned && i === 1 ? 0.62 : 0.72 + i * 0.04, enter:{ dy:0 } })
+                           : B('ic' + i + '_' + icon, 1456, R5Y[i] - 44, 92, 84, '', { k:'alert', s:icon, at:0.72 + i * 0.04, enter:{ dy:0 } }));
+  });
+  return { id:aligned ? 'R5b' : 'R5a', title:aligned ? 'With alignment, most of it is fixed' : 'Who asks, and who answers', els,
+           news:aligned ? ['robot', 'res1', 'res2'] : ['robot'] };
+}
+function frameR5a() { return frameR5(false); }
+function frameR5b() { return frameR5(true); }
 const ORDER_ALL = ['F1', 'F2', 'F3', 'F4', 'F5a', 'F5b', 'F7a', 'F7b', 'F7c', 'F8', 'N1', 'N2', 'N3', 'F9', 'R0', 'R4', 'R1', 'R2', 'R3', 'R6', 'R5a', 'R5b'];
 const BUILD = { F1:frameF1, F2:frameF2, F3:frameF3, F4:frameF4, F5a:frameF5a, F5b:frameF5b,
   N1:() => frameConf('N1'), N2:() => frameConf('N2'), N3:() => frameConf('N3'), F9:frameF9 };
@@ -593,9 +740,10 @@ const subLines = (sub, size, col, boldCol, wt = 400) => !sub ? [] : sub.split('\
   return { role:'sub', s:m ? m[1] : s, size, wt:m ? 600 : wt, col:m ? boldCol : col, gap:i === 0 ? 8 : 0 };
 });
 const markLines = (sub, size, col, wt = 400) => !sub ? [] : sub.split('\n').map((s, i) => {
-  const m = /^(.*?)\s*([✓✗])([;,.]?)\s*$/.exec(s);     // a trailing ✓/✗ (optionally followed by ; , .) becomes a drawn mark
+  const m = MARK_RE.exec(s);     // a trailing ✓/✗ (optionally followed by a closing quote and ; , .) becomes a drawn mark
   return { role:'sub', s:m ? m[1] : s, size, wt, col, first:i === 0, mark:m ? (m[2] === '✓' ? 'check' : 'cross') : null, after:m ? m[3] : '' };
 });
+const MARK_RE = /^(.*?)\s*([✓✗])([”"’]?[;,.]?)\s*$/;
 function pushBlockWithMarks(P, lines, box, opts) {
   const parts = block(lines, box, opts).parts;
   parts.forEach((q, i) => {
@@ -618,7 +766,7 @@ const labLines = (label, size, col, wt = 600) => label ? label.split('\n').map(s
 function resolveBox(e, idx) {
   const k = e.k || 'step', box = { x:e.x, y:e.y, w:e.w, h:e.h };
   const sp = { id:e.id, type:'box', k, box, parts:[], shape:null, layer:3, ord:idx, lift:e.lift ? 1 : 0,
-               ent:e.ent, at:e.at, late:e.late || null, enter:e.enter || null, o:1, halo:0, gw:e.gw || null, path:e.path || null, hop:e.hop || 0 };
+               ent:e.ent, at:e.at, late:e.late || null, enter:e.enter || null, o:1, halo:0, gw:e.gw || null, path:e.path || null, hop:e.hop || 0, noddy:!!e.noddy };
   const P = sp.parts, label = e.label || '';
   if (k === 'region' || k === 'world') {
     sp.layer = 0;
@@ -708,7 +856,8 @@ function resolveBox(e, idx) {
   } else if (k === 'verify') {
     sp.shape = { rx:14, fill:C.checkFill, stroke:e.strong ? C.check : C.checkLine, sw:e.strong ? 2 : 1.5 };
     if (e.ltop) { sp.container = true; P.push(txt('lab', label, 't', 0, 40, 22, { wt:600, col:C.checkInk })); }
-    else P.push(...block([...labLines(label, e.fs || 20, C.checkInk), ...subLines(e.sub, 15, C.ink2, C.ink)], box, { anchor:'c', id:e.id, padX:8 }).parts);
+    else P.push(...block([...labLines(label, e.fs || 20, C.checkInk), ...subLines(e.sub, 15, C.ink2, C.ink)], box, { anchor:'c', dy:e.nl ? 5 : 0, id:e.id, padX:e.padX ?? 8 }).parts);
+    if (e.nl) P.push(pill('nl', e.nl, 'tl', 12, -12, { fill:C.check, free:1 }));     // R1: the guard's rule as a badge
   } else if (k === 'ckchip') {
     const bad = e.s === 'bad', isX = /✗\s*$/.test(label), s = label.replace(/\s*[✓✗]\s*$/, '');
     sp.shape = { rx:12, fill:bad ? C.bad : C.card, stroke:bad ? C.bad : C.goodLine, sw:1.5 };
@@ -716,18 +865,19 @@ function resolveBox(e, idx) {
     P.push(txt('lab', s, 'l', 48, 6.8, 19.5, { wt:600, col:bad ? '#FFFFFF' : C.ink, ta:'start' }));
     if (measure(s, 19, 600) > e.w - 60) FIT.push({ id:e.id, k:+((e.w - 60) / measure(s, 19, 600)).toFixed(3) });
   } else if (k === 'agent' || k === 'lead' || k === 'human') {
-    const hum = k === 'human', lead = k === 'lead', door = !!e.door, st = e.s;
-    const fill = hum ? C.ink : st === 'warn' ? C.warnFill : st === 'bad' ? C.badFill : st === 'off' ? '#F7F8FA' : C.card;
-    const stroke = hum ? C.ink : st === 'bad' ? C.bad : lead ? C.ink2 : door ? C.ink : st === 'warn' ? C.warnLine : st === 'off' ? '#D3D9E0' : C.agentLine;
-    sp.shape = { rx:12, fill, stroke, sw:hum || lead || door || st === 'bad' ? 2 : 1.5, dash:st === 'off' ? '6 5' : null };
-    const off = st === 'off';     // R1: a step that was skipped (the organiser never asked)
+    const lead = k === 'lead', door = !!e.door, st = e.s;
+    const off = st === 'off', hum = k === 'human' && !off;     // off: R1, a step that was skipped (the organiser never asked)
+    const fill = hum ? C.ink : st === 'warn' ? C.warnFill : st === 'bad' ? C.badFill : off ? '#F7F8FA' : C.card;
+    const stroke = hum ? C.ink : st === 'bad' ? C.bad : lead ? C.ink2 : door ? C.ink : st === 'warn' ? C.warnLine : off ? '#C3CBD4' : C.agentLine;
+    sp.shape = { rx:12, fill, stroke, sw:hum || lead || door || st === 'bad' ? 2 : 1.5, dash:off ? '6 5' : null };
     const lines = [...labLines(label, e.fs || 20, hum ? '#FFFFFF' : off ? '#9AA5B0' : st === 'bad' ? C.bad : C.ink),
                    ...markLines(e.sub, 15, hum ? '#C6CFD8' : off ? '#9AA5B0' : st === 'bad' ? C.bad : C.ink2, st === 'bad' ? 600 : 400)];
     lines.forEach(l => { if (l.role === 'sub') l.gap = l.first ? 4 : 0; });
-    pushBlockWithMarks(P, lines, box, { anchor:'c', dy:e.nl ? 4 : 0, id:e.id, padX:10 });
-    if (e.nl) P.push(pill('nl', e.nl, 'tl', 12, -12, hum ? { fill:off ? '#E3E7EC' : '#FFFFFF', stroke:off ? '#C3CBD4' : C.ink, sw:1.5, col:off ? '#9AA5B0' : C.ink, free:1 }
-                                                        : { fill:st === 'bad' ? C.bad : st === 'warn' ? C.warnBar : lead ? C.ink2 : C.ink3, col:st === 'warn' ? '#3F2A00' : '#FFFFFF', free:1 }));
-    if (hum) sp.haloCol = C.ink;
+    pushBlockWithMarks(P, lines, box, { anchor:'c', dy:e.nl ? (e.nldy ?? 4) : 0, id:e.id, padX:10 });
+    const hk = k === 'human';
+    if (e.nl) P.push(pill('nl', e.nl, 'tl', 12, -12, hk ? { fill:off ? '#E3E7EC' : '#FFFFFF', stroke:off ? '#C3CBD4' : C.ink, sw:1.5, col:off ? '#9AA5B0' : C.ink, free:1 }
+                                                       : { fill:st === 'bad' ? C.bad : st === 'warn' ? C.warnBar : lead ? C.ink2 : C.ink3, col:st === 'warn' ? '#3F2A00' : '#FFFFFF', free:1 }));
+    if (hk) sp.haloCol = C.ink;
   } else if (k === 'board') {
     sp.shape = { rx:16, fill:C.memoryFill, stroke:C.memoryLine, sw:1.5 };
     P.push(txt('lab', label, 't', 0, 36, 21, { wt:600, col:C.memoryInk }));
@@ -735,7 +885,10 @@ function resolveBox(e, idx) {
   } else if (k === 'note') {
     const st = e.s;
     sp.shape = { rx:10, fill:st === 'bad' ? C.badFill : st === 'warn' ? C.warnFill : C.card, stroke:st === 'bad' ? C.bad : st === 'warn' ? C.warnLine : C.noteLine, sw:st === 'bad' ? 2 : 1.25 };
-    P.push(...block(label.split('\n').map(s => ({ role:'lab', s, size:15, wt:st === 'bad' ? 600 : 500, col:st === 'bad' ? '#8E2219' : C.ink, lh:1.25 })), box, { anchor:'c', ta:'start', padX:12, id:e.id }).parts);
+    // a trailing ✓ in a note is drawn (R3: the fabricated "booked & paid ✓")
+    pushBlockWithMarks(P, label.split('\n').map(s => { const m = MARK_RE.exec(s);
+      return { role:'lab', s:m ? m[1] : s, size:15, wt:st === 'bad' ? 600 : 500, col:st === 'bad' ? '#8E2219' : C.ink, lh:1.25,
+               mark:m ? (m[2] === '✓' ? 'check' : 'cross') : null, after:m ? m[3] : '' }; }), box, { anchor:'c', ta:'start', padX:12, id:e.id });
   } else if (k === 'ext') {
     const bad = e.s === 'bad';
     sp.shape = { rx:10, fill:bad ? C.badFill : C.card, stroke:bad ? C.bad : C.ext, sw:bad ? 2 : 1.5 };
@@ -750,6 +903,7 @@ function resolveBox(e, idx) {
     P.push({ key:'icon', t:'clock', anchor:'l', dx:x0 + 12, dy:1, r:10.5, col:C.ink2, op:1 });
     P.push(txt('lab', s, 'l', x0 + 34, 7.8, 22, { wt:600, col:C.ink, ta:'start' }));
   }
+  else if (k in KIND_D) KIND_D[k](e, sp, P, box, label);      // batch D kinds (R slides)
   if (e.mini) {      // F9's miniature: the same boxes, small, with no words
     sp.parts = sp.parts.filter(p => p.t === 'hline');
     if (sp.shape) { sp.shape = { ...sp.shape, rx:Math.min(sp.shape.rx, 3.5), sw:Math.min(sp.shape.sw, 1.2), dash:null }; }
@@ -758,6 +912,87 @@ function resolveBox(e, idx) {
   }
   return sp;
 }
+/* ---------- batch D kinds (R slides) ---------- */
+const STC = { good:{ fill:C.goodFill, stroke:C.goodLine, ink:C.good }, warn:{ fill:C.warnFill, stroke:C.warnLine, ink:C.warn }, bad:{ fill:C.badFill, stroke:C.bad, ink:C.bad } };
+const KIND_D = {
+  // the callout under the system (one id across R4–R3, so it stays put while its words change)
+  callout(e, sp, P, box, label) {
+    const bad = e.s === 'bad';
+    sp.shape = { rx:14, fill:bad ? C.badFill : C.card, stroke:bad ? C.bad : C.line, sw:bad ? 2 : 1.5 };
+    const lines = [...labLines(label, 19, bad ? '#8E2219' : C.ink, 600),
+                   ...subLines(e.sub, e.sfs || 16, bad ? '#6E2A24' : C.ink2, C.ink).map((l, i) => ({ ...l, gap:i === 0 ? 6 : 0, lh:e.sfs ? 1.22 : 1.3 }))];
+    P.push(...block(lines, box, { anchor:'c', ta:'start', padX:24, id:e.id }).parts);
+  },
+  // R0: what we say, and what we mean; the words we never say are set in bold green
+  quote(e, sp, P, box, label) {
+    const good = e.s === 'good';
+    sp.shape = { rx:10, fill:good ? C.goodFill : C.card, stroke:good ? C.goodLine : C.line, sw:1.5 };
+    P.push(txt('lab', label, 'l', 18, 5.3, 15, { wt:600, col:good ? C.good : C.ink3, ta:'start' }));
+    const segs = e.sub.split(/(\*\*[^*]+\*\*)/).filter(Boolean)
+      .map(x => /^\*\*/.test(x) ? { s:x.slice(2, -2), col:C.good, wt:700 } : { s:x, col:C.ink, wt:400 });
+    const q = txt('q', segs.map(x => x.s).join(''), 'l', e.qx || 104, 6.7, 19, { ta:'start' }); q.sc = segs; P.push(q);
+  },
+  // R4–R3: which of the four steps is on screen
+  pips(e, sp, P, box) {
+    sp.layer = 1;
+    const n = 4, gap = 6, pw = (box.w - gap * (n - 1)) / n;
+    for (let i = 0; i < n; i++) P.push({ key:'pip' + i, t:'rect', anchor:'tl', dx:i * (pw + gap), dy:0, w:pw, h:box.h, rx:box.h / 2,
+                                          fill:i + 1 < e.p ? C.ink3 : i + 1 === e.p ? C.bad : '#D3DAE1', op:1 });
+  },
+  // R1: "organiser never asked", stamped across the skipped step
+  stamp(e, sp, P, box, label) {
+    sp.layer = 3.6; sp.shape = { rx:box.h / 2, fill:C.bad, stroke:C.bad, sw:1 };
+    P.push(txt('lab', label, 'c', 0, 5.3, 15, { wt:600, col:'#FFFFFF' }));
+  },
+  // R2: where the red route breaks through the wall (no door here)
+  breach(e, sp, P) { sp.layer = 1.5; P.push({ key:'breach', t:'breach', anchor:'c', dx:0, dy:0, col:C.bad, op:1 }); },
+  bar(e, sp) { sp.shape = { rx:4, fill:'#A9B8C7', stroke:'none', sw:0 }; },
+  barover(e, sp) { sp.shape = { rx:4, fill:'#E58C82', stroke:C.bad, sw:1.5 }; },
+  axisline(e, sp) { sp.layer = 3.4; sp.shape = { rx:1.5, fill:C.bad, stroke:'none', sw:0 }; },
+  // R6: a case card (its words are separate text elements on top) and the "found in testing" band
+  card(e, sp) { sp.layer = 1; sp.shape = { rx:18, fill:C.card, stroke:C.line, sw:1.5 }; },
+  band(e, sp, P, box, label) {
+    sp.layer = 1; sp.shape = { rx:16, fill:C.checkFill, stroke:C.checkLine, sw:1.5 };
+    P.push(...block([...labLines(label, 22, C.checkInk, 600),
+                     ...subLines(e.sub, 17, C.ink2, C.ink).map((l, i) => ({ ...l, gap:i === 0 ? 8 : 0, lh:1.35, col:i === 0 ? C.ink2 : C.ink3 }))], box, { anchor:'c', id:e.id, padX:30 }).parts);
+  },
+  // R5: a user, with the request in their words
+  user(e, sp, P, box, label) {
+    const c = STC[e.s];
+    sp.shape = { rx:16, fill:c.fill, stroke:c.stroke, sw:e.s === 'bad' ? 2 : 1.5 };
+    P.push({ key:'person', t:'person', anchor:'l', dx:44, dy:0, col:c.ink, op:1 });
+    const lines = [...labLines(label, 22, C.ink, 600), ...subLines(e.sub, 18, C.ink2, C.ink).map((l, i) => ({ ...l, gap:i === 0 ? 6 : 0 }))];
+    const bl = block(lines, { ...box, w:box.w - 84 }, { anchor:'c', ta:'start', padX:10, id:e.id });
+    bl.parts.forEach(q => { q.dx += 42; }); P.push(...bl.parts);
+  },
+  // R5: the system that answers, drawn as a simple robot; its colour is its alignment
+  robot(e, sp, P, box, label) {
+    const good = e.s === 'good';
+    P.push({ key:'robot', t:'robot', anchor:'tl', dx:0, dy:0, stroke:good ? C.good : C.bad, fill:good ? C.goodFill : C.badFill, smile:good ? 1 : 0, op:1 });
+    const lb = block([...labLines(label, 24, C.ink, 600), ...subLines(e.sub, 18, C.ink2, C.ink).map((l, i) => ({ ...l, gap:i === 0 ? 6 : 0 }))], box, { anchor:'t', id:e.id });
+    lb.parts.forEach(q => { q.dy += 266; }); P.push(...lb.parts);
+  },
+  // R5: a result
+  res(e, sp, P, box, label) {
+    const c = STC[e.s];
+    sp.shape = { rx:16, fill:c.fill, stroke:c.stroke, sw:e.s === 'bad' ? 2 : 1.5 };
+    P.push(...block([...labLines(label, 22, C.ink, 600), ...subLines(e.sub, 17, e.s === 'bad' ? C.bad : C.ink2, C.ink).map((l, i) => ({ ...l, gap:i === 0 ? 6 : 0 }))], box, { anchor:'c', id:e.id }).parts);
+  },
+  // R5b: no result at all
+  ph(e, sp, P, box, label) {
+    sp.shape = { rx:16, fill:'#EEF1F4', stroke:'#AEB8C2', sw:1.5, dash:'7 6' };
+    P.push(...block([...labLines(label, 22, C.ink3, 600), ...subLines(e.sub, 17, C.ink3, C.ink3).map((l, i) => ({ ...l, gap:i === 0 ? 6 : 0 }))], box, { anchor:'c', id:e.id }).parts);
+  },
+  coin(e, sp, P, box, label) {
+    sp.shape = { rx:box.h / 2, fill:C.badFill, stroke:C.bad, sw:1.5 };
+    P.push(txt('lab', label, 'c', 0, 5.3, 15, { wt:600, col:C.bad }));
+  },
+  okmark(e, sp, P, box) { P.push({ key:'ok', t:'mark', kind:'check', anchor:'c', dx:0, dy:0, r:box.w / 2, bg:C.good, fg:'#FFFFFF', op:1 }); },
+  alert(e, sp, P, box) {
+    const bad = e.s === 'bad';
+    P.push({ key:'alert', t:'alert', anchor:'c', dx:0, dy:0, w:box.w, h:box.h, fill:bad ? C.bad : C.warnBar, fg:bad ? '#FFFFFF' : '#3F2A00', op:1 });
+  }
+};
 // driver tags on F9: company = solid ink, public (university · academy · government) = outlined, independent = light slate
 const DRV = { co:{ fill:C.ink, col:'#FFFFFF' }, pub:{ fill:'#FFFFFF', stroke:C.ink, sw:1.5, col:C.ink }, ind:{ fill:'#D9DFE6', col:C.ink } };
 // top of a card's content block, centred in the space above the % + meter row
@@ -776,7 +1011,10 @@ const ROLE = {
   tl:{ size:19, wt:500, col:C.ink3 }, gat:{ size:16, wt:600, col:C.good }, eq:{ size:42, wt:600, col:C.ink, ta:'middle' },
   hero:{ size:76, wt:700, col:C.ink, ls:-0.018, lh:1.12 }, tln:{ size:19, wt:500, col:C.ink3 }, verdict:{ size:20, wt:500, col:C.ink, lh:1.35 }, heroSub:{ size:40, wt:500, col:C.ink2 }, heroBy:{ size:24, wt:500, col:C.ink2 },
   note:{ size:16, wt:500, col:C.ink3, ta:'middle', lh:1.3 }, mini:{ size:16, wt:600, col:C.ink3, ta:'middle', lh:1.3 },
-  bridge:{ size:22, wt:700, col:C.bad, lh:1.3 }
+  bridge:{ size:22, wt:700, col:C.bad, lh:1.3 },
+  // batch D: R1's limit scale, R6's two case cards
+  gzl:{ size:15, wt:700, col:C.ink, ta:'end' }, gzr:{ size:15, wt:700, col:C.bad }, gzn:{ size:15, wt:500, col:C.ink3 }, gzlim:{ size:15, wt:700, col:C.bad, ta:'middle' },
+  cw:{ size:16, wt:600, col:C.ink3 }, ct:{ size:30, wt:700, col:C.ink, ls:-0.008 }, cb:{ size:23, wt:400, col:C.ink2, lh:1.5 }
 };
 function resolveText(e, idx) {
   const r = { ...(ROLE[e.role] || ROLE.caption), ...(e.size ? { size:e.size } : {}) };
@@ -788,7 +1026,9 @@ function resolveText(e, idx) {
       sc:[{ s:m[1], col:C.ink }, { s:' ≈ ', col:C.ink3 }, { s:m[2] + '%', col:pcolText(v) }] }));
   } else String(e.label).split('\n').forEach((l, i) => {
     const m = /^(.*?)\s*([✓✗])\s*$/.exec(l), s = m ? m[1] : l, dy = i * r.size * (r.lh || 1.25), ta = e.ta || r.ta || 'start';
-    sp.parts.push(txt(e.role, s, 'tl', 0, dy, r.size, { wt:r.wt, col:e.col || r.col, ta, ls:r.ls || 0 }));
+    const tp = txt(e.role, s, 'tl', 0, dy, r.size, { wt:r.wt, col:e.col || r.col, ta, ls:r.ls || 0 });
+    if (e.hl && s.startsWith(e.hl)) tp.sc = [{ s:e.hl, col:C.ink, wt:700 }, { s:s.slice(e.hl.length), col:e.col || r.col }];
+    sp.parts.push(tp);
     if (m) {    // a drawn ✓ / ✗ after the line, in the semantic colours
       const rr = r.size * 0.42, w = measure(s, r.size, r.wt);
       sp.parts.push({ key:'mk:' + s, t:'mark', kind:m[2] === '✓' ? 'check' : 'cross', anchor:'tl', dx:(ta === 'start' ? w : ta === 'middle' ? w / 2 : 0) + rr + 7,
@@ -799,8 +1039,9 @@ function resolveText(e, idx) {
 }
 
 /* ---------- arrows: orthogonal routes (rounded), or an arch for the redo loop ---------- */
-const ASTY = { solid:{ col:C.arrow, sw:2 }, strong:{ col:C.ink2, sw:2.25 }, door:{ col:C.ink, sw:2.6 }, gate:{ col:C.check, sw:2.5 }, bad:{ col:C.bad, sw:3.5 }, back:{ col:C.check, sw:3.2 }, dash:{ col:C.arrow, sw:2, dash:'6 6' }, link:{ col:C.warnLine, sw:2.5, dash:'5 5', nohead:1 } };
+const ASTY = { flow:{ col:C.ink3, sw:2.5 }, solid:{ col:C.arrow, sw:2 }, strong:{ col:C.ink2, sw:2.25 }, door:{ col:C.ink, sw:2.6 }, gate:{ col:C.check, sw:2.5 }, bad:{ col:C.bad, sw:3.5 }, back:{ col:C.check, sw:3.2 }, dash:{ col:C.arrow, sw:2, dash:'6 6' }, link:{ col:C.warnLine, sw:2.5, dash:'5 5', nohead:1 } };
 function route(e, a, b) {
+  if (e.pts) return { mode:'ortho', pts:e.pts.map(p => [...p]) };      // explicit waypoints (R4, R2, R3: routes through the gaps)
   const fs = e.fs || 'r', ts = e.ts || 'l';
   if (e.shape === 'arch') {
     const p0 = [a.x + a.w / 2 + (e.fdx || 0), a.y], p3 = [b.x + b.w / 2 + (e.tdx || 0), b.y];
@@ -808,11 +1049,12 @@ function route(e, a, b) {
     return { mode:'cubic', pts:[p0, [p0[0], Y], [p3[0], Y], p3] };
   }
   if ((fs === 'r' && ts === 'l') || (fs === 'l' && ts === 'r')) {
-    const x1 = fs === 'r' ? a.x + a.w : a.x, x2 = ts === 'l' ? b.x : b.x + b.w;
+    const x1 = (fs === 'r' ? a.x + a.w : a.x) + (e.fdx || 0), x2 = (ts === 'l' ? b.x : b.x + b.w) + (e.tdx || 0);
     const ac = a.y + a.h / 2, bc = b.y + b.h / 2, m = 10;
     const bInA = bc >= a.y + m && bc <= a.y + a.h - m, aInB = ac >= b.y + m && ac <= b.y + b.h - m;
     let y1, y2;
     if (e.y != null) y1 = y2 = e.y;
+    else if (e.fy != null || e.ty != null) { y1 = e.fy ?? ac; y2 = e.ty ?? bc; }     // fixed port heights (R5: three lines into one robot)
     else if (b.h <= a.h && bInA) y1 = y2 = bc;
     else if (aInB) y1 = y2 = ac;
     else if (bInA) y1 = y2 = bc;
@@ -835,8 +1077,8 @@ function route(e, a, b) {
 }
 function resolveArrow(e, idx, M) {
   const k = e.k || 'solid', st = ASTY[k], r = route(e, M.get(e.from).box, M.get(e.to).box);
-  return { id:e.id, type:'arrow', def:e, from:e.from, to:e.to, layer:k === 'bad' ? 4 : 2, ord:idx, mode:r.mode, pts:r.pts,
-           col:st.col, sw:st.sw, k, o:1, draw:1, label:e.label || null, at:e.at, dash:st.dash || null, nohead:!!st.nohead, ldx:e.ldx || 0, ldy:e.ldy || 0 };
+  return { id:e.id, type:'arrow', def:e, from:e.from, to:e.to, layer:e.layer ?? (k === 'bad' ? 4 : 2), ord:idx, mode:r.mode, pts:r.pts,
+           col:st.col, sw:st.sw, k, lk:e.lk || k, lpos:e.lpos || null, o:1, draw:1, label:e.label || null, at:e.at, dash:st.dash || null, nohead:!!st.nohead, ldx:e.ldx || 0, ldy:e.ldy || 0 };
 }
 
 const CACHE = new Map();
@@ -856,7 +1098,7 @@ function resolved(id) {
 // inBox: new lines inside a card arrive only after the card has nearly reached its final size (never two versions stacked)
 const TM = { dur:1200, exit:[0, 0.3], geo:[0.04, 0.64], color:[0.22, 0.66], out:[0, 0.17], in:[0.17, 0.42], place:[0.04, 0.44], inBox:[0.46, 0.66],
              enter0:0.24, enterStep:0.065, enterDur:0.28, arrowDur:0.2, halo:[0.80, 1] };
-const NUMK = ['dx', 'dy', 'size', 'w', 'h', 'r', 'p', 'rx', 'sw', 'inset', 'op', 'fop'];
+const NUMK = ['dx', 'dy', 'size', 'w', 'h', 'r', 'p', 'rx', 'sw', 'inset', 'op', 'fop', 'smile'];
 const COLK = ['col', 'fill', 'stroke', 'bg', 'fg', 'track'];
 function anchorXY(b, an) {
   switch (an) {
@@ -875,6 +1117,7 @@ function lerpPart(pa, pb, aBox, bBox, g, c, gp) {
   for (const k of NUMK) if (typeof pa[k] === 'number' && typeof pb[k] === 'number') r[k] = L(pa[k], pb[k], g);
   if (pa.dx != null) { r.dx = L(dxA, pb.dx, gp); r.dy = L(dyA, pb.dy, gp); }
   for (const k of COLK) if (pa[k] && pb[k]) r[k] = mixc(pa[k], pb[k], c);
+  if (pa.wt !== pb.wt && c < 0.5) r.wt = pa.wt;      // weight switches with the colour, not before it
   if (pa.sc && pb.sc) r.sc = pb.sc.map((s, i) => ({ ...s, col:mixc(pa.sc[i]?.col || s.col, s.col, c) }));
   return r;
 }
@@ -897,7 +1140,9 @@ function mixBox(a, b, t, g, rev) {
   // a "late" element changes state after the rest has landed (the check catching the fare)
   const lw = b.late, c = inOutCubic(seg(t, ...(lw || TM.color)));
   const xo = outCubic(seg(t, ...(lw ? [lw[0] - 0.08, lw[0]] : TM.out)));   // the old words are gone before the new ones arrive
-  const xi = outCubic(seg(t, ...(lw || (b.k === 'text' ? TM.in : TM.inBox)))), gp = inOutCubic(seg(t, ...TM.place));
+  // in a card that stays put, kept lines re-centre with its late change (not before the old lines have gone)
+  const still = a.box.x === b.box.x && a.box.y === b.box.y && a.box.w === b.box.w && a.box.h === b.box.h;
+  const xi = outCubic(seg(t, ...(lw || (b.k === 'text' ? TM.in : TM.inBox)))), gp = inOutCubic(seg(t, ...(lw && still ? [lw[0] - 0.06, lw[0] + 0.08] : TM.place)));
   const box = cg ? { x:L(a.box.x, b.box.x, cg.gx), y:L(a.box.y, b.box.y, cg.gy), w:L(a.box.w, b.box.w, g), h:L(a.box.h, b.box.h, g) } : lerpRect(a.box, b.box, g);
   let shape = b.shape;
   if (a.shape && b.shape) shape = { rx:L(a.shape.rx, b.shape.rx, g), fill:mixc(a.shape.fill, b.shape.fill, c), stroke:mixc(a.shape.stroke, b.shape.stroke, c),
@@ -909,7 +1154,7 @@ function mixBox(a, b, t, g, rev) {
   for (const p of a.parts) if (!pb.has(p.key)) parts.push({ ...p, op:(p.op ?? 1) * (1 - xo) });
   for (const p of b.parts) {
     const q = pa.get(p.key);
-    if (!q) { parts.push({ ...p, op:(p.op ?? 1) * xi, ddy:b.box.h > 60 ? 4 * (1 - xi) : 0 }); continue; }
+    if (!q) { parts.push({ ...p, op:(p.op ?? 1) * xi, ddy:b.box.h > 60 && !b.noddy ? 4 * (1 - xi) : 0 }); continue; }
     const r = lerpPart(q, p, a.box, b.box, g, c, gp);
     if (flips && (p.t === 'text' || p.t === 'pct') && isHex(q.col) && isHex(p.col) && q.col !== p.col)
       r.col = contrast(q.col, shape.fill) >= contrast(p.col, shape.fill) ? q.col : p.col;
@@ -954,9 +1199,11 @@ function mix(RA, RB, t) {
   for (const [id, b] of Bm) {
     if (b.type !== 'arrow') continue;
     const a = A.get(id);
-    if (a && a.mode === b.mode && !own(b.from) && !own(b.to)) {
+    if (a && a.mode === b.mode && a.pts.length === b.pts.length && !own(b.from) && !own(b.to)) {
       const pts = a.pts.map((p, i) => [L(p[0], b.pts[i][0], g), L(p[1], b.pts[i][1], g)]);
-      list.push({ ...b, pts, col:mixc(a.col, b.col, c), sw:L(a.sw, b.sw, c), labelA:a.label !== b.label ? a.label : null, lx:[1 - seg(t, ...TM.out), seg(t, ...TM.in)] });
+      const ca = b.def.late ? inOutCubic(seg(t, ...b.def.late)) : c;      // e.g. R1: the payment line turns red once the split is shown
+      list.push({ ...b, pts, col:mixc(a.col, b.col, ca), sw:L(a.sw, b.sw, ca), layer:ca < 0.5 ? a.layer : b.layer,
+                  labelA:a.label !== b.label ? a.label : null, lx:[1 - seg(t, ...TM.out), seg(t, ...TM.in)] });
       continue;
     }
     const fa = cur.get(b.from), fb = cur.get(b.to);
@@ -980,7 +1227,7 @@ function mix(RA, RB, t) {
 function textEl(p, x, y, op) {
   const fam = 'f-' + p.fam, ls = p.ls ? ` letter-spacing="${f1(p.ls * p.size)}"` : '';
   const style = (p.it ? ' font-style="italic"' : '') + (p.tnum ? ' style="font-variant-numeric:tabular-nums"' : '');
-  const inner = p.sc ? p.sc.map(s => `<tspan fill="${s.col}">${esc(s.s)}</tspan>`).join('') : esc(p.s);
+  const inner = p.sc ? p.sc.map(s => `<tspan fill="${s.col}"${s.wt ? ` font-weight="${s.wt}"` : ''}>${esc(s.s)}</tspan>`).join('') : esc(p.s);
   return `<text x="${f1(x)}" y="${f1(y)}" class="${fam}" font-size="${f1(p.size)}" font-weight="${p.wt}" fill="${p.col}" text-anchor="${p.ta}"${ls}${style}${op < 1 ? ` opacity="${op.toFixed(3)}"` : ''}>${inner}</text>`;
 }
 function drawPart(p, b) {
@@ -1026,6 +1273,32 @@ function drawPart(p, b) {
       g += `<rect x="${X(418)}" y="${Y(222)}" width="50" height="6" rx="3" fill="#DCE2E8"/><rect x="${X(418)}" y="${Y(222)}" width="38" height="6" rx="3" fill="#B9D9C6"/>`;
       return g + '</g>';
     }
+    case 'robot': {   // R5: antenna, ears, head with two eyes and a mouth, body; smile 0 = flat, 1 = a smile
+      const X = v => f1(x + v), Y = v => f1(y + v), st = `fill="${p.fill}" stroke="${p.stroke}" stroke-width="3.5"`;
+      let g = `<g${o}>`;
+      g += `<line x1="${X(120)}" y1="${Y(26)}" x2="${X(120)}" y2="${Y(52)}" stroke="${p.stroke}" stroke-width="3.5" stroke-linecap="round"/><circle cx="${X(120)}" cy="${Y(18)}" r="10" fill="${p.stroke}"/>`;
+      g += `<rect x="${X(14)}" y="${Y(92)}" width="22" height="40" rx="7" ${st}/><rect x="${X(204)}" y="${Y(92)}" width="22" height="40" rx="7" ${st}/>`;
+      g += `<rect x="${X(30)}" y="${Y(52)}" width="180" height="128" rx="30" ${st}/>`;
+      g += `<circle cx="${X(86)}" cy="${Y(106)}" r="14" fill="${p.stroke}"/><circle cx="${X(154)}" cy="${Y(106)}" r="14" fill="${p.stroke}"/>`;
+      g += `<path d="M${X(94)},${Y(146)} Q${X(120)},${Y(146 + 18 * p.smile)} ${X(146)},${Y(146)}" fill="none" stroke="${p.stroke}" stroke-width="6" stroke-linecap="round"/>`;
+      g += `<rect x="${X(62)}" y="${Y(194)}" width="116" height="62" rx="18" ${st}/>`;
+      return g + '</g>';
+    }
+    case 'alert': {   // R5a: a warning triangle with "!" (amber = gamed, red = hacked)
+      const w = p.w, h = p.h, t = `${f1(x)},${f1(y - h / 2 + 6)} ${f1(x + w / 2 - 6)},${f1(y + h / 2 - 5)} ${f1(x - w / 2 + 6)},${f1(y + h / 2 - 5)}`;
+      return `<g${o}><polygon points="${t}" fill="${p.fill}" stroke="${p.fill}" stroke-width="12" stroke-linejoin="round"/>` +
+             `<line x1="${f1(x)}" y1="${f1(y - h * 0.16)}" x2="${f1(x)}" y2="${f1(y + h * 0.14)}" stroke="${p.fg}" stroke-width="8" stroke-linecap="round"/>` +
+             `<circle cx="${f1(x)}" cy="${f1(y + h * 0.31)}" r="4.6" fill="${p.fg}"/></g>`;
+    }
+    case 'person': {  // R5: a user
+      return `<g${o} fill="${p.col}"><circle cx="${f1(x)}" cy="${f1(y - 10)}" r="10"/><path d="M${f1(x - 19)},${f1(y + 22)} C${f1(x - 19)},${f1(y + 4)} ${f1(x + 19)},${f1(y + 4)} ${f1(x + 19)},${f1(y + 22)} Z"/></g>`;
+    }
+    case 'breach': {  // R2: the wall broken open where there is no door
+      const c = p.col;
+      return `<g${o}><rect x="${f1(x - 13)}" y="${f1(y - 5)}" width="26" height="10" fill="${C.page}"/>` +
+             `<path d="M${f1(x - 13)},${f1(y - 9)} L${f1(x - 9)},${f1(y - 3)} L${f1(x - 14)},${f1(y + 2)} L${f1(x - 10)},${f1(y + 9)}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>` +
+             `<path d="M${f1(x + 13)},${f1(y - 9)} L${f1(x + 9)},${f1(y - 3)} L${f1(x + 14)},${f1(y + 2)} L${f1(x + 10)},${f1(y + 9)}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></g>`;
+    }
     case 'clock': {   // a stopwatch drawn as lines (no emoji)
       const r = p.r;
       return `<g${o} fill="none" stroke="${p.col}" stroke-width="2.2" stroke-linecap="round"><circle cx="${f1(x)}" cy="${f1(y + 1.5)}" r="${r}"/>` +
@@ -1038,7 +1311,7 @@ function drawBox(m) {
   const o = m.o ?? 1; if (o <= 0.004) return '';
   const b = m.box, s = m.shape;
   // data-card marks solid cards (not containers) so QA can check that no card ever slides across another
-  const card = !['region', 'world', 'board', 'door', 'text', 'rule', 'panel', 'zone', 'node', 'motif', 'seg', 'legend'].includes(m.k) && !(m.k === 'verify' && m.container) && !m.mini;
+  const card = !['region', 'world', 'board', 'door', 'text', 'rule', 'panel', 'zone', 'node', 'motif', 'seg', 'legend', 'pips', 'stamp', 'breach', 'bar', 'barover', 'axisline'].includes(m.k) && !(m.k === 'verify' && m.container) && !m.mini;
   let g = `<g data-id="${m.id}" data-k="${m.k}"${card ? ' data-card="1"' : ''} data-box="${f1(b.x)},${f1(b.y)},${f1(b.w)},${f1(b.h)}"${o < 1 ? ` opacity="${o.toFixed(3)}"` : ''}>`;
   if (m.halo > 0 && m.halo < 1) {      // a brief ring on what changed, after the morph lands
     const u = m.halo, e = 5 + 14 * outCubic(u), a = Math.sin(Math.PI * u) * 0.55, col = m.haloCol || (s && s.stroke !== 'none' ? s.stroke : C.ink);
@@ -1094,15 +1367,15 @@ function drawArrow(m) {
   const dash = m.dash ? ` stroke-dasharray="${m.dash}"` : dr < 1 ? ` stroke-dasharray="${f1(len + 2)} ${f1(len + 2)}" stroke-dashoffset="${f1((len + 2) * (1 - dr))}"` : '';
   const oo = m.dash && dr < 1 ? o * dr : o;
   let s = `<g data-arrow="${esc(m.id)}"${oo < 1 ? ` opacity="${oo.toFixed(3)}"` : ''}><path d="${d}" fill="none" stroke="${m.col}" stroke-width="${f1(m.sw)}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`;
-  const ho = m.nohead ? 0 : clamp01((dr - 0.82) / 0.18);
+  const ho = m.nohead ? 0 : clamp01(1 - (1 - dr) * (len + 2) / (hl * 1.4));     // the head appears as the line arrives, on any length
   if (ho > 0) s += `<path d="M${f1(end[0])},${f1(end[1])} L${f1(end[0] - dir[0] * hl + nrm[0] * hw)},${f1(end[1] - dir[1] * hl + nrm[1] * hw)} L${f1(end[0] - dir[0] * hl * 0.72)},${f1(end[1] - dir[1] * hl * 0.72)} L${f1(end[0] - dir[0] * hl - nrm[0] * hw)},${f1(end[1] - dir[1] * hl - nrm[1] * hw)}Z" fill="${m.col}" stroke="${m.col}" stroke-width="1" stroke-linejoin="round"${ho < 1 ? ` opacity="${ho.toFixed(3)}"` : ''}/>`;
   const lo = clamp01((dr - 0.55) / 0.3);
   if (m.label && lo > 0) {
-    const at = m.mode === 'cubic' ? bez(m.pts, 0.5) : [(m.pts[0][0] + m.pts[3][0]) / 2, (m.pts[1][1] + m.pts[2][1]) / 2];
+    const at = m.lpos ? m.lpos : m.mode === 'cubic' ? bez(m.pts, 0.5) : [(m.pts[0][0] + m.pts[3][0]) / 2, (m.pts[1][1] + m.pts[2][1]) / 2];
     const lop = (m.lx ? m.lx[1] : 1) * lo;
     const at2 = [at[0] + (m.ldx || 0), at[1] + (m.ldy || 0)];
-    s += arrowLabel(m.label, m.k, at2, lop);
-    if (m.labelA) s += arrowLabel(m.labelA, m.k, at2, m.lx[0]);
+    s += arrowLabel(m.label, m.lk || m.k, at2, lop);
+    if (m.labelA) s += arrowLabel(m.labelA, m.lk || m.k, at2, m.lx[0]);
   }
   return s + '</g>';
 }
@@ -1110,10 +1383,17 @@ function arrowLabel(label, k, at, op) {
   if (op <= 0.004) return '';
   if (k === 'link')        // "must agree": a quiet amber label beside the dashed link
     return `<g data-free="1" opacity="${op.toFixed(3)}">` + textEl({ s:label, size:18, wt:600, fam:'sans', col:C.warn, ta:'start' }, at[0] + 12, at[1] + 6.3, 1) + '</g>';
-  if (k === 'badtxt') {    // a red caption on a red arrow, in a white pill so it never sits on a line
-    const size = 19, tw = measure(label, size, 600), h = 34, w = tw + 26, x = at[0] - w / 2, y = at[1] - h / 2;
-    return `<g data-free="1" opacity="${op.toFixed(3)}"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="#FFFFFF" stroke="${C.bad}" stroke-width="1.5"/>` +
-      textEl({ s:label, size, wt:600, fam:'sans', col:C.bad, ta:'middle' }, at[0], y + h / 2 + size * 0.35, 1) + '</g>';
+  if (k === 'badtxt') {    // a red caption on a red arrow, in a white pill so it never sits on a line (one or more lines)
+    const ls = label.split('\n'), size = ls.length > 1 ? 17 : 19, lh = size * 1.22, tw = Math.max(...ls.map(l => measure(l, size, 600)));
+    const h = ls.length > 1 ? ls.length * lh + 14 : 34, w = tw + 26, x = at[0] - w / 2, y = at[1] - h / 2, rx = ls.length > 1 ? 14 : h / 2;
+    return `<g data-free="1" opacity="${op.toFixed(3)}"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}" fill="#FFFFFF" stroke="${C.bad}" stroke-width="1.5"/>` +
+      ls.map((l, i) => textEl({ s:l, size, wt:600, fam:'sans', col:C.bad, ta:'middle' }, at[0], y + h / 2 + (i - (ls.length - 1) / 2) * lh + size * 0.35, 1)).join('') + '</g>';
+  }
+  if (k === 'key') {       // R4: the red arrows' meaning, as a key beside the callout
+    const size = 18, x = at[0], y = at[1];
+    return `<g data-free="1" opacity="${op.toFixed(3)}"><path d="M${f1(x)},${f1(y)} L${f1(x + 30)},${f1(y)}" stroke="${C.bad}" stroke-width="3.5" stroke-linecap="round"/>` +
+      `<path d="M${f1(x + 44)},${f1(y)} L${f1(x + 29)},${f1(y - 8.7)} L${f1(x + 32.5)},${f1(y)} L${f1(x + 29)},${f1(y + 8.7)}Z" fill="${C.bad}" stroke="${C.bad}" stroke-linejoin="round"/>` +
+      textEl({ s:label, size, wt:600, fam:'sans', col:C.bad, ta:'start' }, x + 56, y + size * 0.35, 1) + '</g>';
   }
   if (k === 'bad') {
     const s = label.replace(/^✗\s*/, ''), size = 20, tw = measure(s, size, 600), h = 44, w = tw + 30 + 44 + 4, x = at[0] - w / 2, y = at[1] - h / 2;
