@@ -203,7 +203,7 @@ function rCard(e) {
 function rRegion(e) {
   const o = e.o ?? 1; if (o <= .005) return '';
   let s = `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="18" fill="none" stroke="#a3afba" stroke-width="1.8" stroke-dasharray="8 7"/>`;
-  if (e.label) s += T(e.x + 18, e.y + 30, esc(e.label), { size: 19, w: 700, c: C.mute, st: 92, ls: .3 });
+  if (e.label) s += swapText(e, (l, op, dy) => op <= .004 ? '' : T(e.x + 18, e.y + 30 + (e.ls ? 3 : 0) + dy, esc(l), { size: e.ls || 19, w: 700, c: e.ls ? C.ink2 : C.mute, st: 92, ls: .3, op }));
   return G(o, s);
 }
 
@@ -329,6 +329,10 @@ function rWall(e, m) {  // the system's edge that faces the world: solid, with t
   }
   return G(o, s);
 }
+function rNode(e) {
+  const o = e.o ?? 1; if (o <= .005) return '';
+  return G(o, `<circle cx="${f1(e.x + e.w / 2)}" cy="${f1(e.y + e.h / 2)}" r="${f1(e.w / 2)}" fill="${e.fill || C.ink2}"/>`);
+}
 function rBar(e) {
   const o = e.o ?? 1; if (o <= .005) return '';
   let s = `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="5" fill="${e.fill}" stroke="${e.stroke}" stroke-width="1.4"/>`;
@@ -385,14 +389,15 @@ function headSVG(x, y, ang, col, s = 10) {
 }
 const AK = {
   solid: { c: '#8d99a5', w: 2 }, faint: { c: '#b3bdc6', w: 1.8 }, door: { c: C.ink, w: 2.4 },
-  pay: { c: C.ink2, w: 2.2 }, msg: { c: C.msg, w: 2.2 },
+  pay: { c: C.ink2, w: 2.2 }, msg: { c: C.msg, w: 2.2 }, bad: { c: C.bad, w: 3 }, dash: { c: '#9aa6b1', w: 2, d: '7 6' },
+  link: { c: C.warn, w: 2.4, d: '6 5', nohead: 1 }, good: { c: C.good, w: 2.6 }, warnk: { c: C.warn, w: 2.6 },
 };
 function rArrow(e, m) {
   const o = e.o ?? 1; if (o <= .005) return '';
   const P = arrowPts(e, m); if (!P) return '';
   const k = AK[e.k || 'solid'], len = polyLen(P), dr = e.dr ?? 1; if (dr < .01) return '';
-  let s = `<path d="${polyD(P)}" fill="none" stroke="${k.c}" stroke-width="${k.w}"${dr < 1 ? ` stroke-dasharray="${f1(len * dr)} ${f1(len + 20)}"` : ''}/>`;
-  if (dr > .97) { const a = P[P.length - 2], b = P[P.length - 1]; s += headSVG(b[0], b[1], Math.atan2(b[1] - a[1], b[0] - a[0]), k.c, e.k === 'faint' ? 8 : 10); }
+  let s = `<path d="${polyD(P)}" fill="none" stroke="${k.c}" stroke-width="${k.w}"${dr < 1 ? ` stroke-dasharray="${f1(len * dr)} ${f1(len + 20)}"` : k.d ? ` stroke-dasharray="${k.d}"` : ''}/>`;
+  if (dr > .97 && !k.nohead) { const a = P[P.length - 2], b = P[P.length - 1]; s += headSVG(b[0], b[1], Math.atan2(b[1] - a[1], b[0] - a[0]), k.c, e.k === 'faint' ? 8 : 10); }
   if (e.label) s += T(e.lx(P), e.ly(P), esc(e.label), { size: 17, w: 800, c: e.lc || C.ink2, a: e.la || 'start', st: 92, halo: C.stage, op: smooth(.6, 1, dr) });
   return G(o, s);
 }
@@ -425,7 +430,7 @@ function rArc(e, m) {
 }
 
 /* ---------- layering ---------- */
-const LAYER = { region: 0, world: 0, lane: 1, gate: 1.5, arrow: 2, card: 3, chip: 4, grid: 4.5, wall: 5, text: 6, pill: 6, count: 6, waffle: 6, clock: 6, bar: 6, key: 6, arc: 7 };
+const LAYER = { node: 3.5, region: 0, world: 0, lane: 1, gate: 1.5, arrow: 2, card: 3, chip: 4, grid: 4.5, wall: 5, text: 6, pill: 6, count: 6, waffle: 6, clock: 6, bar: 6, key: 6, arc: 7 };
 function render(els) {
   const m = new Map(els.filter(e => e.x != null).map(e => [e.id, e]));
   const sorted = els.map((e, i) => [e, i]).sort((a, b) => (LAYER[a[0].t] ?? 3) + (a[0].z || 0) - (LAYER[b[0].t] ?? 3) - (b[0].z || 0) || a[1] - b[1]).map(x => x[0]);
@@ -440,7 +445,7 @@ function render(els) {
       case 'clock': s += rClock(e); break;        case 'world': s += rWorld(e); break;
       case 'wall': s += rWall(e, m); break;       case 'bar': s += rBar(e); break;
       case 'arrow': s += rArrow(e, m); break;     case 'arc': s += rArc(e, m); break;
-      case 'key': s += rKey(e); break;
+      case 'key': s += rKey(e); break;          case 'node': s += rNode(e); break;
     }
   }
   return s;
@@ -461,28 +466,28 @@ const KEY_ATTEMPT = r => ({ id: 'key', t: 'key', x: r.x + 20, y: r.y + r.h - 18,
 /* ----- F1 · Title: the hundred attempts, resting ----- */
 function F1() {
   const els = [
-    { id: 't1', t: 'text', x: 100, y: 318, label: 'Multi-Agent AI for Complex Problem Solving', size: 62, weight: 800, st: 92 },
-    { id: 't2', t: 'text', x: 100, y: 398, label: 'Opportunities and Risks', size: 40, weight: 600, color: C.ink2, st: 96 },
-    { id: 't3', t: 'text', x: 100, y: 768, label: 'Alexander Andreev · University of Ruse “Angel Kanchev”', size: 26, weight: 600, color: C.ink2, st: 94 },
-    { id: 'qgrid', t: 'grid', x: 1264, y: 508, p: 28, r: 9.5, ring: '#c8d0d7' },
+    { id: 't1', t: 'text', x: 100, y: 352, label: 'Multi-Agent AI for\nComplex Problem Solving', size: 76, weight: 800, st: 96, lh: 1.08 },
+    { id: 't2', t: 'text', x: 100, y: 512, label: 'Opportunities and Risks', size: 40, weight: 600, color: C.ink2, st: 96 },
+    { id: 't3', t: 'text', x: 100, y: 604, label: 'Alexander Andreev · University of Ruse “Angel Kanchev”', size: 26, weight: 600, color: C.ink2, st: 94 },
+    { id: 'qgrid', t: 'grid', x: 1236, y: 300, p: 30, r: 10, ring: '#c8d0d7' },
   ];
   return { id: 'F1', kind: 'chain', sem: 'F1', els, still: true };
 }
 /* ----- F2 · One question, one answer: 100 attempts, 60 right ----- */
 function F2() {
-  const LY = 480, LH = 100, gx = 800;
+  const LY = 500, LH = 104, gx = 800;
   const els = head('One question, one answer', 'Illustrative number: the chance the final answer is right.', '~2 s');
-  els.push({ id: 'q', t: 'card', x: 56, y: 200, w: 290, h: 520, label: 'Question', fs: 28, sub: 'Should I drive or take\nthe train to Sofia?', sfs: 21, va: 'top', pt: 12, gap: 10, lift: 1 });
-  els.push({ id: 'qgrid', t: 'grid', x: 56 + 45, y: LY - 100, p: 20 });
-  const ai = { id: 'ai', t: 'region', x: 610, y: 200, w: 380, h: 520, label: 'AI model' };
+  els.push({ id: 'q', t: 'card', x: 56, y: 172, w: 300, h: 628, label: 'Question', fs: 30, sub: 'Should I drive or take\nthe train to Sofia?', sfs: 22, va: 'top', pt: 14, gap: 12, lift: 1 });
+  els.push({ id: 'qgrid', t: 'grid', x: 56 + 40, y: LY - 110, p: 22 });
+  const ai = { id: 'ai', t: 'region', x: 604, y: 172, w: 392, h: 628, label: 'AI model' };
   els.push(ai);
-  els.push({ id: 'g:ai', t: 'gate', x: gx, y0: 250, y1: LY + LH / 2, ty: LY + LH / 2 + 42, tc: 10, tp: 16, ex0: 0, ex1: 0, ly: LY, exA: 0 });
-  els.push({ id: 'tl:ai', t: 'text', x: gx, y: LY + LH / 2 + 42 + 48 + 42, label: '40 lost', size: 22, weight: 700, color: C.badInk, anchor: 'middle', st: 92 });
-  els.push({ id: 'lane', t: 'lane', x0: 346, x1: 1254, y: LY, h: LH, x: 346, w: 908 });
-  els.push({ id: 'ans', t: 'card', x: 1254, y: 200, w: 290, h: 520, label: 'Answer', fs: 28, va: 'top', pt: 12, lift: 1 });
-  els.push({ id: 'agrid', t: 'grid', x: 1254 + 45, y: LY - 100, p: 20 });
-  els.push({ id: 'acount', t: 'count', x: 1399, y: 304, n: 60 });
-  els.push({ id: 'apill', t: 'pill', x: 1399, y: 322, label: '60%', fill: C.warnBg, stroke: C.warn, color: C.warnInk });
+  els.push({ id: 'g:ai', t: 'gate', x: gx, y0: 226, y1: LY + LH / 2, ty: LY + LH / 2 + 46, tc: 10, tp: 17, ex0: 0, ex1: 0, ly: LY, exA: 0 });
+  els.push({ id: 'tl:ai', t: 'text', x: gx, y: LY + LH / 2 + 46 + 51 + 44, label: '40 lost', size: 24, weight: 700, color: C.badInk, anchor: 'middle', st: 92 });
+  els.push({ id: 'lane', t: 'lane', x0: 356, x1: 1244, y: LY, h: LH, x: 356, w: 888 });
+  els.push({ id: 'ans', t: 'card', x: 1244, y: 172, w: 300, h: 628, label: 'Answer', fs: 30, va: 'top', pt: 14, lift: 1 });
+  els.push({ id: 'agrid', t: 'grid', x: 1244 + 40, y: LY - 110, p: 22 });
+  els.push({ id: 'acount', t: 'count', x: 1394, y: 290, n: 60 });
+  els.push({ id: 'apill', t: 'pill', x: 1394, y: 310, label: '60%', fill: C.warnBg, stroke: C.warn, color: C.warnInk });
   els.push({ ...KEY_ATTEMPT(ai), x: 800, y: 776, anchor: 'middle' });
   return { id: 'F2', kind: 'chain', sem: 'F2', els, entryRun: true, still: true };
 }
@@ -599,6 +604,176 @@ function F5a() {
   els.push({ id: 'apill', t: 'pill', x: 1462, y: 426, label: '92% · on hold', fill: C.warnBg, stroke: C.warn, color: C.warnInk, xw: [.62, .74, .8, .94] });
   els.push({ id: 'back', t: 'arc', from: 'v', to: 's3', peak: 206, label: 'fare from a 2025 page, in leva', col: C.bad, en: .6 });
   return { id: 'F5a', kind: 'chain', sem: 'F5a', els, loop: true };
+}
+
+/* ----- F7a–F7c · the open question: one after another, then in parallel ----- */
+const ASK_OPEN = 'Cheapest way\nRuse → Sofia,\narriving within 24 h?';
+function qa7() {   // question and answer cards shared by F7a–F7c
+  return [
+    { id: 'q', t: 'card', x: 56, y: 290, w: 176, h: 220, label: 'Question', fs: 24, sub: ASK_OPEN, sfs: 17, va: 'top', pt: 10, gap: 10, lift: 1 },
+    { id: 'ans', t: 'card', x: 1380, y: 228, w: 164, h: 344, label: 'Answer', fs: 24, va: 'top', pt: 8, lift: 1 },
+    { id: 'fcount', t: 'count', x: 1462, y: 312, n: 99 },
+    { id: 'fpill', t: 'pill', x: 1462, y: 324, label: '99%', fill: C.goodBg, stroke: C.good, color: C.goodInk },
+    { id: 'fgrid', t: 'grid', x: 1380 + 22, y: 372, p: 12, n: 99, col: '#4f9d77', r: 3.6 },
+  ];
+}
+const B7 = (id, x, y, w, h, label, o = {}) => ({ id, t: 'card', x, y, w, h, label, fs: 20, sfs: 15, lift: 1, ...o });
+const A7 = (from, to, o = {}) => ({ id: 'a:' + from + '>' + to, t: 'arrow', from, to, k: 'solid', ...o });
+const N7 = (id, x, y, w = 28) => ({ id, t: 'node', x, y, w, h: w });
+function F7a() {
+  const els = head('An open question takes many more steps', 'Each step still thinks, uses tools and is checked. Reliable, but done one after another: ~2 h.', '~2 h');
+  els.push({ id: 'ai', t: 'region', x: 252, y: 128, w: 1108, h: 532, label: 'AI model' }, ...qa7());
+  const W = 170, H = 84, R1 = 170, R2 = 348, R3 = 526, X = [300, 510, 720, 930, 1140];
+  const boxes = [['plan', X[0], R1, 'List\noptions'], ['s1', X[1], R1, 'Car:\ndistance'], ['s2', X[2], R1, 'Car:\nfuel price'], ['tr1', X[3], R1, 'Train:\ntimetable'], ['s3', X[4], R1, 'Train:\nfares'],
+    ['tr3', X[4], R2, 'Train:\nseats left'], ['bu1', X[3], R2, 'Bus:\ntimetable'], ['bu2', X[2], R2, 'Bus:\nfares'], ['bu3', X[1], R2, 'Bus:\nseats left'],
+    ['ri1', X[0], R3, 'Rideshare:\noffers'], ['bk1', X[1], R3, 'Bike:\nweather'], ['s4', X[2], R3, 'Calculate\ncosts'], ['cmp', X[3], R3, 'Compare\n(≤ 24 h)'], ['v', X[4], R3, 'Check']];
+  for (const [id, x, y, l] of boxes) els.push(B7(id, x, y, W, H, l, id === 's4' ? { fill: C.ink, stroke: C.ink, lc: '#fff' } : id === 'v' ? { fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.4 } : {}));
+  const ids = boxes.map(b => b[0]);
+  els.push(A7('q', 'plan', { xm: (a, b) => a.x + a.w + 34 }));
+  ids.slice(0, -1).forEach((a, i) => {
+    const b = ids[i + 1];
+    if (a === 's3') els.push(A7(a, b, { fs: 'b', ts: 't' }));
+    else if (a === 'bu3') els.push(A7(a, b, { fs: 'b', ts: 't' }));
+    else if (i >= 5 && i < 8) els.push(A7(a, b, { fs: 'l', ts: 'r' }));
+    else els.push(A7(a, b));
+  });
+  els.push(A7('v', 'ans', { xm: (a, b) => a.x + a.w + 35 }));
+  els.push({ id: 'tl', t: 'text', x: 56, y: 713, label: 'time →', size: 20, weight: 700, color: C.ink2, st: 92 });
+  ids.forEach((id, k) => els.push({ id: 'g_' + id, t: 'bar', x: 150 + k * 99, y: 692, w: 99, h: 28, fill: '#d6dde3', stroke: '#9aa6b1' }));
+  els.push({ id: 'cur', t: 'bar', x: 150, y: 682, w: 3, h: 48, fill: C.ink, stroke: C.ink });
+  els.push({ id: 'tln', t: 'text', x: 150, y: 762, label: '14 steps, one after another', size: 19, weight: 600, color: C.ink2, st: 92 });
+  const seq = [{ a: 'a:q>plan' }];
+  ids.forEach((id, i) => { seq.push({ thru: id, d: .55 }); seq.push({ a: 'a:' + id + '>' + (ids[i + 1] || 'ans') }); });
+  const F = { id: 'F7a', kind: 'flow', els, flows: [{ seq, v: 320, gap: 1.2, at: 5.6 }], crit: ids };
+  return withFlow(F);
+}
+function withFlow(F) { F.flow = (m, clock, full, alphaOf) => flowDots(F, clock, full, alphaOf('flow')).out; F.dyn = flowDyn(F); return F; }
+// lane rows (centres) and columns shared by F7b and F7c, so the morph between them is small
+const ROW7 = { car: 197, train: 315, bus: 417, ride: 503, bike: 589 };
+function frame7common(cap, clock, title, label) {
+  const els = head(title, cap, clock);
+  els.push({ id: 'ai', t: 'region', x: 252, y: 128, w: 1108, h: 532, label }, ...qa7());
+  els.push(B7('plan', 268, 356, 128, 88, 'List\noptions', { sub: 'orchestrator' }));
+  els.push(N7('fk', 410, 386), N7('mg', 1022, 386));
+  els.push(B7('s4', 1062, 356, 96, 88, 'Calculate\ncosts', { fs: 18, fill: C.ink, stroke: C.ink, lc: '#fff' }));
+  els.push(B7('cmp', 1166, 356, 100, 88, 'Compare\n(≤ 24 h)', { fs: 18 }));
+  els.push(B7('v', 1274, 356, 78, 88, 'Check', { fs: 18, fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.4 }));
+  els.push(A7('q', 'plan', { straight: 1, yAt: 'to' }), A7('plan', 'fk', { straight: 1 }), A7('mg', 's4', { straight: 1 }), A7('s4', 'cmp'), A7('cmp', 'v'), A7('v', 'ans', { straight: 1, yAt: 'from' }));
+  els.push({ id: 'tl', t: 'text', x: 56, y: 722, label: 'time →', size: 20, weight: 700, color: C.ink2, st: 92 });
+  return els;
+}
+const fan = (a, b) => a.x + a.w + 16;   // fork: one vertical bus right after the node
+const bus = () => 1006;                  // join: one vertical bus right before the merge node
+const G7 = (id, x, y, w, h = 16, o = {}) => ({ id: 'g_' + id, t: 'bar', x, y, w, h, fill: '#d6dde3', stroke: '#9aa6b1', ...o });
+function F7b() {
+  const els = frame7common('Each copy is an agent: the same model with its own working memory, spawned for one option.', '~25 min', 'Copies take the options in parallel', 'AI system');
+  const H = 74, top = r => ROW7[r] - H / 2, X = [470, 626, 782], W = 140;
+  const lanes = { car: [['s1', 'distance', 'copy 1 · car'], ['s2', 'fuel price', '']], train: [['tr1', 'timetable', 'copy 2 · train'], ['s3', 'fares', ''], ['tr3', 'seats left', '']],
+    bus: [['bu1', 'timetable', 'copy 3 · bus'], ['bu2', 'fares', ''], ['bu3', 'seats left', '']], ride: [['ri1', 'offers', 'copy 4 · rideshare']], bike: [['bk1', 'weather', 'copy 5 · bike']] };
+  const par = [];
+  for (const r in lanes) {
+    const L = lanes[r];
+    L.forEach(([id, l, sub], k) => els.push(B7(id, X[k], top(r), W, H, l, { sub })));
+    els.push(A7('fk', L[0][0], { xm: fan }));
+    L.slice(1).forEach(([id], k) => els.push(A7(L[k][0], id)));
+    els.push(A7(L[L.length - 1][0], 'mg', { xm: bus }));
+    const seq = [{ a: 'a:fk>' + L[0][0] }];
+    L.forEach(([id], k) => { seq.push({ b: id, d: .5 }); seq.push({ a: 'a:' + id + '>' + (L[k + 1] ? L[k + 1][0] : 'mg') }); });
+    par.push(seq);
+  }
+  // timeline: the same steps, stacked where copies run at the same time
+  els.push(G7('plan', 150, 716, 70));
+  [['s1', 220, 676], ['s2', 290, 676], ['tr1', 220, 696], ['s3', 290, 696], ['tr3', 360, 696], ['bu1', 220, 716], ['bu2', 290, 716], ['bu3', 360, 716], ['ri1', 220, 736], ['bk1', 220, 756]]
+    .forEach(([id, x, y]) => els.push(G7(id, x, y, 70)));
+  els.push(G7('mg', 430, 716, 30), G7('s4', 460, 716, 50), G7('cmp', 510, 716, 70), G7('v', 580, 716, 110));
+  els.push({ id: 'cur', t: 'bar', x: 150, y: 668, w: 3, h: 112, fill: C.ink, stroke: C.ink });
+  els.push({ id: 'tln', t: 'text', x: 720, y: 728, label: 'copies run at the same time: ~25 min instead of ~2 h', size: 19, weight: 600, color: C.ink2, st: 92 });
+  const seq = [{ a: 'a:q>plan' }, { b: 'plan', d: .5 }, { a: 'a:plan>fk' }, { par }, { a: 'a:mg>s4' }, { b: 's4', d: .35 }, { a: 'a:s4>cmp' }, { b: 'cmp', d: .5 }, { a: 'a:cmp>v' }, { b: 'v', d: .6 }, { a: 'a:v>ans' }];
+  return withFlow({ id: 'F7b', kind: 'flow', els, flows: [{ seq, v: 300, gap: 1.2, at: 1.75 }], crit: ['plan', 'tr1', 's3', 'tr3', 's4', 'cmp', 'v'] });
+}
+function F7c() {
+  const els = frame7common('One task run by many threads, not a team of people.', '~20 min', 'Copies split again, stop early, report back', 'AI system');
+  const H = 74, top = r => ROW7[r] - H / 2, W = 140, SX = 664, SW = 160, RX = 856, RW = 152;
+  // car: fuel price, then two routes in parallel, merged before it reports
+  els.push(B7('s2', 470, top('car'), W, H, 'fuel price', { sub: 'copy 1 · car' }), N7('carf', 628, ROW7.car - 8, 16), N7('carj', 836, ROW7.car - 8, 16));
+  els.push(B7('s1', SX, ROW7.car - 53, SW, 48, 'via Pleven', { fs: 17, sub: 'copy 1a · distance', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('cr2', SX, ROW7.car + 5, SW, 48, 'via Veliko Tarnovo', { fs: 17, sub: 'copy 1b · distance', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('tr1', 470, top('train'), W, H, 'timetable', { sub: 'copy 2 · train' }), N7('trf', 628, ROW7.train - 8, 16), N7('trj', 836, ROW7.train - 8, 16));
+  els.push(B7('s3', SX, ROW7.train - 53, SW, 48, 'direct', { fs: 17, sub: 'copy 2a', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('tr3', SX, ROW7.train + 5, SW, 48, 'with a change', { fs: 17, sub: 'copy 2b', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('bu1', 470, top('bus'), 120, H, 'timetable', { sub: 'copy 3 · bus' }), B7('bu2', 598, top('bus'), 120, H, 'fares'), B7('bu3', 726, top('bus'), 120, H, 'seats left', { sub: 'first bus full\n→ next one', gap: 3 }));
+  els.push(B7('ri1', 470, top('ride'), W, H, 'offers', { sub: 'copy 4 · rideshare' }));
+  els.push(B7('bk1', 470, top('bike'), W, H, 'weather', { sub: 'copy 5 · bike\nstorm ✗', fill: C.badBg, stroke: C.bad, sc: C.badInk, gap: 3 }));
+  const RC = [['rc_car', 'car', 'car · €45 · 4 h'], ['rc_train', 'train', 'train · €12 · 7 h'], ['rc_bus', 'bus', 'bus · €15 · 5 h'], ['rc_rideshare', 'ride', 'rideshare · €10 · 4 h']];
+  for (const [id, r, l] of RC) els.push({ id, t: 'chip', x: RX, y: ROW7[r] - 22, w: RW, h: 44, label: l, fs: 16, s: 'good', fill: '#fff' });
+  els.push({ id: 'rc_bike', t: 'chip', x: 626, y: ROW7.bike - 22, w: 196, h: 44, label: 'bike ✗ stopped (storm)', fs: 16, s: 'bad' });
+  const A = (a, b, o) => els.push(A7(a, b, o));
+  A('fk', 's2', { xm: fan }); A('s2', 'carf', { straight: 1 }); A('carf', 's1', { xm: (a) => a.x + a.w + 8 }); A('carf', 'cr2', { xm: (a) => a.x + a.w + 8 });
+  A('s1', 'carj', { xm: (a, b) => b.x - 8 }); A('cr2', 'carj', { xm: (a, b) => b.x - 8 }); A('carj', 'rc_car', { straight: 1 }); A('rc_car', 'mg', { xm: bus });
+  A('fk', 'tr1', { xm: fan }); A('tr1', 'trf', { straight: 1 }); A('trf', 's3', { xm: (a) => a.x + a.w + 8 }); A('trf', 'tr3', { xm: (a) => a.x + a.w + 8 });
+  A('s3', 'trj', { xm: (a, b) => b.x - 8 }); A('tr3', 'trj', { xm: (a, b) => b.x - 8 }); A('trj', 'rc_train', { straight: 1 }); A('rc_train', 'mg', { xm: bus });
+  A('fk', 'bu1', { xm: fan }); A('bu1', 'bu2'); A('bu2', 'bu3'); A('bu3', 'rc_bus', { straight: 1 }); A('rc_bus', 'mg', { xm: bus });
+  A('fk', 'ri1', { xm: fan }); A('ri1', 'rc_rideshare', { straight: 1 }); A('rc_rideshare', 'mg', { xm: bus });
+  A('fk', 'bk1', { xm: fan }); A('bk1', 'rc_bike', { straight: 1, k: 'bad' }); A('rc_bike', 'mg', { xm: bus, k: 'dash' });
+  els.push(G7('plan', 150, 716, 70));
+  [['s2', 220, 676], ['tr1', 220, 696], ['bu1', 220, 716], ['bu2', 290, 716], ['bu3', 360, 716], ['ri1', 220, 736]].forEach(([id, x, y]) => els.push(G7(id, x, y, 70)));
+  els.push(G7('s1', 290, 676, 70, 7), G7('cr2', 290, 685, 70, 7), G7('s3', 290, 696, 70, 7), G7('tr3', 290, 705, 70, 7));
+  els.push(G7('bk1', 220, 756, 35, 16, { fill: C.badBg, stroke: C.bad, bad: 1 }));
+  els.push(G7('mg', 430, 716, 30), G7('s4', 460, 716, 50), G7('cmp', 510, 716, 70), G7('v', 580, 716, 110));
+  els.push({ id: 'cur', t: 'bar', x: 150, y: 668, w: 3, h: 112, fill: C.ink, stroke: C.ink });
+  els.push({ id: 'tln', t: 'text', x: 720, y: 728, label: 'split into options, merge back, stop the hopeless one', size: 19, weight: 600, color: C.ink2, st: 92 });
+  const sub2 = (f, a, b, j) => [[{ a: `a:${f}>${a}` }, { b: a, d: .5 }, { a: `a:${a}>${j}` }], [{ a: `a:${f}>${b}` }, { b, d: .5 }, { a: `a:${b}>${j}` }]];
+  const par = [
+    [{ a: 'a:fk>s2' }, { b: 's2', d: .5 }, { a: 'a:s2>carf' }, { par: sub2('carf', 's1', 'cr2', 'carj') }, { a: 'a:carj>rc_car' }, { b: 'rc_car', d: .15 }, { a: 'a:rc_car>mg' }],
+    [{ a: 'a:fk>tr1' }, { b: 'tr1', d: .5 }, { a: 'a:tr1>trf' }, { par: sub2('trf', 's3', 'tr3', 'trj') }, { a: 'a:trj>rc_train' }, { b: 'rc_train', d: .15 }, { a: 'a:rc_train>mg' }],
+    [{ a: 'a:fk>bu1' }, { b: 'bu1', d: .5 }, { a: 'a:bu1>bu2' }, { b: 'bu2', d: .5 }, { a: 'a:bu2>bu3' }, { b: 'bu3', d: .9, c: C.warn }, { a: 'a:bu3>rc_bus', c: C.dot }, { b: 'rc_bus', d: .15 }, { a: 'a:rc_bus>mg' }],
+    [{ a: 'a:fk>ri1' }, { b: 'ri1', d: .5 }, { a: 'a:ri1>rc_rideshare' }, { b: 'rc_rideshare', d: .15 }, { a: 'a:rc_rideshare>mg' }],
+    [{ a: 'a:fk>bk1' }, { b: 'bk1', d: .5, c: C.bad }, { a: 'a:bk1>rc_bike' }, { stop: .9 }],
+  ];
+  const seq = [{ a: 'a:q>plan' }, { b: 'plan', d: .5 }, { a: 'a:plan>fk' }, { par }, { a: 'a:mg>s4' }, { b: 's4', d: .35 }, { a: 'a:s4>cmp' }, { b: 'cmp', d: .5 }, { a: 'a:cmp>v' }, { b: 'v', d: .6 }, { a: 'a:v>ans' }];
+  return withFlow({ id: 'F7c', kind: 'flow', els, flows: [{ seq, v: 300, gap: 1.2, at: 2.05 }], crit: ['plan', 's2', 's1', 's4', 'cmp', 'v'] });
+}
+/* ----- F8 · where splitting helps, and where it hurts ----- */
+function F8() {
+  const els = [
+    { id: 'ttl', t: 'text', x: 56, y: 92, label: 'Where splitting helps, and where it hurts', size: 46, weight: 800, st: 104 },
+    { id: 'cap', t: 'text', x: 56, y: 866, label: '“Spawning more subtasks only helps if it shortens the critical path.” (Moonshot AI, Kimi K2.5)', size: 21, weight: 500, color: C.ink2, st: 92 },
+  ];
+  const PX = [48, 556, 1064], PW = 488, LT = [196, 300, 404, 508], LH = 64, CY = 388;
+  const sys = [
+    { reg: 'ai', label: 'Web research', f: 'fk', j: 'mg', o: 'ans', out: 'report', os: null, lanes: [['s2', 'source A'], ['tr1', 'source B'], ['bu1', 'source C'], ['ri1', 'source D']], ls: 'good',
+      txt: 'Independent parts →\nbig speed-up' },
+    { reg: 'cr', label: 'Programming', f: 'cf', j: 'cj', o: 'co', out: 'build', os: 'warn', lanes: [['cl0', 'fix bug 1', 'good'], ['cl1', 'fix bug 2', 'good'], ['cl2', 'feature: part 1', 'warn'], ['cl3', 'feature: part 2', 'warn']],
+      txt: 'Separate fixes ✓\none shared feature: copies must agree ✗' },
+    { reg: 'nr', label: 'Writing a novel', f: 'nf', j: 'nj', o: 'no', out: 'plot\ncontradicts', os: 'bad', lanes: [['nl0', 'chapter 1'], ['nl1', 'chapter 2'], ['nl2', 'chapter 3'], ['nl3', 'chapter 4']], ls: 'warn',
+      txt: 'Worse than one writer:\nno one holds the whole plot' },
+  ];
+  const ST = { good: { fill: C.goodBg, stroke: C.good }, warn: { fill: C.warnBg, stroke: C.warn, lc: C.warnInk }, bad: { fill: C.badBg, stroke: C.bad, lc: C.badInk } };
+  const flows = [];
+  sys.forEach((S, k) => {
+    const px = PX[k];
+    els.push({ id: S.reg, t: 'region', x: px, y: 128, w: PW, h: 640, label: S.label, ls: 22 });
+    els.push(N7(S.f, px + 22, CY - 14), N7(S.j, px + 330, CY - 14));
+    els.push(B7(S.o, px + 376, CY - 44, 100, 88, S.out, { fs: 18, ...(S.os ? ST[S.os] : { fill: '#eef2f5' }) }));
+    S.lanes.forEach(([id, l, s], i) => {
+      els.push(B7(id, px + 84, LT[i], 214, LH, l, ST[s || S.ls]));
+      els.push(A7(S.f, id, { xm: (a) => a.x + a.w + 16 }), A7(id, S.j, { xm: (a, b) => b.x - 14 }));
+    });
+    els.push(A7(S.j, S.o, { straight: 1, k: S.os === 'bad' ? 'bad' : 'solid' }));
+    els.push({ id: S.reg + 'tx', t: 'text', x: px + 24, y: 660, label: S.txt, size: 20, weight: 600, color: C.ink, st: 92 });
+    const par = S.lanes.map(([id], i) => {
+      const slow = k === 1 && i >= 2;   // the two feature parts keep stopping to agree
+      return [{ a: `a:${S.f}>${id}` }, { thru: id, d: slow ? 1.6 : .8 }, { a: `a:${id}>${S.j}`, c: k === 2 ? C.bad : k === 0 || i < 2 ? C.good : C.warn }];
+    });
+    const extra = k !== 1 ? null : (t, out, act, f) => {   // the feature parts handshake across "must agree"
+      const a = f.win.cl2; if (!a || t < a[0] || t > a[1]) return;
+      const e2 = els.find(e => e.id === 'cl2'), e3 = els.find(e => e.id === 'cl3'), x = e2.x + 60, y0 = e2.y + e2.h, y1 = e3.y;
+      for (let j = 0; j < 2; j++) { const u = .5 + .5 * Math.sin((t - a[0]) * 7 + j * Math.PI); out.push({ x: x + j * 0, y: lerp(y0 + 6, y1 - 6, u), r: 4.5, c: C.warn, a: 1 }); }
+    };
+    flows.push({ seq: [{ par }, { a: `a:${S.j}>${S.o}`, c: k === 0 ? C.good : k === 1 ? C.warn : C.bad }], v: 260, gap: 1.4, at: [.9, 1.5, .7][k], extra });
+  });
+  els.push({ id: 'a:cl2>cl3', t: 'arrow', from: 'cl2', to: 'cl3', fs: 'b', ts: 't', fx: a => a.x + 60, tx: a => a.x + 60, k: 'link', label: 'must agree', lx: P => P[0][0] + 12, ly: P => (P[0][1] + P[1][1]) / 2 + 6, lc: C.warnInk });
+  return withFlow({ id: 'F8', kind: 'flow', els, flows });
 }
 
 /* ----- N1 / N2 · the conference system ----- */
@@ -922,8 +1097,112 @@ function netDots(fid, els, m, clock, full, alphaOf) {
   return out;
 }
 
+/* =====================================================================
+   Dots III · tokens (F7a–F8, R5): work moving through a schedule.
+   A schedule is a list of steps: {a: arrow} travel, {b: box, d} work inside a box,
+   {par: [schedules]} fork and join (waits for the slowest that did not stop), {stop: s} halt and fall.
+   Everything is a function of the loop phase, so ?frame and &t freeze it.
+   ===================================================================== */
+function staticSamplers(F) {
+  if (F._P) return F._P;
+  const m = new Map(F.els.map(e => [e.id, e])), P = {};
+  for (const e of F.els) if (e.t === 'arrow') { const pts = arrowPts(e, m); if (pts) P[e.id] = sampler(pts); }
+  return (F._P = P);
+}
+function mkSched(seq, P, v, M) {
+  let t = 0, stopped = false, end = null; const parts = [];
+  for (const st of seq) {
+    if (st.a) { const s = P[st.a]; if (!s) continue; const d = s.len / v; parts.push({ k: 'a', t0: t, d, s, c: st.c, v }); t += d; end = s.at(s.len); }
+    else if (st.b) { parts.push({ k: 'b', t0: t, d: st.d ?? .42, id: st.b, c: st.c }); t += st.d ?? .42; }
+    else if (st.thru) { const b = M.get(st.thru); parts.push({ k: 'th', t0: t, d: st.d ?? .6, id: st.thru, c: st.c, b }); t += st.d ?? .6; end = [b.x + b.w - 12, b.y + b.h - 11]; }
+    else if (st.par) {
+      const subs = st.par.map(q => mkSched(q, P, v, M)), live = subs.filter(x => !x.stopped);
+      const d = Math.max(0, ...live.map(x => x.dur)); parts.push({ k: 'p', t0: t, d, subs }); t += d; end = live.length ? live[0].end : end;
+    } else if (st.stop) { parts.push({ k: 'stop', t0: t, d: st.stop, c: st.c }); stopped = true; t += st.stop; }
+  }
+  return { dur: t, parts, stopped, end };
+}
+// tokens of schedule S at local time t → out; act collects the boxes being worked in
+function schedAt(S, t, out, col, act, r, j = 0) {
+  let c = col, last = null;
+  for (const p of S.parts) {
+    if (t < p.t0) return;
+    if (p.c) c = p.c;
+    const lt = t - p.t0;
+    if (p.k === 'a') {
+      if (lt < p.d) { const sd = lt * p.v, [x, y] = p.s.at(sd); out.push({ x, y, r, c, a: smooth(0, .06, lt) * (1 - smooth(p.d - .06, p.d, lt) * (p.last ? 1 : 0)), tail: [p.s.at(sd - 7), p.s.at(sd - 15)] }); return; }
+      last = p.s.at(p.s.len);
+    } else if (p.k === 'b') { if (lt < p.d) { act.set(p.id, c); return; } }
+    else if (p.k === 'th') {
+      if (lt < p.d) { act.set(p.id, c); const u = lt / p.d, x = lerp(p.b.x + 12, p.b.x + p.b.w - 12, u), y = p.b.y + p.b.h - 11; out.push({ x, y, r, c, a: 1, tail: [[x - 8, y], [x - 16, y]] }); return; }
+      last = [p.b.x + p.b.w - 12, p.b.y + p.b.h - 11];
+    }
+    else if (p.k === 'p') {
+      if (lt < p.d) {
+        p.subs.forEach((q, k) => {
+          if (lt < q.dur) schedAt(q, lt, out, c, act, r, k);
+          else if (!q.stopped && q.end) out.push({ x: q.end[0] - 4, y: q.end[1] + (k - (p.subs.length - 1) / 2) * 7, r, c, a: 1 });   // waits at the join
+        });
+        return;
+      }
+      last = p.subs.find(q => !q.stopped)?.end || last;
+    } else if (p.k === 'stop') {
+      if (lt < p.d && last) { const u = lt / p.d; out.push({ x: last[0], y: last[1] + 26 * u * u, r, c, a: 1 - smooth(.5, 1, u) }); }
+      return;
+    }
+  }
+}
+// absolute work windows per box, for highlights and the timeline cursor
+function schedWin(S, off = 0, win = {}) {
+  for (const p of S.parts) {
+    if (p.k === 'b' || p.k === 'th') (win[p.id] = win[p.id] || [off + p.t0, off + p.t0 + p.d]);
+    if (p.k === 'p') p.subs.forEach(q => schedWin(q, off + p.t0, win));
+  }
+  return win;
+}
+// a flow slide: one or more looping schedules, each {seq, v, gap, ph, r}
+function flowOf(F) {
+  if (F._S) return F._S;
+  const P = staticSamplers(F), M = new Map(F.els.map(e => [e.id, e]));
+  return (F._S = F.flows.map(f => { const S = mkSched(f.seq, P, f.v || 300, M), per = S.dur + (f.gap ?? 1);
+    return { ...f, S, per, win: schedWin(S), ph: f.at != null ? 8 + ORDER.indexOf(F.id) * D - f.at : (f.ph || 0) }; }));
+}
+// in run mode (a slide entered by jumping to it) every loop starts at its beginning; otherwise the phase is pinned
+const phaseOf = (f, clock, run) => run ? clock % f.per : (((clock - f.ph) % f.per) + f.per) % f.per;
+function flowDots(F, clock, full, alpha) {
+  const out = [], act = new Map();
+  for (const f of flowOf(F)) {
+    const t = phaseOf(f, clock, !full), o = [];
+    schedAt(f.S, t, o, f.col || C.dot, act, f.r || 5.6);
+    if (f.extra) f.extra(t, o, act, f);
+    for (const d of o) out.push({ ...d, a: (d.a ?? 1) * alpha });
+  }
+  return { out, act };
+}
+// highlights: boxes being worked in, their timeline segments, and the "now" cursor
+function flowDyn(F) {
+  return (e, clock, run) => {
+    if (!F.flows) return null;
+    const { act } = flowDots(F, clock, !run, 1);
+    if (e.t === 'card' && act.has(e.id)) { const c = act.get(e.id); return { ...e, stroke: c === C.dot ? ([C.chk, C.good, C.warn, C.bad].includes(e.stroke) ? e.stroke : C.ink) : c, sw: 3.4, lift: 1 }; }
+    if (e.id.startsWith('g_')) { const id = e.id.slice(2); return act.has(id) ? { ...e, fill: e.bad ? C.bad : C.ink2, stroke: e.bad ? C.bad : C.ink2 } : e; }
+    if (e.id === 'cur' && F.crit) {
+      const f = flowOf(F)[0], t = phaseOf(f, clock, run), K = F.crit.map(id => [f.win[id], F.els.find(x => x.id === 'g_' + id)]).filter(k => k[0] && k[1]);
+      let x = K[0][1].x;
+      for (let i = 0; i < K.length; i++) {
+        const [[a, b], g] = K[i];
+        if (t >= a && t <= b) { x = g.x + g.w * (t - a) / (b - a); break; }
+        if (t > b) x = g.x + g.w;
+        if (i + 1 < K.length && t > b && t < K[i + 1][0][0]) { const g2 = K[i + 1][1]; x = lerp(g.x + g.w, g2.x, (t - b) / (K[i + 1][0][0] - b)); break; }
+      }
+      return { ...e, x: x - 1.5, o: t > f.S.dur ? 1 - smooth(f.S.dur, f.S.dur + .4, t) : 1 };
+    }
+    return null;
+  };
+}
+
 // every slide, built once all engines are defined
-const BUILT = { F1, F2, F3, F4, F5a, F5b, N1, N2 };
+const BUILT = { F1, F2, F3, F4, F5a, F5b, F7a, F7b, F7c, F8, N1, N2 };
 const FRAMES = Object.fromEntries(ORDER.map(id => [id, BUILT[id] ? BUILT[id]() : stub(id)]));
 
 /* =====================================================================
@@ -932,6 +1211,12 @@ const FRAMES = Object.fromEntries(ORDER.map(id => [id, BUILT[id] ? BUILT[id]() :
 const NUM = ['x', 'y', 'w', 'h', 'fs', 'sfs', 'size', 'x0', 'x1', 'y0', 'y1', 'ty', 'ex0', 'ex1', 'ly', 'p', 'peak', 'exA', 'sw', 'n', 'pt', 'pb', 'r'];
 const COL = ['fill', 'stroke', 'color', 'col', 'pillBg'];
 const DEF = { card: { fill: C.card, stroke: C.cardS, pillBg: C.ink }, text: { color: C.ink } };
+const enterAt0 = b => b.en ?? (.3 + .26 * clamp(((b.x ?? 800) + (b.w || 0) / 2) / 1600));
+function enterAt(b, ma, mb) {   // an entering arrow waits for the boxes it joins
+  if (b.en != null || (b.t !== 'arrow' && b.t !== 'arc')) return enterAt0(b);
+  const ends = [b.from, b.to].filter(id => !ma.has(id) && mb.has(id)).map(id => enterAt0(mb.get(id)));
+  return Math.min(.6, ends.length ? Math.max(...ends) + .1 : .42);
+}
 function morph(A, B, t) {
   const ma = new Map(A.map(e => [e.id, e])), mb = new Map(B.map(e => [e.id, e])), out = [];
   for (const b of B) {
@@ -947,7 +1232,7 @@ function morph(A, B, t) {
       if (b.t === 'arc' || b.t === 'arrow') { r.dr = 1; r.lo = 1; }
       out.push(r);
     } else {
-      const d = b.en ?? (.3 + .26 * clamp(((b.x ?? 800) + (b.w || 0) / 2) / 1600)), u = clamp((t - d) / Math.min(.4, 1 - d)), g = eout(u);   // every entrance completes by t = 1
+      const d = enterAt(b, ma, mb), u = clamp((t - d) / Math.min(.4, 1 - d)), g = eout(u);   // every entrance completes by t = 1
       const r = { ...b, o: (b.o ?? 1) * smooth(0, .55, u), _t: t };
       const split = b.from && b.t === 'card' && ma.get(b.from);
       const txo = b.t === 'chip' ? 1 : split ? smooth(d + .08, d + .3, t) : smooth(d + .1, d + .34, t);
@@ -984,7 +1269,7 @@ function dynEls(fid, els, info, run, tau) {
   // values that come from the dots (counter) and, in run mode, reveals that wait for the dots
   const F = FRAMES[fid], dyn = F.dyn;
   return els.map(e => {
-    if (e.id === 'acount') return { ...e, n: info.arrived };
+    if (e.id === 'acount' && F.kind === 'chain') return { ...e, n: info.arrived };
     if (dyn) { const r = dyn(e, tau, run); if (r) return r; }
     if (!run) return e;
     if (e.id.startsWith('tl:')) {
