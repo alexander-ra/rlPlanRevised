@@ -147,18 +147,19 @@ const ASK_THINK = ASK_COST + '\n**Think hard**\n**and describe**\n**the answer**
 
 function frameF4() {
   const els = head('Thinking before each step', '98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.', '⏱ ~1 min');
-  const top = 272, sh = 210;
-  els.push(B('ai', 236, 206, 1162, 386, 'AI model', { k:'region' }));
-  els.push(B('q', 40, 247, 174, 260, 'Question', { k:'io', sub:ASK_THINK, sfs:15 }));
+  // panel + equations as one group, centred between title and caption; F3 uses the same frame
+  const top = 258, sh = 250;
+  els.push(B('ai', 236, 192, 1162, 440, 'AI model', { k:'region' }));
+  els.push(B('q', 40, 228, 174, 310, 'Question', { k:'io', sub:ASK_THINK, fs:24, sfs:16 }));
   const xs = [254, 487, 720, 953, 1186];
   xs.forEach((x, i) => {
-    els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.98, ent:1 }));
+    els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.98, fs:23, pfs:34, ent:1 }));
     els.push(B('th' + (i + 1), x + 22, top + sh + 22, 150, 52, 'thinking…', { k:'think', at:0.56 }));   // after its card has moved up
   });
-  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.9039207967999999 }));
+  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.9039207967999999, fs:24, pfs:34 }));
   els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'ans']));
   const eq = ['0.98⁵ ≈ 90%', '0.98¹⁰ ≈ 82%', '0.98¹⁰⁰ ≈ 13%', '0.98¹⁰⁰⁰ ≈ 0%'];
-  eq.forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 718, s, { role:'eq', ent:i })));
+  eq.forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 737, s, { role:'eq', size:46, ent:i })));
   return { id:'F4', title:'Thinking before each step', els, news:[] };
 }
 
@@ -272,28 +273,31 @@ function frameF1() {
     B('rule', 100, 262, 88, 8, '', { k:'rule' }),
     T('t1', 100, 372, 'Multi-Agent AI for\nComplex Problem Solving', { role:'hero' }),
     T('t2', 100, 574, 'Opportunities and Risks', { role:'heroSub' }),
+    B('motif', 1030, 218, 482, 420, '', { k:'motif' }),   // a light outline of the talk: one question, copies in parallel, one answer
     B('rule2', 100, 742, 1400, 2, '', { k:'rule', soft:1 }),
     T('t3', 100, 800, 'Alexander Andreev · University of Ruse "Angel Kanchev"', { role:'heroBy' })] };
 }
 function frameF2() {
   const els = head('One question, one answer', 'Illustrative number: the chance the final answer is right.', '⏱ ~2 s');
-  els.push(B('q', 80, 280, 390, 340, 'Question', { k:'io', sub:'Should I drive or take\nthe train to Sofia?', fs:34, sfs:24 }),
-           B('ai', 605, 280, 390, 340, 'AI model', { k:'model' }),
-           B('ans', 1130, 280, 390, 340, 'Answer', { k:'io', p:0.6, fs:34, lift:1 }),
+  // three large cards, centred between title and caption
+  els.push(B('q', 70, 258, 420, 420, 'Question', { k:'io', sub:'Should I drive or take\nthe train to Sofia?', fs:42, sfs:28 }),
+           B('ai', 590, 258, 420, 420, 'AI model', { k:'model', fs:42 }),
+           B('ans', 1110, 258, 420, 420, 'Answer', { k:'io', p:0.6, fs:42, lift:1 }),
            A('q', 'ai'), A('ai', 'ans'));
   return { id:'F2', title:'One question, one answer', els, news:['ans'] };
 }
 function frameF3() {
   const els = head('A real task has many steps', '5 steps × 95% each → 0.95⁵ ≈ 77%. Every step must be right.', '⏱ ~10 s');
-  const top = 290, sh = 240;
-  els.push(B('ai', 236, 220, 1162, 380, 'AI model', { k:'region' }));
-  els.push(B('q', 40, top, 174, sh, 'Question', { k:'io', sub:ASK_COST }));
+  // panel + equations are one group, centred between title and caption (the same frame as F4)
+  const top = 262, sh = 284;
+  els.push(B('ai', 236, 192, 1162, 440, 'AI model', { k:'region' }));
+  els.push(B('q', 40, top, 174, sh, 'Question', { k:'io', sub:ASK_COST, fs:24, sfs:16 }));
   // the steps appear inside the model once it has opened up (from F2's single box)
-  [254, 487, 720, 953, 1186].forEach((x, i) => els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.95, at:0.42 + i * 0.04 })));
-  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.7737809374999998, lift:1 }));
+  [254, 487, 720, 953, 1186].forEach((x, i) => els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.95, fs:23, pfs:34, at:0.42 + i * 0.04 })));
+  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.7737809374999998, lift:1, fs:24, pfs:34 }));
   els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'ans']));
   ['0.95⁵ ≈ 77%', '0.95¹⁰ ≈ 60%', '0.95¹⁰⁰ ≈ 1%', '0.95¹⁰⁰⁰ ≈ 0%']
-    .forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 718, s, { role:'eq', at:0.56 + i * 0.05 })));
+    .forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 737, s, { role:'eq', size:46, at:0.56 + i * 0.05 })));
   return { id:'F3', title:'A real task has many steps', els, news:['ans'] };
 }
 function frameF5b() {
@@ -323,6 +327,145 @@ function frameF5b() {
   ['0.9999⁵ ≈ 99.95%', '0.9999¹⁰ ≈ 99.9%', '0.9999¹⁰⁰ ≈ 99%', '0.9999¹⁰⁰⁰ ≈ 90%']
     .forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 752, s, { role:'eq', size:38, at:0.5 + i * 0.05 })));
   return { id:'F5b', title:'Redo, with the reason', els, news:['s3', 'ck3', 'ans'] };
+}
+/* ---------- batch B: F7a–F8 ---------- */
+// The open question; same words as the storyboard, re-broken for the card.
+const ASK_OPEN = 'Cheapest way\nRuse → Sofia,\narriving within\n24 h?';
+const R7 = [126, 534];   // the AI panel on F7a–F7c (top, height)
+
+// timeline segments: a 1-px gap either side so neighbouring steps read as separate blocks
+const SEG = (id, x, y, w, h, o = {}) => B(id, x + 1, y, w - 2, h, '', { k:'seg', ...o });
+const timeLabel = (y) => T('tl', 40, y, 'time →', { role:'tl' });
+
+function frameF7a() {
+  const els = head('An open question takes many more steps', 'Each step still thinks, uses tools and is checked. Reliable, but done one after another: ~2 h.', '⏱ ~2 h');
+  // Fourteen steps in reading order, wrapped onto three lines. The lines are chosen so that on the next slide each card
+  // only has to slide to its lane: car + train on the first line, bus + rideshare on the second, bike + calculate on the third.
+  const axis = 393, h = 86, w = 180, rows = [205, axis, 581], X6 = i => 212 + i * 204.8;
+  els.push(B('ai', 196, R7[0], 1236, R7[1], 'AI model', { k:'region' }));
+  els.push(B('q', 40, axis - 110, 140, 220, 'Question', { k:'io', sub:ASK_OPEN, sfs:15 }));
+  const card = (id, x, row, label, o = {}) => B(id, x, rows[row] - h / 2, w, h, label, { fs:20, ...o });
+  els.push(card('plan', X6(0), 0, 'List\noptions'), card('s1', X6(1), 0, 'Car:\ndistance'), card('s2', X6(2), 0, 'Car:\nfuel price'),
+           card('tr1', X6(3), 0, 'Train:\ntimetable'), card('s3', X6(4), 0, 'Train:\nfares'), card('tr3', X6(5), 0, 'Train:\nseats left'),
+           card('bu1', X6(2), 1, 'Bus:\ntimetable'), card('bu2', X6(3), 1, 'Bus:\nfares'), card('bu3', X6(4), 1, 'Bus:\nseats left'), card('ri1', X6(5), 1, 'Rideshare:\noffers'),
+           card('bk1', X6(0), 2, 'Bike:\nweather'), card('s4', X6(1), 2, 'Calculate\ncosts', { k:'exact' }),
+           card('cmp', X6(2), 2, 'Compare\n(≤ 24 h)'), card('v', X6(3), 2, 'Check', { k:'verify' }));
+  els.push(B('ans', 1452, axis - 110, 108, 220, 'Answer', { k:'io', p:0.9880657804942089, lift:1 }));
+  els.push(A('q', 'plan', { ts:'l', xm:188 }), A('plan', 's1'), A('s1', 's2'), A('s2', 'tr1'), A('tr1', 's3'), A('s3', 'tr3'),
+           A('tr3', 'bu1', { fs:'b', ts:'t' }), A('bu1', 'bu2'), A('bu2', 'bu3'), A('bu3', 'ri1'), A('ri1', 'bk1', { fs:'b', ts:'t' }),
+           A('bk1', 's4'), A('s4', 'cmp'), A('cmp', 'v'), A('v', 'ans', { xm:1440 }));
+  // the timeline: fourteen equal blocks, one after another
+  els.push(timeLabel(699));
+  ['plan', 's1', 's2', 'tr1', 's3', 'tr3', 'bu1', 'bu2', 'bu3', 'ri1', 'bk1', 's4', 'cmp', 'v']
+    .forEach((id, i) => els.push(SEG('g_' + id, 160 + i * 88, 680, 88, 24, { ent:4 })));
+  els.push(T('tln', 160, 744, '14 steps, one after another', { role:'tln', ent:4 }));
+  return { id:'F7a', title:'An open question takes many more steps', els, news:[] };
+}
+
+// the parallel version: an orchestrator, a fork, one lane per option, a merge, then the same calculate → compare → check
+const AX7 = { plan:[208, 96], fk:334, col:[[394, 162], [586, 162], [778, 162]], trunkIn:364, trunkOut:1024, mg:1054, s4:[1108, 96], cmp:[1230, 92], v:[1348, 70] };
+function post7(els, axis, mv = {}) {
+  els.push(B('q', 40, axis - 110, 140, 220, 'Question', { k:'io', sub:ASK_OPEN, sfs:15 }),
+           B('plan', AX7.plan[0], axis - 46, AX7.plan[1], 92, 'List\noptions', { sub:'orchestrator', fs:20, padX:4, ...mv.plan }),
+           B('fk', AX7.fk, axis - 10, 20, 20, '', { k:'node' }),
+           B('mg', AX7.mg, axis - 12, 24, 24, '', { k:'node' }),
+           B('s4', AX7.s4[0], axis - 40, AX7.s4[1], 80, 'Calculate\ncosts', { k:'exact', fs:18, ...mv.s4 }),
+           B('cmp', AX7.cmp[0], axis - 40, AX7.cmp[1], 80, 'Compare\n(≤ 24 h)', { fs:18, ...mv.cmp }),
+           B('v', AX7.v[0], axis - 40, AX7.v[1], 80, 'Check', { k:'verify', fs:18, ...mv.v }),
+           B('ans', 1452, axis - 110, 108, 220, 'Answer', { k:'io', p:0.9880657804942089, lift:1 }),
+           A('q', 'plan'), A('plan', 'fk'), A('mg', 's4'), A('s4', 'cmp'), A('cmp', 'v'), A('v', 'ans', { xm:1440 }));
+}
+const fan = (from, to, o = {}) => A(from, to, { xm:AX7.trunkIn, ...o });
+const merge = (from, o = {}) => A(from, 'mg', { xm:AX7.trunkOut, ...o });
+// Gantt rows for F7b/F7c: one step = 112 px, rows of 18 px every 22 px
+const GX = u => 160 + u * 112, GY = r => 676 + r * 22;
+
+function frameF7b() {
+  const els = head('Copies take the options in parallel', 'Each copy is an agent: the same model with its own working memory, spawned for one option.', '⏱ ~25 min');
+  const axis = 393, lanes = [178, 286, 393, 497, 606], h = 72, [c1, c2, c3] = AX7.col;
+  els.push(B('ai', 196, R7[0], 1236, R7[1], 'AI system', { k:'region' }));
+  post7(els, axis, { plan:{ gw:[0.04, 0.40] }, s4:{ gw:[0.36, 0.68], path:'xy' }, cmp:{ gw:[0.30, 0.64], path:'xy' }, v:{ gw:[0.24, 0.60], path:'xy' } });
+  // the choreography from F7a: the car steps rise into their lane; the train steps drop a little, then slide left along
+  // their lane; the bus steps slide left on the axis; rideshare drops, then slides; calculate/compare/check slide right,
+  // then rise to the axis; the bike step moves last, once calculate has left its place
+  const mv = { s1:{ gw:[0.04, 0.34] }, s2:{ gw:[0.04, 0.34] }, tr1:{ gw:[0.06, 0.58], path:'yx' }, s3:{ gw:[0.06, 0.58], path:'yx' }, tr3:{ gw:[0.06, 0.58], path:'yx' },
+               bu1:{ gw:[0.10, 0.50] }, bu2:{ gw:[0.10, 0.50] }, bu3:{ gw:[0.10, 0.50] }, ri1:{ gw:[0.04, 0.50], path:'yx' }, bk1:{ gw:[0.44, 0.68] } };
+  const card = (id, col, lane, label, sub) => B(id, col[0], lanes[lane] - h / 2, col[1], h, label, { sub, fs:20, ent:1 + lane * 0.5, ...mv[id] });
+  els.push(card('s1', c1, 0, 'distance', 'copy 1 · car'), card('s2', c2, 0, 'fuel price', ''),
+           card('tr1', c1, 1, 'timetable', 'copy 2 · train'), card('s3', c2, 1, 'fares', ''), card('tr3', c3, 1, 'seats left', ''),
+           card('bu1', c1, 2, 'timetable', 'copy 3 · bus'), card('bu2', c2, 2, 'fares', ''), card('bu3', c3, 2, 'seats left', ''),
+           card('ri1', c1, 3, 'offers', 'copy 4 · rideshare'), card('bk1', c1, 4, 'weather', 'copy 5 · bike'));
+  els.push(fan('fk', 's1'), A('s1', 's2'), fan('fk', 'tr1'), A('tr1', 's3'), A('s3', 'tr3'), fan('fk', 'bu1'), A('bu1', 'bu2'), A('bu2', 'bu3'),
+           fan('fk', 'ri1'), fan('fk', 'bk1'), merge('s2'), merge('tr3'), merge('bu3'), merge('ri1'), merge('bk1'));
+  // the copies' blocks run side by side; the slowest lane sets the pace
+  els.push(timeLabel(GY(2) + 16));
+  els.push(SEG('g_plan', GX(0), GY(2), 112, 18),
+           SEG('g_s1', GX(1), GY(0), 112, 18), SEG('g_s2', GX(2), GY(0), 112, 18),
+           SEG('g_tr1', GX(1), GY(1), 112, 18), SEG('g_s3', GX(2), GY(1), 112, 18), SEG('g_tr3', GX(3), GY(1), 112, 18),
+           SEG('g_bu1', GX(1), GY(2), 112, 18), SEG('g_bu2', GX(2), GY(2), 112, 18), SEG('g_bu3', GX(3), GY(2), 112, 18),
+           SEG('g_ri1', GX(1), GY(3), 112, 18), SEG('g_bk1', GX(1), GY(4), 112, 18),
+           SEG('g_mg', GX(4), GY(2), 48, 18), SEG('g_s4', GX(4) + 48, GY(2), 80, 18), SEG('g_cmp', GX(4) + 128, GY(2), 112, 18), SEG('g_v', GX(4) + 240, GY(2), 176, 18));
+  els.push(T('tln', 1060, GY(2) + 16, 'copies run at the same time: ~25 min instead of ~2 h', { role:'tln' }));
+  return { id:'F7b', title:'Copies take the options in parallel', els, news:[] };
+}
+
+function frameF7c() {
+  const els = head('Copies split again, stop early, report back', 'One task run by many threads, not a team of people.', '⏱ ~20 min');
+  const axis = 431, c1 = [394, 136];
+  els.push(B('ai', 196, R7[0], 1236, R7[1], 'AI system', { k:'region' }));
+  post7(els, axis);
+  const card = (id, x, y, w, h, label, sub, o = {}) => B(id, x, y, w, h, label, { sub, fs:20, ...o });
+  const br = (id, y, label, sub, o = {}) => B(id, 616, y, 156, 50, label, { sub, fs:17, padX:6, ...o });   // a branch: one helper copy
+  const res = (id, cy, label, o = {}) => B(id, 858, cy - 22, 156, 44, label, { k:'result', ...o });
+  // car: fuel price, then two roads in parallel, merged back into one result
+  els.push(card('s2', c1[0], 163, c1[1], 64, 'fuel price', 'copy 1 · car', { padX:6 }),
+           B('carf', 560, 187, 16, 16, '', { k:'node' }), br('s1', 142, 'via Pleven', 'copy 1a · distance', { hop:1 }), br('cr2', 198, 'via Veliko Tarnovo', 'copy 1b · distance'),
+           B('carj', 812, 187, 16, 16, '', { k:'node' }), res('rc_car', 195, 'car · €45 · 4 h'));
+  // train: one timetable, two routes (direct / with a change), merged back
+  els.push(card('tr1', c1[0], 290, c1[1], 64, 'timetable', 'copy 2 · train', { padX:6 }),
+           B('trf', 560, 314, 16, 16, '', { k:'node' }), br('s3', 269, 'direct', 'copy 2a'), br('tr3', 325, 'with a change', 'copy 2b', { hop:1 }),
+           B('trj', 812, 314, 16, 16, '', { k:'node' }), res('rc_train', 322, 'train · €12 · 7 h'));
+  // bus: the first bus is full, so it checks the next one
+  els.push(card('bu1', c1[0], 399, c1[1], 64, 'timetable', 'copy 3 · bus'), card('bu2', 558, 399, 118, 64, 'fares', ''),
+           card('bu3', 704, 392, 124, 78, 'seats left', 'first bus full\n→ next one'), res('rc_bus', axis, 'bus · €15 · 5 h'));
+  els.push(card('ri1', c1[0], 487, c1[1], 64, 'offers', 'copy 4 · rideshare', { padX:6 }), res('rc_rideshare', 519, 'rideshare · €10 · 4 h'));
+  // bike: the storm stops it early; it still reports back (dashed)
+  els.push(card('bk1', c1[0], 568, c1[1], 78, 'weather', 'copy 5 · bike\nstorm ✗', { s:'bad', lift:1 }),
+           B('rc_bike', 560, 585, 190, 44, 'bike ✗ stopped (storm)', { k:'result', s:'bad', lift:1 }));
+  els.push(fan('fk', 's2'), A('s2', 'carf'), A('carf', 's1', { xm:586 }), A('carf', 'cr2', { xm:586 }), A('s1', 'carj', { xm:782 }), A('cr2', 'carj', { xm:782 }), A('carj', 'rc_car'),
+           fan('fk', 'tr1'), A('tr1', 'trf'), A('trf', 's3', { xm:586 }), A('trf', 'tr3', { xm:586 }), A('s3', 'trj', { xm:782 }), A('tr3', 'trj', { xm:782 }), A('trj', 'rc_train'),
+           fan('fk', 'bu1'), A('bu1', 'bu2'), A('bu2', 'bu3'), A('bu3', 'rc_bus'), fan('fk', 'ri1'), A('ri1', 'rc_rideshare'), fan('fk', 'bk1'), A('bk1', 'rc_bike'),
+           merge('rc_car'), merge('rc_train'), merge('rc_bus'), merge('rc_rideshare'), merge('rc_bike', { k:'dash' }));
+  els.push(timeLabel(GY(2) + 16));
+  els.push(SEG('g_plan', GX(0), GY(2), 112, 18),
+           SEG('g_s2', GX(1), GY(0), 112, 18), SEG('g_s1', GX(2), GY(0), 112, 8), SEG('g_cr2', GX(2), GY(0) + 10, 112, 8),
+           SEG('g_tr1', GX(1), GY(1), 112, 18), SEG('g_s3', GX(2), GY(1), 112, 8), SEG('g_tr3', GX(2), GY(1) + 10, 112, 8),
+           SEG('g_bu1', GX(1), GY(2), 112, 18), SEG('g_bu2', GX(2), GY(2), 112, 18), SEG('g_bu3', GX(3), GY(2), 112, 18),
+           SEG('g_ri1', GX(1), GY(3), 112, 18), SEG('g_bk1', GX(1), GY(4), 56, 18, { s:'bad' }),
+           SEG('g_mg', GX(4), GY(2), 48, 18), SEG('g_s4', GX(4) + 48, GY(2), 80, 18), SEG('g_cmp', GX(4) + 128, GY(2), 112, 18), SEG('g_v', GX(4) + 240, GY(2), 176, 18));
+  els.push(T('tln', 1060, GY(2) + 16, 'split into options, merge back, stop the hopeless one', { role:'tln' }));
+  return { id:'F7c', title:'Copies split again, stop early, report back', els, news:['carf', 'trf', 'bk1', 'rc_bike'] };
+}
+
+// three panels: where splitting helps, where it is mixed, where it hurts
+function frameF8() {
+  const els = head('Where splitting helps, and where it hurts', '“Spawning more subtasks only helps if it shortens the critical path.” (Moonshot AI, Kimi K2.5)', null);
+  const P8 = [['r', 40, 'Web research', ['source A', 'source B', 'source C', 'source D'], ['good', 'good', 'good', 'good'], ['report', ''], 'Independent parts →\nbig speed-up'],
+              ['c', 555, 'Programming', ['fix bug 1', 'fix bug 2', 'feature: part 1', 'feature: part 2'], ['good', 'good', 'warn', 'warn'], ['build', 'warn'], 'Separate fixes ✓\none shared feature: copies must agree ✗'],
+              ['n', 1070, 'Writing a novel', ['chapter 1', 'chapter 2', 'chapter 3', 'chapter 4'], ['warn', 'warn', 'warn', 'warn'], ['plot\ncontradicts', 'bad'], 'Worse than one writer:\nno one holds the whole plot']];
+  const cy = 404, ys = [227, 323, 419, 515];
+  P8.forEach(([p, x0, title, cards, states, [out, outS], verdict], pi) => {
+    const ent = pi * 1.5;
+    els.push(B(p + 'r', x0, 124, 490, 650, title, { k:'panel', ent }),
+             B(p + 'f', x0 + 19, cy - 11, 22, 22, '', { k:'node', ent }),
+             B(p + 'j', x0 + 306, cy - 11, 22, 22, '', { k:'node', ent:ent + 1 }),
+             B(p + 'o', x0 + 358, cy - 46, 116, 92, out, { k:'io', fs:19, padX:6, ...(outS ? { s:outS, lift:1 } : {}), ent:ent + 1 }));
+    cards.forEach((c, i) => els.push(B(p + 'l' + i, x0 + 84, ys[i], 180, 66, c, { fs:20, s:states[i], ent:ent + 0.5 }),
+                                     A(p + 'f', p + 'l' + i, { xm:x0 + 54 }), A(p + 'l' + i, p + 'j', { xm:x0 + 290 })));
+    els.push(A(p + 'j', p + 'o'), T(p + 'v', x0 + 26, 680, verdict, { role:'verdict', ent:ent + 1 }));
+  });
+  els.push(A('cl2', 'cl3', { fs:'b', ts:'t', fdx:-50, tdx:-50, k:'link', label:'must agree' }));
+  return { id:'F8', title:'Where splitting helps, and where it hurts', els, news:['co', 'no'] };
 }
 const ORDER_ALL = ['F1', 'F2', 'F3', 'F4', 'F5a', 'F5b', 'F7a', 'F7b', 'F7c', 'F8', 'N1', 'N2', 'N3', 'F9', 'R0', 'R4', 'R1', 'R2', 'R3', 'R6', 'R5a', 'R5b'];
 const BUILD = { F1:frameF1, F2:frameF2, F3:frameF3, F4:frameF4, F5a:frameF5a, F5b:frameF5b,
@@ -380,12 +523,30 @@ const subLines = (sub, size, col, boldCol, wt = 400) => !sub ? [] : sub.split('\
   const m = /^\*\*(.*)\*\*$/.exec(s);
   return { role:'sub', s:m ? m[1] : s, size, wt:m ? 600 : wt, col:m ? boldCol : col, gap:i === 0 ? 8 : 0 };
 });
+const markLines = (sub, size, col, wt = 400) => !sub ? [] : sub.split('\n').map((s, i) => {
+  const m = /^(.*?)\s*([✓✗])\s*$/.exec(s);
+  return { role:'sub', s:m ? m[1] : s, size, wt, col, first:i === 0, mark:m ? (m[2] === '✓' ? 'check' : 'cross') : null };
+});
+function pushBlockWithMarks(P, lines, box, opts) {
+  const parts = block(lines, box, opts).parts;
+  parts.forEach((q, i) => {
+    P.push(q);
+    const l = lines[i];
+    if (l && l.mark) {          // a small drawn ✓ / ✗ right after the line
+      const w = measure(q.s, q.size, q.wt), r = q.size * 0.42;
+      const dx = q.ta === 'start' ? q.dx + w + r + 6 : q.dx + w / 2 + r + 5;
+      P.push({ key:'mk:' + q.s, t:'mark', kind:l.mark, anchor:q.anchor, dx, dy:q.dy - q.size * 0.34, r,
+               bg:l.mark === 'check' ? C.good : C.bad, fg:'#FFFFFF', op:1 });
+      if (q.ta !== 'start') { q.dx -= r + 3; P[P.length - 1].dx -= r + 3; }
+    }
+  });
+}
 const labLines = (label, size, col, wt = 600) => label ? label.split('\n').map(s => ({ role:'lab', s, size, wt, col })) : [];
 
 function resolveBox(e, idx) {
   const k = e.k || 'step', box = { x:e.x, y:e.y, w:e.w, h:e.h };
   const sp = { id:e.id, type:'box', k, box, parts:[], shape:null, layer:3, ord:idx, lift:e.lift ? 1 : 0,
-               ent:e.ent, at:e.at, late:e.late || null, enter:e.enter || null, o:1, halo:0 };
+               ent:e.ent, at:e.at, late:e.late || null, enter:e.enter || null, o:1, halo:0, gw:e.gw || null, path:e.path || null, hop:e.hop || 0 };
   const P = sp.parts, label = e.label || '';
   if (k === 'region' || k === 'world') {
     sp.layer = 0;
@@ -404,6 +565,16 @@ function resolveBox(e, idx) {
     P.push({ key:'jambR', t:'rect', anchor:'c', dx:e.w / 2 - 3, dy:-14, w:6, h:28, rx:3, fill:C.ink, op:1 });
     if (label) P.push(pill('tag', label.toUpperCase(), 'l', -12, 9, { right:true, h:22, fill:C.ink, col:'#FFFFFF', free:1 }));
     sp.haloCol = C.ink;
+  } else if ((k === 'step' || k === 'exact') && e.p == null) {      // a task card: label (+ sub), no reliability row
+    const ex = k === 'exact', st = e.s;
+    const fill = ex ? C.ink : st === 'bad' ? C.badFill : st === 'good' ? C.goodFill : st === 'warn' ? C.warnFill : C.card;
+    const stroke = ex ? C.ink : st === 'bad' ? C.bad : st === 'good' ? C.goodLine : st === 'warn' ? C.warnLine : C.line;
+    sp.shape = { rx:12, fill, stroke, sw:ex || st === 'bad' ? 2 : 1.5 };
+    const lines = [...labLines(label, e.fs || 20, ex ? '#FFFFFF' : C.ink),
+                   ...markLines(e.sub, e.sfs || 15, ex ? '#C6CFD8' : st === 'bad' ? C.bad : C.ink3, st === 'bad' ? 600 : 400)];
+    lines.forEach(l => { if (l.role === 'sub') l.gap = l.first ? 3 : 0; });
+    pushBlockWithMarks(P, lines, box, { anchor:'c', id:e.id, padX:e.padX ?? 8 });
+    if (e.nl) P.push(pill('nl', e.nl, 'tl', 10, -12, { fill:C.ink3, free:1 }));
   } else if (k === 'step' || k === 'exact') {
     const ex = k === 'exact', bad = e.s === 'bad', good = e.s === 'good', st = bad ? C.bad : good ? C.good : null;
     sp.shape = { rx:14, fill:ex ? C.ink : bad ? C.badFill : good ? C.goodFill : C.card, stroke:ex ? C.ink : st || C.line, sw:ex || st ? 2 : 1.5 };
@@ -417,26 +588,40 @@ function resolveBox(e, idx) {
       P.push(pill('sub', chipS, 't', 0, top0 + lb.h + 14 + (tagS ? 24 : 0), { center:true, h:32, size, fam:'sans', wt:st ? 600 : 500, ls:0, padX:9,
         fill:ex ? '#2C3846' : st ? '#FFFFFF' : '#EDF0F4', stroke:st || 'none', sw:st ? 1.5 : 0, col:ex ? '#DCE3EA' : st || C.ink2 }));
     }
-    meterParts(P, e.p, ex ? '#FFFFFF' : C.ink, bad ? C.bad : ex ? C.goodOnDark : pcol(e.p), ex ? '#334251' : C.track, e.h);
+    meterParts(P, e.p, ex ? '#FFFFFF' : C.ink, bad ? C.bad : ex ? C.goodOnDark : pcol(e.p), ex ? '#334251' : C.track, e.h, e.pfs);
   } else if (k === 'model') {      // one AI model, as a single box; it opens into the region on the next slide
     sp.shape = { rx:22, fill:C.card, stroke:C.ink3, sw:2 };
-    P.push(txt('lab', label, 'c', 0, 12, 34, { wt:600, col:C.ink }));
+    P.push(txt('lab', label, 'c', 0, (e.fs || 34) * 0.35, e.fs || 34, { wt:600, col:C.ink }));
+  } else if (k === 'node') {       // a fork / merge point
+    sp.shape = { rx:e.w / 2, fill:C.ink3, stroke:'none', sw:0 }; sp.layer = 3.5;
+  } else if (k === 'panel') {      // a titled area (F8): calm fill, the title as a heading
+    sp.layer = 0; sp.shape = { rx:20, fill:C.region, stroke:C.regionLine, sw:1.5 };
+    P.push(txt('pt', label, 'tl', 26, 44, 24, { wt:700, col:C.ink, ta:'start' }));
+  } else if (k === 'result') {     // a copy's short report: one line, with a drawn mark when it failed
+    const bad = e.s === 'bad', isX = /✗/.test(label), s = label.replace(/\s*✗\s*/, ' ').trim();
+    sp.shape = { rx:e.h / 2, fill:bad ? C.badFill : C.card, stroke:bad ? C.bad : C.ink3, sw:bad ? 2 : 1.5 };
+    if (isX) {
+      P.push({ key:'mark:cross', t:'mark', kind:'cross', anchor:'l', dx:22, dy:0, r:10, bg:C.bad, fg:'#FFFFFF', op:1 });
+      P.push(txt('lab', s, 'l', 40, 5.4, e.fs || 15, { wt:600, col:C.bad, ta:'start' }));
+    } else P.push(txt('lab', label, 'c', 0, 5.4, e.fs || 15, { wt:600, col:C.ink }));
+  } else if (k === 'motif') {      // F1: a quiet outline of the talk's motif (one question fans out to copies and comes back)
+    sp.layer = 1; P.push({ key:'motif', t:'motif', anchor:'tl', dx:0, dy:0, op:1 });
   } else if (k === 'rule') {
     sp.shape = { rx:e.h / 2, fill:e.soft ? '#D5DBE2' : C.ink, stroke:'none', sw:0 };
   } else if (k === 'think') {
     sp.shape = { rx:e.h / 2, fill:'#F9FAFC', stroke:C.thinkLine, sw:1.5, dash:'5 5' };
     P.push(txt('lab', label, 'c', 0, 6.3, 18, { it:true, wt:500, col:C.think }));
   } else if (k === 'io') {
-    const warn = e.s === 'warn';
-    sp.shape = { rx:14, fill:warn ? C.warnFill : C.io, stroke:warn ? C.warnLine : C.ioLine, sw:warn ? 2 : 1.5 };
+    const warn = e.s === 'warn', badS = e.s === 'bad';
+    sp.shape = { rx:14, fill:warn ? C.warnFill : badS ? C.badFill : C.io, stroke:warn ? C.warnLine : badS ? C.bad : C.ioLine, sw:warn || badS ? 2 : 1.5 };
     if (e.p != null) {
       const lb = block(labLines(label, e.fs || 22, C.ink), box, { anchor:'t', dy:0, id:e.id }), hold = e.sub === 'on hold';
       const top0 = cardTop(e.h, lb.h, hold ? 46 : 0);
       lb.parts.forEach(q => { q.dy += top0; }); P.push(...lb.parts);
       if (hold) P.push(pill('hold', 'ON HOLD', 't', 0, top0 + lb.h + 14, { center:true, fill:C.warnPill, col:'#6E4600', h:32, size:16, padX:12 }));
-      meterParts(P, e.p, C.ink, warn ? C.warnBar : pcol(e.p), warn ? '#F1E2BC' : '#CBD4DD', e.h);
+      meterParts(P, e.p, C.ink, warn ? C.warnBar : pcol(e.p), warn ? '#F1E2BC' : '#CBD4DD', e.h, e.pfs);
     } else {
-      P.push(...block([...labLines(label, e.fs || 22, C.ink), ...subLines(e.sub, e.sfs || 16, C.ink2, C.ink)], box, { anchor:'c', id:e.id, padX:10 }).parts);
+      P.push(...block([...labLines(label, e.fs || 22, badS ? C.bad : C.ink), ...subLines(e.sub, e.sfs || 16, C.ink2, C.ink)], box, { anchor:'c', id:e.id, padX:e.padX ?? 10 }).parts);
     }
   } else if (k === 'verify') {
     sp.shape = { rx:14, fill:C.checkFill, stroke:e.strong ? C.check : C.checkLine, sw:e.strong ? 2 : 1.5 };
@@ -468,7 +653,7 @@ function resolveBox(e, idx) {
     sp.shape = { rx:10, fill:C.card, stroke:C.ext, sw:1.5 };
     P.push(...block(label.split('\n').map(s => ({ role:'lab', s, size:16, wt:500, col:C.ink, lh:1.2 })), box, { anchor:'c', id:e.id }).parts);
   } else if (k === 'seg') {
-    sp.shape = { rx:e.h / 2, fill:e.s === 'good' ? C.goodBar : C.segHuman, stroke:'none', sw:0 };
+    sp.shape = { rx:Math.min(e.h / 2, 6), fill:e.s === 'good' ? C.goodBar : e.s === 'bad' ? '#EBA59D' : C.segHuman, stroke:e.s === 'bad' ? C.bad : 'none', sw:e.s === 'bad' ? 1.5 : 0 };
     if (label) P.push(txt('lab', label, 'c', 0, 5.4, 15, { wt:600, col:C.ink }));
   } else if (k === 'clock') {
     sp.shape = { rx:e.h / 2, fill:C.card, stroke:C.line, sw:1.5 };
@@ -479,20 +664,20 @@ function resolveBox(e, idx) {
   return sp;
 }
 // top of a card's content block, centred in the space above the % + meter row
-const cardTop = (h, labelH, extraH) => 14 + Math.max(0, (h - 72 - 14 - labelH - extraH) / 2);
+const cardTop = (h, labelH, extraH) => 14 + Math.max(0, (h - (h > 380 ? 130 : 72) - 14 - labelH - extraH) / 2);
 // 99.99% must not show as 100%: two decimals above 99.9, one above 99, whole numbers otherwise (as in the storyboard)
 const fmtPct = p => (p * 100).toFixed(p > 0.999 && p < 1 ? 2 : p > 0.99 && p < 1 ? 1 : 0) + '%';
-function meterParts(P, p, numCol, barCol, track, h = 0) {
-  const big = h > 270;   // the big single-answer card on F2
-  P.push({ key:'pct', t:'pct', anchor:'b', dx:0, dy:big ? -58 : -42, size:big ? 52 : 31, col:numCol, p, op:1 });
-  P.push({ key:'meter', t:'meter', anchor:'bl', inset:big ? 26 : 18, dy:big ? -30 : -24, h:big ? 10 : 8, p, fill:barCol, track, op:1 });
+function meterParts(P, p, numCol, barCol, track, h = 0, pfs) {
+  const big = h > 380;   // the big single-answer card on F2
+  P.push({ key:'pct', t:'pct', anchor:'b', dx:0, dy:big ? -74 : -42, size:big ? 76 : pfs || 31, col:numCol, p, op:1 });
+  P.push({ key:'meter', t:'meter', anchor:'bl', inset:big ? 34 : 18, dy:big ? -42 : -24, h:big ? 14 : 8, p, fill:barCol, track, op:1 });
 }
 
 const ROLE = {
   title:{ size:46, wt:700, col:C.ink, ls:-0.012 }, caption:{ size:21, wt:400, col:C.ink2 },
   ail:{ size:17, wt:600, col:C.ink3 }, foot:{ size:15, wt:600, col:C.memoryInk, ta:'middle' },
   tl:{ size:19, wt:500, col:C.ink3 }, gat:{ size:16, wt:600, col:C.good }, eq:{ size:42, wt:600, col:C.ink, ta:'middle' },
-  hero:{ size:82, wt:700, col:C.ink, ls:-0.018, lh:1.1 }, heroSub:{ size:40, wt:500, col:C.ink2 }, heroBy:{ size:24, wt:500, col:C.ink2 },
+  hero:{ size:76, wt:700, col:C.ink, ls:-0.018, lh:1.12 }, tln:{ size:19, wt:500, col:C.ink3 }, verdict:{ size:20, wt:500, col:C.ink, lh:1.35 }, heroSub:{ size:40, wt:500, col:C.ink2 }, heroBy:{ size:24, wt:500, col:C.ink2 },
   note:{ size:16, wt:500, col:C.ink3, ta:'middle', lh:1.3 }
 };
 function resolveText(e, idx) {
@@ -503,13 +688,20 @@ function resolveText(e, idx) {
     const m = /^(.*) ≈ ([\d.]+)%$/.exec(e.label), v = +m[2] / 100;
     sp.parts.push(txt('eq', e.label, 'tl', 0, 0, r.size, { wt:r.wt, col:C.ink, ta:'middle',
       sc:[{ s:m[1], col:C.ink }, { s:' ≈ ', col:C.ink3 }, { s:m[2] + '%', col:pcolText(v) }] }));
-  } else String(e.label).split('\n').forEach((l, i) =>
-    sp.parts.push(txt(e.role, l, 'tl', 0, i * r.size * (r.lh || 1.25), r.size, { wt:r.wt, col:e.col || r.col, ta:e.ta || r.ta || 'start', ls:r.ls || 0 })));
+  } else String(e.label).split('\n').forEach((l, i) => {
+    const m = /^(.*?)\s*([✓✗])\s*$/.exec(l), s = m ? m[1] : l, dy = i * r.size * (r.lh || 1.25), ta = e.ta || r.ta || 'start';
+    sp.parts.push(txt(e.role, s, 'tl', 0, dy, r.size, { wt:r.wt, col:e.col || r.col, ta, ls:r.ls || 0 }));
+    if (m) {    // a drawn ✓ / ✗ after the line, in the semantic colours
+      const rr = r.size * 0.42, w = measure(s, r.size, r.wt);
+      sp.parts.push({ key:'mk:' + s, t:'mark', kind:m[2] === '✓' ? 'check' : 'cross', anchor:'tl', dx:(ta === 'start' ? w : ta === 'middle' ? w / 2 : 0) + rr + 7,
+                      dy:dy - r.size * 0.34, r:rr, bg:m[2] === '✓' ? C.good : C.bad, fg:'#FFFFFF', op:1 });
+    }
+  });
   return sp;
 }
 
 /* ---------- arrows: orthogonal routes (rounded), or an arch for the redo loop ---------- */
-const ASTY = { solid:{ col:C.arrow, sw:2 }, strong:{ col:C.ink2, sw:2.25 }, door:{ col:C.ink, sw:2.6 }, gate:{ col:C.check, sw:2.5 }, bad:{ col:C.bad, sw:3.5 }, back:{ col:C.check, sw:3.2 } };
+const ASTY = { solid:{ col:C.arrow, sw:2 }, strong:{ col:C.ink2, sw:2.25 }, door:{ col:C.ink, sw:2.6 }, gate:{ col:C.check, sw:2.5 }, bad:{ col:C.bad, sw:3.5 }, back:{ col:C.check, sw:3.2 }, dash:{ col:C.arrow, sw:2, dash:'6 6' }, link:{ col:C.warnLine, sw:2.5, dash:'5 5', nohead:1 } };
 function route(e, a, b) {
   const fs = e.fs || 'r', ts = e.ts || 'l';
   if (e.shape === 'arch') {
@@ -546,7 +738,7 @@ function route(e, a, b) {
 function resolveArrow(e, idx, M) {
   const k = e.k || 'solid', st = ASTY[k], r = route(e, M.get(e.from).box, M.get(e.to).box);
   return { id:e.id, type:'arrow', def:e, from:e.from, to:e.to, layer:k === 'bad' ? 4 : 2, ord:idx, mode:r.mode, pts:r.pts,
-           col:st.col, sw:st.sw, k, o:1, draw:1, label:e.label || null, at:e.at };
+           col:st.col, sw:st.sw, k, o:1, draw:1, label:e.label || null, at:e.at, dash:st.dash || null, nohead:!!st.nohead, ldx:e.ldx || 0, ldy:e.ldy || 0 };
 }
 
 const CACHE = new Map();
@@ -588,12 +780,27 @@ function lerpPart(pa, pb, aBox, bBox, g, c, gp) {
   if (pa.sc && pb.sc) r.sc = pb.sc.map((s, i) => ({ ...s, col:mixc(pa.sc[i]?.col || s.col, s.col, c) }));
   return r;
 }
-function mixBox(a, b, t, g) {
+// Per-element motion: gw = its own time window, path 'yx'/'xy' = an L-shaped move (one axis first),
+// hop = it fades while it travels (for swaps). The reverse transition mirrors the window and the path.
+// The options belong to the transition INTO the slide that declares them: forward they come from b, backwards they are a's, mirrored.
+function geoOf(a, b, t, rev) {
+  let gw = rev ? null : b.gw, path = rev ? null : b.path, hop = rev ? 0 : b.hop;
+  if (rev && (a.gw || a.hop)) { gw = a.gw && [1 - a.gw[1], 1 - a.gw[0]]; path = a.path === 'yx' ? 'xy' : a.path === 'xy' ? 'yx' : a.path; hop = a.hop; }
+  if (!gw && !hop) return null;
+  gw = gw || TM.geo;
+  const w0 = gw[0], d = gw[1] - gw[0], u = seg(t, w0, gw[1]), g = inOutCubic(u);
+  let gx = g, gy = g;
+  if (path === 'yx') { gy = inOutCubic(seg(t, w0, w0 + 0.6 * d)); gx = inOutCubic(seg(t, w0 + 0.4 * d, gw[1])); }
+  if (path === 'xy') { gx = inOutCubic(seg(t, w0, w0 + 0.6 * d)); gy = inOutCubic(seg(t, w0 + 0.4 * d, gw[1])); }
+  return { g, gx, gy, op:hop ? clamp01((Math.abs(u - 0.5) - 0.2) / 0.22) : 1, end:gw[1] };
+}
+function mixBox(a, b, t, g, rev) {
+  const cg = geoOf(a, b, t, rev); if (cg) g = cg.g;
   // a "late" element changes state after the rest has landed (the check catching the fare)
   const lw = b.late, c = inOutCubic(seg(t, ...(lw || TM.color)));
   const xo = outCubic(seg(t, ...(lw ? [lw[0] - 0.06, lw[0] + 0.1] : TM.out)));
   const xi = outCubic(seg(t, ...(lw || (b.k === 'text' ? TM.in : TM.inBox)))), gp = inOutCubic(seg(t, ...TM.place));
-  const box = lerpRect(a.box, b.box, g);
+  const box = cg ? { x:L(a.box.x, b.box.x, cg.gx), y:L(a.box.y, b.box.y, cg.gy), w:L(a.box.w, b.box.w, g), h:L(a.box.h, b.box.h, g) } : lerpRect(a.box, b.box, g);
   let shape = b.shape;
   if (a.shape && b.shape) shape = { rx:L(a.shape.rx, b.shape.rx, g), fill:mixc(a.shape.fill, b.shape.fill, c), stroke:mixc(a.shape.stroke, b.shape.stroke, c),
                                     sw:L(a.shape.sw, b.shape.sw, c), dash:c < 0.5 ? a.shape.dash : b.shape.dash };
@@ -604,16 +811,26 @@ function mixBox(a, b, t, g) {
   for (const p of a.parts) if (!pb.has(p.key)) parts.push({ ...p, op:(p.op ?? 1) * (1 - xo) });
   for (const p of b.parts) {
     const q = pa.get(p.key);
-    if (!q) { parts.push({ ...p, op:(p.op ?? 1) * xi, ddy:4 * (1 - xi) }); continue; }
+    if (!q) { parts.push({ ...p, op:(p.op ?? 1) * xi, ddy:b.box.h > 60 ? 4 * (1 - xi) : 0 }); continue; }
     const r = lerpPart(q, p, a.box, b.box, g, c, gp);
     if (flips && (p.t === 'text' || p.t === 'pct') && isHex(q.col) && isHex(p.col) && q.col !== p.col)
       r.col = contrast(q.col, shape.fill) >= contrast(p.col, shape.fill) ? q.col : p.col;
     parts.push(r);
   }
-  return { ...b, box, shape, parts, lift:L(a.lift, b.lift, c), o:1, halo:0 };
+  return { ...b, box, shape, parts, lift:L(a.lift, b.lift, c), o:cg ? cg.op : 1, halo:0, ...(cg ? { custom:1, t0:cg.end } : {}) };
 }
+// Pairs that share no structure: only these ids morph, everything else leaves and the new scene builds in.
+const SCENES = { 'F5b>F7a':['ttl', 'cap', 'clock', 'q', 'ans', 'ai'], 'F8>N1':['ttl', 'cap'], 'R3>R6':['ttl', 'cap'], 'R6>R5a':['ttl', 'cap'] };
 function mix(RA, RB, t) {
-  const A = RA.map, Bm = RB.map;
+  const sc = SCENES[RA.id + '>' + RB.id] || SCENES[RB.id + '>' + RA.id];
+  const same = id => !sc || sc.includes(id);
+  // in a scene change an old element never turns into a new one that happens to share its id: it is renamed and leaves
+  const textSwap = id => { const a = RA.map.get(id), b = RB.map.get(id);
+    return a && b && a.k === 'text' && b.k === 'text' && (a.box.x !== b.box.x || a.box.y !== b.box.y) && !a.parts.some(p => b.parts.some(q => q.key === p.key)); };
+  const ren = id => same(id) && !textSwap(id) ? id : 'old:' + id;
+  const A = new Map([...RA.map].map(([id, v]) => {
+    const n = { ...v, id:ren(id) }; if (v.type === 'arrow') { n.from = ren(v.from); n.to = ren(v.to); } return [ren(id), n]; }));
+  const Bm = RB.map, e0 = sc ? 0.34 : TM.enter0, rev = ORDER.indexOf(RB.id) < ORDER.indexOf(RA.id);
   const g = inOutCubic(seg(t, ...TM.geo)), c = inOutCubic(seg(t, ...TM.color)), ex = outCubic(seg(t, ...TM.exit));
   const cur = new Map(), list = [];
   // entering elements without an explicit rank are staggered left to right
@@ -621,8 +838,8 @@ function mix(RA, RB, t) {
   for (const [id, b] of Bm) {
     if (b.type !== 'box') continue;
     const a = A.get(id);
-    if (a) { const m = mixBox(a, b, t, g); cur.set(id, m); list.push(m); continue; }
-    const s0 = b.at ?? TM.enter0 + TM.enterStep * autoRank(b), u = outQuart(seg(t, s0, s0 + TM.enterDur)), uo = outCubic(seg(t, s0, s0 + TM.enterDur * 0.7));
+    if (a) { const m = mixBox(a, b, t, g, rev); cur.set(id, m); list.push(m); continue; }
+    const s0 = b.at ?? e0 + TM.enterStep * autoRank(b), u = outQuart(seg(t, s0, s0 + TM.enterDur)), uo = outCubic(seg(t, s0, s0 + TM.enterDur * 0.7));
     const en = b.enter || {};
     let box;
     if (en.from && A.has(en.from)) box = lerpRect(A.get(en.from).box, b.box, u);     // splits off an existing element
@@ -635,10 +852,11 @@ function mix(RA, RB, t) {
     if (a.enter && a.enter.from && Bm.has(a.enter.from)) box = lerpRect(a.box, Bm.get(a.enter.from).box, g);   // merges back
     const m = { ...a, box, o:1 - ex, ord:a.ord + 0.5 }; cur.set(id, m); list.push(m);
   }
+  const own = n => { const m = cur.get(n); return m && m.custom; };
   for (const [id, b] of Bm) {
     if (b.type !== 'arrow') continue;
     const a = A.get(id);
-    if (a && a.mode === b.mode) {
+    if (a && a.mode === b.mode && !own(b.from) && !own(b.to)) {
       const pts = a.pts.map((p, i) => [L(p[0], b.pts[i][0], g), L(p[1], b.pts[i][1], g)]);
       list.push({ ...b, pts, col:mixc(a.col, b.col, c), sw:L(a.sw, b.sw, c), labelA:a.label !== b.label ? a.label : null, lx:[1 - seg(t, ...TM.out), seg(t, ...TM.in)] });
       continue;
@@ -649,7 +867,7 @@ function mix(RA, RB, t) {
     list.push({ ...b, pts:r.pts, mode:r.mode, draw:d, o:d > 0 ? Math.min(fa.o, fb.o, 1) : 0 });
   }
   for (const [id, a] of A) {
-    if (a.type !== 'arrow' || Bm.has(id)) continue;
+    if (a.type !== 'arrow' || (Bm.has(id) && !own(a.from) && !own(a.to))) continue;
     const fa = cur.get(a.from), fb = cur.get(a.to), r = fa && fb ? route(a.def, fa.box, fb.box) : a;
     list.push({ ...a, pts:r.pts, mode:r.mode, o:1 - outCubic(seg(t, 0, 0.2)), ord:a.ord + 0.5 });
   }
@@ -692,6 +910,24 @@ function drawPart(p, b) {
         : `M${f1(x - r * 0.36)},${f1(y - r * 0.36)} L${f1(x + r * 0.36)},${f1(y + r * 0.36)} M${f1(x + r * 0.36)},${f1(y - r * 0.36)} L${f1(x - r * 0.36)},${f1(y + r * 0.36)}`;
       return `<g${o}><circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${p.bg}"/><path d="${path}" fill="none" stroke="${p.fg}" stroke-width="${f1(r * 0.24)}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
     }
+    case 'motif': {   // F1: question → a fork into three copies → back into one answer, as hairline outlines
+      const X = v => f1(b.x + v), Y = v => f1(b.y + v), st = 'fill="#FFFFFF" stroke="#C4CDD6" stroke-width="2"', ln = 'fill="none" stroke="#CBD3DB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+      const lanes = [76, 210, 344];
+      let g = `<g${o}>`;
+      g += `<rect x="${X(0)}" y="${Y(176)}" width="78" height="68" rx="12" ${st}/>`;                       // the question
+      g += `<path d="M${X(78)},${Y(210)} L${X(108)},${Y(210)}" ${ln}/><circle cx="${X(116)}" cy="${Y(210)}" r="7" fill="#C4CDD6"/>`;
+      g += `<path d="M${X(123)},${Y(210)} L${X(132)},${Y(210)} M${X(138)},${Y(lanes[0] + 8)} L${X(138)},${Y(lanes[2] - 8)}" ${ln}/>`;
+      lanes.forEach(y => {
+        g += `<path d="M${X(138)},${Y(y)} L${X(160)},${Y(y)}" ${ln}/>`;
+        g += `<rect x="${X(160)}" y="${Y(y - 26)}" width="74" height="52" rx="10" ${st}/><rect x="${X(258)}" y="${Y(y - 26)}" width="74" height="52" rx="10" ${st}/>`;
+        g += `<path d="M${X(234)},${Y(y)} L${X(258)},${Y(y)} M${X(332)},${Y(y)} L${X(354)},${Y(y)}" ${ln}/>`;
+      });
+      g += `<path d="M${X(354)},${Y(lanes[0] + 8)} L${X(354)},${Y(lanes[2] - 8)} M${X(360)},${Y(210)} L${X(368)},${Y(210)}" ${ln}/><circle cx="${X(375)}" cy="${Y(210)}" r="7" fill="#C4CDD6"/>`;
+      g += `<path d="M${X(382)},${Y(210)} L${X(404)},${Y(210)}" ${ln}/>`;
+      g += `<rect x="${X(404)}" y="${Y(176)}" width="78" height="68" rx="12" ${st}/>`;                     // the answer
+      g += `<rect x="${X(418)}" y="${Y(222)}" width="50" height="6" rx="3" fill="#DCE2E8"/><rect x="${X(418)}" y="${Y(222)}" width="38" height="6" rx="3" fill="#B9D9C6"/>`;
+      return g + '</g>';
+    }
     case 'clock': {   // a stopwatch drawn as lines (no emoji)
       const r = p.r;
       return `<g${o} fill="none" stroke="${p.col}" stroke-width="2.2" stroke-linecap="round"><circle cx="${f1(x)}" cy="${f1(y + 1.5)}" r="${r}"/>` +
@@ -704,7 +940,7 @@ function drawBox(m) {
   const o = m.o ?? 1; if (o <= 0.004) return '';
   const b = m.box, s = m.shape;
   // data-card marks solid cards (not containers) so QA can check that no card ever slides across another
-  const card = !['region', 'world', 'board', 'door', 'text', 'rule', 'panel', 'zone'].includes(m.k) && !(m.k === 'verify' && m.container);
+  const card = !['region', 'world', 'board', 'door', 'text', 'rule', 'panel', 'zone', 'node', 'motif', 'seg'].includes(m.k) && !(m.k === 'verify' && m.container);
   let g = `<g data-id="${m.id}" data-k="${m.k}"${card ? ' data-card="1"' : ''} data-box="${f1(b.x)},${f1(b.y)},${f1(b.w)},${f1(b.h)}"${o < 1 ? ` opacity="${o.toFixed(3)}"` : ''}>`;
   if (m.halo > 0 && m.halo < 1) {      // a brief ring on what changed, after the morph lands
     const u = m.halo, e = 5 + 14 * outCubic(u), a = Math.sin(Math.PI * u) * 0.55, col = m.haloCol || (s && s.stroke !== 'none' ? s.stroke : C.ink);
@@ -748,7 +984,7 @@ function drawArrow(m) {
   if (!prev) return '';
   const dl = Math.hypot(end[0] - prev[0], end[1] - prev[1]), dir = [(end[0] - prev[0]) / dl, (end[1] - prev[1]) / dl], nrm = [-dir[1], dir[0]];
   const hl = 8 + m.sw * 2.1, hw = 4 + m.sw * 1.35;
-  const short = [end[0] - dir[0] * hl * 0.75, end[1] - dir[1] * hl * 0.75];
+  const short = m.nohead ? end : [end[0] - dir[0] * hl * 0.75, end[1] - dir[1] * hl * 0.75];
   pts[pts.length - 1] = short;
   let d, len;
   if (m.mode === 'cubic') {
@@ -756,21 +992,31 @@ function drawArrow(m) {
     len = 0; let q = pts[0]; for (let i = 1; i <= 32; i++) { const r = bez(pts, i / 32); len += Math.hypot(r[0] - q[0], r[1] - q[1]); q = r; }
   } else ({ d, len } = orthoD(pts, 12));
   const dr = m.draw ?? 1;
-  const dash = dr < 1 ? ` stroke-dasharray="${f1(len + 2)} ${f1(len + 2)}" stroke-dashoffset="${f1((len + 2) * (1 - dr))}"` : '';
-  let s = `<g data-arrow="${esc(m.id)}"${o < 1 ? ` opacity="${o.toFixed(3)}"` : ''}><path d="${d}" fill="none" stroke="${m.col}" stroke-width="${f1(m.sw)}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`;
-  const ho = clamp01((dr - 0.82) / 0.18);
+  // dashed lines cannot also use the dash trick to draw on, so they fade in instead
+  const dash = m.dash ? ` stroke-dasharray="${m.dash}"` : dr < 1 ? ` stroke-dasharray="${f1(len + 2)} ${f1(len + 2)}" stroke-dashoffset="${f1((len + 2) * (1 - dr))}"` : '';
+  const oo = m.dash && dr < 1 ? o * dr : o;
+  let s = `<g data-arrow="${esc(m.id)}"${oo < 1 ? ` opacity="${oo.toFixed(3)}"` : ''}><path d="${d}" fill="none" stroke="${m.col}" stroke-width="${f1(m.sw)}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`;
+  const ho = m.nohead ? 0 : clamp01((dr - 0.82) / 0.18);
   if (ho > 0) s += `<path d="M${f1(end[0])},${f1(end[1])} L${f1(end[0] - dir[0] * hl + nrm[0] * hw)},${f1(end[1] - dir[1] * hl + nrm[1] * hw)} L${f1(end[0] - dir[0] * hl * 0.72)},${f1(end[1] - dir[1] * hl * 0.72)} L${f1(end[0] - dir[0] * hl - nrm[0] * hw)},${f1(end[1] - dir[1] * hl - nrm[1] * hw)}Z" fill="${m.col}" stroke="${m.col}" stroke-width="1" stroke-linejoin="round"${ho < 1 ? ` opacity="${ho.toFixed(3)}"` : ''}/>`;
   const lo = clamp01((dr - 0.55) / 0.3);
   if (m.label && lo > 0) {
     const at = m.mode === 'cubic' ? bez(m.pts, 0.5) : [(m.pts[0][0] + m.pts[3][0]) / 2, (m.pts[1][1] + m.pts[2][1]) / 2];
     const lop = (m.lx ? m.lx[1] : 1) * lo;
-    s += arrowLabel(m.label, m.k, at, lop);
-    if (m.labelA) s += arrowLabel(m.labelA, m.k, at, m.lx[0]);
+    const at2 = [at[0] + (m.ldx || 0), at[1] + (m.ldy || 0)];
+    s += arrowLabel(m.label, m.k, at2, lop);
+    if (m.labelA) s += arrowLabel(m.labelA, m.k, at2, m.lx[0]);
   }
   return s + '</g>';
 }
 function arrowLabel(label, k, at, op) {
   if (op <= 0.004) return '';
+  if (k === 'link')        // "must agree": a quiet amber label beside the dashed link
+    return `<g data-free="1" opacity="${op.toFixed(3)}">` + textEl({ s:label, size:18, wt:600, fam:'sans', col:C.warn, ta:'start' }, at[0] + 12, at[1] + 6.3, 1) + '</g>';
+  if (k === 'badtxt') {    // a red caption on a red arrow, in a white pill so it never sits on a line
+    const size = 19, tw = measure(label, size, 600), h = 34, w = tw + 26, x = at[0] - w / 2, y = at[1] - h / 2;
+    return `<g data-free="1" opacity="${op.toFixed(3)}"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="#FFFFFF" stroke="${C.bad}" stroke-width="1.5"/>` +
+      textEl({ s:label, size, wt:600, fam:'sans', col:C.bad, ta:'middle' }, at[0], y + h / 2 + size * 0.35, 1) + '</g>';
+  }
   if (k === 'bad') {
     const s = label.replace(/^✗\s*/, ''), size = 20, tw = measure(s, size, 600), h = 44, w = tw + 30 + 44 + 4, x = at[0] - w / 2, y = at[1] - h / 2;
     return `<g data-free="1" opacity="${op.toFixed(3)}"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="#FFFFFF" stroke="${C.bad}" stroke-width="2"/>` +
