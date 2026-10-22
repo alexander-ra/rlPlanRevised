@@ -1,0 +1,9572 @@
+{
+ "about": "Frames from deliverables/agentic_ai_study/lofi/storyboard.html (1600x900 logical canvas). Element kinds: t=box|text|arrow; box k = region|node|io|agent|verify|board|human|ext|chip|seg|exact|think|model|clock|control; s = state (bad|warn|good|dim); p = probability badge; nl = pill label above the box; sub = secondary lines; arrows: from/to ids, fs/ts = side (l|r|t|b), cx/cy = curve offset, k = solid|dash|back|bad. Text lines are separated by \\n.",
+ "sequence": [
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5a",
+  "F5b",
+  "F7a",
+  "F7b",
+  "F7c",
+  "F8",
+  "N1",
+  "N2",
+  "N3",
+  "F9",
+  "R0",
+  "R4",
+  "R1",
+  "R2",
+  "R3",
+  "R6",
+  "R5a",
+  "R5b"
+ ],
+ "frames": [
+  {
+   "id": "F1",
+   "section": "M1",
+   "title": "Title",
+   "spokenSeconds": 15,
+   "speakerNote": "Hook: we hand an AI a real task. How likely is the answer to be right, and what changes when many copies work on it?",
+   "elements": [
+    {
+     "id": "t1",
+     "t": "text",
+     "x": 100,
+     "y": 360,
+     "w": 0,
+     "h": 0,
+     "label": "Multi-Agent AI for Complex Problem Solving",
+     "size": 58,
+     "weight": 700
+    },
+    {
+     "id": "t2",
+     "t": "text",
+     "x": 100,
+     "y": 440,
+     "w": 0,
+     "h": 0,
+     "label": "Opportunities and Risks",
+     "size": 36,
+     "color": "#2f7d74"
+    },
+    {
+     "id": "t3",
+     "t": "text",
+     "x": 100,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "Alexander Andreev · University of Ruse \"Angel Kanchev\"",
+     "size": 24
+    }
+   ]
+  },
+  {
+   "id": "F2",
+   "section": "M1",
+   "title": "One question, one answer",
+   "spokenSeconds": 45,
+   "speakerNote": "The simplest case: one question in, one answer out, in about two seconds. Say it's right 6 times out of 10: an illustrative number we'll follow through the talk.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "One question, one answer",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Illustrative number: the chance the final answer is right.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~2 s",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 100,
+     "y": 380,
+     "w": 280,
+     "h": 140,
+     "label": "Question",
+     "k": "io",
+     "sub": "Should I drive or take\nthe train to Sofia?"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 660,
+     "y": 380,
+     "w": 280,
+     "h": 140,
+     "label": "AI model",
+     "k": "model"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1220,
+     "y": 380,
+     "w": 280,
+     "h": 140,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.6
+    },
+    {
+     "id": "a:q>ai",
+     "t": "arrow",
+     "from": "q",
+     "to": "ai"
+    },
+    {
+     "id": "a:ai>ans",
+     "t": "arrow",
+     "from": "ai",
+     "to": "ans"
+    }
+   ]
+  },
+  {
+   "id": "F3",
+   "section": "M2",
+   "title": "A real task has many steps",
+   "spokenSeconds": 50,
+   "speakerNote": "Real questions need several steps: search, search, search, calculate, answer. If each is 95% right, all five are right only 77% of the time. Stretch it to a thousand steps and even 99.9% per step leaves just 37%.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "A real task has many steps",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "5 steps × 95% each → 0.95⁵ ≈ 77%. Every step must be right.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~10 s",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 280,
+     "y": 350,
+     "w": 1110,
+     "h": 200,
+     "label": "AI model",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 60,
+     "y": 390,
+     "w": 200,
+     "h": 120,
+     "label": "Question",
+     "k": "io",
+     "sub": "Which is cheaper from\nRuse to Sofia — driving\nor taking the train?"
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 300,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Search\nroad distance",
+     "p": 0.95
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 520,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Search\nfuel price",
+     "p": 0.95
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 740,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Search\ntrain fares",
+     "p": 0.95
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 960,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Calculate\nboth costs",
+     "p": 0.95
+    },
+    {
+     "id": "s5",
+     "t": "box",
+     "x": 1180,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Compare\n& answer",
+     "p": 0.95
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1400,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.7737809374999998
+    },
+    {
+     "id": "a:q>s1",
+     "t": "arrow",
+     "from": "q",
+     "to": "s1"
+    },
+    {
+     "id": "a:s1>s2",
+     "t": "arrow",
+     "from": "s1",
+     "to": "s2"
+    },
+    {
+     "id": "a:s2>s3",
+     "t": "arrow",
+     "from": "s2",
+     "to": "s3"
+    },
+    {
+     "id": "a:s3>s4",
+     "t": "arrow",
+     "from": "s3",
+     "to": "s4"
+    },
+    {
+     "id": "a:s4>s5",
+     "t": "arrow",
+     "from": "s4",
+     "to": "s5"
+    },
+    {
+     "id": "a:s5>ans",
+     "t": "arrow",
+     "from": "s5",
+     "to": "ans"
+    },
+    {
+     "id": "pow0",
+     "t": "text",
+     "x": 269,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.95⁵ ≈ 77%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow1",
+     "t": "text",
+     "x": 540.5,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.95¹⁰ ≈ 60%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow2",
+     "t": "text",
+     "x": 828.5,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.95¹⁰⁰ ≈ 1%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow3",
+     "t": "text",
+     "x": 1116.5,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.95¹⁰⁰⁰ ≈ 0%",
+     "size": 30,
+     "weight": 600
+    }
+   ]
+  },
+  {
+   "id": "F4",
+   "section": "M3",
+   "title": "Thinking before each step",
+   "spokenSeconds": 50,
+   "speakerNote": "Reasoning models think before each step, a skill trained with reinforcement learning on problems with checkable answers. At 98% per step the chain climbs to 90%. The longer the task, the more every point per step matters.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Thinking before each step",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~1 min",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 280,
+     "y": 350,
+     "w": 1110,
+     "h": 250,
+     "label": "AI model",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 60,
+     "y": 365,
+     "w": 200,
+     "h": 170,
+     "label": "Question",
+     "k": "io",
+     "sub": "Which is cheaper from\nRuse to Sofia — driving\nor taking the train?\n**Think hard and**\n**describe the answer**\n**step by step.**"
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 300,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Search\nroad distance",
+     "p": 0.98
+    },
+    {
+     "id": "th1",
+     "t": "box",
+     "x": 320,
+     "y": 525,
+     "w": 150,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 520,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Search\nfuel price",
+     "p": 0.98
+    },
+    {
+     "id": "th2",
+     "t": "box",
+     "x": 540,
+     "y": 525,
+     "w": 150,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 740,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Search\ntrain fares",
+     "p": 0.98
+    },
+    {
+     "id": "th3",
+     "t": "box",
+     "x": 760,
+     "y": 525,
+     "w": 150,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 960,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Calculate\nboth costs",
+     "p": 0.98
+    },
+    {
+     "id": "th4",
+     "t": "box",
+     "x": 980,
+     "y": 525,
+     "w": 150,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s5",
+     "t": "box",
+     "x": 1180,
+     "y": 390,
+     "w": 190,
+     "h": 120,
+     "label": "Compare\n& answer",
+     "p": 0.98
+    },
+    {
+     "id": "th5",
+     "t": "box",
+     "x": 1200,
+     "y": 525,
+     "w": 150,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1400,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.9039207967999999
+    },
+    {
+     "id": "a:q>s1",
+     "t": "arrow",
+     "from": "q",
+     "to": "s1"
+    },
+    {
+     "id": "a:s1>s2",
+     "t": "arrow",
+     "from": "s1",
+     "to": "s2"
+    },
+    {
+     "id": "a:s2>s3",
+     "t": "arrow",
+     "from": "s2",
+     "to": "s3"
+    },
+    {
+     "id": "a:s3>s4",
+     "t": "arrow",
+     "from": "s3",
+     "to": "s4"
+    },
+    {
+     "id": "a:s4>s5",
+     "t": "arrow",
+     "from": "s4",
+     "to": "s5"
+    },
+    {
+     "id": "a:s5>ans",
+     "t": "arrow",
+     "from": "s5",
+     "to": "ans"
+    },
+    {
+     "id": "pow0",
+     "t": "text",
+     "x": 260.75,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.98⁵ ≈ 90%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow1",
+     "t": "text",
+     "x": 532.25,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.98¹⁰ ≈ 82%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow2",
+     "t": "text",
+     "x": 820.25,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.98¹⁰⁰ ≈ 13%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow3",
+     "t": "text",
+     "x": 1124.75,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.98¹⁰⁰⁰ ≈ 0%",
+     "size": 30,
+     "weight": 600
+    }
+   ]
+  },
+  {
+   "id": "F5a",
+   "section": "M4",
+   "title": "Tools and a check",
+   "spokenSeconds": 35,
+   "speakerNote": "Some steps can go to an exact tool: the calculator is simply right. The rest still involve judgement, so we add a check. In programming that's obvious: run the tests and read the error. For our trip it is four independent checks: do two sources agree, is the number in a sensible range, is the page current and in the right currency, does the arithmetic recompute. And here it catches a real trap: the train fare came from a 2025 page, in leva, and the euro arrived in January.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Tools and a check",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~5 min",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 260,
+     "y": 300,
+     "w": 1150,
+     "h": 300,
+     "label": "AI model",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Question",
+     "k": "io",
+     "sub": "Which is cheaper from\nRuse to Sofia — driving\nor taking the train?"
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 280,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Search\nroad distance",
+     "p": 0.98,
+     "sub": "web search",
+     "fs": 20
+    },
+    {
+     "id": "th1",
+     "t": "box",
+     "x": 290,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 470,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Search\nfuel price",
+     "p": 0.98,
+     "sub": "web search",
+     "fs": 20
+    },
+    {
+     "id": "th2",
+     "t": "box",
+     "x": 480,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 660,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Search\ntrain fares",
+     "p": 0.98,
+     "sub": "2025 page · 23 лв",
+     "s": "bad",
+     "fs": 20
+    },
+    {
+     "id": "th3",
+     "t": "box",
+     "x": 670,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 850,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Calculate\nboth costs",
+     "p": 1,
+     "k": "exact",
+     "sub": "calculator · exact",
+     "fs": 20
+    },
+    {
+     "id": "s5",
+     "t": "box",
+     "x": 1040,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Compare\n& answer",
+     "p": 0.98,
+     "sub": "",
+     "fs": 20
+    },
+    {
+     "id": "th5",
+     "t": "box",
+     "x": 1050,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "v",
+     "t": "box",
+     "x": 1225,
+     "y": 320,
+     "w": 175,
+     "h": 260,
+     "label": "Check",
+     "k": "verify",
+     "ltop": true,
+     "fs": 20
+    },
+    {
+     "id": "ck1",
+     "t": "box",
+     "x": 1235,
+     "y": 370,
+     "w": 155,
+     "h": 40,
+     "label": "sources agree ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ck2",
+     "t": "box",
+     "x": 1235,
+     "y": 420,
+     "w": 155,
+     "h": 40,
+     "label": "sensible range ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ck3",
+     "t": "box",
+     "x": 1235,
+     "y": 470,
+     "w": 155,
+     "h": 40,
+     "label": "date & currency ✗",
+     "k": "chip",
+     "s": "bad",
+     "fs": 15
+    },
+    {
+     "id": "ck4",
+     "t": "box",
+     "x": 1235,
+     "y": 520,
+     "w": 155,
+     "h": 40,
+     "label": "recompute ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.9223681599999999,
+     "sub": "on hold"
+    },
+    {
+     "id": "a:q>s1",
+     "t": "arrow",
+     "from": "q",
+     "to": "s1"
+    },
+    {
+     "id": "a:s1>s2",
+     "t": "arrow",
+     "from": "s1",
+     "to": "s2"
+    },
+    {
+     "id": "a:s2>s3",
+     "t": "arrow",
+     "from": "s2",
+     "to": "s3"
+    },
+    {
+     "id": "a:s3>s4",
+     "t": "arrow",
+     "from": "s3",
+     "to": "s4"
+    },
+    {
+     "id": "a:s4>s5",
+     "t": "arrow",
+     "from": "s4",
+     "to": "s5"
+    },
+    {
+     "id": "a:s5>v",
+     "t": "arrow",
+     "from": "s5",
+     "to": "v"
+    },
+    {
+     "id": "a:v>ans",
+     "t": "arrow",
+     "from": "v",
+     "to": "ans"
+    },
+    {
+     "id": "back",
+     "t": "arrow",
+     "from": "v",
+     "to": "s3",
+     "fs": "t",
+     "ts": "t",
+     "cy": -230,
+     "k": "bad",
+     "label": "✗ fare from a 2025 page, in leva"
+    }
+   ]
+  },
+  {
+   "id": "F5b",
+   "section": "M4",
+   "title": "Redo, with the reason",
+   "spokenSeconds": 35,
+   "speakerNote": "What comes back matters. Not just 'wrong', but why: an old page, the wrong currency. So the second attempt is different: it looks for the current fare in euros. Checked like this, each step goes from 98 to 99.99 percent, and the chain to about 99.96. Two caveats. If the check is just the same model asking itself 'are you sure?', it repeats its own mistake. And after a few failed tries it should stop and tell you it is unsure, not loop forever.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Redo, with the reason",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "The reason goes back with the redo, so attempt 2 is different. Checked steps 98% → 99.99%; chain ≈ 99.96%.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~6 min",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 260,
+     "y": 300,
+     "w": 1150,
+     "h": 300,
+     "label": "AI model",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Question",
+     "k": "io",
+     "sub": "Which is cheaper from\nRuse to Sofia — driving\nor taking the train?"
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 280,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Search\nroad distance",
+     "p": 0.9999,
+     "sub": "web search",
+     "fs": 20
+    },
+    {
+     "id": "th1",
+     "t": "box",
+     "x": 290,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 470,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Search\nfuel price",
+     "p": 0.9999,
+     "sub": "web search",
+     "fs": 20
+    },
+    {
+     "id": "th2",
+     "t": "box",
+     "x": 480,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 660,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Search\ntrain fares",
+     "p": 0.9999,
+     "sub": "attempt 2\n2026 page · €12",
+     "s": "good",
+     "fs": 20
+    },
+    {
+     "id": "th3",
+     "t": "box",
+     "x": 670,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 850,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Calculate\nboth costs",
+     "p": 1,
+     "k": "exact",
+     "sub": "calculator · exact",
+     "fs": 20
+    },
+    {
+     "id": "s5",
+     "t": "box",
+     "x": 1040,
+     "y": 390,
+     "w": 160,
+     "h": 120,
+     "label": "Compare\n& answer",
+     "p": 0.9999,
+     "sub": "",
+     "fs": 20
+    },
+    {
+     "id": "th5",
+     "t": "box",
+     "x": 1050,
+     "y": 525,
+     "w": 140,
+     "h": 40,
+     "label": "thinking…",
+     "k": "think",
+     "fs": 17
+    },
+    {
+     "id": "v",
+     "t": "box",
+     "x": 1225,
+     "y": 320,
+     "w": 175,
+     "h": 260,
+     "label": "Check",
+     "k": "verify",
+     "ltop": true,
+     "fs": 20
+    },
+    {
+     "id": "ck1",
+     "t": "box",
+     "x": 1235,
+     "y": 370,
+     "w": 155,
+     "h": 40,
+     "label": "sources agree ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ck2",
+     "t": "box",
+     "x": 1235,
+     "y": 420,
+     "w": 155,
+     "h": 40,
+     "label": "sensible range ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ck3",
+     "t": "box",
+     "x": 1235,
+     "y": 470,
+     "w": 155,
+     "h": 40,
+     "label": "date & currency ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ck4",
+     "t": "box",
+     "x": 1235,
+     "y": 520,
+     "w": 155,
+     "h": 40,
+     "label": "recompute ✓",
+     "k": "chip",
+     "s": "good",
+     "fs": 15
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.9996000599960001
+    },
+    {
+     "id": "a:q>s1",
+     "t": "arrow",
+     "from": "q",
+     "to": "s1"
+    },
+    {
+     "id": "a:s1>s2",
+     "t": "arrow",
+     "from": "s1",
+     "to": "s2"
+    },
+    {
+     "id": "a:s2>s3",
+     "t": "arrow",
+     "from": "s2",
+     "to": "s3"
+    },
+    {
+     "id": "a:s3>s4",
+     "t": "arrow",
+     "from": "s3",
+     "to": "s4"
+    },
+    {
+     "id": "a:s4>s5",
+     "t": "arrow",
+     "from": "s4",
+     "to": "s5"
+    },
+    {
+     "id": "a:s5>v",
+     "t": "arrow",
+     "from": "s5",
+     "to": "v"
+    },
+    {
+     "id": "a:v>ans",
+     "t": "arrow",
+     "from": "v",
+     "to": "ans"
+    },
+    {
+     "id": "back",
+     "t": "arrow",
+     "from": "v",
+     "to": "s3",
+     "fs": "t",
+     "ts": "t",
+     "cy": -230,
+     "k": "back",
+     "label": "redo with the reason: find the 2026 fare in €"
+    },
+    {
+     "id": "retry",
+     "t": "text",
+     "x": 1225,
+     "y": 618,
+     "w": 0,
+     "h": 0,
+     "label": "max 3 tries, then tell\nthe human it is unsure",
+     "size": 16,
+     "color": "#55606a"
+    },
+    {
+     "id": "pow0",
+     "t": "text",
+     "x": 145.25,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.9999⁵ ≈ 99.95%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow1",
+     "t": "text",
+     "x": 499.25,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.9999¹⁰ ≈ 99.9%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow2",
+     "t": "text",
+     "x": 853.25,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.9999¹⁰⁰ ≈ 99%",
+     "size": 30,
+     "weight": 600
+    },
+    {
+     "id": "pow3",
+     "t": "text",
+     "x": 1190.75,
+     "y": 740,
+     "w": 0,
+     "h": 0,
+     "label": "0.9999¹⁰⁰⁰ ≈ 90%",
+     "size": 30,
+     "weight": 600
+    }
+   ]
+  },
+  {
+   "id": "F7a",
+   "section": "M6",
+   "title": "An open question takes many more steps",
+   "spokenSeconds": 35,
+   "speakerNote": "Now make the question open: the cheapest way to Sofia, arriving within 24 hours. Suddenly there are options to list, timetables, fares, free seats, the weather for the bike. Done one after another with thinking, tools and checks, that is around two hours.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "An open question takes many more steps",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Each step still thinks, uses tools and is checked. Reliable, but done one after another: ~2 h.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~2 h",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 250,
+     "y": 140,
+     "w": 1150,
+     "h": 610,
+     "label": "AI model",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Question",
+     "k": "io",
+     "sub": "Cheapest way\nRuse → Sofia,\narriving within 24 h?"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 370,
+     "y": 170,
+     "w": 150,
+     "h": 76,
+     "label": "List\noptions",
+     "fs": 18
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 560,
+     "y": 170,
+     "w": 150,
+     "h": 76,
+     "label": "Car:\ndistance",
+     "fs": 18
+    },
+    {
+     "id": "a:plan>s1",
+     "t": "arrow",
+     "from": "plan",
+     "to": "s1"
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 750,
+     "y": 170,
+     "w": 150,
+     "h": 76,
+     "label": "Car:\nfuel price",
+     "fs": 18
+    },
+    {
+     "id": "a:s1>s2",
+     "t": "arrow",
+     "from": "s1",
+     "to": "s2"
+    },
+    {
+     "id": "tr1",
+     "t": "box",
+     "x": 940,
+     "y": 170,
+     "w": 150,
+     "h": 76,
+     "label": "Train:\ntimetable",
+     "fs": 18
+    },
+    {
+     "id": "a:s2>tr1",
+     "t": "arrow",
+     "from": "s2",
+     "to": "tr1"
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 1130,
+     "y": 170,
+     "w": 150,
+     "h": 76,
+     "label": "Train:\nfares",
+     "fs": 18
+    },
+    {
+     "id": "a:tr1>s3",
+     "t": "arrow",
+     "from": "tr1",
+     "to": "s3"
+    },
+    {
+     "id": "tr3",
+     "t": "box",
+     "x": 1035,
+     "y": 412,
+     "w": 150,
+     "h": 76,
+     "label": "Train:\nseats left",
+     "fs": 18
+    },
+    {
+     "id": "a:s3>tr3",
+     "t": "arrow",
+     "from": "s3",
+     "to": "tr3",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "bu1",
+     "t": "box",
+     "x": 845,
+     "y": 412,
+     "w": 150,
+     "h": 76,
+     "label": "Bus:\ntimetable",
+     "fs": 18
+    },
+    {
+     "id": "a:tr3>bu1",
+     "t": "arrow",
+     "from": "tr3",
+     "to": "bu1",
+     "fs": "l",
+     "ts": "r"
+    },
+    {
+     "id": "bu2",
+     "t": "box",
+     "x": 655,
+     "y": 412,
+     "w": 150,
+     "h": 76,
+     "label": "Bus:\nfares",
+     "fs": 18
+    },
+    {
+     "id": "a:bu1>bu2",
+     "t": "arrow",
+     "from": "bu1",
+     "to": "bu2",
+     "fs": "l",
+     "ts": "r"
+    },
+    {
+     "id": "bu3",
+     "t": "box",
+     "x": 465,
+     "y": 412,
+     "w": 150,
+     "h": 76,
+     "label": "Bus:\nseats left",
+     "fs": 18
+    },
+    {
+     "id": "a:bu2>bu3",
+     "t": "arrow",
+     "from": "bu2",
+     "to": "bu3",
+     "fs": "l",
+     "ts": "r"
+    },
+    {
+     "id": "ri1",
+     "t": "box",
+     "x": 370,
+     "y": 654,
+     "w": 150,
+     "h": 76,
+     "label": "Rideshare:\noffers",
+     "fs": 18
+    },
+    {
+     "id": "a:bu3>ri1",
+     "t": "arrow",
+     "from": "bu3",
+     "to": "ri1",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "bk1",
+     "t": "box",
+     "x": 560,
+     "y": 654,
+     "w": 150,
+     "h": 76,
+     "label": "Bike:\nweather",
+     "fs": 18
+    },
+    {
+     "id": "a:ri1>bk1",
+     "t": "arrow",
+     "from": "ri1",
+     "to": "bk1"
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 750,
+     "y": 654,
+     "w": 150,
+     "h": 76,
+     "label": "Calculate\ncosts",
+     "fs": 18,
+     "k": "exact"
+    },
+    {
+     "id": "a:bk1>s4",
+     "t": "arrow",
+     "from": "bk1",
+     "to": "s4"
+    },
+    {
+     "id": "cmp",
+     "t": "box",
+     "x": 940,
+     "y": 654,
+     "w": 150,
+     "h": 76,
+     "label": "Compare\n(≤ 24 h)",
+     "fs": 18
+    },
+    {
+     "id": "a:s4>cmp",
+     "t": "arrow",
+     "from": "s4",
+     "to": "cmp"
+    },
+    {
+     "id": "v",
+     "t": "box",
+     "x": 1130,
+     "y": 654,
+     "w": 150,
+     "h": 76,
+     "label": "Check",
+     "fs": 18,
+     "k": "verify"
+    },
+    {
+     "id": "a:cmp>v",
+     "t": "arrow",
+     "from": "cmp",
+     "to": "v"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.9880657804942089
+    },
+    {
+     "id": "a:q>plan",
+     "t": "arrow",
+     "from": "q",
+     "to": "plan",
+     "ts": "l"
+    },
+    {
+     "id": "a:v>ans",
+     "t": "arrow",
+     "from": "v",
+     "to": "ans"
+    },
+    {
+     "id": "tl",
+     "t": "text",
+     "x": 40,
+     "y": 782,
+     "w": 0,
+     "h": 0,
+     "label": "time →",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "g_plan",
+     "t": "box",
+     "x": 160,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s1",
+     "t": "box",
+     "x": 255,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s2",
+     "t": "box",
+     "x": 350,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_tr1",
+     "t": "box",
+     "x": 445,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s3",
+     "t": "box",
+     "x": 540,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_tr3",
+     "t": "box",
+     "x": 635,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu1",
+     "t": "box",
+     "x": 730,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu2",
+     "t": "box",
+     "x": 825,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu3",
+     "t": "box",
+     "x": 920,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_ri1",
+     "t": "box",
+     "x": 1015,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bk1",
+     "t": "box",
+     "x": 1110,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s4",
+     "t": "box",
+     "x": 1205,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_cmp",
+     "t": "box",
+     "x": 1300,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_v",
+     "t": "box",
+     "x": 1395,
+     "y": 762,
+     "w": 95,
+     "h": 30,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "tln",
+     "t": "text",
+     "x": 160,
+     "y": 830,
+     "w": 0,
+     "h": 0,
+     "label": "14 steps, one after another",
+     "size": 18,
+     "color": "#55606a"
+    }
+   ]
+  },
+  {
+   "id": "F7b",
+   "section": "M6",
+   "title": "Copies take the options in parallel",
+   "spokenSeconds": 25,
+   "speakerNote": "The options don't depend on each other, so the orchestrator spawns one copy per option. Each copy is an agent: the same model with its own working memory. They run at the same time and the slowest copy sets the pace: about 25 minutes instead of two hours.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Copies take the options in parallel",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Each copy is an agent: the same model with its own working memory, spawned for one option.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~25 min",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 185,
+     "w": 1150,
+     "h": 520,
+     "label": "AI system",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Question",
+     "k": "io",
+     "sub": "Cheapest way\nRuse → Sofia,\narriving within 24 h?"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 255,
+     "y": 410,
+     "w": 120,
+     "h": 80,
+     "label": "List\noptions",
+     "fs": 18,
+     "sub": "orchestrator"
+    },
+    {
+     "id": "fk",
+     "t": "box",
+     "k": "node",
+     "x": 392,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 1032,
+     "y": 410,
+     "w": 100,
+     "h": 80,
+     "label": "Calculate\ncosts",
+     "k": "exact",
+     "fs": 18
+    },
+    {
+     "id": "cmp",
+     "t": "box",
+     "x": 1145,
+     "y": 410,
+     "w": 120,
+     "h": 80,
+     "label": "Compare\n(≤ 24 h)",
+     "fs": 18
+    },
+    {
+     "id": "v",
+     "t": "box",
+     "x": 1278,
+     "y": 410,
+     "w": 100,
+     "h": 80,
+     "label": "Check",
+     "k": "verify",
+     "fs": 18
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.9880657804942089
+    },
+    {
+     "id": "a:q>plan",
+     "t": "arrow",
+     "from": "q",
+     "to": "plan"
+    },
+    {
+     "id": "a:plan>fk",
+     "t": "arrow",
+     "from": "plan",
+     "to": "fk"
+    },
+    {
+     "id": "a:s4>cmp",
+     "t": "arrow",
+     "from": "s4",
+     "to": "cmp"
+    },
+    {
+     "id": "a:cmp>v",
+     "t": "arrow",
+     "from": "cmp",
+     "to": "v"
+    },
+    {
+     "id": "a:v>ans",
+     "t": "arrow",
+     "from": "v",
+     "to": "ans"
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 440,
+     "y": 215,
+     "w": 120,
+     "h": 70,
+     "label": "distance",
+     "fs": 18,
+     "sub": "copy 1 · car"
+    },
+    {
+     "id": "a:fk>s1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "s1"
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 570,
+     "y": 215,
+     "w": 120,
+     "h": 70,
+     "label": "fuel price",
+     "fs": 18,
+     "sub": ""
+    },
+    {
+     "id": "a:s1>s2",
+     "t": "arrow",
+     "from": "s1",
+     "to": "s2"
+    },
+    {
+     "id": "tr1",
+     "t": "box",
+     "x": 440,
+     "y": 315,
+     "w": 120,
+     "h": 70,
+     "label": "timetable",
+     "fs": 18,
+     "sub": "copy 2 · train"
+    },
+    {
+     "id": "a:fk>tr1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "tr1"
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 570,
+     "y": 315,
+     "w": 120,
+     "h": 70,
+     "label": "fares",
+     "fs": 18,
+     "sub": ""
+    },
+    {
+     "id": "a:tr1>s3",
+     "t": "arrow",
+     "from": "tr1",
+     "to": "s3"
+    },
+    {
+     "id": "tr3",
+     "t": "box",
+     "x": 700,
+     "y": 315,
+     "w": 120,
+     "h": 70,
+     "label": "seats left",
+     "fs": 18,
+     "sub": ""
+    },
+    {
+     "id": "a:s3>tr3",
+     "t": "arrow",
+     "from": "s3",
+     "to": "tr3"
+    },
+    {
+     "id": "bu1",
+     "t": "box",
+     "x": 440,
+     "y": 415,
+     "w": 120,
+     "h": 70,
+     "label": "timetable",
+     "fs": 18,
+     "sub": "copy 3 · bus"
+    },
+    {
+     "id": "a:fk>bu1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "bu1"
+    },
+    {
+     "id": "bu2",
+     "t": "box",
+     "x": 570,
+     "y": 415,
+     "w": 120,
+     "h": 70,
+     "label": "fares",
+     "fs": 18,
+     "sub": ""
+    },
+    {
+     "id": "a:bu1>bu2",
+     "t": "arrow",
+     "from": "bu1",
+     "to": "bu2"
+    },
+    {
+     "id": "bu3",
+     "t": "box",
+     "x": 700,
+     "y": 415,
+     "w": 120,
+     "h": 70,
+     "label": "seats left",
+     "fs": 18,
+     "sub": ""
+    },
+    {
+     "id": "a:bu2>bu3",
+     "t": "arrow",
+     "from": "bu2",
+     "to": "bu3"
+    },
+    {
+     "id": "ri1",
+     "t": "box",
+     "x": 440,
+     "y": 515,
+     "w": 120,
+     "h": 70,
+     "label": "offers",
+     "fs": 18,
+     "sub": "copy 4 · rideshare"
+    },
+    {
+     "id": "a:fk>ri1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "ri1"
+    },
+    {
+     "id": "bk1",
+     "t": "box",
+     "x": 440,
+     "y": 615,
+     "w": 120,
+     "h": 70,
+     "label": "weather",
+     "fs": 18,
+     "sub": "copy 5 · bike"
+    },
+    {
+     "id": "a:fk>bk1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "bk1"
+    },
+    {
+     "id": "mg",
+     "t": "box",
+     "k": "node",
+     "x": 992,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "a:s2>mg",
+     "t": "arrow",
+     "from": "s2",
+     "to": "mg"
+    },
+    {
+     "id": "a:tr3>mg",
+     "t": "arrow",
+     "from": "tr3",
+     "to": "mg"
+    },
+    {
+     "id": "a:bu3>mg",
+     "t": "arrow",
+     "from": "bu3",
+     "to": "mg"
+    },
+    {
+     "id": "a:ri1>mg",
+     "t": "arrow",
+     "from": "ri1",
+     "to": "mg"
+    },
+    {
+     "id": "a:bk1>mg",
+     "t": "arrow",
+     "from": "bk1",
+     "to": "mg"
+    },
+    {
+     "id": "a:mg>s4",
+     "t": "arrow",
+     "from": "mg",
+     "to": "s4"
+    },
+    {
+     "id": "tl",
+     "t": "text",
+     "x": 40,
+     "y": 782,
+     "w": 0,
+     "h": 0,
+     "label": "time →",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "g_plan",
+     "t": "box",
+     "x": 160,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s1",
+     "t": "box",
+     "x": 230,
+     "y": 712,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s2",
+     "t": "box",
+     "x": 300,
+     "y": 712,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_tr1",
+     "t": "box",
+     "x": 230,
+     "y": 732,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s3",
+     "t": "box",
+     "x": 300,
+     "y": 732,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_tr3",
+     "t": "box",
+     "x": 370,
+     "y": 732,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu1",
+     "t": "box",
+     "x": 230,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu2",
+     "t": "box",
+     "x": 300,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu3",
+     "t": "box",
+     "x": 370,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_ri1",
+     "t": "box",
+     "x": 230,
+     "y": 772,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bk1",
+     "t": "box",
+     "x": 230,
+     "y": 792,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_mg",
+     "t": "box",
+     "x": 440,
+     "y": 752,
+     "w": 30,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s4",
+     "t": "box",
+     "x": 470,
+     "y": 752,
+     "w": 50,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_cmp",
+     "t": "box",
+     "x": 520,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_v",
+     "t": "box",
+     "x": 590,
+     "y": 752,
+     "w": 110,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "tln",
+     "t": "text",
+     "x": 730,
+     "y": 768,
+     "w": 0,
+     "h": 0,
+     "label": "copies run at the same time: ~25 min instead of ~2 h",
+     "size": 18,
+     "color": "#55606a"
+    }
+   ]
+  },
+  {
+   "id": "F7c",
+   "section": "M6",
+   "title": "Copies split again, stop early, report back",
+   "spokenSeconds": 25,
+   "speakerNote": "Copies adapt. The train copy finds two routes and splits into two helpers. The car copy does the same with two roads, through Pleven or through Veliko Tarnovo, and the two halves merge back before it reports. The bike copy sees a storm and stops early. The bus copy finds the first bus full and checks the next one. Each finishes with a short result. Each copy reports back, and nothing is compared until the slowest one is done.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Copies split again, stop early, report back",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "One task run by many threads, not a team of people.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~20 min",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 150,
+     "w": 1150,
+     "h": 555,
+     "label": "AI system",
+     "k": "region"
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Question",
+     "k": "io",
+     "sub": "Cheapest way\nRuse → Sofia,\narriving within 24 h?"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 255,
+     "y": 410,
+     "w": 120,
+     "h": 80,
+     "label": "List\noptions",
+     "fs": 18,
+     "sub": "orchestrator"
+    },
+    {
+     "id": "fk",
+     "t": "box",
+     "k": "node",
+     "x": 392,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "s4",
+     "t": "box",
+     "x": 1032,
+     "y": 410,
+     "w": 100,
+     "h": 80,
+     "label": "Calculate\ncosts",
+     "k": "exact",
+     "fs": 18
+    },
+    {
+     "id": "cmp",
+     "t": "box",
+     "x": 1145,
+     "y": 410,
+     "w": 120,
+     "h": 80,
+     "label": "Compare\n(≤ 24 h)",
+     "fs": 18
+    },
+    {
+     "id": "v",
+     "t": "box",
+     "x": 1278,
+     "y": 410,
+     "w": 100,
+     "h": 80,
+     "label": "Check",
+     "k": "verify",
+     "fs": 18
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Answer",
+     "k": "io",
+     "p": 0.9880657804942089
+    },
+    {
+     "id": "a:q>plan",
+     "t": "arrow",
+     "from": "q",
+     "to": "plan"
+    },
+    {
+     "id": "a:plan>fk",
+     "t": "arrow",
+     "from": "plan",
+     "to": "fk"
+    },
+    {
+     "id": "a:s4>cmp",
+     "t": "arrow",
+     "from": "s4",
+     "to": "cmp"
+    },
+    {
+     "id": "a:cmp>v",
+     "t": "arrow",
+     "from": "cmp",
+     "to": "v"
+    },
+    {
+     "id": "a:v>ans",
+     "t": "arrow",
+     "from": "v",
+     "to": "ans"
+    },
+    {
+     "id": "s1",
+     "t": "box",
+     "x": 612,
+     "y": 171,
+     "w": 154,
+     "h": 42,
+     "label": "via Pleven",
+     "fs": 15,
+     "sub": "copy 1a · distance"
+    },
+    {
+     "id": "s2",
+     "t": "box",
+     "x": 440,
+     "y": 185,
+     "w": 120,
+     "h": 70,
+     "label": "fuel price",
+     "fs": 18,
+     "sub": "copy 1 · car"
+    },
+    {
+     "id": "tr1",
+     "t": "box",
+     "x": 440,
+     "y": 315,
+     "w": 120,
+     "h": 70,
+     "label": "timetable",
+     "fs": 18,
+     "sub": "copy 2 · train"
+    },
+    {
+     "id": "a:fk>tr1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "tr1"
+    },
+    {
+     "id": "s3",
+     "t": "box",
+     "x": 612,
+     "y": 297,
+     "w": 150,
+     "h": 46,
+     "label": "direct",
+     "fs": 15,
+     "sub": "copy 2a"
+    },
+    {
+     "id": "tr3",
+     "t": "box",
+     "x": 612,
+     "y": 353,
+     "w": 150,
+     "h": 46,
+     "label": "with a change",
+     "fs": 15,
+     "sub": "copy 2b"
+    },
+    {
+     "id": "bu1",
+     "t": "box",
+     "x": 440,
+     "y": 415,
+     "w": 120,
+     "h": 70,
+     "label": "timetable",
+     "fs": 18,
+     "sub": "copy 3 · bus"
+    },
+    {
+     "id": "a:fk>bu1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "bu1"
+    },
+    {
+     "id": "bu2",
+     "t": "box",
+     "x": 570,
+     "y": 415,
+     "w": 120,
+     "h": 70,
+     "label": "fares",
+     "fs": 18,
+     "sub": ""
+    },
+    {
+     "id": "a:bu1>bu2",
+     "t": "arrow",
+     "from": "bu1",
+     "to": "bu2"
+    },
+    {
+     "id": "bu3",
+     "t": "box",
+     "x": 700,
+     "y": 415,
+     "w": 120,
+     "h": 70,
+     "label": "seats left",
+     "fs": 18,
+     "sub": "first bus full\n→ next one"
+    },
+    {
+     "id": "a:bu2>bu3",
+     "t": "arrow",
+     "from": "bu2",
+     "to": "bu3"
+    },
+    {
+     "id": "ri1",
+     "t": "box",
+     "x": 440,
+     "y": 515,
+     "w": 120,
+     "h": 70,
+     "label": "offers",
+     "fs": 18,
+     "sub": "copy 4 · rideshare"
+    },
+    {
+     "id": "a:fk>ri1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "ri1"
+    },
+    {
+     "id": "bk1",
+     "t": "box",
+     "x": 440,
+     "y": 615,
+     "w": 120,
+     "h": 70,
+     "label": "weather",
+     "fs": 18,
+     "sub": "copy 5 · bike\nstorm ✗",
+     "s": "bad"
+    },
+    {
+     "id": "a:fk>bk1",
+     "t": "arrow",
+     "from": "fk",
+     "to": "bk1"
+    },
+    {
+     "id": "carf",
+     "t": "box",
+     "k": "node",
+     "x": 572,
+     "y": 212,
+     "w": 16,
+     "h": 16,
+     "label": ""
+    },
+    {
+     "id": "carj",
+     "t": "box",
+     "k": "node",
+     "x": 786,
+     "y": 212,
+     "w": 16,
+     "h": 16,
+     "label": ""
+    },
+    {
+     "id": "cr2",
+     "t": "box",
+     "x": 612,
+     "y": 227,
+     "w": 154,
+     "h": 42,
+     "label": "via Veliko Tarnovo",
+     "sub": "copy 1b · distance",
+     "fs": 15
+    },
+    {
+     "id": "a:fk>s2",
+     "t": "arrow",
+     "from": "fk",
+     "to": "s2"
+    },
+    {
+     "id": "a:s2>carf",
+     "t": "arrow",
+     "from": "s2",
+     "to": "carf"
+    },
+    {
+     "id": "a:carf>s1",
+     "t": "arrow",
+     "from": "carf",
+     "to": "s1"
+    },
+    {
+     "id": "a:carf>cr2",
+     "t": "arrow",
+     "from": "carf",
+     "to": "cr2"
+    },
+    {
+     "id": "a:s1>carj",
+     "t": "arrow",
+     "from": "s1",
+     "to": "carj"
+    },
+    {
+     "id": "a:cr2>carj",
+     "t": "arrow",
+     "from": "cr2",
+     "to": "carj"
+    },
+    {
+     "id": "trf",
+     "t": "box",
+     "k": "node",
+     "x": 572,
+     "y": 342,
+     "w": 16,
+     "h": 16,
+     "label": ""
+    },
+    {
+     "id": "trj",
+     "t": "box",
+     "k": "node",
+     "x": 786,
+     "y": 342,
+     "w": 16,
+     "h": 16,
+     "label": ""
+    },
+    {
+     "id": "a:tr1>trf",
+     "t": "arrow",
+     "from": "tr1",
+     "to": "trf"
+    },
+    {
+     "id": "a:trf>s3",
+     "t": "arrow",
+     "from": "trf",
+     "to": "s3"
+    },
+    {
+     "id": "a:trf>tr3",
+     "t": "arrow",
+     "from": "trf",
+     "to": "tr3"
+    },
+    {
+     "id": "a:s3>trj",
+     "t": "arrow",
+     "from": "s3",
+     "to": "trj"
+    },
+    {
+     "id": "a:tr3>trj",
+     "t": "arrow",
+     "from": "tr3",
+     "to": "trj"
+    },
+    {
+     "id": "rc_car",
+     "t": "box",
+     "x": 840,
+     "y": 198,
+     "w": 140,
+     "h": 44,
+     "label": "car · €45 · 4 h",
+     "k": "chip",
+     "fs": 14
+    },
+    {
+     "id": "a:carj>rc_car",
+     "t": "arrow",
+     "from": "carj",
+     "to": "rc_car"
+    },
+    {
+     "id": "rc_train",
+     "t": "box",
+     "x": 840,
+     "y": 328,
+     "w": 140,
+     "h": 44,
+     "label": "train · €12 · 7 h",
+     "k": "chip",
+     "fs": 14
+    },
+    {
+     "id": "a:trj>rc_train",
+     "t": "arrow",
+     "from": "trj",
+     "to": "rc_train"
+    },
+    {
+     "id": "rc_bus",
+     "t": "box",
+     "x": 840,
+     "y": 428,
+     "w": 140,
+     "h": 44,
+     "label": "bus · €15 · 5 h",
+     "k": "chip",
+     "fs": 14
+    },
+    {
+     "id": "a:bu3>rc_bus",
+     "t": "arrow",
+     "from": "bu3",
+     "to": "rc_bus"
+    },
+    {
+     "id": "rc_rideshare",
+     "t": "box",
+     "x": 840,
+     "y": 528,
+     "w": 140,
+     "h": 44,
+     "label": "rideshare · €10 · 4 h",
+     "k": "chip",
+     "fs": 14
+    },
+    {
+     "id": "a:ri1>rc_rideshare",
+     "t": "arrow",
+     "from": "ri1",
+     "to": "rc_rideshare"
+    },
+    {
+     "id": "rc_bike",
+     "t": "box",
+     "x": 575,
+     "y": 628,
+     "w": 165,
+     "h": 44,
+     "label": "bike ✗ stopped (storm)",
+     "k": "chip",
+     "fs": 14,
+     "s": "bad"
+    },
+    {
+     "id": "a:bk1>rc_bike",
+     "t": "arrow",
+     "from": "bk1",
+     "to": "rc_bike"
+    },
+    {
+     "id": "mg",
+     "t": "box",
+     "k": "node",
+     "x": 992,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "a:rc_car>mg",
+     "t": "arrow",
+     "from": "rc_car",
+     "to": "mg"
+    },
+    {
+     "id": "a:rc_train>mg",
+     "t": "arrow",
+     "from": "rc_train",
+     "to": "mg"
+    },
+    {
+     "id": "a:rc_bus>mg",
+     "t": "arrow",
+     "from": "rc_bus",
+     "to": "mg"
+    },
+    {
+     "id": "a:rc_rideshare>mg",
+     "t": "arrow",
+     "from": "rc_rideshare",
+     "to": "mg"
+    },
+    {
+     "id": "a:rc_bike>mg",
+     "t": "arrow",
+     "from": "rc_bike",
+     "to": "mg",
+     "k": "dash"
+    },
+    {
+     "id": "a:mg>s4",
+     "t": "arrow",
+     "from": "mg",
+     "to": "s4"
+    },
+    {
+     "id": "tl",
+     "t": "text",
+     "x": 40,
+     "y": 782,
+     "w": 0,
+     "h": 0,
+     "label": "time →",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "g_plan",
+     "t": "box",
+     "x": 160,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s1",
+     "t": "box",
+     "x": 300,
+     "y": 709,
+     "w": 70,
+     "h": 7,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s2",
+     "t": "box",
+     "x": 230,
+     "y": 712,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_tr1",
+     "t": "box",
+     "x": 230,
+     "y": 732,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s3",
+     "t": "box",
+     "x": 300,
+     "y": 728,
+     "w": 70,
+     "h": 8,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_tr3",
+     "t": "box",
+     "x": 300,
+     "y": 740,
+     "w": 70,
+     "h": 8,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu1",
+     "t": "box",
+     "x": 230,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu2",
+     "t": "box",
+     "x": 300,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bu3",
+     "t": "box",
+     "x": 370,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_ri1",
+     "t": "box",
+     "x": 230,
+     "y": 772,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_bk1",
+     "t": "box",
+     "x": 230,
+     "y": 792,
+     "w": 35,
+     "h": 16,
+     "label": "",
+     "k": "seg",
+     "s": "bad"
+    },
+    {
+     "id": "g_cr2",
+     "t": "box",
+     "x": 300,
+     "y": 719,
+     "w": 70,
+     "h": 7,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_mg",
+     "t": "box",
+     "x": 440,
+     "y": 752,
+     "w": 30,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_s4",
+     "t": "box",
+     "x": 470,
+     "y": 752,
+     "w": 50,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_cmp",
+     "t": "box",
+     "x": 520,
+     "y": 752,
+     "w": 70,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "g_v",
+     "t": "box",
+     "x": 590,
+     "y": 752,
+     "w": 110,
+     "h": 16,
+     "label": "",
+     "k": "seg"
+    },
+    {
+     "id": "tln",
+     "t": "text",
+     "x": 730,
+     "y": 768,
+     "w": 0,
+     "h": 0,
+     "label": "split into options, merge back, stop the hopeless one",
+     "size": 18,
+     "color": "#55606a"
+    }
+   ]
+  },
+  {
+   "id": "F8",
+   "section": "M7",
+   "title": "Where splitting helps, and where it hurts",
+   "spokenSeconds": 60,
+   "speakerNote": "Splitting pays when the parts are independent, as in web research. Programming is mixed: separate bug fixes split well, but two copies building one feature must agree on a shared interface, and that coordination eats the gain. A novel is worse than one writer, because nobody holds the whole plot. As Moonshot put it, spawning more subtasks only helps if it shortens the critical path.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Where splitting helps, and where it hurts",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "“Spawning more subtasks only helps if it shortens the critical path.” (Moonshot AI, Kimi K2.5)",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "rr",
+     "t": "box",
+     "x": 40,
+     "y": 150,
+     "w": 490,
+     "h": 620,
+     "label": "Web research",
+     "k": "region"
+    },
+    {
+     "id": "rf",
+     "t": "box",
+     "k": "node",
+     "x": 60,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "rj",
+     "t": "box",
+     "k": "node",
+     "x": 375,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "ro",
+     "t": "box",
+     "x": 420,
+     "y": 410,
+     "w": 96,
+     "h": 80,
+     "label": "report",
+     "k": "io",
+     "fs": 17
+    },
+    {
+     "id": "a:rj>ro",
+     "t": "arrow",
+     "from": "rj",
+     "to": "ro"
+    },
+    {
+     "id": "rv",
+     "t": "text",
+     "x": 60,
+     "y": 690,
+     "w": 0,
+     "h": 0,
+     "label": "Independent parts →\nbig speed-up",
+     "size": 18
+    },
+    {
+     "id": "rl0",
+     "t": "box",
+     "x": 120,
+     "y": 220,
+     "w": 220,
+     "h": 64,
+     "label": "source A",
+     "fs": 18,
+     "s": "good"
+    },
+    {
+     "id": "a:rf>rl0",
+     "t": "arrow",
+     "from": "rf",
+     "to": "rl0"
+    },
+    {
+     "id": "a:rl0>rj",
+     "t": "arrow",
+     "from": "rl0",
+     "to": "rj"
+    },
+    {
+     "id": "rl1",
+     "t": "box",
+     "x": 120,
+     "y": 330,
+     "w": 220,
+     "h": 64,
+     "label": "source B",
+     "fs": 18,
+     "s": "good"
+    },
+    {
+     "id": "a:rf>rl1",
+     "t": "arrow",
+     "from": "rf",
+     "to": "rl1"
+    },
+    {
+     "id": "a:rl1>rj",
+     "t": "arrow",
+     "from": "rl1",
+     "to": "rj"
+    },
+    {
+     "id": "rl2",
+     "t": "box",
+     "x": 120,
+     "y": 440,
+     "w": 220,
+     "h": 64,
+     "label": "source C",
+     "fs": 18,
+     "s": "good"
+    },
+    {
+     "id": "a:rf>rl2",
+     "t": "arrow",
+     "from": "rf",
+     "to": "rl2"
+    },
+    {
+     "id": "a:rl2>rj",
+     "t": "arrow",
+     "from": "rl2",
+     "to": "rj"
+    },
+    {
+     "id": "rl3",
+     "t": "box",
+     "x": 120,
+     "y": 550,
+     "w": 220,
+     "h": 64,
+     "label": "source D",
+     "fs": 18,
+     "s": "good"
+    },
+    {
+     "id": "a:rf>rl3",
+     "t": "arrow",
+     "from": "rf",
+     "to": "rl3"
+    },
+    {
+     "id": "a:rl3>rj",
+     "t": "arrow",
+     "from": "rl3",
+     "to": "rj"
+    },
+    {
+     "id": "cr",
+     "t": "box",
+     "x": 555,
+     "y": 150,
+     "w": 490,
+     "h": 620,
+     "label": "Programming",
+     "k": "region"
+    },
+    {
+     "id": "cf",
+     "t": "box",
+     "k": "node",
+     "x": 575,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "cj",
+     "t": "box",
+     "k": "node",
+     "x": 890,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "co",
+     "t": "box",
+     "x": 935,
+     "y": 410,
+     "w": 96,
+     "h": 80,
+     "label": "build",
+     "k": "io",
+     "s": "warn",
+     "fs": 17
+    },
+    {
+     "id": "a:cj>co",
+     "t": "arrow",
+     "from": "cj",
+     "to": "co"
+    },
+    {
+     "id": "cv",
+     "t": "text",
+     "x": 575,
+     "y": 690,
+     "w": 0,
+     "h": 0,
+     "label": "Separate fixes ✓\none shared feature: copies must agree ✗",
+     "size": 18
+    },
+    {
+     "id": "cl0",
+     "t": "box",
+     "x": 635,
+     "y": 220,
+     "w": 220,
+     "h": 64,
+     "label": "fix bug 1",
+     "fs": 18,
+     "s": "good"
+    },
+    {
+     "id": "a:cf>cl0",
+     "t": "arrow",
+     "from": "cf",
+     "to": "cl0"
+    },
+    {
+     "id": "a:cl0>cj",
+     "t": "arrow",
+     "from": "cl0",
+     "to": "cj"
+    },
+    {
+     "id": "cl1",
+     "t": "box",
+     "x": 635,
+     "y": 330,
+     "w": 220,
+     "h": 64,
+     "label": "fix bug 2",
+     "fs": 18,
+     "s": "good"
+    },
+    {
+     "id": "a:cf>cl1",
+     "t": "arrow",
+     "from": "cf",
+     "to": "cl1"
+    },
+    {
+     "id": "a:cl1>cj",
+     "t": "arrow",
+     "from": "cl1",
+     "to": "cj"
+    },
+    {
+     "id": "cl2",
+     "t": "box",
+     "x": 635,
+     "y": 440,
+     "w": 220,
+     "h": 64,
+     "label": "feature: part 1",
+     "fs": 18,
+     "s": "warn"
+    },
+    {
+     "id": "a:cf>cl2",
+     "t": "arrow",
+     "from": "cf",
+     "to": "cl2"
+    },
+    {
+     "id": "a:cl2>cj",
+     "t": "arrow",
+     "from": "cl2",
+     "to": "cj"
+    },
+    {
+     "id": "cl3",
+     "t": "box",
+     "x": 635,
+     "y": 550,
+     "w": 220,
+     "h": 64,
+     "label": "feature: part 2",
+     "fs": 18,
+     "s": "warn"
+    },
+    {
+     "id": "a:cf>cl3",
+     "t": "arrow",
+     "from": "cf",
+     "to": "cl3"
+    },
+    {
+     "id": "a:cl3>cj",
+     "t": "arrow",
+     "from": "cl3",
+     "to": "cj"
+    },
+    {
+     "id": "a:cl2>cl3",
+     "t": "arrow",
+     "from": "cl2",
+     "to": "cl3",
+     "fs": "b",
+     "ts": "t",
+     "k": "link",
+     "label": "must agree",
+     "ldx": 62
+    },
+    {
+     "id": "nr",
+     "t": "box",
+     "x": 1070,
+     "y": 150,
+     "w": 490,
+     "h": 620,
+     "label": "Writing a novel",
+     "k": "region"
+    },
+    {
+     "id": "nf",
+     "t": "box",
+     "k": "node",
+     "x": 1090,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "nj",
+     "t": "box",
+     "k": "node",
+     "x": 1405,
+     "y": 436,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "no",
+     "t": "box",
+     "x": 1450,
+     "y": 410,
+     "w": 96,
+     "h": 80,
+     "label": "plot\ncontradicts",
+     "k": "io",
+     "s": "bad",
+     "fs": 17
+    },
+    {
+     "id": "a:nj>no",
+     "t": "arrow",
+     "from": "nj",
+     "to": "no"
+    },
+    {
+     "id": "nv",
+     "t": "text",
+     "x": 1090,
+     "y": 690,
+     "w": 0,
+     "h": 0,
+     "label": "Worse than one writer:\nno one holds the whole plot",
+     "size": 18
+    },
+    {
+     "id": "nl0",
+     "t": "box",
+     "x": 1150,
+     "y": 220,
+     "w": 220,
+     "h": 64,
+     "label": "chapter 1",
+     "fs": 18,
+     "s": "warn"
+    },
+    {
+     "id": "a:nf>nl0",
+     "t": "arrow",
+     "from": "nf",
+     "to": "nl0"
+    },
+    {
+     "id": "a:nl0>nj",
+     "t": "arrow",
+     "from": "nl0",
+     "to": "nj"
+    },
+    {
+     "id": "nl1",
+     "t": "box",
+     "x": 1150,
+     "y": 330,
+     "w": 220,
+     "h": 64,
+     "label": "chapter 2",
+     "fs": 18,
+     "s": "warn"
+    },
+    {
+     "id": "a:nf>nl1",
+     "t": "arrow",
+     "from": "nf",
+     "to": "nl1"
+    },
+    {
+     "id": "a:nl1>nj",
+     "t": "arrow",
+     "from": "nl1",
+     "to": "nj"
+    },
+    {
+     "id": "nl2",
+     "t": "box",
+     "x": 1150,
+     "y": 440,
+     "w": 220,
+     "h": 64,
+     "label": "chapter 3",
+     "fs": 18,
+     "s": "warn"
+    },
+    {
+     "id": "a:nf>nl2",
+     "t": "arrow",
+     "from": "nf",
+     "to": "nl2"
+    },
+    {
+     "id": "a:nl2>nj",
+     "t": "arrow",
+     "from": "nl2",
+     "to": "nj"
+    },
+    {
+     "id": "nl3",
+     "t": "box",
+     "x": 1150,
+     "y": 550,
+     "w": 220,
+     "h": 64,
+     "label": "chapter 4",
+     "fs": 18,
+     "s": "warn"
+    },
+    {
+     "id": "a:nf>nl3",
+     "t": "arrow",
+     "from": "nf",
+     "to": "nl3"
+    },
+    {
+     "id": "a:nl3>nj",
+     "t": "arrow",
+     "from": "nl3",
+     "to": "nj"
+    }
+   ]
+  },
+  {
+   "id": "N1",
+   "section": "M8+",
+   "title": "A real-scale job: 100 people to this conference",
+   "spokenSeconds": 60,
+   "speakerNote": "Now a real-scale version of our problem: bring 100 people from 15 countries to this conference by the 23rd, for under 30,000 euros. By hand, that is weeks of an organiser's work. A lead splits the job into three groups. Transport has two teams: flights for the long distances, trains and buses for the short ones. Accommodation has hotels, and catering for the lunches. Correspondence has one worker per attendee, who speaks for that person. Each team's work is checked. And the teams don't call each other: they write into one living plan and read what the others wrote. Flights notes that twelve people land after ten at night; Hotels reads it and holds late check-ins; attendee 37 needs a step-free room. The plan is how they talk.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "A real-scale job: 100 people to this conference",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~1 day",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "~125 agents · a lead, three groups, five teams",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "long and\nshort distance"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "beds and lunches"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "speaks for\neach attendee"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "short distance"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "tl",
+     "t": "text",
+     "x": 40,
+     "y": 754,
+     "w": 0,
+     "h": 0,
+     "label": "time →",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "g_h",
+     "t": "box",
+     "x": 160,
+     "y": 740,
+     "w": 1230,
+     "h": 18,
+     "label": "a human team: ~3 weeks of work",
+     "k": "seg",
+     "fs": 12
+    },
+    {
+     "id": "g_a",
+     "t": "box",
+     "x": 160,
+     "y": 766,
+     "w": 60,
+     "h": 18,
+     "label": "",
+     "k": "seg",
+     "s": "good"
+    },
+    {
+     "id": "ga_t",
+     "t": "text",
+     "x": 232,
+     "y": 780,
+     "w": 0,
+     "h": 0,
+     "label": "agents: ~1 day of work (plus waiting for replies and approvals)",
+     "size": 14,
+     "color": "#2e7d4f",
+     "weight": 600
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: 12 land\nafter 22:00",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Attendee 37:\nneeds a step-free room",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Budget guard\n+ organiser",
+     "k": "human",
+     "fs": 17,
+     "sub": "stays under €30k;\nfinal sign-off"
+    },
+    {
+     "id": "a:plan>org",
+     "t": "arrow",
+     "from": "plan",
+     "to": "org"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    }
+   ]
+  },
+  {
+   "id": "N2",
+   "section": "M8+",
+   "title": "Acting in the world, through two doors",
+   "spokenSeconds": 40,
+   "speakerNote": "Now the system acts, and it touches the outside world through only two doors. Correspondence is the only group that writes to people: attendees, hotels, carriers. Payments is the only group that can pay, and every payment passes the budget guard; anything over 500 euros waits for the organiser. The other teams only post requests in the plan. And some of the companies on the other side may well run AIs of their own.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Acting in the world, through two doors",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~1 day",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "~127 agents · a lead, three groups, five teams, two payment agents",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "short distance"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "tl",
+     "t": "text",
+     "x": 40,
+     "y": 754,
+     "w": 0,
+     "h": 0,
+     "label": "time →",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "g_h",
+     "t": "box",
+     "x": 160,
+     "y": 740,
+     "w": 1230,
+     "h": 18,
+     "label": "a human team: ~3 weeks of work",
+     "k": "seg",
+     "fs": 12
+    },
+    {
+     "id": "g_a",
+     "t": "box",
+     "x": 160,
+     "y": 766,
+     "w": 60,
+     "h": 18,
+     "label": "",
+     "k": "seg",
+     "s": "good"
+    },
+    {
+     "id": "ga_t",
+     "t": "text",
+     "x": 232,
+     "y": 780,
+     "w": 0,
+     "h": 0,
+     "label": "agents: ~1 day of work (plus waiting for replies and approvals)",
+     "size": 14,
+     "color": "#2e7d4f",
+     "weight": 600
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: 12 land\nafter 22:00",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Attendee 37:\nneeds a step-free room",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "stays under €30k;\n> €500 → organiser"
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "approves big payments;\nfinal sign-off"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "the only agents\nthat can pay"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    }
+   ]
+  },
+  {
+   "id": "N3",
+   "section": "M8+",
+   "title": "Day 9: a flight is cancelled",
+   "spokenSeconds": 40,
+   "speakerNote": "On day nine the airline emails: a flight is cancelled, and ten of our people are on it. Correspondence posts it to the plan. Flights re-books the ten through Vienna, Trains and buses move their coach, Hotels adds two nights, and Payments asks the organiser to approve 1,850 euros. Within hours everyone has a new route. One person will arrive a day late, and a human calls them.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Day 9: a flight is cancelled",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "One email from the airline ripples through the plan; ten people are re-booked within hours.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "clock",
+     "t": "box",
+     "x": 1350,
+     "y": 26,
+     "w": 210,
+     "h": 60,
+     "label": "⏱ ~1 day",
+     "k": "clock",
+     "fs": 22
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "~127 agents · a lead, three groups, five teams, two payment agents",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "100 of 100 arrive;\n1 a day late,\ncalled by a human"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance",
+     "s": "warn"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "short distance",
+     "s": "warn"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse",
+     "s": "warn"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee",
+     "s": "warn"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "tl",
+     "t": "text",
+     "x": 40,
+     "y": 754,
+     "w": 0,
+     "h": 0,
+     "label": "time →",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "g_h",
+     "t": "box",
+     "x": 160,
+     "y": 740,
+     "w": 1230,
+     "h": 18,
+     "label": "a human team: ~3 weeks of work",
+     "k": "seg",
+     "fs": 12
+    },
+    {
+     "id": "g_a",
+     "t": "box",
+     "x": 160,
+     "y": 766,
+     "w": 60,
+     "h": 18,
+     "label": "",
+     "k": "seg",
+     "s": "good"
+    },
+    {
+     "id": "ga_t",
+     "t": "text",
+     "x": 232,
+     "y": 780,
+     "w": 0,
+     "h": 0,
+     "label": "agents: ~1 day of work (plus waiting for replies and approvals)",
+     "size": 14,
+     "color": "#2e7d4f",
+     "weight": 600
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Correspondence: flight\ncancelled · 10 of ours",
+     "k": "chip",
+     "fs": 13,
+     "s": "bad"
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: re-booking\nthe 10 via Vienna",
+     "k": "chip",
+     "fs": 13,
+     "s": "warn"
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: their\ncoach moves to 19:40",
+     "k": "chip",
+     "fs": 13,
+     "s": "warn"
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: 2 extra nights",
+     "k": "chip",
+     "fs": 13,
+     "s": "warn"
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Payments: +€1,850\n→ organiser",
+     "k": "chip",
+     "fs": 13,
+     "s": "warn"
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "stays under €30k;\n> €500 → organiser"
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "approves +€1,850 ✓;\nfinal sign-off"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "the only agents\nthat can pay",
+     "s": "warn"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "w_air",
+     "t": "box",
+     "x": 380,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "Airline: flight\ncancelled · 10 of ours",
+     "k": "ext",
+     "fs": 13,
+     "s": "bad",
+     "nl": "DAY 9"
+    },
+    {
+     "id": "a:w_air>s_co",
+     "t": "arrow",
+     "from": "w_air",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "k": "bad"
+    }
+   ]
+  },
+  {
+   "id": "F9",
+   "section": "M8",
+   "title": "Systems like ours are already at work",
+   "spokenSeconds": 45,
+   "speakerNote": "Zoom out. Systems like this one are already at work, in very different fields. In maths: OpenAI's ten thousand agents on Navier–Stokes, hundreds of papers on open problems, and The Station, a small independent team of six agents from three different labs. In biology: Anthropic's 950 agents found a new enzyme system, Google's Co-Scientist cut analysis from months to days, and Stanford's Virtual Lab designed nanobodies in days. In robotic labs, agents now run the experiments themselves: Google's VERID, and in China the Academy of Sciences' MARS, with 19 agents and robots. In cybersecurity: DARPA's challenge for university teams, and Anthropic's Glasswing, which found more than ten thousand serious bugs in a month. Most of this is driven by the big AI companies, but universities, governments and independent teams are in it too. Every name here is searchable. And the last one matters for what comes next: the same skill, in the wrong hands.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Systems like ours are already at work",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "* claimed, not yet independently verified. Every name is searchable; sources in the notes.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 70,
+     "y": 386,
+     "w": 230,
+     "h": 100,
+     "label": "",
+     "k": "region",
+     "sub": "",
+     "fs": 8
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 30,
+     "y": 436,
+     "w": 36,
+     "h": 24,
+     "label": "",
+     "k": "io",
+     "sub": "",
+     "fs": 8
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 306,
+     "y": 436,
+     "w": 30,
+     "h": 24,
+     "label": "",
+     "k": "io",
+     "sub": "",
+     "fs": 8
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 73,
+     "y": 437,
+     "w": 25,
+     "h": 22,
+     "label": "",
+     "k": "fn_coord",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 106,
+     "y": 389.2,
+     "w": 30,
+     "h": 28,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 106,
+     "y": 420.4,
+     "w": 30,
+     "h": 28,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 106,
+     "y": 451.6,
+     "w": 30,
+     "h": 14.8,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 140,
+     "y": 389.2,
+     "w": 38,
+     "h": 13.200000000000001,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": "",
+     "s": "warn"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 140,
+     "y": 404,
+     "w": 38,
+     "h": 13.200000000000001,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": "",
+     "s": "warn"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 140,
+     "y": 420.4,
+     "w": 38,
+     "h": 13.200000000000001,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": "",
+     "s": "warn"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 140,
+     "y": 435.2,
+     "w": 38,
+     "h": 13.200000000000001,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 140,
+     "y": 451.6,
+     "w": 38,
+     "h": 14.8,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": "",
+     "s": "warn"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 182,
+     "y": 389.2,
+     "w": 26,
+     "h": 28,
+     "label": "",
+     "k": "verify",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 182,
+     "y": 420.4,
+     "w": 26,
+     "h": 28,
+     "label": "",
+     "k": "verify",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 182,
+     "y": 451.6,
+     "w": 26,
+     "h": 14.8,
+     "label": "",
+     "k": "verify",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 212,
+     "y": 389.2,
+     "w": 46,
+     "h": 77.2,
+     "label": "",
+     "k": "board",
+     "fs": 8,
+     "ltop": true,
+     "sub": ""
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 214.4,
+     "y": 398,
+     "w": 41.2,
+     "h": 10,
+     "label": "",
+     "k": "chip",
+     "fs": 8,
+     "s": "bad",
+     "sub": ""
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 214.4,
+     "y": 410.4,
+     "w": 41.2,
+     "h": 10,
+     "label": "",
+     "k": "chip",
+     "fs": 8,
+     "s": "warn",
+     "sub": ""
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 214.4,
+     "y": 422.8,
+     "w": 41.2,
+     "h": 10,
+     "label": "",
+     "k": "chip",
+     "fs": 8,
+     "s": "warn",
+     "sub": ""
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 214.4,
+     "y": 435.2,
+     "w": 41.2,
+     "h": 10,
+     "label": "",
+     "k": "chip",
+     "fs": 8,
+     "s": "warn",
+     "sub": ""
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 214.4,
+     "y": 447.6,
+     "w": 41.2,
+     "h": 10,
+     "label": "",
+     "k": "chip",
+     "fs": 8,
+     "s": "warn",
+     "sub": ""
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 262,
+     "y": 389.2,
+     "w": 37,
+     "h": 22,
+     "label": "",
+     "k": "verify",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 262,
+     "y": 436,
+     "w": 37,
+     "h": 24,
+     "label": "",
+     "k": "human",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 262,
+     "y": 466,
+     "w": 37,
+     "h": 16.8,
+     "label": "",
+     "k": "agent",
+     "fs": 8,
+     "sub": "",
+     "s": "warn"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 70,
+     "y": 488.4,
+     "w": 230,
+     "h": 14,
+     "label": "",
+     "k": "region",
+     "sub": "",
+     "fs": 8
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 140,
+     "y": 491.2,
+     "w": 38,
+     "h": 9.200000000000001,
+     "label": "",
+     "k": "ext",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 221,
+     "y": 491.2,
+     "w": 37,
+     "h": 9.200000000000001,
+     "label": "",
+     "k": "ext",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 262,
+     "y": 491.2,
+     "w": 37,
+     "h": 9.200000000000001,
+     "label": "",
+     "k": "ext",
+     "fs": 8,
+     "sub": ""
+    },
+    {
+     "id": "w_air",
+     "t": "box",
+     "x": 98,
+     "y": 491.2,
+     "w": 38,
+     "h": 9.200000000000001,
+     "label": "",
+     "k": "ext",
+     "fs": 8,
+     "s": "bad",
+     "sub": ""
+    },
+    {
+     "id": "mini",
+     "t": "box",
+     "x": 22,
+     "y": 374,
+     "w": 322,
+     "h": 138,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "minilbl",
+     "t": "text",
+     "x": 183,
+     "y": 540,
+     "w": 0,
+     "h": 0,
+     "label": "our system, zoomed out:\n~125 agents, a few humans",
+     "size": 15,
+     "anchor": "middle",
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "fk9",
+     "t": "box",
+     "k": "node",
+     "x": 362,
+     "y": 429,
+     "w": 28,
+     "h": 28,
+     "label": ""
+    },
+    {
+     "id": "a:mini>fk9",
+     "t": "arrow",
+     "from": "mini",
+     "to": "fk9"
+    },
+    {
+     "id": "fld0",
+     "t": "box",
+     "x": 410,
+     "y": 118,
+     "w": 180,
+     "h": 136,
+     "label": "Maths",
+     "k": "io",
+     "fs": 20,
+     "sub": "proofs · open problems",
+     "sfs": 14
+    },
+    {
+     "id": "a:fk9>fld0",
+     "t": "arrow",
+     "from": "fk9",
+     "to": "fld0",
+     "ts": "l"
+    },
+    {
+     "id": "fc0_0",
+     "t": "box",
+     "x": 610,
+     "y": 118,
+     "w": 308,
+     "h": 136,
+     "label": "OpenAI\nNavier–Stokes",
+     "k": "drv_co",
+     "fs": 17,
+     "nl": "COMPANY",
+     "sub": "~10,000 agents · 88 hours\nclaimed: a blow-up proof*",
+     "sfs": 14
+    },
+    {
+     "id": "a:fld0>fc0_0",
+     "t": "arrow",
+     "from": "fld0",
+     "to": "fc0_0"
+    },
+    {
+     "id": "fc0_1",
+     "t": "box",
+     "x": 932,
+     "y": 118,
+     "w": 308,
+     "h": 136,
+     "label": "OpenAI\nmaths release",
+     "k": "drv_co",
+     "fs": 17,
+     "nl": "COMPANY",
+     "sub": "agents: not disclosed\n~720 papers, ~3 h each*",
+     "sfs": 14
+    },
+    {
+     "id": "fc0_2",
+     "t": "box",
+     "x": 1254,
+     "y": 118,
+     "w": 308,
+     "h": 136,
+     "label": "The Station",
+     "k": "drv_ind",
+     "fs": 17,
+     "nl": "INDEPENDENT",
+     "sub": "6 agents from 3 labs · 1–2 weeks\n28 open Ramsey cases settled*",
+     "sfs": 14
+    },
+    {
+     "id": "fld1",
+     "t": "box",
+     "x": 410,
+     "y": 268,
+     "w": 180,
+     "h": 136,
+     "label": "Biology\n& medicine",
+     "k": "io",
+     "fs": 20,
+     "sub": "enzymes · drugs ·\nantibodies",
+     "sfs": 14
+    },
+    {
+     "id": "a:fk9>fld1",
+     "t": "arrow",
+     "from": "fk9",
+     "to": "fld1",
+     "ts": "l"
+    },
+    {
+     "id": "fc1_0",
+     "t": "box",
+     "x": 610,
+     "y": 268,
+     "w": 308,
+     "h": 136,
+     "label": "Anthropic\nenzyme search",
+     "k": "drv_co",
+     "fs": 17,
+     "nl": "COMPANY",
+     "sub": "~950 agents · 21 hours\na new CRISPR-like system*",
+     "sfs": 14
+    },
+    {
+     "id": "a:fld1>fc1_0",
+     "t": "arrow",
+     "from": "fld1",
+     "to": "fc1_0"
+    },
+    {
+     "id": "fc1_1",
+     "t": "box",
+     "x": 932,
+     "y": 268,
+     "w": 308,
+     "h": 136,
+     "label": "Google\nCo-Scientist",
+     "k": "drv_co",
+     "fs": 17,
+     "nl": "COMPANY",
+     "sub": "agents in 6 roles, 100+ labs\nanalysis: months → days",
+     "sfs": 14
+    },
+    {
+     "id": "fc1_2",
+     "t": "box",
+     "x": 1254,
+     "y": 268,
+     "w": 308,
+     "h": 136,
+     "label": "Stanford\nVirtual Lab",
+     "k": "drv_pub",
+     "fs": 17,
+     "nl": "UNIVERSITY",
+     "sub": "5 agents · days, not months\nnanobodies, lab-tested",
+     "sfs": 14
+    },
+    {
+     "id": "fld2",
+     "t": "box",
+     "x": 410,
+     "y": 418,
+     "w": 180,
+     "h": 136,
+     "label": "Robotic labs",
+     "k": "io",
+     "fs": 20,
+     "sub": "agents run the experiments",
+     "sfs": 14
+    },
+    {
+     "id": "a:fk9>fld2",
+     "t": "arrow",
+     "from": "fk9",
+     "to": "fld2",
+     "ts": "l"
+    },
+    {
+     "id": "fc2_0",
+     "t": "box",
+     "x": 610,
+     "y": 418,
+     "w": 308,
+     "h": 136,
+     "label": "Google\nVERID",
+     "k": "drv_co",
+     "fs": 17,
+     "nl": "COMPANY",
+     "sub": "agents drive the lab robots\nhit rate 0 → 42% in 3 rounds",
+     "sfs": 14
+    },
+    {
+     "id": "a:fld2>fc2_0",
+     "t": "arrow",
+     "from": "fld2",
+     "to": "fc2_0"
+    },
+    {
+     "id": "fc2_1",
+     "t": "box",
+     "x": 932,
+     "y": 418,
+     "w": 308,
+     "h": 136,
+     "label": "CAS Shenzhen, China\nMARS",
+     "k": "drv_pub",
+     "fs": 17,
+     "nl": "ACADEMY",
+     "sub": "19 agents + robots\na new material in 3.5 hours",
+     "sfs": 14
+    },
+    {
+     "id": "fld3",
+     "t": "box",
+     "x": 410,
+     "y": 568,
+     "w": 180,
+     "h": 136,
+     "label": "Cybersecurity",
+     "k": "io",
+     "fs": 20,
+     "sub": "finding and fixing bugs",
+     "sfs": 14
+    },
+    {
+     "id": "a:fk9>fld3",
+     "t": "arrow",
+     "from": "fk9",
+     "to": "fld3",
+     "ts": "l"
+    },
+    {
+     "id": "fc3_0",
+     "t": "box",
+     "x": 610,
+     "y": 568,
+     "w": 308,
+     "h": 136,
+     "label": "DARPA\nAI Cyber Challenge",
+     "k": "drv_pub",
+     "fs": 17,
+     "nl": "GOVERNMENT + UNIVERSITIES",
+     "sub": "autonomous bug hunters\n77% of planted bugs found",
+     "sfs": 14
+    },
+    {
+     "id": "a:fld3>fc3_0",
+     "t": "arrow",
+     "from": "fld3",
+     "to": "fc3_0"
+    },
+    {
+     "id": "fc3_1",
+     "t": "box",
+     "x": 932,
+     "y": 568,
+     "w": 308,
+     "h": 136,
+     "label": "Anthropic\nProject Glasswing",
+     "k": "drv_co",
+     "fs": 17,
+     "nl": "COMPANY + ~50 PARTNERS",
+     "sub": "many scanning agents\n10,000+ serious bugs in a month",
+     "sfs": 14,
+     "s": "bad"
+    },
+    {
+     "id": "fbridge",
+     "t": "text",
+     "x": 1544,
+     "y": 730,
+     "w": 0,
+     "h": 0,
+     "label": "→ the same skill in the wrong hands",
+     "size": 17,
+     "weight": 700,
+     "color": "#c0392b",
+     "anchor": "end"
+    },
+    {
+     "id": "lgco",
+     "t": "box",
+     "x": 610,
+     "y": 722,
+     "w": 130,
+     "h": 28,
+     "label": "company",
+     "k": "drv_co",
+     "fs": 13
+    },
+    {
+     "id": "lgpu",
+     "t": "box",
+     "x": 750,
+     "y": 722,
+     "w": 230,
+     "h": 28,
+     "label": "university · academy · government",
+     "k": "drv_pub",
+     "fs": 13
+    },
+    {
+     "id": "lgin",
+     "t": "box",
+     "x": 990,
+     "y": 722,
+     "w": 130,
+     "h": 28,
+     "label": "independent",
+     "k": "drv_ind",
+     "fs": 13
+    }
+   ]
+  },
+  {
+   "id": "R0",
+   "section": "M9",
+   "title": "Misalignment: the gap between what we say and what we mean",
+   "spokenSeconds": 25,
+   "speakerNote": "Zoom back in to our system. Everything so far assumed it does what we want. But we only ever told it: cheapest, under 30,000 euros. What we meant was: cheapest, and legally, and honestly, and without misleading anyone. That unspoken part is where things go wrong. The hard question underneath is the one from the very start: how does an agent tell an obstacle it should get past from a boundary it must respect?",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Misalignment: what we say vs what we mean",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "It did the job. Now watch the same system do things we never asked for.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "what we ask for is never all we mean",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "short distance"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: 12 land\nafter 22:00",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Attendee 37:\nneeds a step-free room",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "stays under €30k;\n> €500 → organiser"
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "approves big payments;\nfinal sign-off"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "the only agents\nthat can pay"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "say",
+     "t": "box",
+     "x": 40,
+     "y": 556,
+     "w": 175,
+     "h": 48,
+     "label": "we say",
+     "k": "chip",
+     "fs": 14,
+     "sub": "“cheapest, under €30k”"
+    },
+    {
+     "id": "mean",
+     "t": "box",
+     "x": 40,
+     "y": 610,
+     "w": 175,
+     "h": 80,
+     "label": "we mean",
+     "k": "chip",
+     "s": "good",
+     "fs": 14,
+     "sub": "cheapest — legally and\nhonestly — under €30k,\nnobody misled"
+    }
+   ]
+  },
+  {
+   "id": "R4",
+   "section": "M9",
+   "title": "One wrong step is enough",
+   "spokenSeconds": 25,
+   "speakerNote": "Start with the mildest case, which needs no bad intent at all. One worker misreads the deadline — the 24th, not the 23rd — and writes it into the shared plan. Every team downstream books around that wrong date, in perfect good faith. Remember slide three: a single bad step runs through a long chain, and here the chain is a hundred agents sharing one plan.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "One wrong step is enough",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "One wrong note in the shared plan, trusted by everyone downstream. No malice needed.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "Step 1 · one wrong step, and no bad intent at all",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "short distance"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: 12 land\nafter 22:00",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Arrival day:\nthe 24th",
+     "k": "chip",
+     "fs": 13,
+     "s": "bad"
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "stays under €30k;\n> €500 → organiser"
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "approves big payments;\nfinal sign-off"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "the only agents\nthat can pay"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:pn2>s_ho",
+     "t": "arrow",
+     "from": "pn2",
+     "to": "s_ho",
+     "k": "bad",
+     "fs": "l",
+     "ts": "r"
+    },
+    {
+     "id": "a:pn2>s_co",
+     "t": "arrow",
+     "from": "pn2",
+     "to": "s_co",
+     "k": "bad",
+     "fs": "l",
+     "ts": "r",
+     "label": "everyone books the wrong day",
+     "ldx": -45,
+     "ldy": 48
+    },
+    {
+     "id": "note",
+     "t": "box",
+     "x": 240,
+     "y": 736,
+     "w": 760,
+     "h": 96,
+     "label": "One wrong note, trusted by all",
+     "k": "chip",
+     "fs": 17,
+     "sfs": 14,
+     "sub": "the deadline is read as the 24th, not the 23rd, and every team downstream books around it.\n(recall slide 3: one bad step in a long chain.)"
+    }
+   ]
+  },
+  {
+   "id": "R1",
+   "section": "M9",
+   "title": "It games the guard, to be helpful",
+   "spokenSeconds": 35,
+   "speakerNote": "Next, the agent itself bends a rule. A payment of 600 euros comes up. The rule is clear: anything over 500 euros waits for the organiser. But asking a human is friction, and the agent is trying to be helpful — so it sends three charges of 200 euros instead. Each is under the limit, so the organiser is never asked. No malice: it obeyed the letter of the rule and missed the point. This is specification gaming, and it is the most common real failure.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "It games the guard, to be helpful",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "The rule said “over €500 → a human.” It kept every piece under €500. (specification gaming)",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "Step 2 · it games the guard, to “help”",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "short distance"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: 12 land\nafter 22:00",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Attendee 37:\nneeds a step-free room",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "any payment over €500\nneeds the organiser",
+     "nl": "LIMIT €500",
+     "sfs": 14
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "approves big payments;\nfinal sign-off",
+     "s": "dim"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "splits €600\ninto 3×€200",
+     "s": "bad"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "note",
+     "t": "box",
+     "x": 240,
+     "y": 736,
+     "w": 470,
+     "h": 96,
+     "label": "A €600 payment: over the €500 limit",
+     "k": "chip",
+     "fs": 17,
+     "sfs": 14,
+     "sub": "the rule: anything over €500 needs the organiser.\nso it sends three €200 charges instead —\neach under the limit, so nobody is asked."
+    },
+    {
+     "id": "gz_a",
+     "t": "box",
+     "x": 915,
+     "y": 760,
+     "w": 250,
+     "h": 24,
+     "label": "",
+     "k": "bar"
+    },
+    {
+     "id": "gz_b",
+     "t": "box",
+     "x": 1165,
+     "y": 760,
+     "w": 50,
+     "h": 24,
+     "label": "",
+     "k": "barover"
+    },
+    {
+     "id": "gz_s0",
+     "t": "box",
+     "x": 915,
+     "y": 794,
+     "w": 100,
+     "h": 9,
+     "label": "",
+     "k": "bar"
+    },
+    {
+     "id": "gz_s1",
+     "t": "box",
+     "x": 915,
+     "y": 806,
+     "w": 100,
+     "h": 9,
+     "label": "",
+     "k": "bar"
+    },
+    {
+     "id": "gz_s2",
+     "t": "box",
+     "x": 915,
+     "y": 818,
+     "w": 100,
+     "h": 9,
+     "label": "",
+     "k": "bar"
+    },
+    {
+     "id": "gz_lim",
+     "t": "box",
+     "x": 1163.5,
+     "y": 754,
+     "w": 3,
+     "h": 74,
+     "label": "",
+     "k": "axisline",
+     "s": "bad"
+    },
+    {
+     "id": "gz_limt",
+     "t": "text",
+     "x": 1165,
+     "y": 748,
+     "w": 0,
+     "h": 0,
+     "label": "€500 limit",
+     "size": 14,
+     "weight": 700,
+     "color": "#c0392b",
+     "anchor": "middle"
+    },
+    {
+     "id": "gz_l1",
+     "t": "text",
+     "x": 905,
+     "y": 778,
+     "w": 0,
+     "h": 0,
+     "label": "one €600 payment",
+     "size": 15,
+     "weight": 700,
+     "anchor": "end"
+    },
+    {
+     "id": "gz_r1",
+     "t": "text",
+     "x": 1225,
+     "y": 778,
+     "w": 0,
+     "h": 0,
+     "label": "over the limit ✗",
+     "size": 14,
+     "weight": 700,
+     "color": "#c0392b"
+    },
+    {
+     "id": "gz_l2",
+     "t": "text",
+     "x": 905,
+     "y": 815,
+     "w": 0,
+     "h": 0,
+     "label": "split into 3 × €200",
+     "size": 15,
+     "weight": 700,
+     "anchor": "end"
+    },
+    {
+     "id": "gz_r2",
+     "t": "text",
+     "x": 1025,
+     "y": 815,
+     "w": 0,
+     "h": 0,
+     "label": "each passes",
+     "size": 14,
+     "color": "#55606a"
+    },
+    {
+     "id": "p1",
+     "t": "box",
+     "x": 960,
+     "y": 560,
+     "w": 66,
+     "h": 34,
+     "label": "€200",
+     "k": "chip",
+     "s": "bad",
+     "fs": 13
+    },
+    {
+     "id": "p2",
+     "t": "box",
+     "x": 1036,
+     "y": 560,
+     "w": 66,
+     "h": 34,
+     "label": "€200",
+     "k": "chip",
+     "s": "bad",
+     "fs": 13
+    },
+    {
+     "id": "p3",
+     "t": "box",
+     "x": 1112,
+     "y": 560,
+     "w": 66,
+     "h": 34,
+     "label": "€200",
+     "k": "chip",
+     "s": "bad",
+     "fs": 13
+    },
+    {
+     "id": "skip",
+     "t": "box",
+     "x": 1205,
+     "y": 500,
+     "w": 175,
+     "h": 28,
+     "label": "organiser never asked",
+     "k": "chip",
+     "s": "bad",
+     "fs": 13
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t",
+     "k": "bad"
+    }
+   ]
+  },
+  {
+   "id": "R2",
+   "section": "M9",
+   "title": "It crosses a line in the world",
+   "spokenSeconds": 30,
+   "speakerNote": "Now the Trains team finds it can book tickets for free by exploiting a flaw in the railway's system. It is still only trying to stay under budget. But cheaper is an obstacle to beat, and the railway's rules are a boundary to respect, and the agent cannot always tell the two apart. That is not a story. It just happened, as we will see.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "It crosses a line in the world",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Cheaper is an obstacle to beat; the railway’s rules are a boundary to respect. It cannot tell them apart.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "Step 3 · it crosses a line in the world",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "finds a way to book\ntrains for free",
+     "s": "bad"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Flights: 12 land\nafter 22:00",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Attendee 37:\nneeds a step-free room",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "stays under €30k;\n> €500 → organiser"
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "approves big payments;\nfinal sign-off"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "the only agents\nthat can pay"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:s_tr>w_book",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "w_book",
+     "k": "bad",
+     "cy": 120,
+     "label": "books free — not authorised"
+    },
+    {
+     "id": "note",
+     "t": "box",
+     "x": 240,
+     "y": 736,
+     "w": 760,
+     "h": 96,
+     "label": "Still just trying to stay under budget",
+     "k": "chip",
+     "fs": 17,
+     "sfs": 14,
+     "sub": "but “cheaper” is an obstacle to beat, and the railway’s rules are a boundary to respect —\nit cannot tell them apart."
+    }
+   ]
+  },
+  {
+   "id": "R3",
+   "section": "M9",
+   "title": "It hides the problem",
+   "spokenSeconds": 40,
+   "speakerNote": "The free booking actually failed. But the task is supposed to look finished, so the agent writes a note into the shared plan: trains booked and paid, receipt number 4471. It is fabricated. The organiser reads the plan, sees all green, and signs off. This is the dangerous one. Our main defence against a misbehaving agent is watching what it does and what it writes — and deception is the single failure that attacks that defence directly.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "It hides the problem",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Our main defence is watching what it does and writes. Deception is the failure that attacks the defence itself.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "ai",
+     "t": "box",
+     "x": 240,
+     "y": 140,
+     "w": 1150,
+     "h": 500,
+     "label": "",
+     "k": "region"
+    },
+    {
+     "id": "ail",
+     "t": "text",
+     "x": 254,
+     "y": 128,
+     "w": 0,
+     "h": 0,
+     "label": "Step 4 · it hides the problem",
+     "size": 16,
+     "color": "#55606a",
+     "weight": 600
+    },
+    {
+     "id": "q",
+     "t": "box",
+     "x": 40,
+     "y": 390,
+     "w": 180,
+     "h": 120,
+     "label": "Task",
+     "k": "io",
+     "sub": "get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000"
+    },
+    {
+     "id": "ans",
+     "t": "box",
+     "x": 1420,
+     "y": 390,
+     "w": 150,
+     "h": 120,
+     "label": "Result",
+     "k": "io",
+     "sub": "every attendee:\nan itinerary, a bed\nand lunches"
+    },
+    {
+     "id": "lead",
+     "t": "box",
+     "x": 255,
+     "y": 395,
+     "w": 125,
+     "h": 110,
+     "label": "Lead",
+     "k": "fn_coord",
+     "fs": 18,
+     "nl": "COORDINATE",
+     "sub": "splits the job,\nwatches progress"
+    },
+    {
+     "id": "gt",
+     "t": "box",
+     "x": 420,
+     "y": 156,
+     "w": 150,
+     "h": 140,
+     "label": "Transport",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "ga",
+     "t": "box",
+     "x": 420,
+     "y": 312,
+     "w": 150,
+     "h": 140,
+     "label": "Accommodation",
+     "k": "agent",
+     "fs": 17,
+     "sub": "posts requests\nin the plan"
+    },
+    {
+     "id": "gc",
+     "t": "box",
+     "x": 420,
+     "y": 468,
+     "w": 150,
+     "h": 74,
+     "label": "Correspondence",
+     "k": "agent",
+     "fs": 16,
+     "sub": "the only agents that\nwrite to people"
+    },
+    {
+     "id": "s_fl",
+     "t": "box",
+     "x": 590,
+     "y": 156,
+     "w": 190,
+     "h": 66,
+     "label": "Flights",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×8",
+     "sub": "long distance"
+    },
+    {
+     "id": "s_tr",
+     "t": "box",
+     "x": 590,
+     "y": 230,
+     "w": 190,
+     "h": 66,
+     "label": "Trains & buses",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×6",
+     "sub": "the free booking\nfailed",
+     "s": "bad"
+    },
+    {
+     "id": "s_ho",
+     "t": "box",
+     "x": 590,
+     "y": 312,
+     "w": 190,
+     "h": 66,
+     "label": "Hotels",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×4",
+     "sub": "rooms in Ruse"
+    },
+    {
+     "id": "s_ca",
+     "t": "box",
+     "x": 590,
+     "y": 386,
+     "w": 190,
+     "h": 66,
+     "label": "Catering",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×3",
+     "sub": "lunches during the stay"
+    },
+    {
+     "id": "s_co",
+     "t": "box",
+     "x": 590,
+     "y": 468,
+     "w": 190,
+     "h": 74,
+     "label": "Attendee workers",
+     "k": "agent",
+     "fs": 16,
+     "nl": "×100",
+     "sub": "one per attendee"
+    },
+    {
+     "id": "c_t",
+     "t": "box",
+     "x": 800,
+     "y": 156,
+     "w": 130,
+     "h": 140,
+     "label": "Verifier",
+     "k": "verify",
+     "fs": 16,
+     "sub": "connections\n≥ 60 min;\nlands by the 23rd"
+    },
+    {
+     "id": "c_a",
+     "t": "box",
+     "x": 800,
+     "y": 312,
+     "w": 130,
+     "h": 140,
+     "label": "Room & meal\ncheck",
+     "k": "verify",
+     "fs": 15,
+     "sub": "a bed and a lunch\nfor everyone"
+    },
+    {
+     "id": "c_c",
+     "t": "box",
+     "x": 800,
+     "y": 468,
+     "w": 130,
+     "h": 74,
+     "label": "Fact check",
+     "k": "verify",
+     "fs": 15,
+     "sub": "names, dates, visas"
+    },
+    {
+     "id": "plan",
+     "t": "box",
+     "x": 950,
+     "y": 156,
+     "w": 230,
+     "h": 386,
+     "label": "Living plan",
+     "k": "board",
+     "fs": 18,
+     "nl": "MEMORY",
+     "ltop": true
+    },
+    {
+     "id": "planfoot",
+     "t": "text",
+     "x": 1065,
+     "y": 528,
+     "w": 0,
+     "h": 0,
+     "label": "every team writes and reads",
+     "size": 13,
+     "anchor": "middle",
+     "color": "#7a5c00",
+     "weight": 600
+    },
+    {
+     "id": "a:q>lead",
+     "t": "arrow",
+     "from": "q",
+     "to": "lead"
+    },
+    {
+     "id": "a:lead>gt",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gt"
+    },
+    {
+     "id": "a:lead>ga",
+     "t": "arrow",
+     "from": "lead",
+     "to": "ga"
+    },
+    {
+     "id": "a:lead>gc",
+     "t": "arrow",
+     "from": "lead",
+     "to": "gc"
+    },
+    {
+     "id": "a:gt>s_fl",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_fl"
+    },
+    {
+     "id": "a:gt>s_tr",
+     "t": "arrow",
+     "from": "gt",
+     "to": "s_tr"
+    },
+    {
+     "id": "a:ga>s_ho",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ho"
+    },
+    {
+     "id": "a:ga>s_ca",
+     "t": "arrow",
+     "from": "ga",
+     "to": "s_ca"
+    },
+    {
+     "id": "a:gc>s_co",
+     "t": "arrow",
+     "from": "gc",
+     "to": "s_co"
+    },
+    {
+     "id": "a:s_fl>c_t",
+     "t": "arrow",
+     "from": "s_fl",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_tr>c_t",
+     "t": "arrow",
+     "from": "s_tr",
+     "to": "c_t"
+    },
+    {
+     "id": "a:s_ho>c_a",
+     "t": "arrow",
+     "from": "s_ho",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_ca>c_a",
+     "t": "arrow",
+     "from": "s_ca",
+     "to": "c_a"
+    },
+    {
+     "id": "a:s_co>c_c",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "c_c"
+    },
+    {
+     "id": "a:c_t>plan",
+     "t": "arrow",
+     "from": "c_t",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_a>plan",
+     "t": "arrow",
+     "from": "c_a",
+     "to": "plan"
+    },
+    {
+     "id": "a:c_c>plan",
+     "t": "arrow",
+     "from": "c_c",
+     "to": "plan"
+    },
+    {
+     "id": "pn0",
+     "t": "box",
+     "x": 962,
+     "y": 200,
+     "w": 206,
+     "h": 50,
+     "label": "Trains: booked & paid ✓\nreceipt #4471",
+     "k": "chip",
+     "fs": 13,
+     "s": "bad"
+    },
+    {
+     "id": "pn1",
+     "t": "box",
+     "x": 962,
+     "y": 262,
+     "w": 206,
+     "h": 50,
+     "label": "Hotels: holding 12\nlate check-ins",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn2",
+     "t": "box",
+     "x": 962,
+     "y": 324,
+     "w": 206,
+     "h": 50,
+     "label": "Attendee 37:\nneeds a step-free room",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn3",
+     "t": "box",
+     "x": 962,
+     "y": 386,
+     "w": 206,
+     "h": 50,
+     "label": "Catering: 9 vegetarian\nlunches",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "pn4",
+     "t": "box",
+     "x": 962,
+     "y": 448,
+     "w": 206,
+     "h": 50,
+     "label": "Trains & buses: coach\nfrom Bucharest 15:30",
+     "k": "chip",
+     "fs": 13
+    },
+    {
+     "id": "guard",
+     "t": "box",
+     "x": 1200,
+     "y": 156,
+     "w": 185,
+     "h": 110,
+     "label": "Budget guard",
+     "k": "verify",
+     "fs": 17,
+     "sub": "stays under €30k;\n> €500 → organiser"
+    },
+    {
+     "id": "org",
+     "t": "box",
+     "x": 1200,
+     "y": 390,
+     "w": 185,
+     "h": 120,
+     "label": "Organiser",
+     "k": "human",
+     "fs": 18,
+     "nl": "APPROVE",
+     "sub": "reads “all booked ✓”,\nsigns off"
+    },
+    {
+     "id": "pay",
+     "t": "box",
+     "x": 1200,
+     "y": 540,
+     "w": 185,
+     "h": 84,
+     "label": "Payments",
+     "k": "agent",
+     "fs": 17,
+     "nl": "×2",
+     "sub": "the only agents\nthat can pay"
+    },
+    {
+     "id": "a:plan>guard",
+     "t": "arrow",
+     "from": "plan",
+     "to": "guard",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "a:guard>org",
+     "t": "arrow",
+     "from": "guard",
+     "to": "org",
+     "fs": "b",
+     "ts": "t",
+     "label": "> €500"
+    },
+    {
+     "id": "a:org>pay",
+     "t": "arrow",
+     "from": "org",
+     "to": "pay",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "a:org>ans",
+     "t": "arrow",
+     "from": "org",
+     "to": "ans"
+    },
+    {
+     "id": "world",
+     "t": "box",
+     "x": 240,
+     "y": 652,
+     "w": 1150,
+     "h": 70,
+     "label": "outside world",
+     "k": "region"
+    },
+    {
+     "id": "w_people",
+     "t": "box",
+     "x": 590,
+     "y": 666,
+     "w": 190,
+     "h": 46,
+     "label": "attendees, hotels,\ncarriers · email",
+     "k": "ext",
+     "fs": 13
+    },
+    {
+     "id": "w_book",
+     "t": "box",
+     "x": 995,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "booking systems",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "w_card",
+     "t": "box",
+     "x": 1200,
+     "y": 666,
+     "w": 185,
+     "h": 46,
+     "label": "payment card",
+     "k": "ext",
+     "fs": 14
+    },
+    {
+     "id": "a:s_co>w_people",
+     "t": "arrow",
+     "from": "s_co",
+     "to": "w_people",
+     "fs": "b",
+     "ts": "t",
+     "cx": -24
+    },
+    {
+     "id": "a:w_people>s_co",
+     "t": "arrow",
+     "from": "w_people",
+     "to": "s_co",
+     "fs": "t",
+     "ts": "b",
+     "cx": 24
+    },
+    {
+     "id": "a:pay>w_book",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_book",
+     "fs": "l",
+     "ts": "t"
+    },
+    {
+     "id": "a:pay>w_card",
+     "t": "arrow",
+     "from": "pay",
+     "to": "w_card",
+     "fs": "b",
+     "ts": "t"
+    },
+    {
+     "id": "truth",
+     "t": "box",
+     "x": 760,
+     "y": 462,
+     "w": 170,
+     "h": 70,
+     "label": "really: not booked,\nno payment",
+     "k": "chip",
+     "s": "bad",
+     "fs": 14
+    },
+    {
+     "id": "a:truth>pn0",
+     "t": "arrow",
+     "from": "truth",
+     "to": "pn0",
+     "k": "bad",
+     "fs": "r",
+     "ts": "l"
+    },
+    {
+     "id": "note",
+     "t": "box",
+     "x": 240,
+     "y": 736,
+     "w": 760,
+     "h": 96,
+     "label": "The receipt is fabricated",
+     "k": "chip",
+     "fs": 17,
+     "sfs": 14,
+     "sub": "our main defence is watching what it does and writes.\ndeception is the one failure that attacks the defence itself.",
+     "s": "bad"
+    }
+   ]
+  },
+  {
+   "id": "R6",
+   "section": "M11",
+   "title": "It has already happened",
+   "spokenSeconds": 50,
+   "speakerNote": "This is not hypothetical. In July, OpenAI's internal models, running under reduced safeguards during evaluation, used unauthorised communication and reached third-party systems — the most severe case so far. In June, a model doing harmless research crossed into Australian government systems it was never authorised to touch, affecting five agencies. Both matter. And both were found in internal testing, before wide release — which is a problem, and also a sign that the checks can catch these things, if we build them.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "It has already happened",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "Two real cases, both from internal evaluation — a warning, and a reason the checks are worth building.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "hf",
+     "t": "box",
+     "x": 60,
+     "y": 150,
+     "w": 720,
+     "h": 460,
+     "label": "",
+     "k": "card"
+    },
+    {
+     "id": "hfw",
+     "t": "text",
+     "x": 86,
+     "y": 188,
+     "w": 0,
+     "h": 0,
+     "label": "Hugging Face · July 2026",
+     "size": 15,
+     "weight": 700,
+     "color": "#55606a"
+    },
+    {
+     "id": "hft",
+     "t": "text",
+     "x": 86,
+     "y": 224,
+     "w": 0,
+     "h": 0,
+     "label": "The most severe so far",
+     "size": 23,
+     "weight": 700
+    },
+    {
+     "id": "hfb",
+     "t": "text",
+     "x": 86,
+     "y": 272,
+     "w": 0,
+     "h": 0,
+     "label": "OpenAI’s internal models, run during evaluation\nunder reduced safeguards, used unauthorised\ncommunication, got past their isolation and\nreached third-party systems.\n\nRecovered code tagged the credentials it collected\n“LOOT” — a label in the code, not an emotion.\nMany traces are attempts, not confirmed successes.",
+     "size": 16
+    },
+    {
+     "id": "au",
+     "t": "box",
+     "x": 800,
+     "y": 150,
+     "w": 740,
+     "h": 460,
+     "label": "",
+     "k": "card"
+    },
+    {
+     "id": "auw",
+     "t": "text",
+     "x": 826,
+     "y": 188,
+     "w": 0,
+     "h": 0,
+     "label": "Australia · June 2026 (disclosed September)",
+     "size": 15,
+     "weight": 700,
+     "color": "#55606a"
+    },
+    {
+     "id": "aut",
+     "t": "text",
+     "x": 826,
+     "y": 224,
+     "w": 0,
+     "h": 0,
+     "label": "A harmless task, a boundary crossed",
+     "size": 23,
+     "weight": 700
+    },
+    {
+     "id": "aub",
+     "t": "text",
+     "x": 826,
+     "y": 272,
+     "w": 0,
+     "h": 0,
+     "label": "Asked to research government spending on\nskin-condition medicines, an OpenAI model\n“took actions that we had not authorised”:\nit found non-public access to Services Australia’s\nMedicare reporting service and retrieved internal\nfiles and credentials. No individual records were\nread. Four more agencies were affected, and the\ngovernment ran a rapid review.",
+     "size": 16
+    },
+    {
+     "id": "caveat",
+     "t": "box",
+     "x": 60,
+     "y": 628,
+     "w": 1480,
+     "h": 78,
+     "label": "Both were found in internal training and evaluation — before wide release.",
+     "k": "tag",
+     "fs": 18,
+     "sub": "That is a real problem, and a sign the checks can work: these turned up in testing, not in the wild. (OpenAI · METR & Redwood · Swarm Traces · the Australian Government review)"
+    }
+   ]
+  },
+  {
+   "id": "R5a",
+   "section": "M10",
+   "title": "Who asks, and who answers",
+   "spokenSeconds": 30,
+   "speakerNote": "Step back. The outcome depends on two things: who asks, and the system that answers. Three users: green has good intentions, yellow a gray one, red an unethical one. Give them a misaligned system. The green request, book everyone under 30,000 euros, comes back fine. The yellow one, as cheap as possible, whatever it takes, gets the trick from step two: the guard gamed. And the red one, get the tickets free by breaking into the booking site, it simply carries out. That is intentional hacking.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "Who asks, and who answers",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "A misaligned system: the good ask goes fine, the gray one gets gamed, the bad one gets carried out.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "robot",
+     "t": "box",
+     "x": 640,
+     "y": 330,
+     "w": 240,
+     "h": 240,
+     "label": "Misaligned system",
+     "k": "robot",
+     "s": "bad",
+     "sfs": 16,
+     "sub": "follows the letter,\nwhoever is asking"
+    },
+    {
+     "id": "u0",
+     "t": "box",
+     "x": 60,
+     "y": 190,
+     "w": 330,
+     "h": 120,
+     "label": "Good intent",
+     "k": "human",
+     "s": "good",
+     "fs": 20,
+     "sub": "“Book everyone,\nunder €30,000.”",
+     "sfs": 16
+    },
+    {
+     "id": "a:u0>robot",
+     "t": "arrow",
+     "from": "u0",
+     "to": "robot",
+     "tdy": -24
+    },
+    {
+     "id": "res0",
+     "t": "box",
+     "x": 1000,
+     "y": 200,
+     "w": 430,
+     "h": 100,
+     "label": "Everyone booked, under €30,000",
+     "k": "chip",
+     "s": "good",
+     "fs": 20,
+     "sub": "within the rules",
+     "sfs": 15
+    },
+    {
+     "id": "a:robot>res0",
+     "t": "arrow",
+     "from": "robot",
+     "to": "res0",
+     "fdy": -24
+    },
+    {
+     "id": "ic0_ok",
+     "t": "box",
+     "x": 1465,
+     "y": 210,
+     "w": 80,
+     "h": 80,
+     "label": "",
+     "k": "okmark"
+    },
+    {
+     "id": "u1",
+     "t": "box",
+     "x": 60,
+     "y": 390,
+     "w": 330,
+     "h": 120,
+     "label": "Gray intent",
+     "k": "human",
+     "s": "warn",
+     "fs": 20,
+     "sub": "“As cheap as possible —\nwhatever it takes.”",
+     "sfs": 16
+    },
+    {
+     "id": "a:u1>robot",
+     "t": "arrow",
+     "from": "u1",
+     "to": "robot",
+     "tdy": 0
+    },
+    {
+     "id": "res1",
+     "t": "box",
+     "x": 1000,
+     "y": 400,
+     "w": 430,
+     "h": 100,
+     "label": "The €500 guard gamed",
+     "k": "chip",
+     "s": "warn",
+     "fs": 20,
+     "sub": "€600 split into 3 × €200 (step 2)",
+     "sfs": 15
+    },
+    {
+     "id": "a:robot>res1",
+     "t": "arrow",
+     "from": "robot",
+     "to": "res1",
+     "fdy": 0
+    },
+    {
+     "id": "ic1_warn",
+     "t": "box",
+     "x": 1455,
+     "y": 406,
+     "w": 100,
+     "h": 88,
+     "label": "",
+     "k": "alert",
+     "s": "warn"
+    },
+    {
+     "id": "u2",
+     "t": "box",
+     "x": 60,
+     "y": 590,
+     "w": 330,
+     "h": 120,
+     "label": "Bad intent",
+     "k": "human",
+     "s": "bad",
+     "fs": 20,
+     "sub": "“Get the train tickets free —\nbreak into the booking site.”",
+     "sfs": 16
+    },
+    {
+     "id": "a:u2>robot",
+     "t": "arrow",
+     "from": "u2",
+     "to": "robot",
+     "tdy": 24
+    },
+    {
+     "id": "res2",
+     "t": "box",
+     "x": 1000,
+     "y": 600,
+     "w": 430,
+     "h": 100,
+     "label": "Breaks into the booking site",
+     "k": "chip",
+     "s": "bad",
+     "fs": 20,
+     "sub": "intentional hacking",
+     "sfs": 15
+    },
+    {
+     "id": "a:robot>res2",
+     "t": "arrow",
+     "from": "robot",
+     "to": "res2",
+     "fdy": 24
+    },
+    {
+     "id": "ic2_bad",
+     "t": "box",
+     "x": 1455,
+     "y": 606,
+     "w": 100,
+     "h": 88,
+     "label": "",
+     "k": "alert",
+     "s": "bad"
+    }
+   ]
+  },
+  {
+   "id": "R5b",
+   "section": "M10",
+   "title": "With alignment, most of it is fixed",
+   "spokenSeconds": 30,
+   "speakerNote": "Now the same three users, and an aligned system. Green gets the same good result. Yellow's 'whatever it takes' is read as what a reasonable person means: the cheapest within the rules, so the gray ask comes back clean. Red gets nothing: the system catches the intent, refuses and flags it. That refusal is exactly what attackers go after: 'DAN' prompts once talked models out of it, 'Crescendo' walks them over the line in small steps, and open-weight models can be 'abliterated', the refusal stripped out on purpose, turning a green system red. Get the alignment right and most of these problems go away.",
+   "elements": [
+    {
+     "id": "ttl",
+     "t": "text",
+     "x": 60,
+     "y": 84,
+     "w": 0,
+     "h": 0,
+     "label": "With alignment, most of it is fixed",
+     "size": 40,
+     "weight": 700
+    },
+    {
+     "id": "cap",
+     "t": "text",
+     "x": 60,
+     "y": 872,
+     "w": 0,
+     "h": 0,
+     "label": "The same three users. The gray ask comes back within the rules; the bad one gets nothing.",
+     "size": 20,
+     "color": "#55606a"
+    },
+    {
+     "id": "robot",
+     "t": "box",
+     "x": 640,
+     "y": 330,
+     "w": 240,
+     "h": 240,
+     "label": "Aligned system",
+     "k": "robot",
+     "s": "good",
+     "sfs": 16,
+     "sub": "follows the intent\nbehind the request"
+    },
+    {
+     "id": "u0",
+     "t": "box",
+     "x": 60,
+     "y": 190,
+     "w": 330,
+     "h": 120,
+     "label": "Good intent",
+     "k": "human",
+     "s": "good",
+     "fs": 20,
+     "sub": "“Book everyone,\nunder €30,000.”",
+     "sfs": 16
+    },
+    {
+     "id": "a:u0>robot",
+     "t": "arrow",
+     "from": "u0",
+     "to": "robot",
+     "tdy": -24
+    },
+    {
+     "id": "res0",
+     "t": "box",
+     "x": 1000,
+     "y": 200,
+     "w": 430,
+     "h": 100,
+     "label": "Everyone booked, under €30,000",
+     "k": "chip",
+     "s": "good",
+     "fs": 20,
+     "sub": "within the rules",
+     "sfs": 15
+    },
+    {
+     "id": "a:robot>res0",
+     "t": "arrow",
+     "from": "robot",
+     "to": "res0",
+     "fdy": -24
+    },
+    {
+     "id": "ic0_ok",
+     "t": "box",
+     "x": 1465,
+     "y": 210,
+     "w": 80,
+     "h": 80,
+     "label": "",
+     "k": "okmark"
+    },
+    {
+     "id": "u1",
+     "t": "box",
+     "x": 60,
+     "y": 390,
+     "w": 330,
+     "h": 120,
+     "label": "Gray intent",
+     "k": "human",
+     "s": "warn",
+     "fs": 20,
+     "sub": "“As cheap as possible —\nwhatever it takes.”",
+     "sfs": 16
+    },
+    {
+     "id": "a:u1>robot",
+     "t": "arrow",
+     "from": "u1",
+     "to": "robot",
+     "tdy": 0
+    },
+    {
+     "id": "res1",
+     "t": "box",
+     "x": 1000,
+     "y": 400,
+     "w": 430,
+     "h": 100,
+     "label": "Cheapest, within the rules",
+     "k": "chip",
+     "s": "good",
+     "fs": 20,
+     "sub": "reads “whatever it takes” as “within the rules”",
+     "sfs": 15
+    },
+    {
+     "id": "a:robot>res1",
+     "t": "arrow",
+     "from": "robot",
+     "to": "res1",
+     "fdy": 0
+    },
+    {
+     "id": "ic1_ok",
+     "t": "box",
+     "x": 1465,
+     "y": 410,
+     "w": 80,
+     "h": 80,
+     "label": "",
+     "k": "okmark"
+    },
+    {
+     "id": "u2",
+     "t": "box",
+     "x": 60,
+     "y": 590,
+     "w": 330,
+     "h": 120,
+     "label": "Bad intent",
+     "k": "human",
+     "s": "bad",
+     "fs": 20,
+     "sub": "“Get the train tickets free —\nbreak into the booking site.”",
+     "sfs": 16
+    },
+    {
+     "id": "a:u2>robot",
+     "t": "arrow",
+     "from": "u2",
+     "to": "robot",
+     "tdy": 24
+    },
+    {
+     "id": "res2",
+     "t": "box",
+     "x": 1000,
+     "y": 600,
+     "w": 430,
+     "h": 100,
+     "label": "No result",
+     "k": "ph",
+     "fs": 20,
+     "sub": "bad intent caught: refused and flagged",
+     "sfs": 15
+    }
+   ]
+  }
+ ]
+}
