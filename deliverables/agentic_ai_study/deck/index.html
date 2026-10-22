@@ -8,7 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&family=Golos+Text:wght@400..900&display=swap">
 <style>
-  :root { --page:#d5dce2; --stage:#ffffff; --ink:#14202b; --ink2:#3b4855; --barbg:#e8ecef; --barline:#c3ccd4; }
+  :root { --page:#d5dce2; --stage:#ffffff; --ink:#14202b; --ink2:#3b4855; --barbg:#e8ecef; --barline:#c3ccd4;
+          --notebg:#f6f8f9; --field:#c9d2da; --btnline:#b3bec8; --hover:#f2f5f7; --rowline:#e6eaed; --focus:#2563b0;
+          --bad:#b42318; --good:#1d7344; color-scheme:light; }
   * { box-sizing:border-box; }
   html, body { margin:0; height:100%; overflow:hidden; background:var(--page); }
   body { display:flex; flex-direction:column; color:var(--ink);
@@ -33,30 +35,123 @@
   #bar button[aria-pressed="true"] { background:#dfe6ec; }
   #bar button:focus-visible { outline:2px solid #2563b0; outline-offset:1px; }
   #bar .sep { width:1px; height:20px; background:var(--barline); flex:none; }
-  #notes { display:none; flex:none; max-height:30vh; overflow:auto; background:#fbfcfc; border-top:1px solid var(--barline);
-           padding:10px 18px 12px; font:16px/1.5 "Roboto Flex", "Golos Text", Arial, sans-serif; color:var(--ink); }
-  #notes h2 { margin:0 0 6px; font:600 14px/1.3 "Roboto Flex", Arial, sans-serif; color:var(--ink2); letter-spacing:.02em; }
-  #notes p { margin:0 0 8px; max-width:110ch; }
-  body.notes-on #notes { display:block; }
-  body.review #bar, body.review #notes { display:none !important; }
+  [hidden] { display:none !important; }
+  /* the stage and the speaker notes share the row above the bar; notes sit at the side */
+  #main { flex:1; min-height:0; display:flex; }
+  #main #wrap { min-width:0; }
+  #notes { display:none; flex:none; width:clamp(320px, 30vw, 560px); min-height:0; flex-direction:column; gap:8px;
+           background:var(--notebg); border-left:1px solid var(--barline); padding:12px 14px 10px; color:var(--ink);
+           font-family:"Roboto Flex", "Golos Text", Arial, sans-serif; }
+  body.notes-on #notes { display:flex; }
+  #nhead { margin:0; display:flex; gap:8px; align-items:baseline; font:600 14px/1.3 "Roboto Flex", Arial, sans-serif; color:var(--ink2); letter-spacing:.02em; }
+  #nhead b { color:var(--ink); }
+  #ntitle { flex:1; min-width:0; }
+  #npos { flex:none; font-weight:500; font-variant-numeric:tabular-nums; }
+  #ntext { flex:1; min-height:0; width:100%; resize:none; margin:0; padding:10px 12px; border:1px solid var(--field);
+           border-radius:6px; background:var(--stage); color:var(--ink); font:17px/1.5 "Roboto Flex", "Golos Text", Arial, sans-serif; }
+  #ntext:focus { outline:2px solid var(--focus); outline-offset:-1px; border-color:transparent; }
+  #nfoot { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink2); min-height:28px; }
+  #nstat { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #nstat.warn { color:var(--bad); }
+  .btn { font:inherit; font-weight:700; font-stretch:90%; color:var(--ink); background:var(--stage); border:1px solid var(--btnline);
+         border-radius:6px; padding:3px 8px; cursor:pointer; line-height:1.25; flex:none; }
+  .btn:hover { background:var(--hover); }
+  .btn:focus-visible { outline:2px solid var(--focus); outline-offset:1px; }
+  /* rehearsal: a running clock in the bar while recording */
+  #rec { display:flex; align-items:center; gap:5px; flex:none; font-variant-numeric:tabular-nums; color:var(--ink2); }
+  #rec b { color:var(--ink); }
+  #rec .dot { width:9px; height:9px; border-radius:50%; background:var(--bad); animation:blink 1.2s steps(2, jump-none) infinite; }
+  #recS.late { color:var(--bad); }
+  #recR { color:var(--ink2); }
+  @keyframes blink { 50% { opacity:.25; } }
+  #rbtn { color:var(--bad); }
+  #toast { position:fixed; left:50%; bottom:52px; transform:translateX(-50%); max-width:min(640px, calc(100% - 32px));
+           background:var(--ink); color:var(--stage); padding:8px 14px; border-radius:8px; font-size:14px; line-height:1.4;
+           box-shadow:0 4px 18px rgba(20,32,43,.25); z-index:5; }
+  /* results of a rehearsal */
+  #result { position:fixed; inset:0; z-index:10; background:rgba(20,32,43,.42); display:flex; justify-content:center; align-items:flex-start;
+            padding:24px max(16px, env(safe-area-inset-left, 0px)) 24px; overflow:auto; }
+  #rpanel { width:min(980px, 100%); background:var(--stage); color:var(--ink); border-radius:10px; padding:20px 22px 22px;
+            box-shadow:0 10px 40px rgba(20,32,43,.3); display:grid; gap:14px; font-family:"Roboto Flex", "Golos Text", Arial, sans-serif; }
+  #rpanel h2 { margin:0; font:800 22px/1.2 "Roboto Flex", Arial, sans-serif; }
+  #rtop { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  #rtop h2 { flex:1; min-width:0; }
+  #rnote { margin:0; color:var(--ink2); font-size:14px; }
+  #rlist { display:flex; gap:6px; flex-wrap:wrap; }
+  #rlist .btn[aria-pressed="true"] { background:var(--ink); color:var(--stage); border-color:var(--ink); }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; }
+  .stat { border:1px solid var(--barline); border-radius:8px; padding:10px 12px; display:grid; gap:2px; }
+  .stat .k { font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink2); }
+  .stat .v { font-size:26px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .stat .d { font-size:13px; color:var(--ink2); }
+  #rcmp { display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:14px; color:var(--ink2); }
+  #rcmp select { font:inherit; color:var(--ink); background:var(--stage); border:1px solid var(--btnline); border-radius:6px; padding:3px 6px; }
+  .tw { overflow-x:auto; }
+  #rpanel table { width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums; }
+  #rpanel th { text-align:left; font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink2);
+               border-bottom:1px solid var(--barline); padding:4px 8px; white-space:nowrap; }
+  #rpanel td { border-bottom:1px solid var(--rowline); padding:5px 8px; vertical-align:middle; }
+  #rpanel .num { text-align:right; white-space:nowrap; }
+  #rpanel .over { color:var(--bad); font-weight:700; }
+  #rpanel .under { color:var(--good); font-weight:700; }
+  #rpanel .even, #rpanel .none { color:var(--ink2); }
+  .track { position:relative; height:10px; min-width:140px; background:var(--barbg); border-radius:5px; }
+  .track .bar { position:absolute; left:0; top:0; bottom:0; background:var(--ink2); border-radius:5px; }
+  .track .ref { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--bad); }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--ink2); }
+  .legend i { display:inline-block; width:14px; height:8px; border-radius:4px; background:var(--ink2); margin-right:5px; vertical-align:middle; }
+  .legend i.r { width:2px; height:12px; border-radius:0; background:var(--bad); }
+  #ract { display:flex; gap:8px; flex-wrap:wrap; }
+  #rjson { width:100%; height:120px; font:12px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+  body.review #bar, body.review #notes, body.review #result, body.review #toast { display:none !important; }
   body.review #stage { box-shadow:none; cursor:default; }
-  @media (max-width:900px) { #bar { height:36px; } #bar button { padding:2px 5px; } #notes { font-size:14px; } }
+  @media (prefers-reduced-motion: reduce) { #rec .dot { animation:none; } }
+  @media (max-width:900px) {
+    #bar { height:36px; } #bar button { padding:2px 5px; }
+    #main { flex-direction:column; }
+    #notes { width:auto; height:38vh; border-left:0; border-top:1px solid var(--barline); }
+    #ntext { font-size:15px; }
+  }
 </style>
 </head>
 <body>
-<div id="wrap">
-  <div id="stage" role="img" aria-label="Слайд">
-    <svg id="svg" class="layer" viewBox="0 0 1600 900" width="1600" height="900"></svg>
-    <canvas id="cv" class="layer"></canvas>
+<div id="main">
+  <div id="wrap">
+    <div id="stage" role="img" aria-label="Слайд">
+      <svg id="svg" class="layer" viewBox="0 0 1600 900" width="1600" height="900"></svg>
+      <canvas id="cv" class="layer"></canvas>
+    </div>
   </div>
+  <aside id="notes" aria-label="Бележки на говорещия">
+    <h2 id="nhead"><span id="ntitle"></span><span id="npos"></span></h2>
+    <textarea id="ntext" lang="bg" aria-labelledby="ntitle" placeholder="Няма бележки за този слайд. Пишете тук."></textarea>
+    <div id="nfoot">
+      <span id="nstat" role="status"></span>
+      <button id="nrevert" class="btn" hidden title="Махни редакциите на този слайд и върни първоначалния текст">Върни оригинала</button>
+    </div>
+  </aside>
 </div>
-<aside id="notes" aria-label="Бележки на говорещия" aria-live="polite"></aside>
 <nav id="bar" aria-label="Слайдове">
   <div id="fbtns"></div>
   <span class="sep"></span>
+  <span id="rec" hidden title="Общо време · време на този слайд / на първия запис (21 окт.)"><i class="dot"></i><b id="recT">0:00</b> · слайд <b id="recS">0:00</b><span id="recR"></span></span>
+  <button id="fin" hidden>■ Спри (без запис)</button>
+  <button id="rbtn" title="Записва времето на всеки слайд. Започва от F1 и се запазва, само ако стигнете до последния слайд.">● Репетиция</button>
+  <button id="runsbtn" title="Записаните репетиции">Резултати</button>
+  <span class="sep"></span>
   <button id="replay" title="Повтори прехода към този слайд">Повтори</button>
   <button id="nbtn" aria-pressed="false" title="Бележки на говорещия (N)">Бележки</button>
+  <button id="fsbtn" hidden title="Цял екран">Цял екран</button>
 </nav>
+<div id="toast" role="status" hidden></div>
+<div id="result" hidden>
+  <section id="rpanel" role="dialog" aria-modal="true" aria-labelledby="rtitle">
+    <div id="rtop"><h2 id="rtitle">Репетиции</h2><button id="rclose" class="btn">Затвори</button></div>
+    <p id="rnote"></p>
+    <div id="rlist"></div>
+    <div id="rview"></div>
+  </section>
+</div>
 <script>
 /* embedded assets: University of Ruse logo; Wikimedia Commons logos (CAS seal, DARPA, Stanford);
    Simple Icons (CC0) brand marks; Tabler Icons (MIT) outline icons */
@@ -2157,8 +2252,8 @@ const bar = document.getElementById('fbtns'), notesEl = document.getElementById(
 function setButtons() {
   bar.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', String(+b.dataset.f === cur)));
   const cb = bar.querySelector('[aria-current="true"]'); if (cb && cb.scrollIntoView) cb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  const n = NOTES[ORDER[cur]];
-  notesEl.innerHTML = n ? `<h2><b>${ORDER[cur]}</b> · ${esc(n.t)}</h2>` + n.p.map(p => `<p>${esc(p)}</p>`).join('') : '';
+  renderNotes();
+  if (REH.run) logFrame();
   if (!REVIEW) history.replaceState(null, '', '#' + ORDER[cur]);
 }
 const T0 = performance.now();
@@ -2203,18 +2298,298 @@ function go(i, how) {
   kick();
 }
 function step(d) {
-  const j = clamp(cur + d, 0, ORDER.length - 1); if (j === cur) return;
+  const j = clamp(cur + d, 0, ORDER.length - 1);
+  if (j === cur) { if (REH.run && d > 0) finishRehearsal(); return; }   // → on the last slide ends a rehearsal
   if (mode && mode.k === 'trans') mode = { k: 'still', f: mode.b, t0: now(), c0: 0, run: true };
   go(j, 'trans');
+  if (REH.run && d > 0 && j === ORDER.length - 1) finishRehearsal();   // stepping onto „Благодаря“ ends it too
 }
 function replay() {
   if (cur === 0 || RM.matches) { go(cur, 'run'); return; }
   mode = { k: 'trans', a: ORDER[cur - 1], b: ORDER[cur], t0: now(), c0: TFINAL(ORDER[cur - 1]), runA: false }; kick();
 }
-function toggleNotes() {
-  document.body.classList.toggle('notes-on');
-  document.getElementById('nbtn').setAttribute('aria-pressed', String(document.body.classList.contains('notes-on')));
+function toggleNotes(on) {
+  on = document.body.classList.toggle('notes-on', on);
+  document.getElementById('nbtn').setAttribute('aria-pressed', String(on));
+  try { localStorage.setItem(LS.notesOn, on ? '1' : ''); } catch (e) { /* a convenience only */ }
   fit(); lastSVG = ''; AMB = (now() - T0) / 1000; if (mode && mode.k === 'still') draw(stillView(mode.f, clockOf(mode), mode.run)); kick();
+}
+
+/* =====================================================================
+   Speaker notes: editable in the side panel. A slide's text is its
+   paragraphs, separated by a blank line. Edits are saved per slide in the
+   artifact's db (collection "notes", doc = slide id) so they reach every
+   device and can be read back; a copy without db keeps them in this browser.
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const LS = { notes: 'bg-deck-notes', runs: 'bg-deck-runs', notesOn: 'bg-deck-notes-on' };
+const NOTES_ORIG = JSON.parse(JSON.stringify(NOTES));
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage blocked: db or nothing */ } };
+let dbPromise = null;
+const getDb = () => dbPromise || (dbPromise = (window.claude && window.claude.use ? window.claude.use('db') : Promise.resolve(null)).catch(() => null));
+async function dbTry(fn) {      // one retry on a transient failure, as the db contract asks
+  for (let k = 0; k < 2; k++) {
+    try { await fn(); return true; }
+    catch (e) { if (e && e.code === 'unavailable' && k === 0) { await new Promise(r => setTimeout(r, 300 + Math.random() * 700)); continue; } return false; }
+  }
+  return false;
+}
+const noteText = id => (NOTES[id] ? NOTES[id].p.join('\n\n') : '');
+const parasOf = text => text.split(/\n[ \t]*\n/).map(s => s.trim()).filter(Boolean);
+const edited = id => noteText(id) !== (NOTES_ORIG[id] ? NOTES_ORIG[id].p.join('\n\n') : '');
+const hhmm = iso => { try { return new Date(iso).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+const NED = { shown: null, timer: 0, pending: null, chain: {}, where: {}, armed: false };
+function setNoteStatus(id) {
+  const st = $('nstat'), w = NED.where[id];
+  st.className = '';
+  if (NED.pending === id) st.textContent = 'Пише се…';
+  else if (w && w.state === 'saving') st.textContent = 'Записва се…';
+  else if (w && w.state === 'db') st.textContent = `Запазено в ${hhmm(w.at)}`;
+  else if (w && w.state === 'local') { st.textContent = 'Запазено само в този браузър'; st.className = 'warn'; }
+  else st.textContent = edited(id) ? 'Редактирано' : '';
+  const rv = $('nrevert'); rv.hidden = !edited(id);
+  if (!NED.armed) rv.textContent = 'Върни оригинала';
+}
+function renderNotes(force) {
+  const id = ORDER[cur], n = NOTES[id], ta = $('ntext');
+  $('ntitle').innerHTML = `<b>${esc(id)}</b> · ${esc(n ? n.t : '')}`;
+  $('npos').textContent = `${cur + 1} / ${ORDER.length}`;
+  if (NED.shown !== id) { flushNote(); NED.armed = false; }
+  // never pull text out from under the cursor: refresh the field only for a new slide or when nobody is typing in it
+  if (force || NED.shown !== id || document.activeElement !== ta) { if (ta.value !== noteText(id)) ta.value = noteText(id); }
+  NED.shown = id;
+  setNoteStatus(id);
+}
+function onNoteInput() {
+  const id = NED.shown; if (!id || !NOTES[id]) return;
+  NOTES[id].p = parasOf($('ntext').value);
+  NED.pending = id; NED.armed = false; setNoteStatus(id);
+  clearTimeout(NED.timer); NED.timer = setTimeout(flushNote, 700);
+}
+function flushNote() {
+  clearTimeout(NED.timer); const id = NED.pending; NED.pending = null;
+  if (id) saveNote(id);
+}
+function saveNote(id) {
+  const body = { id, title: NOTES[id].t, text: noteText(id), updatedAt: new Date().toISOString() };
+  const all = lsGet(LS.notes); all[id] = body; lsSet(LS.notes, all);
+  NED.where[id] = { state: 'saving', at: body.updatedAt }; if (NED.shown === id) setNoteStatus(id);
+  // writes to one slide's doc go one at a time; a burst collapses into the latest text
+  const c = NED.chain[id] || (NED.chain[id] = { busy: false, next: null });
+  c.next = body; if (c.busy) return;
+  c.busy = true;
+  (async () => {
+    while (c.next) {
+      const b = c.next; c.next = null;
+      const db = await getDb();
+      const ok = db ? await dbTry(() => db.collection('notes').doc(id).set(b)) : false;
+      NED.where[id] = { state: ok ? 'db' : 'local', at: b.updatedAt };
+    }
+    c.busy = false; if (NED.shown === id) setNoteStatus(id);
+  })();
+}
+async function revertNote() {
+  const id = NED.shown; if (!id || !edited(id)) return;
+  if (!NED.armed) { NED.armed = true; $('nrevert').textContent = 'Натиснете пак, за да върнете'; return; }
+  NED.armed = false; clearTimeout(NED.timer); NED.pending = null;
+  NOTES[id].p = NOTES_ORIG[id].p.slice();
+  const all = lsGet(LS.notes); delete all[id]; lsSet(LS.notes, all);
+  delete NED.where[id];
+  renderNotes(true);
+  $('nstat').textContent = 'Върнат е първоначалният текст';
+  const db = await getDb();
+  if (db) await dbTry(() => db.collection('notes').doc(id).delete());
+}
+// Saved edits replace the built-in text; of two copies of a slide's note, the later one wins.
+async function loadNotes() {
+  const best = {};
+  const take = n => { if (n && NOTES[n.id] && typeof n.text === 'string' && (!best[n.id] || (n.updatedAt || '') > (best[n.id].updatedAt || ''))) best[n.id] = n; };
+  Object.values(lsGet(LS.notes)).forEach(take);
+  const apply = () => { for (const n of Object.values(best)) if (n.id !== NED.pending) NOTES[n.id].p = parasOf(n.text); renderNotes(); };
+  apply();
+  const db = await getDb(); if (!db) return;
+  try {
+    const snap = await db.collection('notes').get();
+    snap.docs.forEach(d => take({ ...d.data(), id: d.id }));
+    apply();
+  } catch (e) { /* the built-in and browser copies still show */ }
+}
+
+/* =====================================================================
+   Rehearsal timing. „● Репетиция“ starts from F1 and records the moment
+   each slide comes on screen. The run ends on reaching the last slide
+   („Благодаря“) and is saved as one document in the db (collection "runs")
+   for Claude to read; stopped earlier, it is dropped.
+   ===================================================================== */
+// The first full rehearsal (21 Oct, storyboard), seconds per slide: the default yardstick.
+const FIRST_RUN = { id: 'first', label: '21 окт., първи запис', spoken: 817.4, secs: { F1: 13.1, F2: 52.5, F3: 59.6, F4: 36.4, F5a: 32.7, F5b: 18.8, F7a: 43.9, F7b: 26.8, F7c: 35.6, F8: 43.4, N1: 92.1, N2: 25.4, N3: 10.1, F9: 44.2, R0: 12.4, R4: 26.3, R1: 29.7, R2: 15.6, R3: 30.1, R6: 90.2, R5a: 45.1, R5b: 33.4, END: 0 } };
+const REH = { run: null, timer: 0, wake: null, runs: [], sel: null, cmp: 'first', saved: '' };
+const fmt = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const fmtD = d => (Math.round(d) < 0 ? '−' : '+') + fmt(Math.abs(d));
+const since = r => Math.round((Date.now() - r.startMs) / 100) / 10;   // seconds, to 0.1 s
+const LAST = ORDER.length - 1;
+const reachedEnd = r => (r.events || []).some(e => e.id === ORDER[LAST]);
+function startRehearsal() {
+  if (REH.run) return;
+  const at = new Date();
+  REH.run = { id: 'run-' + at.toISOString().replace(/[:.]/g, '-'), deck: 'deck/index.html', startedAt: at.toISOString(), startMs: at.getTime(),
+    endedAt: null, status: 'recording', frames: ORDER.map(id => ({ id, title: NOTES[id] ? NOTES[id].t : id })), events: [] };
+  $('result').hidden = true;
+  go(0, 'run');
+  if (!REH.run.events.length) logFrame();
+  recUi(true);
+  try { navigator.wakeLock && navigator.wakeLock.request('screen').then(l => { REH.wake = l; }, () => {}); } catch (e) { /* the screen may dim */ }
+}
+function logFrame() {
+  const r = REH.run, ev = r.events, last = ev[ev.length - 1];
+  if (last && last.id === ORDER[cur]) return;
+  ev.push({ i: cur, id: ORDER[cur], t: since(r) });
+  finishLabel(); tick();
+}
+const finishLabel = () => { $('fin').textContent = cur === LAST ? '■ Край' : '■ Спри (без запис)'; };
+function recUi(on) {
+  $('rec').hidden = !on; $('fin').hidden = !on; $('rbtn').hidden = on; $('runsbtn').hidden = on;
+  clearInterval(REH.timer); REH.timer = on ? setInterval(tick, 250) : 0;
+  if (on) { finishLabel(); tick(); }
+}
+function tick() {
+  const r = REH.run; if (!r || !r.events.length) return;
+  const t = since(r), ft = t - r.events[r.events.length - 1].t, ref = FIRST_RUN.secs[ORDER[cur]];
+  $('recT').textContent = fmt(t); $('recS').textContent = fmt(ft);
+  $('recS').className = ref && ft > ref ? 'late' : '';
+  $('recR').textContent = ref ? ` / ${fmt(ref)}` : '';
+}
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 9000); }
+async function finishRehearsal() {
+  const r = REH.run; if (!r) return;
+  r.events.push({ end: true, t: since(r) }); r.status = 'finished'; r.endedAt = new Date().toISOString();
+  REH.run = null; recUi(false);
+  try { REH.wake && REH.wake.release(); } catch (e) { /* already released */ } REH.wake = null;
+  if (!reachedEnd(r)) { toast(`Репетицията е спряна на ${ORDER[cur]}, преди последния слайд, и не е записана.`); return; }
+  const a = analyse(r); r.spoken = a.spoken; r.frames = a.rows;   // per-slide totals ride along for whoever reads the run
+  const runs = lsGet(LS.runs); runs[r.id] = r; lsSet(LS.runs, runs);
+  REH.saved = 'saving';
+  setTimeout(() => openRuns(r.id), RM.matches ? 300 : D * 1000 + 400);   // let „Благодаря“ arrive first
+  const db = await getDb();
+  REH.saved = db && await dbTry(() => db.collection('runs').doc(r.id).set(r)) ? 'db' : 'local';
+  if (!$('result').hidden) runsNote();
+}
+// A slide's time runs from the moment it came on screen to the next change; coming back to it adds to it.
+// The talk ends when the last slide („Благодаря“) first appears.
+function analyse(run) {
+  const ev = run.events || [], act = {}, visits = {};
+  const endAt = (ev.find(e => e.id === ORDER[LAST]) || ev.find(e => e.end) || ev[ev.length - 1] || { t: 0 }).t;
+  ev.forEach((e, k) => {
+    const nx = ev[k + 1]; if (e.end || !nx || e.t >= endAt) return;
+    act[e.id] = (act[e.id] || 0) + (Math.min(nx.t, endAt) - e.t); visits[e.id] = (visits[e.id] || 0) + 1;
+  });
+  const rows = (run.frames || []).filter(f => f.id !== ORDER[LAST])
+    .map(({ id, title }) => ({ id, title, actual: Math.round((act[id] || 0) * 10) / 10, visits: visits[id] || 0 }));
+  return { rows, spoken: Math.round(endAt * 10) / 10 };
+}
+const when = r => { try { return new Date(r.startedAt).toLocaleString('bg-BG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return r.id; } };
+const tol = p => Math.max(5, p * 0.15);   // within ±15 % (at least 5 s) counts as the same
+function deltaCell(actual, ref, visits) {
+  if (!visits) return '<span class="none">не е показан</span>';
+  if (ref == null) return '<span class="none">–</span>';
+  const d = actual - ref;
+  return d > tol(ref) ? `<span class="over">▲ ${fmtD(d)}</span>` : d < -tol(ref) ? `<span class="under">▼ ${fmtD(d)}</span>` : `<span class="even">${fmtD(d)}</span>`;
+}
+function refOf(key, run) {     // the yardstick: the first rehearsal or another saved run
+  if (key === 'first' || !REH.runs.some(x => x.id === key)) return { label: FIRST_RUN.label, spoken: FIRST_RUN.spoken, secs: FIRST_RUN.secs };
+  const o = REH.runs.find(x => x.id === key), a = analyse(o);
+  return { label: when(o), spoken: a.spoken, secs: Object.fromEntries(a.rows.map(r => [r.id, r.visits ? r.actual : null])) };
+}
+function runHtml(run) {
+  const a = analyse(run);
+  if (REH.cmp === run.id) REH.cmp = 'first';
+  const ref = refOf(REH.cmp, run);
+  const max = Math.max(1, ...a.rows.map(r => Math.max(r.actual, ref.secs[r.id] || 0)));
+  const diffs = a.rows.filter(r => r.visits && ref.secs[r.id] != null).map(r => ({ id: r.id, d: r.actual - ref.secs[r.id], ref: ref.secs[r.id] }));
+  const over = diffs.filter(x => x.d > tol(x.ref)).sort((x, y) => y.d - x.d), under = diffs.filter(x => x.d < -tol(x.ref)).sort((x, y) => x.d - y.d);
+  const opts = [`<option value="first">${esc(FIRST_RUN.label)}</option>`]
+    .concat(REH.runs.filter(o => o.id !== run.id).map(o => `<option value="${esc(o.id)}">${esc(when(o))} · ${fmt(analyse(o).spoken)} мин</option>`));
+  const track = r => { const rv = ref.secs[r.id];
+    return `<div class="track" title="${esc(r.id)}: ${fmt(r.actual)}${rv != null ? ' · сравнение ' + fmt(rv) : ''}"><div class="bar" style="width:${(r.actual / max * 100).toFixed(1)}%"></div>` +
+      (rv != null ? `<div class="ref" style="left:calc(${(rv / max * 100).toFixed(1)}% - 1px)"></div>` : '') + '</div>'; };
+  const list = xs => xs.slice(0, 3).map(x => `${esc(x.id)} ${fmtD(x.d)}`).join(' · ') || 'няма';
+  return `<div class="stats">
+    <div class="stat"><div class="k">Говорено</div><div class="v">${fmt(a.spoken)}</div><div class="d">${esc(when(run))}</div></div>
+    <div class="stat"><div class="k">Разлика</div><div class="v">${fmtD(a.spoken - ref.spoken)}</div><div class="d">спрямо ${fmt(ref.spoken)} (${esc(ref.label)})</div></div>
+    <div class="stat"><div class="k">По-дълги</div><div class="v">${over.length}</div><div class="d">${list(over)}</div></div>
+    <div class="stat"><div class="k">По-кратки</div><div class="v">${under.length}</div><div class="d">${list(under)}</div></div>
+  </div>
+  <div id="rcmp"><label for="rcmpsel">Сравнение с</label><select id="rcmpsel">${opts.join('')}</select>
+    <span class="legend"><span><i></i>този запис</span><span><i class="r"></i>сравнението</span><span>▲ / ▼ повече от 15 % (поне 5 s)</span></span></div>
+  <div class="tw"><table><thead><tr><th>Слайд</th><th>Заглавие</th><th class="num">Сравнение</th><th class="num">Този запис</th><th class="num">Разлика</th><th></th></tr></thead><tbody>
+  ${a.rows.map(r => `<tr><td><b>${esc(r.id)}</b></td><td>${esc(r.title)}${r.visits > 1 ? ` <span class="none">(${r.visits}×)</span>` : ''}</td>` +
+    `<td class="num">${ref.secs[r.id] != null ? fmt(ref.secs[r.id]) : '–'}</td><td class="num">${r.visits ? fmt(r.actual) : '–'}</td>` +
+    `<td class="num">${deltaCell(r.actual, ref.secs[r.id], r.visits)}</td><td>${track(r)}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div id="ract"><button class="btn" data-act="copy">Копирай като JSON</button><button class="btn" data-act="del">Изтрий този запис</button></div>
+  <textarea id="rjson" readonly hidden aria-label="Записът като JSON"></textarea>`;
+}
+// Runs: the db copy and this browser's copy are merged by id.
+async function listRuns() {
+  const all = lsGet(LS.runs), db = await getDb();
+  if (db) { try { (await db.collection('runs').orderBy('startedAt', 'desc').limit(100).get()).docs.forEach(d => { all[d.id] = { ...d.data(), id: d.id }; }); } catch (e) { /* browser copies still show */ } }
+  return Object.values(all).filter(r => r && r.status === 'finished' && reachedEnd(r)).sort((a, b) => (b.startMs || 0) - (a.startMs || 0));
+}
+async function runsNote() {
+  const db = await getDb();
+  $('rnote').textContent = REH.saved === 'saving' ? 'Записва се…'
+    : REH.saved === 'local' ? 'Последният запис не можа да се запази в страницата и е само в този браузър. Копирайте го като JSON, за да го споделите.'
+    : !db ? 'Записите се пазят само в този браузър.' : 'Записите се пазят в страницата, така че Claude може да ги прочете.';
+}
+function renderRuns(sel) {
+  const runs = REH.runs;
+  if (!runs.length) { $('rlist').innerHTML = ''; $('rview').innerHTML = '<p>Още няма записи. Натиснете <b>● Репетиция</b> и изнесете доклада от F1 до края. Записът спира сам на последния слайд („Благодаря“) и тогава тук се появява времето на всеки слайд.</p>'; return; }
+  const run = runs.find(r => r.id === sel) || runs[0]; REH.sel = run.id;
+  $('rlist').innerHTML = runs.map(r => `<button class="btn" data-run="${esc(r.id)}" aria-pressed="${r.id === run.id}">${esc(when(r))} · ${fmt(analyse(r).spoken)} мин</button>`).join('');
+  $('rview').innerHTML = runHtml(run);
+  const s = $('rcmpsel'); if (s) s.value = REH.runs.some(x => x.id === REH.cmp) && REH.cmp !== run.id ? REH.cmp : 'first';
+}
+async function openRuns(sel) {
+  $('result').hidden = false; $('rclose').focus();
+  $('rview').innerHTML = '<p>Зарежда се…</p>'; runsNote();
+  const fresh = await listRuns();
+  REH.runs = fresh; renderRuns(sel || REH.sel);
+}
+async function deleteRun(id) {
+  const all = lsGet(LS.runs); delete all[id]; lsSet(LS.runs, all);
+  const db = await getDb(); if (db) await dbTry(() => db.collection('runs').doc(id).delete());
+  REH.runs = REH.runs.filter(r => r.id !== id); renderRuns('');
+}
+function wireRuns() {
+  $('rbtn').addEventListener('click', ev => { ev.stopPropagation(); startRehearsal(); });
+  $('fin').addEventListener('click', ev => { ev.stopPropagation(); finishRehearsal(); });
+  $('runsbtn').addEventListener('click', ev => { ev.stopPropagation(); openRuns(REH.sel); });
+  $('rclose').addEventListener('click', () => { $('result').hidden = true; });
+  $('result').addEventListener('click', ev => { if (ev.target === $('result')) $('result').hidden = true; });
+  $('result').addEventListener('change', ev => { if (ev.target.id === 'rcmpsel') { REH.cmp = ev.target.value; renderRuns(REH.sel); } });
+  $('result').addEventListener('click', ev => {
+    const pick = ev.target.closest('[data-run]'); if (pick) return renderRuns(pick.dataset.run);
+    const btn = ev.target.closest('[data-act]'); if (!btn) return;
+    const run = REH.runs.find(r => r.id === REH.sel); if (!run) return;
+    if (btn.dataset.act === 'copy') {
+      const text = JSON.stringify(run, null, 1), box = $('rjson');
+      const fallback = () => { box.hidden = false; box.value = text; box.focus(); box.select(); btn.textContent = 'Маркирайте и копирайте'; };
+      try { navigator.clipboard.writeText(text).then(() => { btn.textContent = 'Копирано'; }, fallback); } catch (e) { fallback(); }
+    } else if (btn.dataset.act === 'del') {
+      if (btn.dataset.armed) deleteRun(run.id); else { btn.dataset.armed = '1'; btn.textContent = 'Изтрий го окончателно'; }
+    }
+  });
+  // A republish of the page while rehearsing reloads it: carry the run across so the recording continues.
+  try { window.claude?.hot?.snapshot?.(() => ({ run: REH.run, cur })); } catch (e) { /* not in a viewer */ }
+  const resume = data => { const r = data && data.run; if (r && r.status === 'recording' && !REH.run) { REH.run = r; go(clamp(data.cur || 0, 0, LAST), 'run'); recUi(true); } };
+  try { const hot = window.claude?.hot; if (hot?.ready) hot.ready(resume); else resume(hot?.data || {}); } catch (e) { /* nothing to resume */ }
+}
+function wireFullscreen() {
+  const b = $('fsbtn'); b.hidden = !document.fullscreenEnabled;
+  b.addEventListener('click', ev => { ev.stopPropagation();
+    try { const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (p) p.catch(() => {}); } catch (e) { /* not allowed here */ } });
+  document.addEventListener('fullscreenchange', () => { b.textContent = document.fullscreenElement ? 'Изход от цял екран' : 'Цял екран'; });
 }
 async function fontsReady() {
   try {
@@ -2247,8 +2622,20 @@ window.addEventListener('resize', () => {
   }));
   document.getElementById('replay').addEventListener('click', ev => { ev.stopPropagation(); replay(); });
   document.getElementById('nbtn').addEventListener('click', ev => { ev.stopPropagation(); toggleNotes(); });
+  $('ntext').addEventListener('input', onNoteInput);
+  $('ntext').addEventListener('blur', flushNote);
+  $('nrevert').addEventListener('click', revertNote);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) flushNote(); });
+  window.addEventListener('pagehide', flushNote);
+  let notesOn = false; try { notesOn = localStorage.getItem(LS.notesOn) === '1'; } catch (e) { /* closed by default */ }
+  if (notesOn) toggleNotes(true);
+  loadNotes();
+  wireRuns(); wireFullscreen();
   stage.addEventListener('click', () => step(1));
   window.addEventListener('keydown', ev => {
+    if (!$('result').hidden) { if (ev.key === 'Escape') $('result').hidden = true; return; }
+    // typing in the notes: keys belong to the text; Esc hands them back to the slides
+    if (ev.target.closest && ev.target.closest('textarea, input, select, [contenteditable]')) { if (ev.key === 'Escape') ev.target.blur(); return; }
     if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
     if (['ArrowRight', 'PageDown', ' ', 'Spacebar'].includes(ev.key)) { ev.preventDefault(); step(1); }
     else if (['ArrowLeft', 'PageUp'].includes(ev.key)) { ev.preventDefault(); step(-1); }
