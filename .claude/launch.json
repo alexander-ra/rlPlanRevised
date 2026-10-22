@@ -4,8 +4,14 @@
     {
       "name": "storyboard",
       "runtimeExecutable": ".venv/Scripts/python.exe",
-      "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "deliverables/agentic_ai_study/lofi"],
+      "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "deliverables/agentic_ai_study/deck"],
       "port": 8765
+    },
+    {
+      "name": "lofi",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "http.server", "8766", "--bind", "127.0.0.1", "--directory", "deliverables/agentic_ai_study/lofi"],
+      "port": 8766
     }
   ]
 }
