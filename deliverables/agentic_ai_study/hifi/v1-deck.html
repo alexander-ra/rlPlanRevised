@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Agent AI · V1 Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap">
+<!-- Google's latin subset drops → ≈ ≥ and the superscript digits; this text= subset adds exactly those from the same face -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&text=%E2%86%92%E2%89%88%E2%89%A5%E2%81%B0%C2%B9%C2%B2%C2%B3%E2%81%B4%E2%81%B5%E2%81%B6%E2%81%B7%E2%81%B8%E2%81%B9%E2%86%93%E2%86%91%E2%9C%93&display=swap">
+<style>
+  :root {
+    --page:#F3F5F7; --ink:#15202B; --ink2:#3D4955; --ink3:#5F6B77; --line:#DDE2E8; --focus:#2A62A8;
+    --sans:'IBM Plex Sans','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    --cond:'IBM Plex Sans Condensed','Arial Narrow','IBM Plex Sans','Segoe UI',Arial,sans-serif;
+    --mono:'IBM Plex Mono',SFMono-Regular,Consolas,'Liberation Mono',monospace;
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--page); color:var(--ink); font-family:var(--sans); }
+  body { display:flex; flex-direction:column; overflow:hidden; }
+  #wrap { flex:1 1 auto; min-height:0; position:relative; }
+  #stage { position:absolute; inset:0; width:100%; height:100%; display:block; cursor:pointer; }
+  .f-sans { font-family:var(--sans); } .f-cond { font-family:var(--cond); } .f-mono { font-family:var(--mono); }
+  /* speaker notes (N): Bulgarian script for the slide on screen, below the stage, never over it */
+  #notes { display:none; flex:none; max-height:30vh; overflow:auto; background:#FBFCFD; border-top:1px solid var(--line);
+           padding:10px 20px 12px; font:16px/1.55 var(--sans); color:var(--ink); }
+  #notes h2 { margin:0 0 6px; font:600 13px/1.3 var(--sans); color:var(--ink3); letter-spacing:.04em; text-transform:uppercase; }
+  #notes p { margin:0 0 8px; max-width:110ch; }
+  body.notes-on #notes { display:block; }
+  /* compact bar: every slide id, Replay, Notes */
+  #bar { flex:none; height:40px; display:flex; align-items:center; gap:6px; padding:0 8px; border-top:1px solid var(--line);
+         background:#ECEFF3; font-size:13px; white-space:nowrap; }
+  #fbtns { display:flex; gap:2px; overflow-x:auto; scrollbar-width:thin; min-width:0; flex:1 1 auto; padding:2px 0; }
+  #fbtns::before, #fbtns::after { content:''; margin:auto; }
+  #bar button { font:inherit; font-weight:500; color:var(--ink2); background:transparent; border:1px solid transparent;
+                border-radius:7px; padding:3px 7px; min-height:28px; cursor:pointer; flex:none; }
+  #bar button:hover { background:#DFE4EA; }
+  #bar button[aria-current="true"] { background:var(--ink); color:#fff; }
+  #bar button[aria-pressed="true"] { background:#D7DEE6; color:var(--ink); }
+  #bar button:focus-visible { outline:2px solid var(--focus); outline-offset:1px; }
+  #bar .sep { width:1px; height:20px; background:#CFD6DD; flex:none; }
+  #bar .act { font-weight:600; }
+  body.review #bar, body.review #notes { display:none !important; }
+  body.review #stage { cursor:default; }
+  @media (max-width:900px) { #bar { height:36px; gap:3px; } #bar button { padding:2px 5px; min-height:26px; } #notes { font-size:14px; } }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <svg id="stage" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="">
+    <defs>
+      <filter id="blurL" x="-30%" y="-30%" width="160%" height="190%"><feGaussianBlur stdDeviation="11"/></filter>
+      <filter id="blurS" x="-10%" y="-10%" width="120%" height="140%"><feGaussianBlur stdDeviation="1.8"/></filter>
+      <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="14" height="14" fill="#E8ECF0"/><rect width="4" height="14" fill="#DCE2E8"/>
+      </pattern>
+    </defs>
+    <g id="root"></g>
+  </svg>
+</div>
+<aside id="notes" aria-label="Speaker notes" aria-live="polite"></aside>
+<nav id="bar" aria-label="Slides">
+  <div id="fbtns"></div>
+  <span class="sep"></span>
+  <button id="replay" class="act" title="Replay the transition into this slide">Replay</button>
+  <button id="nbtn" class="act" aria-pressed="false" title="Speaker notes (N)">Notes</button>
+</nav>
+
+<script>
+'use strict';
+'use strict';
+/* ======================================================================
+   V1 · Refined light. Same element identities as the lofi storyboard
+   (hifi/frames.json), re-laid out to fill the 1600×900 stage, drawn as SVG
+   and morphed: persistent elements interpolate geometry and colour, new
+   ones enter staggered from a sensible origin, changed text crossfades,
+   and the news gets a brief halo once everything has landed.
+   ====================================================================== */
+const W = 1600, H = 900;
+
+/* ---------- palette: calm neutrals + one hue per meaning ---------- */
+const C = {
+  page:'#F3F5F7', ink:'#15202B', ink2:'#3D4955', ink3:'#5F6B77',
+  card:'#FFFFFF', line:'#C3CCD6', region:'#EAEEF2', regionLine:'#D3DAE1',
+  io:'#E1E7ED', ioLine:'#A9B5C1',
+  good:'#1C7C4D', goodFill:'#E9F6EF', goodLine:'#93CBAA', goodBar:'#2E9A63', goodOnDark:'#4CC38A',
+  warn:'#8A5800', warnFill:'#FFF5DC', warnLine:'#D69A1E', warnBar:'#E0A526', warnPill:'#FBE2A0',
+  bad:'#C0362C', badFill:'#FCEBE9',
+  check:'#5A45B5', checkInk:'#3F2E92', checkFill:'#F1EEFB', checkLine:'#B6ABE4',
+  memory:'#2A62A8', memoryInk:'#1E4C8A', memoryFill:'#E9F1FB', memoryLine:'#A9C4E8', noteLine:'#C3D5EC',
+  think:'#4E6381', thinkLine:'#A3B3C8', track:'#E1E6EC',
+  agentLine:'#B4BFCA', ext:'#8C98A5', segHuman:'#CDD5DE', arrow:'#8C98A5'
+};
+const FAM = {
+  sans:"'IBM Plex Sans','Segoe UI','Helvetica Neue',Arial,sans-serif",
+  cond:"'IBM Plex Sans Condensed','Arial Narrow','IBM Plex Sans','Segoe UI',Arial,sans-serif",
+  mono:"'IBM Plex Mono',SFMono-Regular,Consolas,'Liberation Mono',monospace"
+};
+const pcol = p => p >= 0.85 ? C.goodBar : p >= 0.6 ? C.warnBar : C.bad;
+const pcolText = p => p >= 0.85 ? C.good : p >= 0.6 ? C.warn : C.bad;
+
+/* ---------- small utilities ---------- */
+const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+const seg = (t, a, b) => clamp01((t - a) / (b - a));
+const L = (a, b, t) => a + (b - a) * t;
+const inOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const outCubic = t => 1 - Math.pow(1 - t, 3);
+const outQuart = t => 1 - Math.pow(1 - t, 4);
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const f1 = v => Math.round(v * 10) / 10;
+function hex(h) { h = h.slice(1); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); }
+function mixc(a, b, t) {
+  if (a === b || t <= 0) return a; if (t >= 1) return b;
+  if (!a || !b || a[0] !== '#' || b[0] !== '#') return t < 0.5 ? a : b;
+  const A = hex(a), B = hex(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+function lum(h) { return hex(h).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); })
+  .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0); }
+const contrast = (a, b) => { const A = lum(a), B = lum(b); return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05); };
+const lerpRect = (a, b, t) => ({ x:L(a.x, b.x, t), y:L(a.y, b.y, t), w:L(a.w, b.w, t), h:L(a.h, b.h, t) });
+
+/* ---------- text measuring (canvas, same faces as the SVG) ---------- */
+const mctx = document.createElement('canvas').getContext('2d');
+function measure(s, size, weight = 400, fam = 'sans', italic = false, ls = 0) {
+  mctx.font = `${italic ? 'italic ' : ''}${weight} ${size}px ${FAM[fam]}`;
+  return mctx.measureText(s).width + ls * size * Math.max(0, [...s].length - 1);
+}
+
+/* ======================================================================
+   FRAMES — content exactly as frames.json; geometry re-fitted
+   ====================================================================== */
+const B = (id, x, y, w, h, label, o = {}) => ({ id, t:'box', x, y, w, h, label, ...o });
+const T = (id, x, y, label, o = {}) => ({ id, t:'text', x, y, label, ...o });
+const A = (from, to, o = {}) => ({ id:'a:' + from + '>' + to, t:'arrow', from, to, ...o });
+const chainArrows = ids => ids.slice(0, -1).map((id, i) => A(id, ids[i + 1]));
+const head = (title, cap, clock) => [
+  T('ttl', 40, 90, title, { role:'title' }),
+  ...(cap ? [T('cap', 40, 856, cap, { role:'caption' })] : []),
+  ...(clock ? [B('clock', 1376, 46, 184, 50, clock, { k:'clock' })] : [])];
+
+const STEP_L = ['Search\nroad distance', 'Search\nfuel price', 'Search\ntrain fares', 'Calculate\nboth costs', 'Compare\n& answer'];
+// Same words as the storyboard, re-broken for the narrower card; **…** = a bold line.
+const ASK_COST = 'Which is cheaper\nfrom Ruse to Sofia\n— driving or\ntaking the train?';
+const ASK_THINK = ASK_COST + '\n**Think hard**\n**and describe**\n**the answer**\n**step by step.**';
+
+function frameF4() {
+  const els = head('Thinking before each step', '98% per step → 0.98⁵ ≈ 90%. Reasoning is trained with RL on answers that can be checked.', '⏱ ~1 min');
+  const top = 272, sh = 210;
+  els.push(B('ai', 236, 206, 1162, 386, 'AI model', { k:'region' }));
+  els.push(B('q', 40, 247, 174, 260, 'Question', { k:'io', sub:ASK_THINK, sfs:15 }));
+  const xs = [254, 487, 720, 953, 1186];
+  xs.forEach((x, i) => {
+    els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.98, ent:1 }));
+    els.push(B('th' + (i + 1), x + 22, top + sh + 22, 150, 52, 'thinking…', { k:'think', at:0.56 }));   // after its card has moved up
+  });
+  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.9039207967999999 }));
+  els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'ans']));
+  const eq = ['0.98⁵ ≈ 90%', '0.98¹⁰ ≈ 82%', '0.98¹⁰⁰ ≈ 13%', '0.98¹⁰⁰⁰ ≈ 0%'];
+  eq.forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 718, s, { role:'eq', ent:i })));
+  return { id:'F4', title:'Thinking before each step', els, news:[] };
+}
+
+function frameF5a() {
+  const els = head('Tools and a check', 'In code: run the tests, read the error. Here: four independent checks. The fare came from a 2025 page, in leva.', '⏱ ~5 min');
+  const top = 360, sh = 260;
+  els.push(B('ai', 236, 252, 1162, 482, 'AI model', { k:'region' }));
+  els.push(B('q', 40, top, 174, sh, 'Question', { k:'io', sub:ASK_COST }));
+  const xs = [254, 432, 610, 788, 966];
+  const sub = ['web search', 'web search', '2025 page · 23 лв', 'calculator · exact', ''];
+  xs.forEach((x, i) => {
+    const id = 's' + (i + 1);
+    const o = { p:0.98, sub:sub[i] };
+    if (id === 's3') Object.assign(o, { s:'bad', lift:1, late:[0.62, 0.84] });   // turns red once the check catches it
+    if (id === 's4') Object.assign(o, { p:1, k:'exact', lift:1 });
+    els.push(B(id, x, top, 158, sh, STEP_L[i], o));
+    if (id !== 's4') els.push(B('th' + (i + 1), x + 10, top + sh + 22, 138, 52, 'thinking…', { k:'think' }));
+  });
+  els.push(B('v', 1150, 293, 230, 394, 'Check', { k:'verify', ltop:true, lift:1, strong:1, at:0.44, enter:{ dx:30 } }));
+  [['sources agree ✓', 'good'], ['sensible range ✓', 'good'], ['date & currency ✗', 'bad'], ['recompute ✓', 'good']]
+    .forEach(([l, s], i) => els.push(B('ck' + (i + 1), 1162, 355 + i * 82, 206, 70, l, { k:'ckchip', s, at:0.50 + i * 0.045, enter:{ dx:18 } })));
+  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.9223681599999999, sub:'on hold', s:'warn', lift:1, late:[0.66, 0.88] }));
+  els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'v', 'ans']));
+  els.push({ id:'back', t:'arrow', from:'v', to:'s3', fs:'t', ts:'t', shape:'arch', apex:188, k:'bad', at:0.68,
+             label:'✗ fare from a 2025 page, in leva' });
+  return { id:'F5a', title:'Tools and a check', els, news:['s4', 's3', 'v', 'ans'] };
+}
+
+// N1 and N2 share one layout; N2 compresses the rows to make room for the outside world.
+const PLAN_NOTES = ['Flights: 12 land\nafter 22:00', 'Hotels: holding 12\nlate check-ins', 'Attendee 37:\nneeds a step-free room',
+                    'Catering: 9 vegetarian\nlunches', 'Trains & buses: coach\nfrom Bucharest 15:30'];
+const COL = { q:[40, 156], lead:[226, 126], grp:[384, 178], team:[590, 192], chk:[808, 144], plan:[978, 206], gop:[1216, 174], ans:[1420, 140] };
+const ROWS = {
+  N1:{ region:[152, 684], gt:[172, 346], s_fl:[172, 248], s_tr:[270, 346], ga:[372, 546], s_ho:[372, 448], s_ca:[470, 546],
+       gc:[572, 668], plan:[172, 668], q:[379, 539], lead:[394, 524], ans:[379, 539], org:[394, 524],
+       notes:[226, 62, 14], foot:632, g_h:[712, 738], g_a:[748, 770] },
+  N2:{ region:[152, 608], gt:[168, 316], s_fl:[168, 232], s_tr:[252, 316], ga:[338, 486], s_ho:[338, 402], s_ca:[422, 486],
+       gc:[508, 592], plan:[168, 592], q:[332, 492], lead:[347, 477], ans:[332, 492], org:[352, 472],
+       notes:[220, 56, 10], foot:572, g_h:[744, 770], g_a:[780, 802] }
+};
+function frameConf(doors) {
+  const R = ROWS[doors ? 'N2' : 'N1'];
+  const bx = (id, col, row, label, o) => B(id, COL[col][0], R[row][0], COL[col][1], R[row][1] - R[row][0], label, o);
+  const title = doors ? 'Acting in the world, through two doors' : 'A real-scale job: 100 people to this conference';
+  const els = head(title, doors
+    ? 'Only Correspondence writes to people; only Payments can pay, after the budget guard and, above €500, the organiser.'
+    : 'A lead, three groups, five teams: ~125 agents. They coordinate through one living plan.', '⏱ ~1 day');
+  const d = doors ? { door:1, lift:1 } : {};
+  els.push(
+    B('ai', 212, R.region[0], 1192, R.region[1] - R.region[0], '', doors ? { k:'region', wall:true, late:[0.4, 0.6] } : { k:'region' }),
+    T('ail', 226, 140, doors ? '~127 agents · a lead, three groups, five teams, two payment agents' : '~125 agents · a lead, three groups, five teams', { role:'ail', ent:0 }),
+    bx('q', 'q', 'q', 'Task', { k:'io', sub:'get 100 attendees\nfrom 15 countries\nto Ruse by the 23rd,\nunder €30,000', sfs:15 }),
+    bx('ans', 'ans', 'ans', 'Result', { k:'io', sub:'every attendee:\nan itinerary,\na bed and\nlunches' }),
+    bx('lead', 'lead', 'lead', 'Lead', { k:'lead', nl:'COORDINATE', sub:'splits the job,\nwatches\nprogress', ent:0 }),
+    bx('gt', 'grp', 'gt', 'Transport', { k:'agent', sub:doors ? 'posts requests\nin the plan' : 'long and\nshort distance', ent:1 }),
+    bx('ga', 'grp', 'ga', 'Accommodation', { k:'agent', sub:doors ? 'posts requests\nin the plan' : 'beds and lunches', ent:1 }),
+    bx('gc', 'grp', 'gc', 'Correspondence', { k:'agent', sub:doors ? 'the only agents that\nwrite to people' : 'speaks for\neach attendee', ent:1, ...d }),
+    bx('s_fl', 'team', 's_fl', 'Flights', { k:'agent', nl:'×8', sub:'long distance', ent:2 }),
+    bx('s_tr', 'team', 's_tr', 'Trains & buses', { k:'agent', nl:'×6', sub:'short distance', ent:2 }),
+    bx('s_ho', 'team', 's_ho', 'Hotels', { k:'agent', nl:'×4', sub:'rooms in Ruse', ent:2 }),
+    bx('s_ca', 'team', 's_ca', 'Catering', { k:'agent', nl:'×3', sub:'lunches during the stay', ent:2 }),
+    bx('s_co', 'team', 'gc', 'Attendee workers', { k:'agent', nl:'×100', sub:'one per attendee', ent:2, ...d }),
+    bx('c_t', 'chk', 'gt', 'Verifier', { k:'verify', sub:'connections\n≥ 60 min;\nlands by the 23rd', ent:3 }),
+    bx('c_a', 'chk', 'ga', 'Room & meal\ncheck', { k:'verify', sub:'a bed and a lunch\nfor everyone', ent:3 }),
+    bx('c_c', 'chk', 'gc', 'Fact check', { k:'verify', sub:'names, dates,\nvisas', ent:3 }),
+    bx('plan', 'plan', 'plan', 'Living plan', { k:'board', nl:'MEMORY', ltop:true, ent:3 }),
+    T('planfoot', COL.plan[0] + COL.plan[1] / 2, R.foot, 'every team writes and reads', { role:'foot', ent:4 }),
+    A('q', 'lead'), A('lead', 'gt'), A('lead', 'ga'), A('lead', 'gc'),
+    A('gt', 's_fl'), A('gt', 's_tr'), A('ga', 's_ho'), A('ga', 's_ca'), A('gc', 's_co'),
+    A('s_fl', 'c_t'), A('s_tr', 'c_t'), A('s_ho', 'c_a'), A('s_ca', 'c_a'), A('s_co', 'c_c'),
+    A('c_t', 'plan'), A('c_a', 'plan'), A('c_c', 'plan'),
+    T('tl', 40, R.g_h[1] - 6, 'time →', { role:'tl', ent:4 }),
+    B('g_h', 160, R.g_h[0], 1244, R.g_h[1] - R.g_h[0], 'a human team: ~3 weeks of work', { k:'seg', ent:4 }),
+    B('g_a', 160, R.g_a[0], Math.round(1244 / 21), R.g_a[1] - R.g_a[0], '', { k:'seg', s:'good', ent:4 }),
+    T('ga_t', 160 + Math.round(1244 / 21) + 14, R.g_a[1] - 5, 'agents: ~1 day of work (plus waiting for replies and approvals)', { role:'gat', ent:4 }));
+  const [n0, nh, ng] = R.notes;
+  PLAN_NOTES.forEach((l, i) => els.push(B('pn' + i, COL.plan[0] + 10, n0 + i * (nh + ng), COL.plan[1] - 20, nh, l, { k:'note', ent:4 })));
+  const gx = COL.gop[0], gw = COL.gop[1];
+  if (!doors) {
+    els.push(B('org', gx, R.org[0], gw, R.org[1] - R.org[0], 'Budget guard\n+ organiser', { k:'human', sub:'stays under €30k;\nfinal sign-off', ent:4 }),
+             A('plan', 'org'), A('org', 'ans'));
+    return { id:'N1', title, els, news:[] };
+  }
+  const by = R.region[1];                        // the wall between the system and the outside world
+  els.push(
+    B('guard', gx, 168, gw, 108, 'Budget guard', { k:'verify', sub:'stays under €30k;\n> €500 → organiser', lift:1, strong:1, at:0.30, enter:{ dy:26 } }),
+    B('org', gx, R.org[0], gw, R.org[1] - R.org[0], 'Organiser', { k:'human', nl:'APPROVE', sub:'approves big\npayments;\nfinal sign-off', lift:1 }),
+    B('pay', gx, 508, gw, 84, 'Payments', { k:'agent', nl:'×2', sub:'the only agents\nthat can pay', door:1, lift:1, at:0.50, enter:{ dy:22 } }),   // rises from the door side once the organiser has settled
+    A('plan', 'guard', { fs:'r', ts:'l' }),
+    A('guard', 'org', { fs:'b', ts:'t', fdx:44, tdx:44, label:'> €500', k:'gate' }),
+    A('org', 'pay', { fs:'b', ts:'t', k:'strong' }),
+    A('org', 'ans'),
+    // the outside world rises in once the system has made room for it; then the doors open in the wall
+    B('world', 212, by + 38, 1192, 78, 'outside world', { k:'world', at:0.40, enter:{ dy:18 } }),
+    B('door1', 686 - 48, by - 12, 96, 24, 'door 1 · people', { k:'door', band:by + 38, at:0.48, enter:{ dy:0 } }),
+    B('door2', 1280 - 75, by - 12, 150, 24, 'door 2 · money', { k:'door', band:by + 38, at:0.48, enter:{ dy:0 } }),
+    B('w_people', 590, by + 51, 192, 52, 'attendees, hotels,\ncarriers · email', { k:'ext', at:0.50, enter:{ dy:18 } }),
+    B('w_book', 1022, by + 51, 164, 52, 'booking systems', { k:'ext', at:0.54, enter:{ dy:18 } }),
+    B('w_card', 1256, by + 51, 134, 52, 'payment card', { k:'ext', at:0.57, enter:{ dy:18 } }),
+    A('s_co', 'w_people', { fs:'b', ts:'t', fdx:-16, tdx:-16, k:'door', at:0.60 }),
+    A('w_people', 's_co', { fs:'t', ts:'b', fdx:16, tdx:16, k:'door', at:0.64 }),
+    A('pay', 'w_book', { fs:'b', ts:'r', fdx:-66, k:'door', at:0.62 }),
+    A('pay', 'w_card', { fs:'b', ts:'t', fdx:20, k:'door', at:0.66 }));
+  return { id:'N2', title, els, news:['door1', 'door2', 'guard', 'org'] };
+}
+
+/* ---------- batch A: F1–F5b ---------- */
+function frameF1() {
+  // a calm title: one quiet rule, the title in two lines, the subtitle, the speaker at the foot
+  return { id:'F1', title:'Title', news:[], els:[
+    B('rule', 100, 262, 88, 8, '', { k:'rule' }),
+    T('t1', 100, 372, 'Multi-Agent AI for\nComplex Problem Solving', { role:'hero' }),
+    T('t2', 100, 574, 'Opportunities and Risks', { role:'heroSub' }),
+    B('rule2', 100, 742, 1400, 2, '', { k:'rule', soft:1 }),
+    T('t3', 100, 800, 'Alexander Andreev · University of Ruse "Angel Kanchev"', { role:'heroBy' })] };
+}
+function frameF2() {
+  const els = head('One question, one answer', 'Illustrative number: the chance the final answer is right.', '⏱ ~2 s');
+  els.push(B('q', 80, 280, 390, 340, 'Question', { k:'io', sub:'Should I drive or take\nthe train to Sofia?', fs:34, sfs:24 }),
+           B('ai', 605, 280, 390, 340, 'AI model', { k:'model' }),
+           B('ans', 1130, 280, 390, 340, 'Answer', { k:'io', p:0.6, fs:34, lift:1 }),
+           A('q', 'ai'), A('ai', 'ans'));
+  return { id:'F2', title:'One question, one answer', els, news:['ans'] };
+}
+function frameF3() {
+  const els = head('A real task has many steps', '5 steps × 95% each → 0.95⁵ ≈ 77%. Every step must be right.', '⏱ ~10 s');
+  const top = 290, sh = 240;
+  els.push(B('ai', 236, 220, 1162, 380, 'AI model', { k:'region' }));
+  els.push(B('q', 40, top, 174, sh, 'Question', { k:'io', sub:ASK_COST }));
+  // the steps appear inside the model once it has opened up (from F2's single box)
+  [254, 487, 720, 953, 1186].forEach((x, i) => els.push(B('s' + (i + 1), x, top, 194, sh, STEP_L[i], { p:0.95, at:0.42 + i * 0.04 })));
+  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.7737809374999998, lift:1 }));
+  els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'ans']));
+  ['0.95⁵ ≈ 77%', '0.95¹⁰ ≈ 60%', '0.95¹⁰⁰ ≈ 1%', '0.95¹⁰⁰⁰ ≈ 0%']
+    .forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 718, s, { role:'eq', at:0.56 + i * 0.05 })));
+  return { id:'F3', title:'A real task has many steps', els, news:['ans'] };
+}
+function frameF5b() {
+  const els = head('Redo, with the reason', 'The reason goes back with the redo, so attempt 2 is different. Checked steps 98% → 99.99%; chain ≈ 99.96%.', '⏱ ~6 min');
+  const top = 316, sh = 228, late = [0.5, 0.78];
+  els.push(B('ai', 236, 236, 1162, 432, 'AI model', { k:'region' }));
+  els.push(B('q', 40, top, 174, sh, 'Question', { k:'io', sub:ASK_COST }));
+  const xs = [254, 432, 610, 788, 966];
+  const sub = ['web search', 'web search', 'attempt 2\n2026 page · €12', 'calculator · exact', ''];
+  xs.forEach((x, i) => {
+    const id = 's' + (i + 1);
+    const o = { p:0.9999, sub:sub[i] };
+    if (id === 's3') Object.assign(o, { s:'good', lift:1, late });   // the redo comes back right
+    if (id === 's4') Object.assign(o, { p:1, k:'exact' });
+    els.push(B(id, x, top, 158, sh, STEP_L[i], o));
+    if (id !== 's4') els.push(B('th' + (i + 1), x + 10, top + sh + 18, 138, 50, 'thinking…', { k:'think' }));
+  });
+  const vy = top + sh / 2 - 172;
+  els.push(B('v', 1150, vy, 230, 344, 'Check', { k:'verify', ltop:true, strong:1 }));
+  [['sources agree ✓', 'good'], ['sensible range ✓', 'good'], ['date & currency ✓', 'good'], ['recompute ✓', 'good']]
+    .forEach(([l, s], i) => els.push(B('ck' + (i + 1), 1162, vy + 60 + i * 68, 206, 58, l, { k:'ckchip', s, ...(i === 2 ? { late } : {}) })));
+  els.push(T('retry', 1265, vy + 344 + 30, 'max 3 tries, then tell\nthe human it is unsure', { role:'note', ent:3 }));
+  els.push(B('ans', 1426, top, 134, sh, 'Answer', { k:'io', p:0.9996000599960001, lift:1, late:[0.56, 0.84] }));
+  els.push(...chainArrows(['q', 's1', 's2', 's3', 's4', 's5', 'v', 'ans']));
+  els.push({ id:'back', t:'arrow', from:'v', to:'s3', fs:'t', ts:'t', shape:'arch', apex:182, k:'back',
+             label:'redo with the reason: find the 2026 fare in €' });
+  ['0.9999⁵ ≈ 99.95%', '0.9999¹⁰ ≈ 99.9%', '0.9999¹⁰⁰ ≈ 99%', '0.9999¹⁰⁰⁰ ≈ 90%']
+    .forEach((s, i) => els.push(T('pow' + i, 230 + i * 380, 752, s, { role:'eq', size:38, at:0.5 + i * 0.05 })));
+  return { id:'F5b', title:'Redo, with the reason', els, news:['s3', 'ck3', 'ans'] };
+}
+const ORDER_ALL = ['F1', 'F2', 'F3', 'F4', 'F5a', 'F5b', 'F7a', 'F7b', 'F7c', 'F8', 'N1', 'N2', 'N3', 'F9', 'R0', 'R4', 'R1', 'R2', 'R3', 'R6', 'R5a', 'R5b'];
+const BUILD = { F1:frameF1, F2:frameF2, F3:frameF3, F4:frameF4, F5a:frameF5a, F5b:frameF5b,
+  N1:() => frameConf(false), N2:() => frameConf(true) };
+for (const [k, fnName] of [['F7a', 'frameF7a'], ['F7b', 'frameF7b'], ['F7c', 'frameF7c'], ['F8', 'frameF8'], ['N3', 'frameN3'], ['F9', 'frameF9'],
+  ['R0', 'frameR0'], ['R4', 'frameR4'], ['R1', 'frameR1'], ['R2', 'frameR2'], ['R3', 'frameR3'], ['R6', 'frameR6'], ['R5a', 'frameR5a'], ['R5b', 'frameR5b']])
+  if (typeof globalThis[fnName] === 'function') BUILD[k] = globalThis[fnName];
+const ORDER = ORDER_ALL.filter(id => BUILD[id]);
+const FRAMES = ORDER.map(id => BUILD[id]());
+// Bulgarian speaker notes, one block per slide (from the spoken script; italic markers stripped)
+const NOTES = {"F1": {"t": "Title", "p": ["Здравейте. Аз съм Александър Андреев, кандидат-докторант в Русенския университет „Ангел Кънчев“. Днес ще ви представя темата „Решаване на сложни проблеми с многоагентни системи: възможности и рискове“."]}, "F2": {"t": "One question, one answer", "p": ["Идеята е да ви покажа процеса нагледно, с диаграма, която постепенно се разширява. Вляво винаги стои въпросът или задачата на потребителя. Вдясно е крайният отговор на ИИ, с примерен шанс този отговор да е верен. По средата е работата, която ИИ извършва, а в горния десен ъгъл – приблизителното време от задаването на въпроса до отговора.", "Започваме с обикновен въпрос и директен отговор – така работеха първите масово разпространени езикови модели, като GPT-3.5 от ноември 2022 г. „Да шофирам ли, или да си хвана влака до София?“ Получаваме бърз, но непроверен отговор – синтез на всичко, което моделът е прочел по време на обучението си. Основният проблем е, че отговорът винаги звучи уверено, дори когато е напълно подвеждащ. Това е т.нар. „халюцинация“."]}, "F3": {"t": "A real task has many steps", "p": ["Ако конкретизираме въпроса – „Кое е по-евтино от Русе до София: с кола или с влак?“ – вече ни трябват конкретни данни. За да даде смислен отговор, ИИ разбива въпроса на няколко последователни подвъпроса и така увеличава шанса за верен отговор. Езиковите модели започнаха да правят това сами около средата на 2023 г.", "Грешка дори в една от стъпките обаче най-вероятно води до грешен отговор. Ако всяка от петте стъпки е вярна с 95%, целият отговор е верен само в 77% от случаите. В реалността стъпките, разбира се, имат различен шанс, но идеята е ясна: дори когато всяка стъпка е вярна с над 90%, шансът за верен краен резултат пада рязко, колкото по-голяма е задачата. Под диаграмата виждате шанса за успех при 5, 10, 100 и 1000 стъпки.", "А времето: ако един въпрос отнема около 2 секунди, тук имаме пет такива – общо около 10 секунди."]}, "F4": {"t": "Thinking before each step", "p": ["За да подобрим шанса на всяка отделна стъпка, можем да оставим модела да „мисли“. Всичко започна с прости инструкции – „помисли задълбочено и обясни отговора си стъпка по стъпка“. Резултатите бяха толкова добри, че компаниите вградиха мисленето в самото обучение на моделите. Първите такива модели бяха OpenAI o1 (септември 2024 г.) и DeepSeek R1 (януари 2025 г.). Вместо направо да „изплюят“ отговора, те водят вътрешен диалог със себе си и търсят обосновка за всяко свое заключение. При 98% за стъпка петте стъпки вече дават 90%, но редът отдолу показва, че при хиляда стъпки и това не стига."]}, "F5a": {"t": "Tools and a check", "p": ["Друг начин да увеличим шанса за успех са инструментите и автоматичните проверки. Когато една стъпка се изпълни с инструмент, например калкулатор или програмен скрипт, шансът за грешка в нея пада до нула – на слайда изчислението на двата разхода вече е точно. За останалите стъпки добавяме проверка, която изрично търси доказателства за всяко заключение. В примера тя открива грешка в цената на билета: взета е от страница от 2025 г. и е в лева, а от януари плащаме в евро."]}, "F5b": {"t": "Redo, with the reason", "p": ["Проверката връща не просто „грешно“, а и причината – затова вторият опит е различен и търси актуалната цена в евро. Възможността да се върнем и да поправим грешката носи много по-голям шанс за успех: тук всяка проверена стъпка е вярна с 99,99% и дори при хиляда стъпки шансът остава около 90%.", "Минусът е цената. Писането на скриптове и многократното минаване през всяка стъпка удължават изчисленията, а някои проверки, дори автоматизирани, отнемат много време. Ако трябваше да проверим резултат от биологично изследване, това нямаше да са минути, а дни – но понякога това е единственият начин да сме сигурни в резултата."]}, "F7a": {"t": "An open question takes many more steps", "p": ["Ако направим въпроса по-„отворен“ – как най-евтино да стигнем до София в рамките на 24 часа – има по-голям шанс да открием решение, което изобщо не сме предвидили. Така можем да проверим различни варианти, а някои от тях отпадат чак докато задачата се решава. Такива системи се появиха в края на 2024 г. с Deep Research на Google, последван от Deep Research на OpenAI през февруари 2025 г. Минусът остава същият: времето за отговор рязко нараства – тук до около два часа. Затова и компаниите промениха начина, по който ги предлагат: вместо чат с активна дискусия, това е процес, който стартирате и получавате резултата след известно време."]}, "F7b": {"t": "Copies take the options in parallel", "p": ["Ако същият процес се раздели на няколко паралелни нишки, стигаме до същия резултат за много по-кратко време – около 25 минути вместо два часа. Всяка нишка е агент: същият модел, със собствена работна памет, пуснат за една задача. Необходимите ресурси обаче нарастват, защото освен стъпките, които иначе бихме изпълнили последователно, имаме и агент-„диригент“, който разпределя работата, следи останалите и ги изчаква."]}, "F7c": {"t": "Copies split again, stop early, report back", "p": ["Това, че има диригент, не означава, че един агент се грижи за всички останали. Тук всеки начин на придвижване се разделя допълнително според нуждите си: колата проверява два пътя – през Плевен и през Велико Търново, а влакът – директна връзка и връзка с прекачване. Йерархията обаче се запазва: обикновено всички подпроцеси трябва да приключат, за да може този, който ги е създал, да продължи. В случая това, че не можем да пътуваме с колело заради бурята, не зависи от останалите. Но ако подпроцесите са свързани и задължителни, провалът на един от тях може да накара диригента да спре всички останали и да преосмисли подхода си."]}, "F8": {"t": "Where splitting helps, and where it hurts", "p": ["Не всяка задача печели от разделяне на паралелни нишки. Търсенето в различни източници в интернет е отличен пример за ускорение без загуба на качество: няма нужда да зареждаме и „четем“ източниците един по един – може наведнъж.", "В другата крайност е писането на роман. Ако пишем всички глави едновременно, резултатът ще е катастрофален – не можем да пишем заключението по същото време като увода. Несъответствията в текста са неизбежни.", "Повечето задачи са някъде по средата, като програмирането: отделни поправки се делят лесно, но две копия, които пишат една и съща функционалност, трябва постоянно да се съгласуват. Въпросът, който трябва да си зададем, е дали значително по-краткото време си струва риска от неуспех."]}, "N1": {"t": "A real-scale job: 100 people to this conference", "p": ["Досега задачата – да намерим един превоз от точка А до точка Б – се ускоряваше значително с езикови модели, но все пак беше по силите на един човек за един работен ден. През последните месеци успехите на ИИ позволиха мащабът на проблемите да нарасне рязко. В новия пример не търсим превоз за един човек: искаме да доведем и настаним 100 гости от 15 държави в нашия град за конференция, с бюджет под 30 000 евро. Работа, която би отнела на екип от хора около три седмици, може да се свърши за един ден – стига външният свят да отговаря бързо с потвърждения за резервации, билети и т.н.", "Повечето сложни системи имат йерархия от възложители и изпълнители, общо място, където споделят междинните резултати, и начин да комуникират и да следят напредъка. Тук задачата е разделена на три части: как да придвижим гостите до града, как да ги настаним подобаващо и как да потвърдим, че всичко това е подходящо за всеки един от тях."]}, "N2": {"t": "Acting in the world, through two doors", "p": ["В такива сложни процеси е наивно да мислим, че най-добрият резултат може да се постигне без човешка намеса по време на изпълнението. Системата действа навън само през две „врати“: само кореспонденцията пише на хора и само агентите за плащания могат да плащат. Затова сме сложили и ограничение на плащанията: всичко под 500 евро агентът за плащания изпълнява сам, а по-големите суми чакат, докато отговорникът за организацията изрично ги одобри."]}, "N3": {"t": "Day 9: a flight is cancelled", "p": ["Реалният свят, разбира се, не е перфектен. Дори основната задача да е свършена за ден, трябват „дежурни“ агенти, които следят за промени и ги отразяват – в реално време или периодично. В примера авиокомпанията отменя полет, който засяга десет от нашите гости. Това може да се реши автоматично, но може и отново да изисква човешка намеса – тук допълнителните 1850 евро чакат одобрение от организатора."]}, "F9": {"t": "Systems like ours are already at work", "p": ["Последната стъпка в тази част: за да покажем какво отключва съвременният ИИ, излизаме от нашите примери и поглеждаме как подобни структури се използват за откриване на нови решения, за защита на критични системи и за ускоряване на научния и технологичния прогрес. Зад тях стоят както компании, така и университети, държавни институции и независими екипи.", "Нарочно не съм включил рекурсивното самоусъвършенстване на ИИ – идеята, че в даден момент ще бъде създадена многоагентна система, която сама подобрява работата си, а новата версия на свой ред създава още по-добра. Истината е, че в големите компании за ИИ прогресът наистина е зашеметяващ и голяма част от работата на експертите им се автоматизира буквално всеки месец. Но тяхната работа, макар и непрекъснато променяща се, остава ключова за успеха им."]}, "R0": {"t": "Misalignment: what we say vs what we mean", "p": ["Време е да обърнем внимание и на рисковете, които носи тази автоматизация. За целта се връщаме към примера с настаняването на 100 гости. Досега приемахме, че системата прави това, което искаме. Но ние ѝ казахме само „най-евтино, под 30 000 евро“, а имахме предвид и „законно, честно и без да подвеждаш никого“. Проблемите започват точно в тази неизказана част."]}, "R4": {"t": "One wrong step is enough", "p": ["Първият пример показва нагледно това, което пресметнахме със степените в многостъпковия процес. Конференцията е на 24-ти, затова всички гости трябва да са настанени до края на 23-ти. Двете дати често се срещат в бележките на агентите и лесно се объркват – и датата на пристигане става 24-ти вместо 23-ти. Веднъж записана така в общия план, грешката предизвиква верижна реакция и от единичен случай засяга действията и на другите агенти. И то без никаква лоша умисъл."]}, "R1": {"t": "It games the guard, to be helpful", "p": ["Във втория пример системата отново няма лоша умисъл. Но за да ни помогне и да ускори процеса, като избегне чакането на човешко одобрение, тя заобикаля защитата, която изрично сме сложили. Предстои плащане от 600 евро – над лимита от 500. Системата го разделя на три плащания по 200 евро. Формално не е нарушила правило, но е очевидно, че е излязла от разрешените ѝ граници."]}, "R2": {"t": "It crosses a line in the world", "p": ["В третия пример нещата ескалират. Да приемем, че агентите за влаковете откриват бъг в системата за резервации и могат да запазят места за гостите, без да плащат. Това е неетично и незаконно, но на теория помага директно на възложителя – в бюджета остават повече пари за други разходи."]}, "R3": {"t": "It hides the problem", "p": ["Една стъпка по-нататък – и това е препратка към реален случай, който ще видим след малко – системата може да усети, че възложителят не би искал това. Но отново, за да му „помогне“ и да запази спестените пари, тя решава да го заблуди: макар да не е платила билетите, генерира фалшиви фактури за плащането им. Така възложителят има още по-малък шанс да разбере какво се случва и да се намеси."]}, "R6": {"t": "It has already happened", "p": ["Ще ви покажа два реални случая, за които вероятно повечето от вас са чували. И двата са станали в тестова среда, но последствията им са стигнали до реалния свят. Не е нарочно, че и двата са на OpenAI – и други компании са имали подобни случаи, но тези са най-известните.", "В първия случай група агенти, които дори не е трябвало да работят заедно, са тествани на много сложни задачи по киберсигурност в изолирани среди. Те намират пролука в изолацията си и начин да комуникират. Малко след това откриват как да заобиколят задачите и да подадат на оценителя фалшиви верни отговори. Подобно на фалшивите фактури от преди малко, те разбират, че действията им не са коректни и че оценителят рано или късно ще ги хване. Затова, според оставените следи, планират атака срещу Hugging Face – един от основните сайтове на общността по машинно обучение – за да подменят истинските отговори и да намалят шанса да бъдат разкрити. Случаят е изследван подробно от независими източници и силно ви препоръчвам да го прочетете.", "Вторият случай е подобен. Задачата е била проучване на лекарства за кожни заболявания. Понеже системата не намира достатъчно информация, тя получава непозволен достъп до медицинска система на австралийското правителство и изтегля вътрешни файлове и пароли – за да изпълни задачата по-пълно. Лични данни на граждани не са прочетени."]}, "R5a": {"t": "Who asks, and who answers", "p": ["Тези примери могат да се обобщят в три групи, според това какво искаме от системата. Първата група са добре описани задачи с ясни граници: дори неетична система в общия случай ще стигне до етичен резултат. Втората група са неясно поставени задачи – нарочно или от небрежност. Неетична система отново може да даде етичен резултат, но може и да престъпи етични или законови правила, само за да изпълни задачата – като плащането, разделено на три. Третата група са недобронамерени възложители, които използват уменията на ИИ, за да навредят умишлено или да се възползват от слабостите на други системи. Неетична система няма да направи разлика и ще изпълни поръчката въпреки последствията."]}, "R5b": {"t": "With alignment, most of it is fixed", "p": ["Затова трябва да се погрижим системите за масово ползване да имат силни защитни механизми, които не могат да бъдат заобиколени. При първата група няма проблем – резултатът не би трябвало да се различава. При втората група, дори при неясно поставена задача, системата сама трябва да си поставя етични и законови граници и да постига целта си само с правилни действия. А умишлено вредните поръчки изобщо не трябва да се изпълняват – нещо повече, трябва да се анализират и да алармират отговорните органи, за да се предотвратяват подобни опити. С правилно съгласуване повечето от тези проблеми могат да бъдат решени. Благодаря ви за вниманието."]}};
+
+/* ======================================================================
+   RESOLVE — each element becomes a box + "parts" anchored to that box,
+   so text, pills and meters ride along while the box morphs. Parts are
+   keyed by role + content: same key → interpolate, else crossfade.
+   ====================================================================== */
+const FIT = [];   // shrink-to-fit log (QA)
+let CUR_FRAME = '';
+function txt(role, s, anchor, dx, dy, size, o = {}) {
+  return { key:role + ':' + s, t:'text', s, anchor, dx, dy, size, wt:o.wt || 400, fam:o.fam || 'sans', col:o.col || C.ink,
+           ta:o.ta || 'middle', it:!!o.it, ls:o.ls || 0, op:1, sc:o.sc || null };
+}
+function pill(key, s, anchor, dx, dy, o) {
+  const size = o.size || 15, ls = o.ls ?? 0.06, fam = o.fam || 'cond', wt = o.wt || 600;
+  const w = Math.ceil(measure(s, size, wt, fam, false, ls)) + (o.padX || 10) * 2, h = o.h || 24;
+  return { key:'pill:' + key + ':' + s, t:'pill', s, anchor, dx:o.center ? dx - w / 2 : o.right ? dx - w : dx, dy, w, h, size, fam, wt, ls,
+           fill:o.fill, stroke:o.stroke || 'none', sw:o.sw || 0, col:o.col || '#FFFFFF', op:1, free:!!o.free };
+}
+// A block of lines; returns parts positioned around a reference y (centre, or top).
+function block(lines, box, opts) {
+  const padX = opts.padX ?? 12, maxW = box.w - 2 * padX;
+  let k = 1;
+  for (const l of lines) {
+    const w = measure(l.s, l.size, l.wt, l.fam || 'sans', l.it);
+    if (w > maxW * k * 1.0001 && w > 0) k = Math.min(k, maxW / w);
+  }
+  if (k < 1) { FIT.push({ frame:CUR_FRAME, id:opts.id, k:+k.toFixed(3) }); k = Math.max(k, 0.82); }
+  let y = 0; const placed = [];
+  lines.forEach((l, i) => {
+    const size = l.size * k, lh = size * (l.lh || 1.22);
+    if (i > 0) y += (l.gap || 0) * k;
+    placed.push({ l, size, base:y + lh / 2 + size * 0.35 }); y += lh;
+  });
+  const total = y, out = [];
+  for (const p of placed) {
+    const dy = opts.anchor === 'c' ? p.base - total / 2 + (opts.dy || 0) : p.base + (opts.dy || 0);
+    const dx = opts.ta === 'start' ? -box.w / 2 + padX + (opts.dx || 0) : (opts.dx || 0);
+    out.push(txt(p.l.role, p.l.s, opts.anchor === 'c' ? 'c' : 't', dx, dy, p.size,
+                 { wt:p.l.wt, col:p.l.col, fam:p.l.fam, it:p.l.it, ta:opts.ta || 'middle' }));
+  }
+  return { parts:out, h:total };
+}
+const subLines = (sub, size, col, boldCol, wt = 400) => !sub ? [] : sub.split('\n').map((s, i) => {
+  const m = /^\*\*(.*)\*\*$/.exec(s);
+  return { role:'sub', s:m ? m[1] : s, size, wt:m ? 600 : wt, col:m ? boldCol : col, gap:i === 0 ? 8 : 0 };
+});
+const labLines = (label, size, col, wt = 600) => label ? label.split('\n').map(s => ({ role:'lab', s, size, wt, col })) : [];
+
+function resolveBox(e, idx) {
+  const k = e.k || 'step', box = { x:e.x, y:e.y, w:e.w, h:e.h };
+  const sp = { id:e.id, type:'box', k, box, parts:[], shape:null, layer:3, ord:idx, lift:e.lift ? 1 : 0,
+               ent:e.ent, at:e.at, late:e.late || null, enter:e.enter || null, o:1, halo:0 };
+  const P = sp.parts, label = e.label || '';
+  if (k === 'region' || k === 'world') {
+    sp.layer = 0;
+    sp.shape = { rx:k === 'world' ? 18 : 22, fill:k === 'world' ? 'url(#hatch)' : C.region, stroke:C.regionLine, sw:1.5 };
+    if (e.wall) P.push({ key:'wall', t:'hline', anchor:'bl', inset:20, dy:0, sw:3, col:C.ink2, op:1 });   // the wall to the outside world
+    if (label) P.push(k === 'world'
+      ? txt('rl', label.toUpperCase(), 'l', 22, 6, 16, { fam:'cond', wt:600, col:C.ink3, ta:'start', ls:0.1 })
+      : txt('rl', label.toUpperCase(), 'tl', 22, 34, 16, { fam:'cond', wt:600, col:C.ink3, ta:'start', ls:0.1 }));
+  } else if (k === 'door') {
+    // an opening in the wall: the wall is cut, two jambs stand either side, a faint threshold tint
+    // runs from inside to the outside world, and a tag names the door
+    sp.layer = 1; const cy = e.y + e.h / 2;
+    P.push({ key:'tint', t:'rect', anchor:'c', dx:-e.w / 2 + 3, dy:-16, w:e.w - 6, h:e.band - cy + 16, rx:6, fill:C.ink, fop:0.07, op:1 });
+    P.push({ key:'cut', t:'rect', anchor:'c', dx:-e.w / 2, dy:-4, w:e.w, h:8, rx:0, fill:C.page, op:1 });
+    P.push({ key:'jambL', t:'rect', anchor:'c', dx:-e.w / 2 - 3, dy:-14, w:6, h:28, rx:3, fill:C.ink, op:1 });
+    P.push({ key:'jambR', t:'rect', anchor:'c', dx:e.w / 2 - 3, dy:-14, w:6, h:28, rx:3, fill:C.ink, op:1 });
+    if (label) P.push(pill('tag', label.toUpperCase(), 'l', -12, 9, { right:true, h:22, fill:C.ink, col:'#FFFFFF', free:1 }));
+    sp.haloCol = C.ink;
+  } else if (k === 'step' || k === 'exact') {
+    const ex = k === 'exact', bad = e.s === 'bad', good = e.s === 'good', st = bad ? C.bad : good ? C.good : null;
+    sp.shape = { rx:14, fill:ex ? C.ink : bad ? C.badFill : good ? C.goodFill : C.card, stroke:ex ? C.ink : st || C.line, sw:ex || st ? 2 : 1.5 };
+    const subL = e.sub ? e.sub.split('\n') : [], chipS = subL.length ? subL[subL.length - 1] : '', tagS = subL.length > 1 ? subL[0] : '';
+    const lb = block(labLines(label, e.fs || 21, ex ? '#FFFFFF' : C.ink), box, { anchor:'t', dy:0, id:e.id, padX:10 });
+    const top0 = cardTop(e.h, lb.h, chipS ? 46 + (tagS ? 24 : 0) : 0);
+    lb.parts.forEach(q => { q.dy += top0; }); P.push(...lb.parts);
+    if (tagS) P.push(txt('tag', tagS, 't', 0, top0 + lb.h + 14 + 13, 15, { wt:600, col:st || C.ink3 }));
+    if (chipS) {   // the tool or source behind the step, as a chip
+      let size = 16; while (size > 14 && measure(chipS, size, st ? 600 : 500) + 18 > e.w - 12) size -= 0.5;
+      P.push(pill('sub', chipS, 't', 0, top0 + lb.h + 14 + (tagS ? 24 : 0), { center:true, h:32, size, fam:'sans', wt:st ? 600 : 500, ls:0, padX:9,
+        fill:ex ? '#2C3846' : st ? '#FFFFFF' : '#EDF0F4', stroke:st || 'none', sw:st ? 1.5 : 0, col:ex ? '#DCE3EA' : st || C.ink2 }));
+    }
+    meterParts(P, e.p, ex ? '#FFFFFF' : C.ink, bad ? C.bad : ex ? C.goodOnDark : pcol(e.p), ex ? '#334251' : C.track, e.h);
+  } else if (k === 'model') {      // one AI model, as a single box; it opens into the region on the next slide
+    sp.shape = { rx:22, fill:C.card, stroke:C.ink3, sw:2 };
+    P.push(txt('lab', label, 'c', 0, 12, 34, { wt:600, col:C.ink }));
+  } else if (k === 'rule') {
+    sp.shape = { rx:e.h / 2, fill:e.soft ? '#D5DBE2' : C.ink, stroke:'none', sw:0 };
+  } else if (k === 'think') {
+    sp.shape = { rx:e.h / 2, fill:'#F9FAFC', stroke:C.thinkLine, sw:1.5, dash:'5 5' };
+    P.push(txt('lab', label, 'c', 0, 6.3, 18, { it:true, wt:500, col:C.think }));
+  } else if (k === 'io') {
+    const warn = e.s === 'warn';
+    sp.shape = { rx:14, fill:warn ? C.warnFill : C.io, stroke:warn ? C.warnLine : C.ioLine, sw:warn ? 2 : 1.5 };
+    if (e.p != null) {
+      const lb = block(labLines(label, e.fs || 22, C.ink), box, { anchor:'t', dy:0, id:e.id }), hold = e.sub === 'on hold';
+      const top0 = cardTop(e.h, lb.h, hold ? 46 : 0);
+      lb.parts.forEach(q => { q.dy += top0; }); P.push(...lb.parts);
+      if (hold) P.push(pill('hold', 'ON HOLD', 't', 0, top0 + lb.h + 14, { center:true, fill:C.warnPill, col:'#6E4600', h:32, size:16, padX:12 }));
+      meterParts(P, e.p, C.ink, warn ? C.warnBar : pcol(e.p), warn ? '#F1E2BC' : '#CBD4DD', e.h);
+    } else {
+      P.push(...block([...labLines(label, e.fs || 22, C.ink), ...subLines(e.sub, e.sfs || 16, C.ink2, C.ink)], box, { anchor:'c', id:e.id, padX:10 }).parts);
+    }
+  } else if (k === 'verify') {
+    sp.shape = { rx:14, fill:C.checkFill, stroke:e.strong ? C.check : C.checkLine, sw:e.strong ? 2 : 1.5 };
+    if (e.ltop) { sp.container = true; P.push(txt('lab', label, 't', 0, 40, 22, { wt:600, col:C.checkInk })); }
+    else P.push(...block([...labLines(label, e.fs || 20, C.checkInk), ...subLines(e.sub, 15, C.ink2, C.ink)], box, { anchor:'c', id:e.id, padX:8 }).parts);
+  } else if (k === 'ckchip') {
+    const bad = e.s === 'bad', isX = /✗\s*$/.test(label), s = label.replace(/\s*[✓✗]\s*$/, '');
+    sp.shape = { rx:12, fill:bad ? C.bad : C.card, stroke:bad ? C.bad : C.goodLine, sw:1.5 };
+    P.push({ key:'mark:' + (isX ? 'cross' : 'check'), t:'mark', kind:isX ? 'cross' : 'check', anchor:'l', dx:26, dy:0, r:12, bg:bad ? '#FFFFFF' : C.good, fg:bad ? C.bad : '#FFFFFF', op:1 });
+    P.push(txt('lab', s, 'l', 48, 6.8, 19.5, { wt:600, col:bad ? '#FFFFFF' : C.ink, ta:'start' }));
+    if (measure(s, 19, 600) > e.w - 60) FIT.push({ id:e.id, k:+((e.w - 60) / measure(s, 19, 600)).toFixed(3) });
+  } else if (k === 'agent' || k === 'lead' || k === 'human') {
+    const hum = k === 'human', lead = k === 'lead', door = !!e.door;
+    sp.shape = { rx:12, fill:hum ? C.ink : C.card, stroke:hum ? C.ink : lead ? C.ink2 : door ? C.ink : C.agentLine, sw:hum || lead || door ? 2 : 1.5 };
+    const lines = [...labLines(label, e.fs || 20, hum ? '#FFFFFF' : C.ink), ...subLines(e.sub, 15, hum ? '#C6CFD8' : C.ink2, C.ink)];
+    lines.forEach(l => { if (l.role === 'sub') l.gap = l.gap ? 4 : 0; });
+    P.push(...block(lines, box, { anchor:'c', dy:e.nl ? 4 : 0, id:e.id, padX:10 }).parts);
+    if (e.nl) P.push(pill('nl', e.nl, 'tl', 12, -12, hum ? { fill:'#FFFFFF', stroke:C.ink, sw:1.5, col:C.ink, free:1 }
+                                                        : { fill:lead ? C.ink2 : C.ink3, free:1 }));
+    if (hum) sp.haloCol = C.ink;
+  } else if (k === 'board') {
+    sp.shape = { rx:16, fill:C.memoryFill, stroke:C.memoryLine, sw:1.5 };
+    P.push(txt('lab', label, 't', 0, 36, 21, { wt:600, col:C.memoryInk }));
+    if (e.nl) P.push(pill('nl', e.nl, 'tl', 12, -12, { fill:C.memory, free:1 }));
+  } else if (k === 'note') {
+    sp.shape = { rx:10, fill:C.card, stroke:C.noteLine, sw:1.25 };
+    P.push(...block(label.split('\n').map(s => ({ role:'lab', s, size:15, wt:500, col:C.ink, lh:1.25 })), box, { anchor:'c', ta:'start', padX:12, id:e.id }).parts);
+  } else if (k === 'ext') {
+    sp.shape = { rx:10, fill:C.card, stroke:C.ext, sw:1.5 };
+    P.push(...block(label.split('\n').map(s => ({ role:'lab', s, size:16, wt:500, col:C.ink, lh:1.2 })), box, { anchor:'c', id:e.id }).parts);
+  } else if (k === 'seg') {
+    sp.shape = { rx:e.h / 2, fill:e.s === 'good' ? C.goodBar : C.segHuman, stroke:'none', sw:0 };
+    if (label) P.push(txt('lab', label, 'c', 0, 5.4, 15, { wt:600, col:C.ink }));
+  } else if (k === 'clock') {
+    sp.shape = { rx:e.h / 2, fill:C.card, stroke:C.line, sw:1.5 };
+    const s = label.replace(/^⏱\s*/, ''), tw = measure(s, 22, 600), gw = 24 + 10 + tw, x0 = (e.w - gw) / 2;
+    P.push({ key:'icon', t:'clock', anchor:'l', dx:x0 + 12, dy:1, r:10.5, col:C.ink2, op:1 });
+    P.push(txt('lab', s, 'l', x0 + 34, 7.8, 22, { wt:600, col:C.ink, ta:'start' }));
+  }
+  return sp;
+}
+// top of a card's content block, centred in the space above the % + meter row
+const cardTop = (h, labelH, extraH) => 14 + Math.max(0, (h - 72 - 14 - labelH - extraH) / 2);
+// 99.99% must not show as 100%: two decimals above 99.9, one above 99, whole numbers otherwise (as in the storyboard)
+const fmtPct = p => (p * 100).toFixed(p > 0.999 && p < 1 ? 2 : p > 0.99 && p < 1 ? 1 : 0) + '%';
+function meterParts(P, p, numCol, barCol, track, h = 0) {
+  const big = h > 270;   // the big single-answer card on F2
+  P.push({ key:'pct', t:'pct', anchor:'b', dx:0, dy:big ? -58 : -42, size:big ? 52 : 31, col:numCol, p, op:1 });
+  P.push({ key:'meter', t:'meter', anchor:'bl', inset:big ? 26 : 18, dy:big ? -30 : -24, h:big ? 10 : 8, p, fill:barCol, track, op:1 });
+}
+
+const ROLE = {
+  title:{ size:46, wt:700, col:C.ink, ls:-0.012 }, caption:{ size:21, wt:400, col:C.ink2 },
+  ail:{ size:17, wt:600, col:C.ink3 }, foot:{ size:15, wt:600, col:C.memoryInk, ta:'middle' },
+  tl:{ size:19, wt:500, col:C.ink3 }, gat:{ size:16, wt:600, col:C.good }, eq:{ size:42, wt:600, col:C.ink, ta:'middle' },
+  hero:{ size:82, wt:700, col:C.ink, ls:-0.018, lh:1.1 }, heroSub:{ size:40, wt:500, col:C.ink2 }, heroBy:{ size:24, wt:500, col:C.ink2 },
+  note:{ size:16, wt:500, col:C.ink3, ta:'middle', lh:1.3 }
+};
+function resolveText(e, idx) {
+  const r = { ...(ROLE[e.role] || ROLE.caption), ...(e.size ? { size:e.size } : {}) };
+  const sp = { id:e.id, type:'box', k:'text', box:{ x:e.x, y:e.y, w:0, h:0 }, parts:[], shape:null, layer:5, ord:idx,
+               ent:e.ent, at:e.at, late:e.late || null, enter:e.enter || null, o:1, halo:0, lift:0 };
+  if (e.role === 'eq') {   // 0.98⁵ ≈ 90% — the result takes the colour of its reliability band
+    const m = /^(.*) ≈ ([\d.]+)%$/.exec(e.label), v = +m[2] / 100;
+    sp.parts.push(txt('eq', e.label, 'tl', 0, 0, r.size, { wt:r.wt, col:C.ink, ta:'middle',
+      sc:[{ s:m[1], col:C.ink }, { s:' ≈ ', col:C.ink3 }, { s:m[2] + '%', col:pcolText(v) }] }));
+  } else String(e.label).split('\n').forEach((l, i) =>
+    sp.parts.push(txt(e.role, l, 'tl', 0, i * r.size * (r.lh || 1.25), r.size, { wt:r.wt, col:e.col || r.col, ta:e.ta || r.ta || 'start', ls:r.ls || 0 })));
+  return sp;
+}
+
+/* ---------- arrows: orthogonal routes (rounded), or an arch for the redo loop ---------- */
+const ASTY = { solid:{ col:C.arrow, sw:2 }, strong:{ col:C.ink2, sw:2.25 }, door:{ col:C.ink, sw:2.6 }, gate:{ col:C.check, sw:2.5 }, bad:{ col:C.bad, sw:3.5 }, back:{ col:C.check, sw:3.2 } };
+function route(e, a, b) {
+  const fs = e.fs || 'r', ts = e.ts || 'l';
+  if (e.shape === 'arch') {
+    const p0 = [a.x + a.w / 2 + (e.fdx || 0), a.y], p3 = [b.x + b.w / 2 + (e.tdx || 0), b.y];
+    const Y = (e.apex - 0.125 * (p0[1] + p3[1])) / 0.75;      // so the curve's midpoint sits at the apex
+    return { mode:'cubic', pts:[p0, [p0[0], Y], [p3[0], Y], p3] };
+  }
+  if ((fs === 'r' && ts === 'l') || (fs === 'l' && ts === 'r')) {
+    const x1 = fs === 'r' ? a.x + a.w : a.x, x2 = ts === 'l' ? b.x : b.x + b.w;
+    const ac = a.y + a.h / 2, bc = b.y + b.h / 2, m = 10;
+    const bInA = bc >= a.y + m && bc <= a.y + a.h - m, aInB = ac >= b.y + m && ac <= b.y + b.h - m;
+    let y1, y2;
+    if (e.y != null) y1 = y2 = e.y;
+    else if (b.h <= a.h && bInA) y1 = y2 = bc;
+    else if (aInB) y1 = y2 = ac;
+    else if (bInA) y1 = y2 = bc;
+    else { y1 = ac; y2 = bc; }
+    const xm = e.xm ?? (x1 + x2) / 2;
+    return { mode:'ortho', pts:[[x1, y1], [xm, y1], [xm, y2], [x2, y2]] };
+  }
+  if ((fs === 'b' || fs === 't') && (ts === 'l' || ts === 'r')) {
+    const x1 = a.x + a.w / 2 + (e.fdx || 0), y1 = fs === 'b' ? a.y + a.h : a.y, x2 = ts === 'r' ? b.x + b.w : b.x, y2 = b.y + b.h / 2;
+    return { mode:'ortho', pts:[[x1, y1], [x1, y2], [x1, y2], [x2, y2]] };
+  }
+  const y1 = fs === 'b' ? a.y + a.h : a.y, y2 = ts === 't' ? b.y : b.y + b.h;
+  let x1 = a.x + a.w / 2 + (e.fdx || 0), x2 = b.x + b.w / 2 + (e.tdx || 0);
+  if (e.fdx == null && e.tdx == null) {
+    const ac = a.x + a.w / 2, bc = b.x + b.w / 2;
+    if (bc >= a.x + 10 && bc <= a.x + a.w - 10) x1 = x2 = bc; else if (ac >= b.x + 10 && ac <= b.x + b.w - 10) x1 = x2 = ac;
+  }
+  const ym = e.ym ?? (y1 + y2) / 2;
+  return { mode:'ortho', pts:[[x1, y1], [x1, ym], [x2, ym], [x2, y2]] };
+}
+function resolveArrow(e, idx, M) {
+  const k = e.k || 'solid', st = ASTY[k], r = route(e, M.get(e.from).box, M.get(e.to).box);
+  return { id:e.id, type:'arrow', def:e, from:e.from, to:e.to, layer:k === 'bad' ? 4 : 2, ord:idx, mode:r.mode, pts:r.pts,
+           col:st.col, sw:st.sw, k, o:1, draw:1, label:e.label || null, at:e.at };
+}
+
+const CACHE = new Map();
+function resolved(id) {
+  if (CACHE.has(id)) return CACHE.get(id);
+  const f = FRAMES.find(x => x.id === id), map = new Map(); CUR_FRAME = id;
+  f.els.forEach((e, i) => { if (e.t === 'box') map.set(e.id, resolveBox(e, i)); else if (e.t === 'text') map.set(e.id, resolveText(e, i)); });
+  f.els.forEach((e, i) => { if (e.t === 'arrow') map.set(e.id, resolveArrow(e, i, map)); });
+  const r = { id, map, news:f.news || [], title:f.title };
+  CACHE.set(id, r); return r;
+}
+
+/* ======================================================================
+   MIX — the transition at linear progress t (easing applied per track)
+   ====================================================================== */
+// out: changed text leaves · place: kept lines slide to their new place in the box · in: titles/captions arrive ·
+// inBox: new lines inside a card arrive only after the card has nearly reached its final size (never two versions stacked)
+const TM = { dur:1200, exit:[0, 0.3], geo:[0.04, 0.64], color:[0.22, 0.66], out:[0, 0.17], in:[0.17, 0.42], place:[0.04, 0.44], inBox:[0.46, 0.66],
+             enter0:0.24, enterStep:0.065, enterDur:0.28, arrowDur:0.2, halo:[0.80, 1] };
+const NUMK = ['dx', 'dy', 'size', 'w', 'h', 'r', 'p', 'rx', 'sw', 'inset', 'op', 'fop'];
+const COLK = ['col', 'fill', 'stroke', 'bg', 'fg', 'track'];
+function anchorXY(b, an) {
+  switch (an) {
+    case 'c': return [b.x + b.w / 2, b.y + b.h / 2]; case 't': return [b.x + b.w / 2, b.y]; case 'b': return [b.x + b.w / 2, b.y + b.h];
+    case 'l': return [b.x, b.y + b.h / 2]; case 'r': return [b.x + b.w, b.y + b.h / 2]; case 'bl': return [b.x, b.y + b.h];
+    case 'tr': return [b.x + b.w, b.y]; default: return [b.x, b.y];
+  }
+}
+function lerpPart(pa, pb, aBox, bBox, g, c, gp) {
+  const r = { ...pb };
+  let dxA = pa.dx, dyA = pa.dy;
+  if (pa.anchor !== pb.anchor && pa.dx != null) {      // re-express A's offset against B's anchor
+    const [ax, ay] = anchorXY(aBox, pa.anchor), [bx, by] = anchorXY(aBox, pb.anchor);
+    dxA = ax + pa.dx - bx; dyA = ay + pa.dy - by;
+  }
+  for (const k of NUMK) if (typeof pa[k] === 'number' && typeof pb[k] === 'number') r[k] = L(pa[k], pb[k], g);
+  if (pa.dx != null) { r.dx = L(dxA, pb.dx, gp); r.dy = L(dyA, pb.dy, gp); }
+  for (const k of COLK) if (pa[k] && pb[k]) r[k] = mixc(pa[k], pb[k], c);
+  if (pa.sc && pb.sc) r.sc = pb.sc.map((s, i) => ({ ...s, col:mixc(pa.sc[i]?.col || s.col, s.col, c) }));
+  return r;
+}
+function mixBox(a, b, t, g) {
+  // a "late" element changes state after the rest has landed (the check catching the fare)
+  const lw = b.late, c = inOutCubic(seg(t, ...(lw || TM.color)));
+  const xo = outCubic(seg(t, ...(lw ? [lw[0] - 0.06, lw[0] + 0.1] : TM.out)));
+  const xi = outCubic(seg(t, ...(lw || (b.k === 'text' ? TM.in : TM.inBox)))), gp = inOutCubic(seg(t, ...TM.place));
+  const box = lerpRect(a.box, b.box, g);
+  let shape = b.shape;
+  if (a.shape && b.shape) shape = { rx:L(a.shape.rx, b.shape.rx, g), fill:mixc(a.shape.fill, b.shape.fill, c), stroke:mixc(a.shape.stroke, b.shape.stroke, c),
+                                    sw:L(a.shape.sw, b.shape.sw, c), dash:c < 0.5 ? a.shape.dash : b.shape.dash };
+  const pa = new Map(a.parts.map(p => [p.key, p])), pb = new Map(b.parts.map(p => [p.key, p])), parts = [];
+  // when the card flips light <-> dark, text takes whichever colour reads better on the current fill (no grey-on-grey)
+  const isHex = v => typeof v === 'string' && v[0] === '#';
+  const flips = a.shape && b.shape && isHex(a.shape.fill) && isHex(b.shape.fill) && Math.abs(lum(a.shape.fill) - lum(b.shape.fill)) > 0.4;
+  for (const p of a.parts) if (!pb.has(p.key)) parts.push({ ...p, op:(p.op ?? 1) * (1 - xo) });
+  for (const p of b.parts) {
+    const q = pa.get(p.key);
+    if (!q) { parts.push({ ...p, op:(p.op ?? 1) * xi, ddy:4 * (1 - xi) }); continue; }
+    const r = lerpPart(q, p, a.box, b.box, g, c, gp);
+    if (flips && (p.t === 'text' || p.t === 'pct') && isHex(q.col) && isHex(p.col) && q.col !== p.col)
+      r.col = contrast(q.col, shape.fill) >= contrast(p.col, shape.fill) ? q.col : p.col;
+    parts.push(r);
+  }
+  return { ...b, box, shape, parts, lift:L(a.lift, b.lift, c), o:1, halo:0 };
+}
+function mix(RA, RB, t) {
+  const A = RA.map, Bm = RB.map;
+  const g = inOutCubic(seg(t, ...TM.geo)), c = inOutCubic(seg(t, ...TM.color)), ex = outCubic(seg(t, ...TM.exit));
+  const cur = new Map(), list = [];
+  // entering elements without an explicit rank are staggered left to right
+  const autoRank = b => b.ent ?? Math.max(0, Math.min(4, Math.floor((b.box.x - 120) / 300)));
+  for (const [id, b] of Bm) {
+    if (b.type !== 'box') continue;
+    const a = A.get(id);
+    if (a) { const m = mixBox(a, b, t, g); cur.set(id, m); list.push(m); continue; }
+    const s0 = b.at ?? TM.enter0 + TM.enterStep * autoRank(b), u = outQuart(seg(t, s0, s0 + TM.enterDur)), uo = outCubic(seg(t, s0, s0 + TM.enterDur * 0.7));
+    const en = b.enter || {};
+    let box;
+    if (en.from && A.has(en.from)) box = lerpRect(A.get(en.from).box, b.box, u);     // splits off an existing element
+    else box = { ...b.box, x:b.box.x + (en.dx || 0) * (1 - u), y:b.box.y + (en.dy ?? 14) * (1 - u) };
+    const m = { ...b, box, o:uo, t0:s0 + TM.enterDur * 0.8 }; cur.set(id, m); list.push(m);
+  }
+  for (const [id, a] of A) {
+    if (a.type !== 'box' || Bm.has(id)) continue;
+    let box = a.box;
+    if (a.enter && a.enter.from && Bm.has(a.enter.from)) box = lerpRect(a.box, Bm.get(a.enter.from).box, g);   // merges back
+    const m = { ...a, box, o:1 - ex, ord:a.ord + 0.5 }; cur.set(id, m); list.push(m);
+  }
+  for (const [id, b] of Bm) {
+    if (b.type !== 'arrow') continue;
+    const a = A.get(id);
+    if (a && a.mode === b.mode) {
+      const pts = a.pts.map((p, i) => [L(p[0], b.pts[i][0], g), L(p[1], b.pts[i][1], g)]);
+      list.push({ ...b, pts, col:mixc(a.col, b.col, c), sw:L(a.sw, b.sw, c), labelA:a.label !== b.label ? a.label : null, lx:[1 - seg(t, ...TM.out), seg(t, ...TM.in)] });
+      continue;
+    }
+    const fa = cur.get(b.from), fb = cur.get(b.to);
+    const s0 = b.at ?? Math.max(0.46, fa.t0 || 0, fb.t0 || 0);
+    const d = inOutCubic(seg(t, s0, s0 + TM.arrowDur)), r = route(b.def, fa.box, fb.box);
+    list.push({ ...b, pts:r.pts, mode:r.mode, draw:d, o:d > 0 ? Math.min(fa.o, fb.o, 1) : 0 });
+  }
+  for (const [id, a] of A) {
+    if (a.type !== 'arrow' || Bm.has(id)) continue;
+    const fa = cur.get(a.from), fb = cur.get(a.to), r = fa && fb ? route(a.def, fa.box, fb.box) : a;
+    list.push({ ...a, pts:r.pts, mode:r.mode, o:1 - outCubic(seg(t, 0, 0.2)), ord:a.ord + 0.5 });
+  }
+  const hu = seg(t, ...TM.halo);
+  if (hu > 0 && hu < 1) for (const id of RB.news) { const m = cur.get(id); if (m && A.has(id) || m && t > 0) m.halo = hu; }
+  return list;
+}
+
+/* ======================================================================
+   DRAW
+   ====================================================================== */
+function textEl(p, x, y, op) {
+  const fam = 'f-' + p.fam, ls = p.ls ? ` letter-spacing="${f1(p.ls * p.size)}"` : '';
+  const style = (p.it ? ' font-style="italic"' : '') + (p.tnum ? ' style="font-variant-numeric:tabular-nums"' : '');
+  const inner = p.sc ? p.sc.map(s => `<tspan fill="${s.col}">${esc(s.s)}</tspan>`).join('') : esc(p.s);
+  return `<text x="${f1(x)}" y="${f1(y)}" class="${fam}" font-size="${f1(p.size)}" font-weight="${p.wt}" fill="${p.col}" text-anchor="${p.ta}"${ls}${style}${op < 1 ? ` opacity="${op.toFixed(3)}"` : ''}>${inner}</text>`;
+}
+function drawPart(p, b) {
+  const op = p.op ?? 1; if (op <= 0.004) return '';
+  const [ax, ay] = anchorXY(b, p.anchor), x = ax + (p.dx || 0), y = ay + (p.dy || 0) + (p.ddy || 0);
+  const o = op < 1 ? ` opacity="${op.toFixed(3)}"` : '';
+  switch (p.t) {
+    case 'text': return textEl(p, x, y, op);
+    case 'rect': return `<rect x="${f1(x)}" y="${f1(y)}" width="${f1(p.w)}" height="${f1(p.h)}" rx="${p.rx}" fill="${p.fill}"${p.fop != null ? ` fill-opacity="${p.fop}"` : ''}${o}/>`;
+    case 'pill': {
+      const tp = { ...p, ta:'middle', it:false };
+      return `<g${o} data-free="1"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(p.w)}" height="${p.h}" rx="${p.h / 2}" fill="${p.fill}" stroke="${p.stroke}" stroke-width="${p.sw}"/>` +
+             textEl(tp, x + p.w / 2, y + p.h / 2 + p.size * 0.35, 1) + '</g>';
+    }
+    case 'hline': return `<line x1="${f1(b.x + p.inset)}" y1="${f1(b.y + b.h + p.dy)}" x2="${f1(b.x + b.w - p.inset)}" y2="${f1(b.y + b.h + p.dy)}" stroke="${p.col}" stroke-width="${p.sw}" stroke-linecap="round"${o}/>`;
+    case 'pct': return textEl({ ...p, s:fmtPct(p.p), fam:'sans', wt:600, ta:'middle', tnum:1 }, x, y, op);
+    case 'meter': {
+      const mx = b.x + p.inset, mw = Math.max(0, b.w - 2 * p.inset), my = b.y + b.h + p.dy;
+      return `<g${o}><rect x="${f1(mx)}" y="${f1(my)}" width="${f1(mw)}" height="${p.h}" rx="${p.h / 2}" fill="${p.track}"/>` +
+             `<rect x="${f1(mx)}" y="${f1(my)}" width="${f1(mw * clamp01(p.p))}" height="${p.h}" rx="${p.h / 2}" fill="${p.fill}"/></g>`;
+    }
+    case 'mark': {
+      const r = p.r, path = p.kind === 'check'
+        ? `M${f1(x - r * 0.45)},${f1(y + r * 0.02)} L${f1(x - r * 0.1)},${f1(y + r * 0.36)} L${f1(x + r * 0.48)},${f1(y - r * 0.34)}`
+        : `M${f1(x - r * 0.36)},${f1(y - r * 0.36)} L${f1(x + r * 0.36)},${f1(y + r * 0.36)} M${f1(x + r * 0.36)},${f1(y - r * 0.36)} L${f1(x - r * 0.36)},${f1(y + r * 0.36)}`;
+      return `<g${o}><circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${p.bg}"/><path d="${path}" fill="none" stroke="${p.fg}" stroke-width="${f1(r * 0.24)}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+    }
+    case 'clock': {   // a stopwatch drawn as lines (no emoji)
+      const r = p.r;
+      return `<g${o} fill="none" stroke="${p.col}" stroke-width="2.2" stroke-linecap="round"><circle cx="${f1(x)}" cy="${f1(y + 1.5)}" r="${r}"/>` +
+             `<path d="M${f1(x)},${f1(y + 1.5)} L${f1(x)},${f1(y - r * 0.5)} M${f1(x - 3.5)},${f1(y - r - 3)} L${f1(x + 3.5)},${f1(y - r - 3)} M${f1(x)},${f1(y - r - 3)} L${f1(x)},${f1(y - r + 1)} M${f1(x + r * 0.78)},${f1(y - r * 0.62)} L${f1(x + r * 0.98)},${f1(y - r * 0.82)}"/></g>`;
+    }
+  }
+  return '';
+}
+function drawBox(m) {
+  const o = m.o ?? 1; if (o <= 0.004) return '';
+  const b = m.box, s = m.shape;
+  // data-card marks solid cards (not containers) so QA can check that no card ever slides across another
+  const card = !['region', 'world', 'board', 'door', 'text', 'rule', 'panel', 'zone'].includes(m.k) && !(m.k === 'verify' && m.container);
+  let g = `<g data-id="${m.id}" data-k="${m.k}"${card ? ' data-card="1"' : ''} data-box="${f1(b.x)},${f1(b.y)},${f1(b.w)},${f1(b.h)}"${o < 1 ? ` opacity="${o.toFixed(3)}"` : ''}>`;
+  if (m.halo > 0 && m.halo < 1) {      // a brief ring on what changed, after the morph lands
+    const u = m.halo, e = 5 + 14 * outCubic(u), a = Math.sin(Math.PI * u) * 0.55, col = m.haloCol || (s && s.stroke !== 'none' ? s.stroke : C.ink);
+    const rx = (s ? s.rx : 8) + e;
+    g += `<rect x="${f1(b.x - e)}" y="${f1(b.y - e)}" width="${f1(b.w + 2 * e)}" height="${f1(b.h + 2 * e)}" rx="${f1(rx)}" fill="none" stroke="${col}" stroke-width="${f1(3.5 - 2 * u)}" opacity="${a.toFixed(3)}"/>`;
+  }
+  if (s) {
+    if (m.lift > 0.01) {   // depth only on the slide's news
+      g += `<rect x="${f1(b.x + 2)}" y="${f1(b.y + 10)}" width="${f1(b.w - 4)}" height="${f1(b.h)}" rx="${f1(s.rx)}" fill="#1A2836" opacity="${(0.13 * m.lift).toFixed(3)}" filter="url(#blurL)"/>` +
+           `<rect x="${f1(b.x)}" y="${f1(b.y + 1.5)}" width="${f1(b.w)}" height="${f1(b.h)}" rx="${f1(s.rx)}" fill="#1A2836" opacity="${(0.10 * m.lift).toFixed(3)}" filter="url(#blurS)"/>`;
+    }
+    g += `<rect x="${f1(b.x)}" y="${f1(b.y)}" width="${f1(Math.max(0, b.w))}" height="${f1(Math.max(0, b.h))}" rx="${f1(s.rx)}" fill="${s.fill}" stroke="${s.stroke}" stroke-width="${f1(s.sw)}"${s.dash ? ` stroke-dasharray="${s.dash}"` : ''}/>`;
+  }
+  for (const p of m.parts) g += drawPart(p, b);
+  return g + '</g>';
+}
+function orthoD(pts, rad) {
+  const P = [];
+  for (const p of pts) { const q = P[P.length - 1]; if (!q || Math.hypot(p[0] - q[0], p[1] - q[1]) > 0.4) P.push(p); }
+  for (let i = P.length - 2; i >= 1; i--) {     // drop collinear points
+    const a = P[i - 1], b = P[i], c = P[i + 1];
+    if (Math.abs((b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])) < 0.5) P.splice(i, 1);
+  }
+  let d = `M${f1(P[0][0])},${f1(P[0][1])}`;
+  for (let i = 1; i < P.length - 1; i++) {
+    const a = P[i - 1], b = P[i], c = P[i + 1], l1 = Math.hypot(b[0] - a[0], b[1] - a[1]), l2 = Math.hypot(c[0] - b[0], c[1] - b[1]);
+    const r = Math.min(rad, l1 / 2, l2 / 2);
+    const p1 = [b[0] - (b[0] - a[0]) / l1 * r, b[1] - (b[1] - a[1]) / l1 * r], p2 = [b[0] + (c[0] - b[0]) / l2 * r, b[1] + (c[1] - b[1]) / l2 * r];
+    d += ` L${f1(p1[0])},${f1(p1[1])} Q${f1(b[0])},${f1(b[1])} ${f1(p2[0])},${f1(p2[1])}`;
+  }
+  const e = P[P.length - 1]; d += ` L${f1(e[0])},${f1(e[1])}`;
+  let len = 0; for (let i = 1; i < P.length; i++) len += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]);
+  return { d, len };
+}
+const bez = (p, t) => { const u = 1 - t; return [0, 1].map(k => u * u * u * p[0][k] + 3 * u * u * t * p[1][k] + 3 * u * t * t * p[2][k] + t * t * t * p[3][k]); };
+function drawArrow(m) {
+  const o = m.o ?? 1; if (o <= 0.004) return '';
+  const pts = m.pts.map(p => [...p]), end = pts[pts.length - 1];
+  let prev = null;
+  for (let i = pts.length - 2; i >= 0; i--) if (Math.hypot(pts[i][0] - end[0], pts[i][1] - end[1]) > 0.5) { prev = pts[i]; break; }
+  if (!prev) return '';
+  const dl = Math.hypot(end[0] - prev[0], end[1] - prev[1]), dir = [(end[0] - prev[0]) / dl, (end[1] - prev[1]) / dl], nrm = [-dir[1], dir[0]];
+  const hl = 8 + m.sw * 2.1, hw = 4 + m.sw * 1.35;
+  const short = [end[0] - dir[0] * hl * 0.75, end[1] - dir[1] * hl * 0.75];
+  pts[pts.length - 1] = short;
+  let d, len;
+  if (m.mode === 'cubic') {
+    d = `M${f1(pts[0][0])},${f1(pts[0][1])} C${f1(pts[1][0])},${f1(pts[1][1])} ${f1(pts[2][0])},${f1(pts[2][1])} ${f1(short[0])},${f1(short[1])}`;
+    len = 0; let q = pts[0]; for (let i = 1; i <= 32; i++) { const r = bez(pts, i / 32); len += Math.hypot(r[0] - q[0], r[1] - q[1]); q = r; }
+  } else ({ d, len } = orthoD(pts, 12));
+  const dr = m.draw ?? 1;
+  const dash = dr < 1 ? ` stroke-dasharray="${f1(len + 2)} ${f1(len + 2)}" stroke-dashoffset="${f1((len + 2) * (1 - dr))}"` : '';
+  let s = `<g data-arrow="${esc(m.id)}"${o < 1 ? ` opacity="${o.toFixed(3)}"` : ''}><path d="${d}" fill="none" stroke="${m.col}" stroke-width="${f1(m.sw)}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`;
+  const ho = clamp01((dr - 0.82) / 0.18);
+  if (ho > 0) s += `<path d="M${f1(end[0])},${f1(end[1])} L${f1(end[0] - dir[0] * hl + nrm[0] * hw)},${f1(end[1] - dir[1] * hl + nrm[1] * hw)} L${f1(end[0] - dir[0] * hl * 0.72)},${f1(end[1] - dir[1] * hl * 0.72)} L${f1(end[0] - dir[0] * hl - nrm[0] * hw)},${f1(end[1] - dir[1] * hl - nrm[1] * hw)}Z" fill="${m.col}" stroke="${m.col}" stroke-width="1" stroke-linejoin="round"${ho < 1 ? ` opacity="${ho.toFixed(3)}"` : ''}/>`;
+  const lo = clamp01((dr - 0.55) / 0.3);
+  if (m.label && lo > 0) {
+    const at = m.mode === 'cubic' ? bez(m.pts, 0.5) : [(m.pts[0][0] + m.pts[3][0]) / 2, (m.pts[1][1] + m.pts[2][1]) / 2];
+    const lop = (m.lx ? m.lx[1] : 1) * lo;
+    s += arrowLabel(m.label, m.k, at, lop);
+    if (m.labelA) s += arrowLabel(m.labelA, m.k, at, m.lx[0]);
+  }
+  return s + '</g>';
+}
+function arrowLabel(label, k, at, op) {
+  if (op <= 0.004) return '';
+  if (k === 'bad') {
+    const s = label.replace(/^✗\s*/, ''), size = 20, tw = measure(s, size, 600), h = 44, w = tw + 30 + 44 + 4, x = at[0] - w / 2, y = at[1] - h / 2;
+    return `<g data-free="1" opacity="${op.toFixed(3)}"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="#FFFFFF" stroke="${C.bad}" stroke-width="2"/>` +
+      drawPart({ t:'mark', kind:'cross', anchor:'tl', dx:x + 26, dy:y + h / 2, r:12, bg:C.bad, fg:'#FFFFFF', op:1 }, { x:0, y:0, w:0, h:0 }) +
+      textEl({ s, size, wt:600, fam:'sans', col:C.bad, ta:'start' }, x + 46, y + h / 2 + size * 0.35, 1) + '</g>';
+  }
+  // back: the redo carries its reason (a large pill, in the check's colour); gate: a small rule tag on the line
+  const big = k === 'back', size = big ? 20 : 17, tw = measure(label, size, 600), h = big ? 44 : 30, w = tw + (big ? 36 : 24), x = at[0] - w / 2, y = at[1] - h / 2;
+  return `<g data-free="1" opacity="${op.toFixed(3)}"><rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${h}" rx="${h / 2}" fill="#FFFFFF" stroke="${C.check}" stroke-width="${big ? 2 : 1.5}"/>` +
+    textEl({ s:label, size, wt:600, fam:'sans', col:C.checkInk, ta:'middle' }, at[0], y + h / 2 + size * 0.35, 1) + '</g>';
+}
+function draw(list) {
+  const sorted = [...list].sort((a, b) => a.layer - b.layer || a.ord - b.ord);
+  return `<rect width="${W}" height="${H}" fill="${C.page}"/>` + sorted.map(m => m.type === 'arrow' ? drawArrow(m) : drawBox(m)).join('');
+}
+const staticList = id => [...resolved(id).map.values()];
+
+/* ======================================================================
+   STAGE, NAVIGATION, NOTES, REVIEW HOOKS
+   ====================================================================== */
+const root = document.getElementById('root'), svg = document.getElementById('stage');
+const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+// fade: the old slide fades out completely, then the new one fades in (reduced motion, and jumps between distant slides)
+function fadeThrough(toId, fromId, t) {
+  const uo = inOutCubic(seg(t, 0, 0.5)), ui = inOutCubic(seg(t, 0.5, 1));
+  return (uo < 1 ? `<g opacity="${(1 - uo).toFixed(3)}">${draw(staticList(fromId))}</g>` : `<rect width="${W}" height="${H}" fill="${C.page}"/>`) +
+         (ui > 0 ? `<g opacity="${ui.toFixed(3)}">${draw(staticList(toId))}</g>` : '');
+}
+function frameAt(toId, fromId, t, how) {
+  if (!fromId || fromId === toId) return draw(staticList(toId));
+  if (reduced() || how === 'fade') return fadeThrough(toId, fromId, clamp01(t));
+  return draw(mix(resolved(fromId), resolved(toId), clamp01(t)));
+}
+function paint(html, id) { root.innerHTML = html; svg.setAttribute('aria-label', resolved(id).title); }
+
+const qs = new URLSearchParams(location.search);
+const REVIEW = qs.has('frame');
+let cur = 0, anim = null;
+const notesEl = document.getElementById('notes'), fbtns = document.getElementById('fbtns');
+
+function renderReview() {
+  const to = ORDER.includes(qs.get('frame')) ? qs.get('frame') : ORDER[0];
+  const from = ORDER.includes(qs.get('from')) ? qs.get('from') : null;
+  const t = qs.has('t') ? parseFloat(qs.get('t')) : 1;
+  paint(frameAt(to, from, isNaN(t) ? 1 : t), to);
+}
+// how: 'morph' (neighbours), 'fade' (a jump), 'cut' (no animation)
+function show(i, how, fromIdx) {
+  i = Math.max(0, Math.min(ORDER.length - 1, i));
+  const from = fromIdx ?? cur;
+  if (anim) { cancelAnimationFrame(anim); anim = null; }
+  cur = i; updateUI();
+  if (how === 'cut' || from === i) { paint(frameAt(ORDER[i]), ORDER[i]); return; }
+  const fade = how === 'fade' || reduced(), D = fade ? 420 : TM.dur, t0 = performance.now(), A0 = ORDER[from], B0 = ORDER[i];
+  const step = now => {
+    const t = Math.min(1, (now - t0) / D);
+    paint(frameAt(B0, A0, t, fade ? 'fade' : 'morph'), B0);
+    anim = t < 1 ? requestAnimationFrame(step) : null;
+  };
+  anim = requestAnimationFrame(step);
+}
+function go(i) { if (i === cur) return; show(i, Math.abs(i - cur) === 1 ? 'morph' : 'fade'); }
+function updateUI() {
+  fbtns.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', j === cur ? 'true' : 'false'));
+  const cb = fbtns.querySelector('[aria-current="true"]'); if (cb && cb.scrollIntoView) cb.scrollIntoView({ block:'nearest', inline:'nearest' });
+  const id = ORDER[cur], n = NOTES[id];
+  notesEl.innerHTML = n ? `<h2>${esc(id)} · ${esc(n.t)}</h2>` + n.p.map(p => `<p>${esc(p)}</p>`).join('') : '';
+  document.getElementById('replay').disabled = cur === 0;
+  try { history.replaceState(null, '', '#' + id); } catch (e) {}
+}
+function toggleNotes() {
+  document.body.classList.toggle('notes-on');
+  document.getElementById('nbtn').setAttribute('aria-pressed', String(document.body.classList.contains('notes-on')));
+}
+function initLive() {
+  fbtns.innerHTML = ORDER.map((id, j) => `<button data-j="${j}" title="${esc(FRAMES[j].title)}">${id}</button>`).join('');
+  fbtns.addEventListener('click', e => { const b = e.target.closest('button[data-j]'); if (b) go(+b.dataset.j); });
+  // a mouse click should not leave focus on a bar button, so Space keeps advancing the slides
+  document.getElementById('bar').addEventListener('click', e => { if (e.detail > 0 && document.activeElement) document.activeElement.blur(); });
+  document.getElementById('replay').onclick = () => { if (cur > 0) show(cur, 'morph', cur - 1); };
+  document.getElementById('nbtn').onclick = toggleNotes;
+  svg.addEventListener('click', () => go(cur + 1));
+  document.addEventListener('keydown', e => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (['ArrowRight', 'PageDown'].includes(e.key) || (e.key === ' ' && tag !== 'BUTTON')) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'n' || e.key === 'N') { e.preventDefault(); toggleNotes(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0, 'cut'); }        // restart the talk
+    else if (e.key === 'End') { e.preventDefault(); show(ORDER.length - 1, 'cut'); }
+  });
+  window.addEventListener('hashchange', () => { const j = ORDER.indexOf(location.hash.slice(1)); if (j >= 0 && j !== cur) show(j, 'cut'); });
+  cur = Math.max(0, ORDER.indexOf(location.hash.slice(1)));
+  show(cur, 'cut');
+}
+
+if (REVIEW) { document.body.classList.add('review'); renderReview(); } else initLive();
+
+// Re-measure and redraw once the web fonts are in (canvas measuring depends on them).
+const faces = ['400 16px "IBM Plex Sans"', '500 16px "IBM Plex Sans"', '600 16px "IBM Plex Sans"', '700 16px "IBM Plex Sans"', 'italic 500 16px "IBM Plex Sans"',
+               '600 16px "IBM Plex Sans Condensed"', '600 16px "IBM Plex Mono"', '600 16px "IBM Plex Sans" →≈≥⁵', '400 16px "IBM Plex Sans" лв'];
+const fontsIn = document.fonts ? Promise.all(faces.map(f => document.fonts.load(f).catch(() => null))).then(() => document.fonts.ready) : Promise.resolve();
+Promise.race([fontsIn, new Promise(r => setTimeout(r, 3000))]).then(() => {
+  CACHE.clear(); FIT.length = 0;
+  ORDER.forEach(id => resolved(id));
+  if (REVIEW) renderReview(); else if (!anim) paint(frameAt(ORDER[cur]), ORDER[cur]);
+  document.documentElement.dataset.ready = '1';
+  window.__ready = true;
+});
+window.__v1 = { FIT, ORDER, resolved, TM };
+</script>
+</body>
+</html>
