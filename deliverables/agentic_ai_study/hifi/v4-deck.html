@@ -133,11 +133,11 @@ function blockLines(g, P) {
   const total = L.length * lh + gap + S.length * slh;
   const top = g.y + (P.hd ? 40 : 0) + (P.pt ?? 6), bot = g.y + g.h - (P.pb ?? 6);
   const y0 = P.va === 'top' ? top + 6 : (top + bot) / 2 - total / 2;
-  const cx = g.x + g.w / 2 + (P.dx || 0), out = [];
-  L.forEach((l, i) => out.push({ k: 'L', s: l, x: cx, y: y0 + fs * .8 + i * lh, size: fs, w: P.lw || 700, c: P.lc || C.ink, a: 'middle', st: P.lst || 86 }));
+  const left = P.align === 'left', cx = left ? g.x + 14 : g.x + g.w / 2 + (P.dx || 0), an = left ? 'start' : 'middle', out = [];
+  L.forEach((l, i) => out.push({ k: 'L', s: l, x: cx, y: y0 + fs * .8 + i * lh, size: fs, w: P.lw || 700, c: P.lc || C.ink, a: an, st: P.lst || 86 }));
   S.forEach((l, i) => {
     const b = /^\*\*(.*)\*\*$/.exec(l);
-    out.push({ k: 'S', s: b ? b[1] : l, x: cx, y: y0 + L.length * lh + gap + sfs * .8 + i * slh, size: sfs, w: b ? 700 : (P.sw2 || 500), c: b ? C.ink : (P.sc || C.ink2), a: 'middle', st: 90 });
+    out.push({ k: 'S', s: b ? b[1] : l, x: cx, y: y0 + L.length * lh + gap + sfs * .8 + i * slh, size: sfs, w: b ? 700 : (P.sw2 || 500), c: b ? C.ink : (P.sc || C.ink2), a: an, st: 90 });
   });
   if (P.hd) {
     if (P.hl) out.push({ k: 'HL', s: P.hl, x: g.x + (P.hrs ? 11 : 14), y: g.y + 28, size: P.hls || 16, w: 500, c: P.hlc || C.mute, it: true, st: 92, a: 'start' });
@@ -311,7 +311,7 @@ function rClock(e) {
 function rWorld(e) {
   const o = e.o ?? 1; if (o <= .005) return '';
   return G(o, `<rect x="${f1(e.x)}" y="${f1(e.y)}" width="${f1(e.w)}" height="${f1(e.h)}" rx="14" fill="${C.world}" stroke="${C.worldS}" stroke-width="1.4"/>` +
-    G(e._txo ?? 1, T(e.x + 18, e.y + e.h / 2 + 7, 'outside world', { size: 21, w: 800, c: C.ink2, st: 92 })));
+    G((e._txo ?? 1) * (e.nolabel ? 0 : 1) * (e._A && e._A.nolabel !== e._B.nolabel ? (e._B.nolabel ? 1 - smooth(.04, .3, e._t) : smooth(.4, .66, e._t)) : 1), T(e.x + 18, e.y + e.h / 2 + 7, 'outside world', { size: 21, w: 800, c: C.ink2, st: 92 })));
 }
 function rWall(e, m) {  // the system's edge that faces the world: solid, with two doors
   const o = e.o ?? 1; if (o <= .005) return '';
@@ -610,7 +610,7 @@ function F5a() {
 const ASK_OPEN = 'Cheapest way\nRuse → Sofia,\narriving within 24 h?';
 function qa7() {   // question and answer cards shared by F7a–F7c
   return [
-    { id: 'q', t: 'card', x: 56, y: 290, w: 176, h: 220, label: 'Question', fs: 24, sub: ASK_OPEN, sfs: 17, va: 'top', pt: 10, gap: 10, lift: 1 },
+    { id: 'q', t: 'card', x: 56, y: 290, w: 164, h: 220, label: 'Question', fs: 24, sub: ASK_OPEN, sfs: 17, va: 'top', pt: 10, gap: 10, lift: 1 },
     { id: 'ans', t: 'card', x: 1380, y: 228, w: 164, h: 344, label: 'Answer', fs: 24, va: 'top', pt: 8, lift: 1 },
     { id: 'fcount', t: 'count', x: 1462, y: 312, n: 99 },
     { id: 'fpill', t: 'pill', x: 1462, y: 324, label: '99%', fill: C.goodBg, stroke: C.good, color: C.goodInk },
@@ -627,7 +627,7 @@ function F7a() {
   const boxes = [['plan', X[0], R1, 'List\noptions'], ['s1', X[1], R1, 'Car:\ndistance'], ['s2', X[2], R1, 'Car:\nfuel price'], ['tr1', X[3], R1, 'Train:\ntimetable'], ['s3', X[4], R1, 'Train:\nfares'],
     ['tr3', X[4], R2, 'Train:\nseats left'], ['bu1', X[3], R2, 'Bus:\ntimetable'], ['bu2', X[2], R2, 'Bus:\nfares'], ['bu3', X[1], R2, 'Bus:\nseats left'],
     ['ri1', X[0], R3, 'Rideshare:\noffers'], ['bk1', X[1], R3, 'Bike:\nweather'], ['s4', X[2], R3, 'Calculate\ncosts'], ['cmp', X[3], R3, 'Compare\n(≤ 24 h)'], ['v', X[4], R3, 'Check']];
-  for (const [id, x, y, l] of boxes) els.push(B7(id, x, y, W, H, l, id === 's4' ? { fill: C.ink, stroke: C.ink, lc: '#fff' } : id === 'v' ? { fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.4 } : {}));
+  for (const [id, x, y, l] of boxes) els.push(B7(id, x, y, W, H, l, !['plan', 's4', 'cmp', 'v'].includes(id) ? { jump: 1 } : id === 's4' ? { fill: C.ink, stroke: C.ink, lc: '#fff' } : id === 'v' ? { fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.4 } : {}));
   const ids = boxes.map(b => b[0]);
   els.push(A7('q', 'plan', { xm: (a, b) => a.x + a.w + 34 }));
   ids.slice(0, -1).forEach((a, i) => {
@@ -639,46 +639,46 @@ function F7a() {
   });
   els.push(A7('v', 'ans', { xm: (a, b) => a.x + a.w + 35 }));
   els.push({ id: 'tl', t: 'text', x: 56, y: 713, label: 'time →', size: 20, weight: 700, color: C.ink2, st: 92 });
-  ids.forEach((id, k) => els.push({ id: 'g_' + id, t: 'bar', x: 150 + k * 99, y: 692, w: 99, h: 28, fill: '#d6dde3', stroke: '#9aa6b1' }));
+  ids.forEach((id, k) => els.push({ id: 'g_' + id, t: 'bar', x: 150 + k * 99, y: 692, w: 99, h: 28, fill: '#d6dde3', stroke: '#9aa6b1', jump: 1 }));
   els.push({ id: 'cur', t: 'bar', x: 150, y: 682, w: 3, h: 48, fill: C.ink, stroke: C.ink });
   els.push({ id: 'tln', t: 'text', x: 150, y: 762, label: '14 steps, one after another', size: 19, weight: 600, color: C.ink2, st: 92 });
   const seq = [{ a: 'a:q>plan' }];
   ids.forEach((id, i) => { seq.push({ thru: id, d: .55 }); seq.push({ a: 'a:' + id + '>' + (ids[i + 1] || 'ans') }); });
-  const F = { id: 'F7a', kind: 'flow', els, flows: [{ seq, v: 320, gap: 1.2, at: 5.6 }], crit: ids };
+  const F = { id: 'F7a', kind: 'flow', els, flows: [{ seq, v: 320, gap: 1.2, at: 5.85 }], crit: ids };
   return withFlow(F);
 }
 function withFlow(F) { F.flow = (m, clock, full, alphaOf) => flowDots(F, clock, full, alphaOf('flow')).out; F.dyn = flowDyn(F); return F; }
 // lane rows (centres) and columns shared by F7b and F7c, so the morph between them is small
-const ROW7 = { car: 197, train: 315, bus: 417, ride: 503, bike: 589 };
+const ROW7 = { car: 197, train: 315, bus: 423, ride: 507, bike: 591 };
 function frame7common(cap, clock, title, label) {
   const els = head(title, cap, clock);
-  els.push({ id: 'ai', t: 'region', x: 252, y: 128, w: 1108, h: 532, label }, ...qa7());
-  els.push(B7('plan', 268, 356, 128, 88, 'List\noptions', { sub: 'orchestrator' }));
-  els.push(N7('fk', 410, 386), N7('mg', 1022, 386));
-  els.push(B7('s4', 1062, 356, 96, 88, 'Calculate\ncosts', { fs: 18, fill: C.ink, stroke: C.ink, lc: '#fff' }));
-  els.push(B7('cmp', 1166, 356, 100, 88, 'Compare\n(≤ 24 h)', { fs: 18 }));
-  els.push(B7('v', 1274, 356, 78, 88, 'Check', { fs: 18, fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.4 }));
+  els.push({ id: 'ai', t: 'region', x: 236, y: 128, w: 1132, h: 532, label }, ...qa7());
+  els.push(B7('plan', 248, 356, 116, 88, 'List\noptions', { sub: 'orchestrator' }));
+  els.push(N7('fk', 378, 388, 24), N7('mg', 1046, 388, 24));
+  els.push(B7('s4', 1098, 356, 88, 88, 'Calculate\ncosts', { fs: 18, fill: C.ink, stroke: C.ink, lc: '#fff' }));
+  els.push(B7('cmp', 1194, 356, 94, 88, 'Compare\n(≤ 24 h)', { fs: 18 }));
+  els.push(B7('v', 1296, 356, 62, 88, 'Check', { fs: 18, fill: C.chkBg, stroke: C.chk, lc: C.chkInk, sw: 2.4 }));
   els.push(A7('q', 'plan', { straight: 1, yAt: 'to' }), A7('plan', 'fk', { straight: 1 }), A7('mg', 's4', { straight: 1 }), A7('s4', 'cmp'), A7('cmp', 'v'), A7('v', 'ans', { straight: 1, yAt: 'from' }));
   els.push({ id: 'tl', t: 'text', x: 56, y: 722, label: 'time →', size: 20, weight: 700, color: C.ink2, st: 92 });
   return els;
 }
-const fan = (a, b) => a.x + a.w + 16;   // fork: one vertical bus right after the node
-const bus = () => 1006;                  // join: one vertical bus right before the merge node
+const fan = (a, b) => a.x + a.w + 4;    // fork: one vertical bus right after the node, long arms into the lanes
+const bus = () => 1014;                  // join: one vertical bus, 32 px before the merge node
 const G7 = (id, x, y, w, h = 16, o = {}) => ({ id: 'g_' + id, t: 'bar', x, y, w, h, fill: '#d6dde3', stroke: '#9aa6b1', ...o });
 function F7b() {
   const els = frame7common('Each copy is an agent: the same model with its own working memory, spawned for one option.', '~25 min', 'Copies take the options in parallel', 'AI system');
-  const H = 74, top = r => ROW7[r] - H / 2, X = [470, 626, 782], W = 140;
+  const H = 74, top = r => ROW7[r] - H / 2, X = [438, 584, 730], W = 136;
   const lanes = { car: [['s1', 'distance', 'copy 1 · car'], ['s2', 'fuel price', '']], train: [['tr1', 'timetable', 'copy 2 · train'], ['s3', 'fares', ''], ['tr3', 'seats left', '']],
     bus: [['bu1', 'timetable', 'copy 3 · bus'], ['bu2', 'fares', ''], ['bu3', 'seats left', '']], ride: [['ri1', 'offers', 'copy 4 · rideshare']], bike: [['bk1', 'weather', 'copy 5 · bike']] };
   const par = [];
   for (const r in lanes) {
     const L = lanes[r];
-    L.forEach(([id, l, sub], k) => els.push(B7(id, X[k], top(r), W, H, l, { sub })));
+    L.forEach(([id, l, sub], k) => els.push(B7(id, X[k], top(r), W, H, l, { sub, jump: 1 })));   // lanes re-form: fade, never slide through
     els.push(A7('fk', L[0][0], { xm: fan }));
     L.slice(1).forEach(([id], k) => els.push(A7(L[k][0], id)));
     els.push(A7(L[L.length - 1][0], 'mg', { xm: bus }));
     const seq = [{ a: 'a:fk>' + L[0][0] }];
-    L.forEach(([id], k) => { seq.push({ b: id, d: .5 }); seq.push({ a: 'a:' + id + '>' + (L[k + 1] ? L[k + 1][0] : 'mg') }); });
+    L.forEach(([id], k) => { seq.push({ thru: id, d: .55 }); seq.push({ a: 'a:' + id + '>' + (L[k + 1] ? L[k + 1][0] : 'mg') }); });
     par.push(seq);
   }
   // timeline: the same steps, stacked where copies run at the same time
@@ -693,25 +693,28 @@ function F7b() {
 }
 function F7c() {
   const els = frame7common('One task run by many threads, not a team of people.', '~20 min', 'Copies split again, stop early, report back', 'AI system');
-  const H = 74, top = r => ROW7[r] - H / 2, W = 140, SX = 664, SW = 160, RX = 856, RW = 152;
+  // forks and joins get long arms (≥ 30 px before every arrowhead); branch boxes sit 12 px apart
+  const H = 74, top = r => ROW7[r] - H / 2, HX = 438, HW = 112, FX = 584, SX = 616, SW = 150, JX = 800, RX = 848, RW = 152;
   // car: fuel price, then two routes in parallel, merged before it reports
-  els.push(B7('s2', 470, top('car'), W, H, 'fuel price', { sub: 'copy 1 · car' }), N7('carf', 628, ROW7.car - 8, 16), N7('carj', 836, ROW7.car - 8, 16));
-  els.push(B7('s1', SX, ROW7.car - 53, SW, 48, 'via Pleven', { fs: 17, sub: 'copy 1a · distance', gap: 2, pt: 2, pb: 2 }));
-  els.push(B7('cr2', SX, ROW7.car + 5, SW, 48, 'via Veliko Tarnovo', { fs: 17, sub: 'copy 1b · distance', gap: 2, pt: 2, pb: 2 }));
-  els.push(B7('tr1', 470, top('train'), W, H, 'timetable', { sub: 'copy 2 · train' }), N7('trf', 628, ROW7.train - 8, 16), N7('trj', 836, ROW7.train - 8, 16));
-  els.push(B7('s3', SX, ROW7.train - 53, SW, 48, 'direct', { fs: 17, sub: 'copy 2a', gap: 2, pt: 2, pb: 2 }));
-  els.push(B7('tr3', SX, ROW7.train + 5, SW, 48, 'with a change', { fs: 17, sub: 'copy 2b', gap: 2, pt: 2, pb: 2 }));
-  els.push(B7('bu1', 470, top('bus'), 120, H, 'timetable', { sub: 'copy 3 · bus' }), B7('bu2', 598, top('bus'), 120, H, 'fares'), B7('bu3', 726, top('bus'), 120, H, 'seats left', { sub: 'first bus full\n→ next one', gap: 3 }));
-  els.push(B7('ri1', 470, top('ride'), W, H, 'offers', { sub: 'copy 4 · rideshare' }));
-  els.push(B7('bk1', 470, top('bike'), W, H, 'weather', { sub: 'copy 5 · bike\nstorm ✗', fill: C.badBg, stroke: C.bad, sc: C.badInk, gap: 3 }));
+  els.push(B7('s2', HX, top('car'), HW, H, 'fuel price', { sub: 'copy 1 · car' }), N7('carf', FX, ROW7.car - 8, 16), N7('carj', JX, ROW7.car - 8, 16));
+  els.push(B7('s1', SX, ROW7.car - 56, SW, 50, 'via Pleven', { fs: 16, sub: 'copy 1a · distance', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('cr2', SX, ROW7.car + 6, SW, 50, 'via Veliko Tarnovo', { fs: 16, sub: 'copy 1b · distance', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('tr1', HX, top('train'), HW, H, 'timetable', { sub: 'copy 2 · train' }), N7('trf', FX, ROW7.train - 8, 16), N7('trj', JX, ROW7.train - 8, 16));
+  els.push(B7('s3', SX, ROW7.train - 56, SW, 50, 'direct', { fs: 16, sub: 'copy 2a', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('tr3', SX, ROW7.train + 6, SW, 50, 'with a change', { fs: 16, sub: 'copy 2b', gap: 2, pt: 2, pb: 2 }));
+  els.push(B7('bu1', HX, top('bus'), HW, H, 'timetable', { sub: 'copy 3 · bus', jump: 1 }), B7('bu2', 562, top('bus'), 104, H, 'fares', { jump: 1 }),
+    B7('bu3', 678, top('bus'), 122, H, 'seats left', { sub: 'first bus full\n→ next one', gap: 3, jump: 1 }));
+  els.push(B7('ri1', HX, top('ride'), 140, H, 'offers', { sub: 'copy 4 · rideshare' }));
+  els.push(B7('bk1', HX, top('bike'), HW, H, 'weather', { sub: 'copy 5 · bike\nstorm ✗', fill: C.badBg, stroke: C.bad, sc: C.badInk, gap: 3 }));
   const RC = [['rc_car', 'car', 'car · €45 · 4 h'], ['rc_train', 'train', 'train · €12 · 7 h'], ['rc_bus', 'bus', 'bus · €15 · 5 h'], ['rc_rideshare', 'ride', 'rideshare · €10 · 4 h']];
-  for (const [id, r, l] of RC) els.push({ id, t: 'chip', x: RX, y: ROW7[r] - 22, w: RW, h: 44, label: l, fs: 16, s: 'good', fill: '#fff' });
-  els.push({ id: 'rc_bike', t: 'chip', x: 626, y: ROW7.bike - 22, w: 196, h: 44, label: 'bike ✗ stopped (storm)', fs: 16, s: 'bad' });
+  for (const [id, r, l] of RC) els.push({ id, t: 'chip', x: RX, y: ROW7[r] - 22, w: RW, h: 44, label: l, fs: 15, s: 'good', fill: '#fff' });
+  els.push({ id: 'rc_bike', t: 'chip', x: 600, y: ROW7.bike - 22, w: 196, h: 44, label: 'bike ✗ stopped (storm)', fs: 16, s: 'bad' });
   const A = (a, b, o) => els.push(A7(a, b, o));
-  A('fk', 's2', { xm: fan }); A('s2', 'carf', { straight: 1 }); A('carf', 's1', { xm: (a) => a.x + a.w + 8 }); A('carf', 'cr2', { xm: (a) => a.x + a.w + 8 });
-  A('s1', 'carj', { xm: (a, b) => b.x - 8 }); A('cr2', 'carj', { xm: (a, b) => b.x - 8 }); A('carj', 'rc_car', { straight: 1 }); A('rc_car', 'mg', { xm: bus });
-  A('fk', 'tr1', { xm: fan }); A('tr1', 'trf', { straight: 1 }); A('trf', 's3', { xm: (a) => a.x + a.w + 8 }); A('trf', 'tr3', { xm: (a) => a.x + a.w + 8 });
-  A('s3', 'trj', { xm: (a, b) => b.x - 8 }); A('tr3', 'trj', { xm: (a, b) => b.x - 8 }); A('trj', 'rc_train', { straight: 1 }); A('rc_train', 'mg', { xm: bus });
+  const arm = a => a.x + a.w, jarm = (a, b) => b.x - 32;
+  A('fk', 's2', { xm: fan }); A('s2', 'carf', { straight: 1 }); A('carf', 's1', { xm: arm }); A('carf', 'cr2', { xm: arm });
+  A('s1', 'carj', { xm: jarm }); A('cr2', 'carj', { xm: jarm }); A('carj', 'rc_car', { straight: 1 }); A('rc_car', 'mg', { xm: bus });
+  A('fk', 'tr1', { xm: fan }); A('tr1', 'trf', { straight: 1 }); A('trf', 's3', { xm: arm }); A('trf', 'tr3', { xm: arm });
+  A('s3', 'trj', { xm: jarm }); A('tr3', 'trj', { xm: jarm }); A('trj', 'rc_train', { straight: 1 }); A('rc_train', 'mg', { xm: bus });
   A('fk', 'bu1', { xm: fan }); A('bu1', 'bu2'); A('bu2', 'bu3'); A('bu3', 'rc_bus', { straight: 1 }); A('rc_bus', 'mg', { xm: bus });
   A('fk', 'ri1', { xm: fan }); A('ri1', 'rc_rideshare', { straight: 1 }); A('rc_rideshare', 'mg', { xm: bus });
   A('fk', 'bk1', { xm: fan }); A('bk1', 'rc_bike', { straight: 1, k: 'bad' }); A('rc_bike', 'mg', { xm: bus, k: 'dash' });
@@ -774,6 +777,108 @@ function F8() {
   });
   els.push({ id: 'a:cl2>cl3', t: 'arrow', from: 'cl2', to: 'cl3', fs: 'b', ts: 't', fx: a => a.x + 60, tx: a => a.x + 60, k: 'link', label: 'must agree', lx: P => P[0][0] + 12, ly: P => (P[0][1] + P[1][1]) / 2 + 6, lc: C.warnInk });
   return withFlow({ id: 'F8', kind: 'flow', els, flows });
+}
+
+/* ----- N3 and R0–R3 reuse N2's system; a patch changes labels, states and adds elements ----- */
+const NS = {   // states for the conference system's boxes
+  warn: { fill: C.warnBg, stroke: C.warn, lc: C.warnInk, lift: 1 }, bad: { fill: C.badBg, stroke: C.bad, lc: C.badInk, lift: 1 },
+  dim: { o: .45 }, good: { fill: C.goodBg, stroke: C.good, lift: 1 },
+};
+function patchEls(els, ch, add = [], drop = []) {
+  return els.filter(e => !drop.includes(e.id)).map(e => ch[e.id] ? { ...e, ...ch[e.id] } : e).concat(add);
+}
+function N3() {
+  const F = N2();
+  F.id = 'N3'; F.quiet = .35;
+  F.els = patchEls(F.els, {
+    ttl: { label: 'Day 9: a flight is cancelled' },
+    cap: { label: 'One email from the airline ripples through the plan; ten people are re-booked within hours.' },
+    ans: { sub: '100 of 100 arrive;\n1 a day late,\ncalled by a human' },
+    s_fl: NS.warn, s_tr: NS.warn, s_ho: NS.warn, s_co: { ...NS.warn, sw: 2.6 }, pay: NS.warn,
+    pn0: { label: 'Correspondence: flight\ncancelled · 10 of ours', s: 'bad' }, pn1: { label: 'Flights: re-booking\nthe 10 via Vienna', s: 'warn' },
+    pn2: { label: 'Trains & buses: their\ncoach moves to 19:40', s: 'warn' }, pn3: { label: 'Hotels: 2 extra nights', s: 'warn' },
+    pn4: { label: 'Payments: +€1,850\n→ organiser', s: 'warn' },
+    org: { sub: 'approves +€1,850 ✓;\nfinal sign-off' },
+  }, [
+    { id: 'w_air', t: 'card', x: 386, y: 676, w: 160, h: 54, label: 'Airline: flight\ncancelled · 10 of ours', fs: 15, lw: 700, fill: C.badBg, stroke: C.bad, lc: C.badInk, sw: 2.2, pill: 'DAY 9', pillBg: C.bad, en: .4 },
+    { id: 'a:w_air>s_co', t: 'arrow', from: 'w_air', to: 's_co', k: 'bad', en: .55,
+      pts: (a, b) => { const x = b.x + b.w / 2; return [[a.x + a.w / 2, a.y], [a.x + a.w / 2, 664], [x, 664], [x, b.y + b.h]]; } },
+  ]);
+  const back = (c, s) => [{ a: `a:${c}>plan`, rev: 1, c: C.warn, r: 5.6 }, { b: c, d: .2 }, { a: `a:${s}>${c}`, rev: 1 }, { b: s, d: .7 }];
+  F.flows = [{ v: 150, gap: 1.6, at: 4.2, r: 7, seq: [
+    { a: 'a:w_air>s_co', c: C.bad }, { b: 's_co', d: .35 }, { a: 'a:s_co>c_c' }, { b: 'c_c', d: .25 }, { a: 'a:c_c>plan' }, { b: 'plan', d: .4 },
+    { par: [back('c_t', 's_fl'), back('c_t', 's_tr'), back('c_a', 's_ho'),
+      [{ a: 'a:plan>guard', c: C.warn, r: 9 }, { b: 'guard', d: .35 }, { a: 'a:guard>org', to: -27 }, { w: 1.9, halo: C.warn },
+        { a: 'a:guard>org', from: -27, c: C.good }, { b: 'org', d: .3 }, { a: 'a:org>pay' }, { b: 'pay', d: .35 }, { a: 'a:pay>w_card' }]] },
+  ] }];
+  F.flow = (m, clock, full, alphaOf) => flowDots(F, clock, full, alphaOf('flow')).out;
+  F.dyn = flowDyn(F);
+  return F;
+}
+/* ----- F9 · the zoom-out: our system becomes a miniature beside systems already at work ----- */
+const DRV = { co: '#2f5f8a', pub: '#3d4d5c', ind: '#8a4f6b' };
+function F9() {
+  const N = N3(), k = .205, X0 = 44, Y0 = 144, mx = 36, my = 388;
+  const keep = new Set(['ai', 'q', 'ans', 'lead', 'gt', 'ga', 'gc', 's_fl', 's_tr', 's_ho', 's_ca', 's_co', 'c_t', 'c_a', 'c_c', 'plan', 'pn0', 'pn1', 'pn2', 'pn3', 'pn4',
+    'guard', 'org', 'pay', 'world', 'w_people', 'w_book', 'w_card', 'w_air', 'tgrid', 'rgrid']);
+  const els = [
+    { id: 'ttl', t: 'text', x: 56, y: 92, label: 'Systems like ours are already at work', size: 46, weight: 800, st: 104 },
+    { id: 'cap', t: 'text', x: 56, y: 866, label: '* claimed, not yet independently verified. Every name is searchable; sources in the notes.', size: 21, weight: 500, color: C.ink2, st: 92 },
+  ];
+  for (const e of N.els) {
+    if (!keep.has(e.id)) continue;
+    const m = { ...e, x: mx + (e.x - X0) * k, y: my + (e.y - Y0) * k, w: e.w * k, h: e.h * k, label: '', sub: '', pill: undefined, icon: undefined, lift: 0, sw: 1, nolabel: 1, hd: 0, en: undefined };
+    if (e.t === 'grid') { m.p = e.p * k; m.r = (e.r || e.p * .32) * k; }
+    if (e.t === 'chip') { m.rx = 2; m.fs = 3; }
+    if (e.t === 'card') m.rx = 3;
+    els.push(m);
+  }
+  els.push({ id: 'mini', t: 'region', x: 24, y: 374, w: 334, h: 150 });
+  els.push({ id: 'minilbl', t: 'text', x: 191, y: 556, label: 'our system, zoomed out:\n~125 agents, a few humans', size: 17, weight: 600, color: C.ink2, anchor: 'middle', st: 92 });
+  els.push(N7('fk9', 372, 437, 24), { id: 'a:mini>fk9', t: 'arrow', from: 'mini', to: 'fk9', straight: 1, k: 'solid' });
+  const fields = [['fld0', 'Maths', 'proofs · open problems'], ['fld1', 'Biology\n& medicine', 'enzymes · drugs ·\nantibodies'], ['fld2', 'Robotic labs', 'agents run the experiments'], ['fld3', 'Cybersecurity', 'finding and fixing bugs']];
+  const RY = [124, 278, 432, 586], CX = [612, 934, 1256], CW = 300, CH = 140;
+  fields.forEach(([id, l, sub], i) => {
+    els.push(B7(id, 414, RY[i], 180, CH, l, { fs: 22, sub, sfs: 15, fill: '#eef2f5', stroke: C.cardS }));
+    els.push({ id: 'a:fk9>' + id, t: 'arrow', from: 'fk9', to: id, xm: (a) => a.x + a.w + 9, k: 'solid' });
+    els.push({ id: 'a:' + id + '>fc' + i + '_0', t: 'arrow', from: id, to: 'fc' + i + '_0', straight: 1, k: 'solid' });
+  });
+  const cards = [
+    [0, 0, 'OpenAI\nNavier–Stokes', 'COMPANY', 'co', '~10,000 agents · 88 hours\nclaimed: a blow-up proof*', 10000],
+    [0, 1, 'OpenAI\nmaths release', 'COMPANY', 'co', 'agents: not disclosed\n~720 papers, ~3 h each*', 0],
+    [0, 2, 'The Station', 'INDEPENDENT', 'ind', '6 agents from 3 labs · 1–2 weeks\n28 open Ramsey cases settled*', 6],
+    [1, 0, 'Anthropic\nenzyme search', 'COMPANY', 'co', '~950 agents · 21 hours\na new CRISPR-like system*', 950],
+    [1, 1, 'Google\nCo-Scientist', 'COMPANY', 'co', 'agents in 6 roles, 100+ labs\nanalysis: months → days', 6],
+    [1, 2, 'Stanford\nVirtual Lab', 'UNIVERSITY', 'pub', '5 agents · days, not months\nnanobodies, lab-tested', 5],
+    [2, 0, 'Google\nVERID', 'COMPANY', 'co', 'agents drive the lab robots\nhit rate 0 → 42% in 3 rounds', 0],
+    [2, 1, 'CAS Shenzhen, China\nMARS', 'ACADEMY', 'pub', '19 agents + robots\na new material in 3.5 hours', 19],
+    [3, 0, 'DARPA\nAI Cyber Challenge', 'GOVERNMENT + UNIVERSITIES', 'pub', 'autonomous bug hunters\n77% of planted bugs found', 0],
+    [3, 1, 'Anthropic\nProject Glasswing', 'COMPANY + ~50 PARTNERS', 'co', 'many scanning agents\n10,000+ serious bugs in a month', 0],
+  ];
+  const clusters = [];
+  for (const [r, c, l, nl, drv, sub, n] of cards) {
+    const id = `fc${r}_${c}`, bad = id === 'fc3_1';
+    const e = B7(id, CX[c], RY[r], CW, CH, l, { fs: 19, sub, sfs: 15, align: 'left', pill: nl, pillBg: bad ? C.bad : DRV[drv], stroke: bad ? C.bad : DRV[drv], sw: 2, fill: bad ? C.badBg : '#fff', pt: 10, gap: 6 });
+    els.push(e);
+    if (n) clusters.push({ cx: e.x + e.w - 44, cy: e.y + 50, n: Math.round(4 + 9 * Math.log10(n)), R: 12 + 6.5 * Math.log10(n), col: DRV[drv] });
+  }
+  els.push({ id: 'fbridge', t: 'text', x: 1556, y: 770, label: '→ the same skill in the wrong hands', size: 19, weight: 800, color: C.badInk, anchor: 'end', st: 92 });
+  [['lgco', 612, 120, 'company', 'co'], ['lgpu', 742, 290, 'university · academy · government', 'pub'], ['lgin', 1042, 130, 'independent', 'ind']]
+    .forEach(([id, x, w, l, d]) => els.push({ id, t: 'chip', x, y: 750, w, h: 32, label: l, fs: 15, stroke: DRV[d], fill: '#fff' }));
+  const F = { id: 'F9', kind: 'flow', els, still: false };
+  // each real system carries a cluster of dots, log-scaled to its agent count (5 → ~10 dots, 10,000 → 40)
+  F.flow = (m, clock, full, alphaOf) => {
+    const a = alphaOf('flow'), out = [];
+    for (const [j, g] of clusters.entries()) {
+      const R = g.R, dr = clamp(R * .95 / Math.sqrt(g.n), 2.4, 6);
+      for (let i = 0; i < g.n; i++) {
+        const rr = R * Math.sqrt((i + .5) / g.n), th = i * 2.39996 + j;
+        out.push({ x: g.cx + rr * Math.cos(th), y: g.cy + rr * Math.sin(th), r: dr, c: g.col, a: a * (.72 + .28 * Math.sin(clock * 1.4 + i * 1.7 + j)) });
+      }
+    }
+    return out;
+  };
+  return F;
 }
 
 /* ----- N1 / N2 · the conference system ----- */
@@ -993,7 +1098,7 @@ function redoDots(m, clock, alpha) {
 function sampler(P) {
   const seg = []; let tot = 0;
   for (let i = 1; i < P.length; i++) { const l = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); seg.push(l); tot += l; }
-  return { len: tot, at(s) {
+  return { len: tot, pts: P, at(s) {
     s = clamp(s, 0, tot);
     for (let i = 0; i < seg.length; i++) { if (s <= seg[i] || i === seg.length - 1) { const u = seg[i] ? s / seg[i] : 0; return [lerp(P[i][0], P[i + 1][0], u), lerp(P[i][1], P[i + 1][1], u)]; } s -= seg[i]; }
   } };
@@ -1002,22 +1107,24 @@ const tailOf = (smp, s) => [smp.at(s - 7), smp.at(s - 15)];
 const CHAINS = [['s_fl', 'gt', 'c_t'], ['s_tr', 'gt', 'c_t'], ['s_ho', 'ga', 'c_a'], ['s_ca', 'ga', 'c_a'], ['s_co', 'gc', 'c_c']];
 // A stream: emissions every `per` s; segments are arrows (visible, at speed v) or pauses inside a box (hidden).
 function streamDefs(id) {
-  const n2 = id === 'N2', S = [];
-  const a = n2 ? .38 : .95, r = n2 ? 3.8 : 4.8;
-  S.push({ id: 'task', per: n2 ? 1.4 : .9, ph: .2, v: 110, r, c: C.dot, a, segs: [{ a: 'a:q>lead' }] });
-  CHAINS.forEach(([s, g, c], i) => S.push({ id: 'ch:' + s, per: n2 ? 2.2 : 1.45, ph: hsh(i, 9) * 2.2, v: 120, r, c: C.dot, a,
-    segs: [{ a: 'a:lead>' + g }, { h: .3 }, { a: 'a:' + g + '>' + s }, { h: .45 }, { a: 'a:' + s + '>' + c }, { h: .3 }, { a: 'a:' + c + '>plan' }] }));
-  if (!n2) S.push({ id: 'n1:out', per: .9, ph: .5, v: 110, r: 4.8, c: C.dot, a: .95, segs: [{ a: 'a:plan>org' }, { h: .45 }, { a: 'a:org>ans' }] });
+  const n2 = id !== 'N1', S = [], q = (FRAMES[id] && FRAMES[id].quiet) || 1;
+  const a = n2 ? .38 * q : .95, r = n2 ? 3.8 : 5.4;
+  S.push({ id: 'task', per: n2 ? 1.4 : .8, ph: .2, v: 110, r, c: C.dot, a, segs: [{ a: 'a:q>lead' }] });
+  // on N1 the work is the slide: it crosses each box along its bottom edge
+  CHAINS.forEach(([s, g, c], i) => S.push({ id: 'ch:' + s, per: n2 ? 2.2 : 1.1, ph: hsh(i, 9) * 2.2, v: n2 ? 120 : 150, r, c: C.dot, a,
+    segs: [{ a: 'a:lead>' + g }, { th: g }, { a: 'a:' + g + '>' + s }, { th: s }, { a: 'a:' + s + '>' + c }, { th: c }, { a: 'a:' + c + '>plan' }] }));
+  if (!n2) S.push({ id: 'n1:out', per: .8, ph: .5, v: 120, r: 5.4, c: C.dot, a: .95, segs: [{ a: 'a:plan>org' }, { th: 'org' }, { a: 'a:org>ans' }] });
   if (n2) {
-    S.push({ id: 'sign', per: 2.2, ph: .3, v: 90, r: 4.6, c: C.dot, a: .85, segs: [{ a: 'a:org>ans' }] });
-    S.push({ id: 'msg:out', per: .36, ph: .1, v: 70, r: 6, c: C.msg, a: 1, segs: [{ a: 'a:s_co>w_people' }] });
-    S.push({ id: 'msg:in', per: .55, ph: .3, v: 70, r: 6, c: C.msg, ring: 1, a: 1, segs: [{ a: 'a:w_people>s_co' }] });
+    S.push({ id: 'sign', per: 2.2, ph: .3, v: 90, r: 4.6, c: C.dot, a: .85 * q, segs: [{ a: 'a:org>ans' }] });
+    S.push({ id: 'msg:out', per: .36, ph: .1, v: 70, r: 6, c: C.msg, a: q, segs: [{ a: 'a:s_co>w_people' }] });
+    S.push({ id: 'msg:in', per: .55, ph: .3, v: 70, r: 6, c: C.msg, ring: 1, a: q, segs: [{ a: 'a:w_people>s_co' }] });
   }
   return S;
 }
-function streamDots(s, P, clock, full, out, alpha) {   // P: arrow id → sampler
+function streamDots(s, P, clock, full, out, alpha, m) {   // P: arrow id → sampler
   if (alpha <= .01) return;
-  const segs = s.segs.map(g => g.a ? { smp: P[g.a], d: P[g.a] ? P[g.a].len / s.v : 0 } : { h: 1, d: g.h });
+  const thru = b => { const y = b.y + b.h - 9; return sampler([[b.x + 10, y], [b.x + b.w - 10, y]]); };
+  const segs = s.segs.map(g => g.a ? { smp: P[g.a], d: P[g.a] ? P[g.a].len / s.v : 0 } : g.th ? (m && m.get(g.th) ? { smp: thru(m.get(g.th)), d: (m.get(g.th).w - 20) / s.v, th: 1 } : { h: 1, d: .3 }) : { h: 1, d: g.h });
   if (segs.some(g => !g.h && !g.smp)) return;
   const tot = segs.reduce((a, g) => a + g.d, 0);
   const kmax = Math.floor((clock - s.ph) / s.per), kmin = Math.max(full ? -1e9 : 0, Math.ceil((clock - s.ph - tot) / s.per));
@@ -1026,7 +1133,7 @@ function streamDots(s, P, clock, full, out, alpha) {   // P: arrow id → sample
     for (const g of segs) {
       if (age <= g.d) {
         if (g.h) break;
-        const sd = age * s.v, [x, y] = g.smp.at(sd), edge = Math.min(age, g.d - age);   // fade at box edges
+        const sd = age * s.v, [x, y] = g.smp.at(sd), edge = g.th ? 1 : Math.min(age, g.d - age);   // fade at box edges
         out.push({ x, y, r: s.r, c: s.c, ring: s.ring, a: alpha * s.a * smooth(0, .12, edge), tail: tailOf(g.smp, Math.max(0, sd)) });
         break;
       }
@@ -1087,13 +1194,14 @@ function payDots(m, P, clock, full, out, alpha) {
     if (age < d4) on(ex, age * PAY.v, C.good, r, smooth(0, .1, age) * (1 - smooth(d4 - .12, d4, age)));
   }
 }
-const netSpecialIds = f => FRAMES[f].pay ? ['pay'] : [];
+const netSpecialIds = f => (FRAMES[f].pay ? ['pay'] : []).concat(FRAMES[f].flows ? ['flow:' + f] : []);
 function netDots(fid, els, m, clock, full, alphaOf) {
   const P = {};
   for (const e of els) if (e.t === 'arrow') { const pts = arrowPts(e, m); if (pts) P[e.id] = sampler(pts); }
   const out = [];
-  for (const s of streamDefs(fid)) streamDots(s, P, clock, full, out, alphaOf(s.id));
-  if (FRAMES[fid].pay) payDots(m, P, clock, full, out, alphaOf('pay'));
+  for (const s of streamDefs(fid)) streamDots(s, P, clock, full, out, alphaOf(s.id), m);
+  if (FRAMES[fid].pay) payDots(m, P, clock, full, out, alphaOf('pay') * (FRAMES[fid].quiet || 1));
+  if (FRAMES[fid].flows) out.push(...flowDots(FRAMES[fid], clock, full, alphaOf('flow')).out);
   return out;
 }
 
@@ -1112,7 +1220,13 @@ function staticSamplers(F) {
 function mkSched(seq, P, v, M) {
   let t = 0, stopped = false, end = null; const parts = [];
   for (const st of seq) {
-    if (st.a) { const s = P[st.a]; if (!s) continue; const d = s.len / v; parts.push({ k: 'a', t0: t, d, s, c: st.c, v }); t += d; end = s.at(s.len); }
+    if (st.a) {
+      let s = P[st.a]; if (!s) continue;
+      if (st.rev) s = sampler([...s.pts].reverse());
+      if (st.to != null || st.from != null) { const a0 = st.from != null ? s.len + st.from : 0, b0 = st.to != null ? s.len + st.to : s.len, base = s; s = { len: b0 - a0, at: x => base.at(a0 + clamp(x, 0, b0 - a0)) }; }
+      const d = s.len / v; parts.push({ k: 'a', t0: t, d, s, c: st.c, r: st.r, v }); t += d; end = s.at(s.len);
+    }
+    else if (st.w) { parts.push({ k: 'w', t0: t, d: st.w, halo: st.halo, c: st.c, r: st.r }); t += st.w; }
     else if (st.b) { parts.push({ k: 'b', t0: t, d: st.d ?? .42, id: st.b, c: st.c }); t += st.d ?? .42; }
     else if (st.thru) { const b = M.get(st.thru); parts.push({ k: 'th', t0: t, d: st.d ?? .6, id: st.thru, c: st.c, b }); t += st.d ?? .6; end = [b.x + b.w - 12, b.y + b.h - 11]; }
     else if (st.par) {
@@ -1128,10 +1242,13 @@ function schedAt(S, t, out, col, act, r, j = 0) {
   for (const p of S.parts) {
     if (t < p.t0) return;
     if (p.c) c = p.c;
+    if (p.r) r = p.r;
     const lt = t - p.t0;
     if (p.k === 'a') {
       if (lt < p.d) { const sd = lt * p.v, [x, y] = p.s.at(sd); out.push({ x, y, r, c, a: smooth(0, .06, lt) * (1 - smooth(p.d - .06, p.d, lt) * (p.last ? 1 : 0)), tail: [p.s.at(sd - 7), p.s.at(sd - 15)] }); return; }
       last = p.s.at(p.s.len);
+    } else if (p.k === 'w') {
+      if (lt < p.d && last) { const pulse = .5 + .5 * Math.sin(lt * 7), ok = smooth(p.d - .4, p.d - .1, lt); out.push({ x: last[0], y: last[1], r, c, a: 1, halo: p.halo ? (1 - ok) * (.3 + .35 * pulse) : 0, hc: p.halo, hr: 7 }); return; }
     } else if (p.k === 'b') { if (lt < p.d) { act.set(p.id, c); return; } }
     else if (p.k === 'th') {
       if (lt < p.d) { act.set(p.id, c); const u = lt / p.d, x = lerp(p.b.x + 12, p.b.x + p.b.w - 12, u), y = p.b.y + p.b.h - 11; out.push({ x, y, r, c, a: 1, tail: [[x - 8, y], [x - 16, y]] }); return; }
@@ -1202,7 +1319,7 @@ function flowDyn(F) {
 }
 
 // every slide, built once all engines are defined
-const BUILT = { F1, F2, F3, F4, F5a, F5b, F7a, F7b, F7c, F8, N1, N2 };
+const BUILT = { F1, F2, F3, F4, F5a, F5b, F7a, F7b, F7c, F8, N1, N2, N3, F9 };
 const FRAMES = Object.fromEntries(ORDER.map(id => [id, BUILT[id] ? BUILT[id]() : stub(id)]));
 
 /* =====================================================================
@@ -1221,6 +1338,10 @@ function morph(A, B, t) {
   const ma = new Map(A.map(e => [e.id, e])), mb = new Map(B.map(e => [e.id, e])), out = [];
   for (const b of B) {
     const a = ma.get(b.id);
+    if (a && (a.jump || b.jump) && (a.x !== b.x || a.y !== b.y)) {
+      out.push(t < .5 ? { ...a, o: (a.o ?? 1) * (1 - smooth(.04, .36, t)) } : { ...b, o: (b.o ?? 1) * smooth(.6, .94, t) });
+      continue;
+    }
     if (a) {
       const lag = .05 * clamp(((b.x ?? 800) + (b.w || 0) / 2) / 1600);
       const g = eio(clamp((t - lag) / .7));
@@ -1250,6 +1371,9 @@ function morph(A, B, t) {
       out.push(r);
     }
   }
+  const jumped = new Set(B.filter(b => { const a = ma.get(b.id); return a && (a.jump || b.jump) && (a.x !== b.x || a.y !== b.y); }).map(b => b.id));
+  if (jumped.size) { const dip = t < .5 ? 1 - smooth(.04, .36, t) : smooth(.6, .94, t);
+    for (const r of out) if ((r.t === 'arrow') && (jumped.has(r.from) || jumped.has(r.to))) r.o = (r.o ?? 1) * dip; }
   for (const a of A) if (!mb.has(a.id)) {
     const u = clamp((t - (a.ex ?? 0)) / .34);
     const r = { ...a, o: (a.o ?? 1) * (1 - smooth(0, 1, u)) };
