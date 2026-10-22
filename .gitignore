@@ -45,3 +45,7 @@ deliverables/finalReview/renders/
 deliverables/finalReview/renders_after/
 deliverables/finalReview/renders_fix/
 deliverables/finalReview/renders_en/
+
+# PPTX build scratch: a symlink to a local node cache and the tool's temporary chart snapshots
+outputs/agentic_ai_build/node_modules
+outputs/agentic_ai_build/.chart-data-*/
