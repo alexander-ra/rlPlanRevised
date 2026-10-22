@@ -15,6 +15,21 @@ Rebuild after any change to `index.html` (needs fonttools with brotli, and npx; 
 python3 build_html.py ../index.html ../presentation_bg.html
 ```
 
+## Printable speaker notes
+
+`../notes_bg.pdf` (A4, 11 pages) has one block per slide, never split across pages:
+- the slide number, ID and title;
+- the slide as it looks once settled;
+- 2–3 cue words;
+- the full notes;
+- when the slide starts in the talk, and how long it took in the last rehearsal.
+
+The notes come from the deck's NOTES. The cue words and times are in `notes_cues_bg.json`; edit them there.
+
+```bash
+node build_notes_pdf.js ../index.html notes_cues_bg.json ../notes_bg.pdf
+```
+
 ## PowerPoint
 
 `../presentation_bg.pptx` is `../index.html` as PowerPoint: one full-screen 1920×1080 video per slide, speaker notes from the deck.
