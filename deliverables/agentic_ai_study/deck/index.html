@@ -105,6 +105,12 @@
   #rjson { width:100%; height:120px; font:12px/1.4 ui-monospace, Menlo, Consolas, monospace; }
   body.review #bar, body.review #notes, body.review #result, body.review #toast { display:none !important; }
   body.review #stage { box-shadow:none; cursor:default; }
+  /* presenting (fullscreen): the slide alone on black; the pointer hides when idle; B or . blanks the screen */
+  body.present { --page:#000; }
+  body.present #bar, body.present #notes, body.present #toast { display:none !important; }
+  body.present #stage { box-shadow:none; }
+  body.present.idle, body.present.idle #stage { cursor:none; }
+  #black { position:fixed; inset:0; z-index:30; background:#000; cursor:none; }
   @media (prefers-reduced-motion: reduce) { #rec .dot { animation:none; } }
   @media (max-width:900px) {
     #bar { height:36px; } #bar button { padding:2px 5px; }
@@ -141,9 +147,10 @@
   <span class="sep"></span>
   <button id="replay" title="Повтори прехода към този слайд">Повтори</button>
   <button id="nbtn" aria-pressed="false" title="Бележки на говорещия (N)">Бележки</button>
-  <button id="fsbtn" hidden title="Цял екран">Цял екран</button>
+  <button id="fsbtn" hidden title="Цял екран за представяне (F) · B или . затъмнява екрана">Цял екран</button>
 </nav>
 <div id="toast" role="status" hidden></div>
+<div id="black" hidden></div>
 <div id="result" hidden>
   <section id="rpanel" role="dialog" aria-modal="true" aria-labelledby="rtitle">
     <div id="rtop"><h2 id="rtitle">Репетиции</h2><button id="rclose" class="btn">Затвори</button></div>
@@ -2241,6 +2248,7 @@ const NOTES = {"F1": {"t": "Заглавие", "p": ["Здравейте. Аз �
    Controller: navigation, review hooks, notes, reduced motion
    ===================================================================== */
 const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+const PROD = false;   // export/build_html.py sets this for presentation_bg.html: notes read-only, no rehearsal, nothing stored
 const qF = URLQ.get('frame'), qFrom = URLQ.get('from'), qT = URLQ.get('t');
 const REVIEW = !!(qF && FRAMES[qF]);
 let cur = REVIEW ? ORDER.indexOf(qF) : Math.max(0, ORDER.indexOf((location.hash || '').slice(1)));
@@ -2327,7 +2335,7 @@ const NOTES_ORIG = JSON.parse(JSON.stringify(NOTES));
 const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage blocked: db or nothing */ } };
 let dbPromise = null;
-const getDb = () => dbPromise || (dbPromise = (window.claude && window.claude.use ? window.claude.use('db') : Promise.resolve(null)).catch(() => null));
+const getDb = () => dbPromise || (dbPromise = (!PROD && window.claude && window.claude.use ? window.claude.use('db') : Promise.resolve(null)).catch(() => null));
 async function dbTry(fn) {      // one retry on a transient failure, as the db contract asks
   for (let k = 0; k < 2; k++) {
     try { await fn(); return true; }
@@ -2585,11 +2593,28 @@ function wireRuns() {
   const resume = data => { const r = data && data.run; if (r && r.status === 'recording' && !REH.run) { REH.run = r; go(clamp(data.cur || 0, 0, LAST), 'run'); recUi(true); } };
   try { const hot = window.claude?.hot; if (hot?.ready) hot.ready(resume); else resume(hot?.data || {}); } catch (e) { /* nothing to resume */ }
 }
+function toggleFullscreen() {
+  try { const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (p) p.catch(() => {}); } catch (e) { /* not allowed here */ }
+}
+const setBlack = on => { $('black').hidden = !on; };
+// Fullscreen is the presenting mode: the slide alone, the screen kept awake, the pointer hidden when idle.
 function wireFullscreen() {
   const b = $('fsbtn'); b.hidden = !document.fullscreenEnabled;
-  b.addEventListener('click', ev => { ev.stopPropagation();
-    try { const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (p) p.catch(() => {}); } catch (e) { /* not allowed here */ } });
-  document.addEventListener('fullscreenchange', () => { b.textContent = document.fullscreenElement ? 'Изход от цял екран' : 'Цял екран'; });
+  b.addEventListener('click', ev => { ev.stopPropagation(); toggleFullscreen(); });
+  let wake = null, idle = 0;
+  document.addEventListener('fullscreenchange', () => {
+    const on = !!document.fullscreenElement;
+    b.textContent = on ? 'Изход от цял екран' : 'Цял екран';
+    document.body.classList.toggle('present', on);
+    relayout();
+    if (on) { try { navigator.wakeLock && navigator.wakeLock.request('screen').then(l => { wake = l; }, () => {}); } catch (e) { /* the screen may dim */ } }
+    else { try { wake && wake.release(); } catch (e) { /* already released */ } wake = null; setBlack(false); }
+  });
+  document.addEventListener('mousemove', () => {
+    document.body.classList.remove('idle'); clearTimeout(idle);
+    idle = setTimeout(() => document.body.classList.add('idle'), 2000);
+  });
+  $('black').addEventListener('click', ev => { ev.stopPropagation(); setBlack(false); });
 }
 async function fontsReady() {
   try {
@@ -2604,10 +2629,11 @@ function drawReview() {
   else if (URLQ.get('clock') != null) { AMB = +URLQ.get('clock'); draw(stillView(qF, +URLQ.get('clock'), true)); }
   else { AMB = TFINAL(qF); draw(stillView(qF, TFINAL(qF), false)); }
 }
-window.addEventListener('resize', () => {
+function relayout() {
   fit(); lastSVG = '';
   if (REVIEW) drawReview(); else if (mode) { if (mode.k === 'still') draw(stillView(mode.f, clockOf(mode), mode.run)); kick(); }
-});
+}
+window.addEventListener('resize', relayout);
 (async function init() {
   if (REVIEW) document.body.classList.add('review');
   bar.innerHTML = ORDER.map((id, i) => `<button data-f="${i}" title="${esc(NOTES[id] ? NOTES[id].t : id)}">${id}</button>`).join('');
@@ -2622,21 +2648,31 @@ window.addEventListener('resize', () => {
   }));
   document.getElementById('replay').addEventListener('click', ev => { ev.stopPropagation(); replay(); });
   document.getElementById('nbtn').addEventListener('click', ev => { ev.stopPropagation(); toggleNotes(); });
-  $('ntext').addEventListener('input', onNoteInput);
-  $('ntext').addEventListener('blur', flushNote);
-  $('nrevert').addEventListener('click', revertNote);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) flushNote(); });
-  window.addEventListener('pagehide', flushNote);
+  if (PROD) {   // the presenting copy: notes as written, no rehearsal recording, nothing stored
+    $('rbtn').hidden = $('runsbtn').hidden = true;
+    $('ntext').readOnly = true; $('ntext').placeholder = 'Няма бележки за този слайд.';
+  } else {
+    $('ntext').addEventListener('input', onNoteInput);
+    $('ntext').addEventListener('blur', flushNote);
+    $('nrevert').addEventListener('click', revertNote);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) flushNote(); });
+    window.addEventListener('pagehide', flushNote);
+    loadNotes();
+    wireRuns();
+  }
   let notesOn = false; try { notesOn = localStorage.getItem(LS.notesOn) === '1'; } catch (e) { /* closed by default */ }
   if (notesOn) toggleNotes(true);
-  loadNotes();
-  wireRuns(); wireFullscreen();
+  wireFullscreen();
   stage.addEventListener('click', () => step(1));
   window.addEventListener('keydown', ev => {
     if (!$('result').hidden) { if (ev.key === 'Escape') $('result').hidden = true; return; }
     // typing in the notes: keys belong to the text; Esc hands them back to the slides
-    if (ev.target.closest && ev.target.closest('textarea, input, select, [contenteditable]')) { if (ev.key === 'Escape') ev.target.blur(); return; }
+    const field = ev.target.closest && ev.target.closest('textarea, input, select, [contenteditable]');
+    if (field && !field.readOnly) { if (ev.key === 'Escape') ev.target.blur(); return; }
     if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
+    if (!$('black').hidden) { if (!['Shift', 'Control', 'Alt', 'Meta'].includes(ev.key)) { ev.preventDefault(); setBlack(false); } return; }   // any key brings the slide back
+    if (['b', 'B', '.'].includes(ev.key)) { ev.preventDefault(); setBlack(true); return; }   // what clickers send for "blank screen"
+    if (ev.key === 'f' || ev.key === 'F') { ev.preventDefault(); toggleFullscreen(); return; }
     if (['ArrowRight', 'PageDown', ' ', 'Spacebar'].includes(ev.key)) { ev.preventDefault(); step(1); }
     else if (['ArrowLeft', 'PageUp'].includes(ev.key)) { ev.preventDefault(); step(-1); }
     else if (ev.key === 'n' || ev.key === 'N') { ev.preventDefault(); toggleNotes(); }
